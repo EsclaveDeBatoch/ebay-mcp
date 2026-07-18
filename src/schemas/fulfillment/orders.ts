@@ -215,6 +215,31 @@ export const getOrdersInputSchema = z.object({
 });
 
 /**
+ * Shared input for read-only order issue scanners (cancellation / refund helpers).
+ * Calls getOrders then filters client-side — no Post-Order API.
+ */
+export const scanOrderIssuesInputSchema = z.object({
+  filter: z
+    .string()
+    .optional()
+    .describe(
+      'Optional Fulfillment getOrders filter expression (e.g. creationdate:[2024-01-01T00:00:00.000Z..2024-12-31T23:59:59.999Z])',
+    ),
+  maxResults: z
+    .number()
+    .int()
+    .positive()
+    .optional()
+    .describe('Maximum orders to scan via getOrders (default 50)'),
+});
+
+/** Input for ebay_get_cancellation_requests. */
+export const getCancellationRequestsInputSchema = scanOrderIssuesInputSchema;
+
+/** Input for ebay_get_refunded_orders. */
+export const getRefundedOrdersInputSchema = scanOrderIssuesInputSchema;
+
+/**
  * Validates the Fulfillment API get orders response payload.
  */
 export const getOrdersOutputSchema = z.object({
@@ -557,6 +582,11 @@ export const getFulfillmentJsonSchemas = () => {
     getOrderInput: zodToJsonSchema(getOrderInputSchema, 'getOrderInput'),
     getOrderOutput: zodToJsonSchema(getOrderOutputSchema, 'getOrderOutput'),
     orderDetails: zodToJsonSchema(orderSchema, 'orderDetails'),
+    getCancellationRequestsInput: zodToJsonSchema(
+      getCancellationRequestsInputSchema,
+      'getCancellationRequestsInput',
+    ),
+    getRefundedOrdersInput: zodToJsonSchema(getRefundedOrdersInputSchema, 'getRefundedOrdersInput'),
 
     // Shipping Fulfillment
     createShippingFulfillmentInput: zodToJsonSchema(

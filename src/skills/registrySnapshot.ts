@@ -20,6 +20,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   taxonomy: 'Category trees, category suggestions, and required item aspects',
   communication: 'Buyer messages, member messages, and notification settings',
+  browse: 'Sold/completed listing search (Finding API) for pricing comps',
   other: 'Feedback, recommendations, and assorted Sell-API helpers',
   developer: 'API status, rate limits, client registration, and signing keys',
   trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',

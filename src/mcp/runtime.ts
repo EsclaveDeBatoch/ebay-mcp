@@ -3,6 +3,7 @@ import type { Implementation } from '@modelcontextprotocol/sdk/types.js';
 import { EbaySellerApi } from '@/api/index.js';
 import { getEbayConfig, mcpConfig } from '@/config/environment.js';
 import { resolveToolGatingMode } from '@/config/toolFamilies.js';
+import { isReadOnlyModeEnabled, isReadOnlyTool } from '@/mcp/readOnlyFilter.js';
 import {
   createToolGatingController,
   DYNAMIC_MODE_INSTRUCTIONS,
@@ -150,13 +151,20 @@ export const createEbayMcpRuntime = (options: EbayMcpRuntimeOptions = {}): EbayM
   // Static mode registers only the named families; all and dynamic register the
   // full catalogue (dynamic then disables it below, before the transport connects).
   const allEntries = getToolEntries();
-  const entries =
+  let entries =
     mode.kind === 'static'
       ? (() => {
           const names = toolNamesInFamilies(mode.families);
           return allEntries.filter((entry) => names.has(entry.definition.name));
         })()
       : allEntries;
+
+  // Optional second gate: drop any non-read-only tools after family selection so
+  // EBAY_READ_ONLY composes with all / static / dynamic modes.
+  if (isReadOnlyModeEnabled()) {
+    entries = entries.filter((entry) => isReadOnlyTool(entry.definition));
+    serverLogger.info(`EBAY_READ_ONLY: filtered to ${entries.length} read-only tools`);
+  }
 
   const handles = new Map<string, RegisteredTool>();
   for (const entry of entries) {

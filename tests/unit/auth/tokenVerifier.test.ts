@@ -102,9 +102,22 @@ describe('TokenVerifier', () => {
 
   describe('verifyToken - introspection', () => {
     it('verify token via introspection', async () => {
+      const expectedBasic = `Basic ${Buffer.from('mcp-server:secret').toString('base64')}`;
       nock(ORIGIN).get('/.well-known/openid-configuration').reply(200, mockMetadata);
       nock(ORIGIN)
-        .post(INTROSPECT_PATH)
+        .post(INTROSPECT_PATH, (body) => {
+          // nock parses urlencoded bodies into objects; credentials must not appear here
+          const params =
+            typeof body === 'string'
+              ? Object.fromEntries(new URLSearchParams(body))
+              : (body as Record<string, string>);
+          expect(params.token).toBe('test-token');
+          expect(params.client_id).toBeUndefined();
+          expect(params.client_secret).toBeUndefined();
+          return true;
+        })
+        .matchHeader('Authorization', expectedBasic)
+        .matchHeader('Content-Type', 'application/x-www-form-urlencoded')
         .reply(200, {
           active: true,
           client_id: 'test-client',
@@ -133,6 +146,70 @@ describe('TokenVerifier', () => {
         audience: 'http://localhost:3000',
         subject: 'user123',
       });
+    });
+
+    it('sends client credentials as HTTP Basic auth, not form fields', async () => {
+      const clientId = 'basic-client';
+      const clientSecret = 'basic-secret';
+      const expectedBasic = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`;
+      let capturedAuth: string | undefined;
+      let capturedBody: string | undefined;
+
+      nock(ORIGIN)
+        .post(INTROSPECT_PATH, (body) => {
+          capturedBody = typeof body === 'string' ? body : new URLSearchParams(body).toString();
+          return true;
+        })
+        .matchHeader('Authorization', (value) => {
+          capturedAuth = value;
+          return value === expectedBasic;
+        })
+        .reply(200, {
+          active: true,
+          client_id: 'test-client',
+          scope: 'mcp:tools',
+          aud: 'http://localhost:3000',
+        });
+
+      const verifier = new TokenVerifier({
+        authServerMetadata: mockMetadata,
+        expectedAudience: 'http://localhost:3000',
+        clientId,
+        clientSecret,
+        useIntrospection: true,
+      });
+
+      await initializeVerifier(verifier);
+      await verifyToken(verifier, 'opaque-token');
+
+      expect(capturedAuth).toBe(expectedBasic);
+      expect(capturedBody).toContain('token=opaque-token');
+      expect(capturedBody).not.toContain('client_id');
+      expect(capturedBody).not.toContain('client_secret');
+    });
+
+    it('omits Authorization when client credentials are incomplete', async () => {
+      nock(ORIGIN)
+        .post(INTROSPECT_PATH)
+        .matchHeader('Authorization', (value) => value === undefined)
+        .reply(200, {
+          active: true,
+          client_id: 'test-client',
+          scope: 'mcp:tools',
+          aud: 'http://localhost:3000',
+        });
+
+      const verifier = new TokenVerifier({
+        authServerMetadata: mockMetadata,
+        expectedAudience: 'http://localhost:3000',
+        clientId: 'only-id',
+        // clientSecret intentionally omitted
+        useIntrospection: true,
+      });
+
+      await initializeVerifier(verifier);
+      const result = await verifyToken(verifier, 'test-token');
+      expect(result.token).toBe('test-token');
     });
 
     it('reject inactive tokens', async () => {

@@ -94,6 +94,23 @@ describe('shared API request helpers', () => {
         method: 'GET',
         path: '/sell/account/v1/custom_policy',
       });
+      expect(error?.message).toBe('eBay GET /sell/account/v1/custom_policy failed: network down');
     }
+  });
+
+  it('builds EbayApiError.message from method, path, and cause', () => {
+    const fromError = new EbayApiError({
+      method: 'POST',
+      path: '/sell/inventory/v1/offer',
+      cause: new Error('rate limited'),
+    });
+    expect(fromError.message).toBe('eBay POST /sell/inventory/v1/offer failed: rate limited');
+
+    const fromString = new EbayApiError({
+      method: 'DELETE',
+      path: '/sell/inventory/v1/offer/1',
+      cause: 'gone',
+    });
+    expect(fromString.message).toBe('eBay DELETE /sell/inventory/v1/offer/1 failed: gone');
   });
 });

@@ -119,4 +119,38 @@ describe('createEbayMcpRuntime — tool gating', () => {
     expect(mcpMock.state.handles.every((handle) => handle.enabled)).toBe(true);
     expect(mcpMock.state.constructorArgs[0]).toEqual([serverConfig, undefined]);
   });
+
+  it('EBAY_READ_ONLY filters the catalogue to read-only tools only', async () => {
+    const { isReadOnlyTool } = await import('@/mcp/readOnlyFilter.js');
+    const expected = getToolDefinitions().filter((definition) => isReadOnlyTool(definition));
+    expect(expected.length).toBeGreaterThan(0);
+    expect(expected.length).toBeLessThan(getToolDefinitions().length);
+
+    vi.stubEnv('EBAY_READ_ONLY', 'true');
+    const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
+    createEbayMcpRuntime({ api: fakeApi, serverConfig });
+
+    expect(mcpMock.registerTool).toHaveBeenCalledTimes(expected.length);
+    const registeredNames = mcpMock.state.handles.map((handle) => handle.name).sort();
+    expect(registeredNames).toEqual(expected.map((definition) => definition.name).sort());
+    // No write-shaped tools should slip through
+    expect(registeredNames.some((name) => name.includes('_create_'))).toBe(false);
+    expect(registeredNames.some((name) => name.includes('_delete_'))).toBe(false);
+  });
+
+  it('EBAY_READ_ONLY composes with static family gating', async () => {
+    const { isReadOnlyTool } = await import('@/mcp/readOnlyFilter.js');
+    const inventoryDefs = toolCategories
+      .find((category) => category.key === 'inventory')!
+      .entries.map((entry) => entry.definition);
+    const expected = inventoryDefs.filter((definition) => isReadOnlyTool(definition));
+
+    vi.stubEnv('EBAY_MCP_TOOLS', 'inventory');
+    vi.stubEnv('EBAY_READ_ONLY', 'yes');
+    const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
+    createEbayMcpRuntime({ api: fakeApi, serverConfig });
+
+    expect(mcpMock.registerTool).toHaveBeenCalledTimes(expected.length);
+    expect(expected.length).toBeLessThan(inventoryCount);
+  });
 });

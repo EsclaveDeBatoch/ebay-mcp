@@ -50,6 +50,11 @@ export interface HttpTransportConfig {
   port: number;
   /** Repo root used to serve static icon assets. */
   projectRoot: string;
+  /**
+   * Optional static bearer token. When set, HTTP MCP routes require
+   * `Authorization: Bearer <token>` and skip the OAuth token verifier.
+   */
+  staticAuthToken?: string;
 }
 
 const getProjectRoot = (): string => {
@@ -70,8 +75,10 @@ const getProjectRoot = (): string => {
  * ```
  */
 export const createHttpTransportConfigFromEnv = (env: NodeJS.ProcessEnv): HttpTransportConfig => ({
-  host: env.MCP_HOST || 'localhost',
-  port: Number(env.MCP_PORT) || 3000,
+  // Cloud platforms (Railway, Render, Fly, etc.) inject PORT; bind all interfaces
+  // by default so the container is reachable unless MCP_HOST is set explicitly.
+  host: env.MCP_HOST || (env.PORT ? '0.0.0.0' : 'localhost'),
+  port: Number(env.MCP_PORT) || Number(env.PORT) || 3000,
   oauth: {
     authServerUrl: env.OAUTH_AUTH_SERVER_URL ?? 'http://localhost:8080/realms/master',
     clientId: env.OAUTH_CLIENT_ID,
@@ -83,6 +90,7 @@ export const createHttpTransportConfigFromEnv = (env: NodeJS.ProcessEnv): HttpTr
   },
   authEnabled: env.OAUTH_ENABLED !== 'false',
   projectRoot: getProjectRoot(),
+  staticAuthToken: env.MCP_AUTH_TOKEN,
 });
 
 /**
@@ -165,6 +173,21 @@ async function createAuthMiddleware(
   config: HttpTransportConfig,
   serverUrl: string,
 ): Promise<RequestHandler | undefined> {
+  if (config.staticAuthToken) {
+    const staticToken = config.staticAuthToken;
+    serverLogger.info('Static bearer auth enabled via MCP_AUTH_TOKEN.');
+    return (req, res, next) => {
+      if (req.headers.authorization === `Bearer ${staticToken}`) {
+        next();
+        return;
+      }
+      res.status(401).json({
+        error: 'unauthorized',
+        error_description: 'Missing or invalid bearer token',
+      });
+    };
+  }
+
   if (!config.authEnabled) {
     serverLogger.warn('OAuth is disabled. Server running in unauthenticated mode.');
     return;

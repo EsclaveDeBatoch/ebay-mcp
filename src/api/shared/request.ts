@@ -25,7 +25,12 @@ export class EbayApiError extends Data.TaggedError('EbayApiError')<{
   readonly path: string;
   /** Lower-level transport, parsing, or adapter failure. */
   readonly cause: unknown;
-}> {}
+}> {
+  override get message(): string {
+    const detail = this.cause instanceof Error ? this.cause.message : String(this.cause);
+    return `eBay ${this.method} ${this.path} failed: ${detail}`;
+  }
+}
 
 /** Tagged validation failure returned before an endpoint request is sent. */
 export class EndpointInputError extends Data.TaggedError('EndpointInputError')<{

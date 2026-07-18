@@ -94,6 +94,8 @@ export class EbayApiClient {
 
     if (this.config.contentLanguage) {
       headers['Content-Language'] = this.config.contentLanguage;
+      // undici defaults Accept-Language to `*`, which eBay Inventory rejects (error 25709).
+      headers['Accept-Language'] = this.config.contentLanguage;
     }
 
     if (this.config.marketplaceId) {
@@ -141,6 +143,19 @@ export class EbayApiClient {
           return detail;
         }
       }
+    }
+  }
+
+  /**
+   * Serialize the full error response body so structured fields (errorId, parameters)
+   * survive into the thrown message for diagnostics.
+   */
+  private ebayErrorBody(data: unknown): string {
+    if (data == null) return '';
+    try {
+      return ` | response: ${JSON.stringify(data)}`;
+    } catch {
+      return '';
     }
   }
 
@@ -387,7 +402,7 @@ export class EbayApiClient {
           method,
           url,
           status: error.status,
-          message: `eBay API Error: ${this.ebayErrorDetail(error.data) ?? error.message}`,
+          message: `eBay API Error: ${this.ebayErrorDetail(error.data) ?? error.message}${this.ebayErrorBody(error.data)}`,
           cause: error,
         }),
       );

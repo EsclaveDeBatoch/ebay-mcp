@@ -175,28 +175,26 @@ export class TokenVerifier {
         );
       }
 
-      // Prepare introspection request
+      // Prepare introspection request. Client credentials authenticate via HTTP
+      // Basic (RFC 7662 §2.1) rather than form body fields.
       const requestData: TokenIntrospectionRequest = {
         token,
         token_type_hint: 'access_token',
       };
 
-      // Add client credentials if provided
       const headers: Record<string, string> = {
         'Content-Type': 'application/x-www-form-urlencoded',
       };
 
+      if (this.config.clientId && this.config.clientSecret) {
+        headers.Authorization = `Basic ${Buffer.from(
+          `${this.config.clientId}:${this.config.clientSecret}`,
+        ).toString('base64')}`;
+      }
+
       const params = new URLSearchParams({
         token: requestData.token,
       });
-
-      if (this.config.clientId) {
-        params.set('client_id', this.config.clientId);
-      }
-
-      if (this.config.clientSecret) {
-        params.set('client_secret', this.config.clientSecret);
-      }
 
       // Make introspection request
       const data = yield* this.requestVerifierData<TokenIntrospectionResponse>(

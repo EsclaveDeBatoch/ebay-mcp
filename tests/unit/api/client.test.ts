@@ -114,6 +114,7 @@ describe('EbayApiClient Unit Tests', () => {
         reqheaders: {
           'x-ebay-c-marketplace-id': 'EBAY_US',
           'content-language': 'en-US',
+          'accept-language': 'en-US',
         },
       })
         .get('/sell/inventory/v1/test')
@@ -138,6 +139,7 @@ describe('EbayApiClient Unit Tests', () => {
         reqheaders: {
           'x-ebay-c-marketplace-id': 'EBAY_DE',
           'content-language': 'de-DE',
+          'accept-language': 'de-DE',
         },
       })
         .get('/sell/inventory/v1/test')
@@ -166,6 +168,29 @@ describe('EbayApiClient Unit Tests', () => {
 
       await expect(apiClient.get('/sell/inventory/v1/test')).rejects.toThrow(
         /eBay API rate limit exceeded.*60 seconds/,
+      );
+    });
+  });
+
+  describe('HTTP status error body detail', () => {
+    it('includes the full eBay error body (errorId, parameters) in the message', async () => {
+      const errorBody = {
+        errors: [
+          {
+            errorId: 25_709,
+            message: 'Invalid Accept-Language',
+            longMessage: 'The Accept-Language header is invalid.',
+            parameters: [{ name: 'acceptLanguage', value: '*' }],
+          },
+        ],
+      };
+
+      nock('https://api.sandbox.ebay.com')
+        .get('/sell/inventory/v1/inventory_item')
+        .reply(400, errorBody);
+
+      await expect(apiClient.get('/sell/inventory/v1/inventory_item')).rejects.toThrow(
+        /eBay API Error: The Accept-Language header is invalid\. \| response: .*errorId.*25709/,
       );
     });
   });

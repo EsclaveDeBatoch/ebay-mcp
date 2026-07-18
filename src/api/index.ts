@@ -15,6 +15,7 @@ import { DisputeApi } from '@/api/order-management/dispute.js';
 import { FulfillmentApi } from '@/api/order-management/fulfillment.js';
 import { ComplianceApi } from '@/api/other/compliance.js';
 import { EDeliveryApi } from '@/api/other/edelivery.js';
+import { FindingApi } from '@/api/other/finding.js';
 import { IdentityApi } from '@/api/other/identity.js';
 import { TranslationApi } from '@/api/other/translation.js';
 import { VeroApi } from '@/api/other/vero.js';
@@ -50,6 +51,7 @@ export class EbaySellerApi {
   public vero: VeroApi;
   public translation: TranslationApi;
   public edelivery: EDeliveryApi;
+  public finding: FindingApi;
   public developer: DeveloperApi;
   public trading: TradingApi;
 
@@ -76,6 +78,7 @@ export class EbaySellerApi {
     this.vero = new VeroApi(this.client);
     this.translation = new TranslationApi(this.client);
     this.edelivery = new EDeliveryApi(this.client);
+    this.finding = new FindingApi(this.client);
     this.developer = new DeveloperApi(this.client);
     const tradingClient = new TradingApiClient(this.client);
     this.trading = new TradingApi(tradingClient);
@@ -156,6 +159,7 @@ export * from '@/api/order-management/dispute.js';
 export * from '@/api/order-management/fulfillment.js';
 export * from '@/api/other/compliance.js';
 export * from '@/api/other/edelivery.js';
+export * from '@/api/other/finding.js';
 export * from '@/api/other/identity.js';
 export * from '@/api/other/translation.js';
 export * from '@/api/other/vero.js';

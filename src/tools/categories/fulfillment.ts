@@ -10,10 +10,15 @@ import {
   mapOrderToCard,
 } from '@/tools/ui/maps.js';
 import {
+  filterOrdersWithCancellationRequests,
+  filterRefundedOrders,
+} from '@/api/order-management/orderIssueHelpers.js';
+import {
   acceptPaymentDisputeInputSchema,
   addEvidenceInputSchema,
   contestPaymentDisputeInputSchema,
   createShippingFulfillmentInputSchema,
+  getCancellationRequestsInputSchema,
   getOrdersOutputSchema,
   getOrdersInputSchema,
   getOrderOutputSchema,
@@ -21,6 +26,7 @@ import {
   createShippingFulfillmentOutputSchema,
   fetchEvidenceContentInputSchema,
   getActivitiesInputSchema,
+  getRefundedOrdersInputSchema,
   getShippingFulfillmentsOutputSchema,
   getShippingFulfillmentsInputSchema,
   getShippingFulfillmentOutputSchema,
@@ -34,6 +40,9 @@ import {
   updateEvidenceInputSchema,
 } from '@/schemas/fulfillment/orders.js';
 import { Effect } from 'effect';
+
+/** Default number of recent orders scanned by cancellation/refund helpers. */
+const DEFAULT_ORDER_SCAN_LIMIT = 50;
 
 /** Fulfillment API tools for orders, shipping fulfillments, refunds, and payment disputes. */
 export const fulfillmentEntries: ToolEntry[] = [
@@ -105,6 +114,58 @@ export const fulfillmentEntries: ToolEntry[] = [
       $refStrategy: 'none',
     }) as OutputArgs,
     handler: (api, args) => Effect.runPromise(api.fulfillment.issueRefund(args)),
+  }),
+  defineTool({
+    name: 'ebay_get_cancellation_requests',
+    description:
+      'Scan recent seller orders for cancellation requests. Calls Fulfillment API getOrders and returns orders whose cancelState is not NONE_REQUESTED (or that list cancel requests). Read-only helper — does not use the deprecated Post-Order API.\n\nRequired OAuth Scope: sell.fulfillment.readonly or sell.fulfillment\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+    inputSchema: getCancellationRequestsInputSchema.shape,
+    annotations: { readOnlyHint: true },
+    handler: (api, args) =>
+      Effect.runPromise(
+        api.fulfillment
+          .getOrders({
+            filter: args.filter,
+            limit: args.maxResults ?? DEFAULT_ORDER_SCAN_LIMIT,
+          })
+          .pipe(
+            Effect.map((result) => {
+              const orders = result.orders ?? [];
+              const matches = filterOrdersWithCancellationRequests(orders);
+              return {
+                totalScanned: orders.length,
+                totalMatched: matches.length,
+                orders: matches,
+              };
+            }),
+          ),
+      ),
+  }),
+  defineTool({
+    name: 'ebay_get_refunded_orders',
+    description:
+      'Scan recent seller orders for refunds. Calls Fulfillment API getOrders and returns orders with a non-empty paymentSummary.refunds array. Read-only helper — does not issue refunds or call the Post-Order API.\n\nRequired OAuth Scope: sell.fulfillment.readonly or sell.fulfillment\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+    inputSchema: getRefundedOrdersInputSchema.shape,
+    annotations: { readOnlyHint: true },
+    handler: (api, args) =>
+      Effect.runPromise(
+        api.fulfillment
+          .getOrders({
+            filter: args.filter,
+            limit: args.maxResults ?? DEFAULT_ORDER_SCAN_LIMIT,
+          })
+          .pipe(
+            Effect.map((result) => {
+              const orders = result.orders ?? [];
+              const matches = filterRefundedOrders(orders);
+              return {
+                totalScanned: orders.length,
+                totalMatched: matches.length,
+                orders: matches,
+              };
+            }),
+          ),
+      ),
   }),
   // Payment Dispute Tools
   defineTool({
