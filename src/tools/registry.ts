@@ -1,6 +1,6 @@
 import { registeredEntries } from '@/tools/categories/index.js';
-import type { ToolDefinition } from '@/tools/definitions/types.js';
-import type { ToolHandler } from '@/tools/tool-handlers/types.js';
+import type { ToolDefinition } from '@/tools/types.js';
+import type { ToolHandler } from '@/tools/types.js';
 import type { ViewArchetype, ViewModel } from '@/tools/ui/viewModels.js';
 import { Data, Effect } from 'effect';
 

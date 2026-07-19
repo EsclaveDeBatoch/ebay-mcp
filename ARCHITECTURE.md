@@ -8,7 +8,7 @@ The real file map and the pipeline a tool call flows through. Orientation is in
 ```txt
 src/
 ├── index.ts          # bin entry — routes `setup` / `skills`, else runs the MCP stdio server
-├── serverHttp.ts    # HTTP transport entry point
+├── serverHttp.ts     # HTTP transport entry point
 ├── api/              # eBay API area classes + clients — one subfolder per area
 │                     #   (account-management, order-management, marketing-and-promotions, …)
 │                     #   plus client.ts (REST) and clientTrading.ts (Trading XML)
@@ -16,28 +16,27 @@ src/
 ├── config/           # environment loading, constants, toolFamilies
 ├── mcp/              # runtime.ts, httpTransport.ts, toolGating.ts, uiBridge.ts
 ├── tools/            # tool wiring: defineTool.ts, registry.ts, contracts.ts, schemas.ts,
-│                     #   categories/ (13 families), legacy marketing definitions/handlers, ui/
-├── schemas/          # shared Zod schemas
+│                     #   types.ts, categories/ (one family file per EBAY_MCP_TOOLS key), ui/
+├── schemas/          # Effect-backed endpoint input schemas by family
 ├── skills/           # agent-skills generator (`ebay-mcp skills`)
 ├── scripts/          # CLI tooling (setup, skills, devSync, diagnostics, buildUi, …)
 ├── types/            # generated OpenAPI types — do NOT hand-edit (`pnpm run sync`)
-└── utils/            # logging, http, errors, version, cliUi
+└── utils/            # logging, http, errors, effectSchema*, version, cliUi
 ```
 
 ## Pipeline — a tool call
 
 ```txt
 src/tools/categories/<family>.ts
-  → defineTool(spec)                     # Zod raw shape = SSOT for wire schema + handler args
-  → marketing bridge                     # legacy: pairs definitions/marketing.ts with tool-handlers/marketing.ts
+  → defineTool(spec)                     # Effect-backed .shape = SSOT for wire schema + handler args
   → registry (src/tools/registry.ts)     # assembles ToolEntry[] from categories/index.ts
 
 host call → registry.executeTool
-  → handler (validates args)
+  → handler (args already decoded by defineTool)
   → EbaySellerApi facade                 # api.<area>.<method>
   → src/api/<area>/*.ts
   → EbayApiClient (REST)  |  TradingApiClient (XML, fast-xml-parser)
-    # target: Effect-returning endpoint methods; legacy paths still use withApiError
+    # target: Effect-returning endpoint methods; runPromise only at MCP/CLI boundaries
   → eBay
   ← result  → optional MCP-Apps view model (archetype: table | card | chart)  → host
 ```
@@ -46,6 +45,51 @@ Tool exposure is gated by `EBAY_MCP_TOOLS` (`all` | `dynamic` | family list),
 applied in `src/mcp/runtime.ts`. Both transports (`index.ts` stdio,
 `serverHttp.ts`) wrap the same runtime; **stdout is reserved for the protocol**,
 so logs go to stderr.
+
+## Family map (MCP key ↔ folders)
+
+Three parallel naming systems on purpose — do **not** mass-rename to force one vocabulary:
+
+| MCP family (`EBAY_MCP_TOOLS`) | `src/tools/categories/` | `src/api/` | `src/schemas/` |
+| --- | --- | --- | --- |
+| `connector` | `connector.ts` | — (catalogue meta) | — |
+| `token-management` | `tokenManagement.ts` | via `auth/` | — |
+| `account` | `account.ts` | `account-management/` | `account-management/` |
+| `inventory` | `inventory.ts` | `listing-management/` | `inventory-management/` |
+| `fulfillment` | `fulfillment.ts` | `order-management/` | `fulfillment/` |
+| `marketing` | `marketing.ts` | `marketing-and-promotions/` | `marketing/` |
+| `analytics` | `analytics.ts` | `analytics-and-report/` | `analytics/` |
+| `metadata` | `metadata.ts` | `listing-metadata/` | `metadata/` |
+| `taxonomy` | `taxonomy.ts` | `listing-metadata/` (taxonomy) | `taxonomy/` |
+| `communication` | `communication.ts` | `communication/` | `communication/` |
+| `browse` | `browse.ts` | `other/` (Finding) | `other/` |
+| `other` | `other.ts` | `other/` | `other/` |
+| `developer` | `developer.ts` | `developer/` | `developer/` |
+| `trading` | `trading.ts` | `trading/` | — (Trading XML shapes in utils/tools) |
+
+Generated OpenAPI types live under `src/types/sell-apps/` (and application-settings) and
+mirror the `docs/sell-apps/` tree (including any upstream folder typos). Hand-written
+code should import those generated paths as-is; do not invent parallel DTOs.
+
+## Schema ownership
+
+| Surface | Owns |
+| --- | --- |
+| `src/tools/schemas.ts` | Shared primitives reused across families (money, dimensions, enums wrappers, …) |
+| `src/schemas/<family>/` | Endpoint/tool **input** (and when needed response) schemas for that family |
+| `src/types/**` | Generated eBay DTOs — never hand-edit; regenerate with `pnpm run sync` |
+
+New endpoint tools: author the Effect-backed input schema under `src/schemas/…`, derive
+MCP `inputSchema` from `.shape` in `defineTool`, return generated response types from API
+methods. Do not add a third schema home.
+
+## Build output
+
+`build/` is generated (`tsc` + UI bundle) and gitignored. After renames, wipe stale dual
+kebab/camel artifacts with `rm -rf build && npm run build`. Do not commit `build/`.
+
+`devSyncReport.json` is generated by `npm run sync` and is gitignored; CI may upload it as
+an artifact.
 
 ## Code style (the load-bearing rules)
 
@@ -58,9 +102,11 @@ Full guide: [CODE-STYLE.md](CODE-STYLE.md). In short:
 | Casts | boundary-only; never `as any`; no hand-written source excluded from typecheck |
 | Functions | new/migrated exported functions use `export const ... = (...) =>`; named exports only |
 | Errors | fallible API/IO returns typed Effects; run with `Effect.runPromise` only at MCP/HTTP/CLI boundaries |
-| Tools | Zod schema `.shape` is the tool input SSOT; marketing split files are a legacy bridge, not a new pattern |
+| Tools | Effect-backed schema `.shape` is the tool input SSOT; co-locate definition + handler in `categories/` via `defineTool` |
 | File size | Biome warns > ~300 lines/file, ~60 lines/function on logic dirs; declarative/generated/table files are warning-exempt |
 
 Enforcement is **Biome** (`biome.json`) + `tsc`, run as `pnpm run check:ci` and
 `pnpm run typecheck`. (There is no `lint:lines` script; size caps are Biome
 rules.)
+
+Historical deepening notes (mostly implemented): [docs/archive/architecture-deepening-opportunities.md](docs/archive/architecture-deepening-opportunities.md).

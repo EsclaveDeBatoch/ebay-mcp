@@ -45,6 +45,8 @@
 
 ---
 
+> **说明：** 英文 [README.md](README.md) 是最新产品说明（工具族、API 下线、版本说明）的权威来源。本翻译可能滞后。
+
 **eBay MCP** 是一个本地的 [Model Context Protocol](https://modelcontextprotocol.io) 服务器，可将 AI 助手 —Claude Desktop、Claude Code、Cursor、Cline、Windsurf、Zed、Continue.dev、Roo Code 和 Amazon Q— 直接连接到 **eBay 的 Sell API**。它提供 **322 个工具**，覆盖 **eBay Sell API 的 100% 范围**（270 个唯一端点），涵盖库存管理、订单履行、推广刊登营销、分析和开发者工具。一切都在你的机器上通过 STDIO 或本地 HTTP 运行 — **没有云端中继**，你的 eBay 凭据永远不会离开你的电脑。
 
 > **免责声明：** 非官方第三方项目 — **与 eBay Inc. 无关联，也未获其认可。** 按"原样"提供，不附带任何担保。你需自行负责遵守 [eBay API 许可协议](https://developer.ebay.com/join/api-license-agreement) 和 [数据处理要求](https://developer.ebay.com/api-docs/static/data-handling-update.html)、妥善保管你的凭据并遵守速率限制。在投入生产前请先在沙盒中测试。参见 [LICENSE](LICENSE)、[SECURITY.md](SECURITY.md) 和 [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md)。
@@ -238,6 +240,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 | 类别 | 你可以做什么 |
 | --- | --- |
+| [Connector](src/tools/categories/connector.ts) | 面向 eBay MCP 目录的 ChatGPT 连接器 search/fetch 工具 |
 | [Account](src/tools/categories/account.ts) | 业务、履行、付款和退货政策；计划；订阅；销售税 |
 | [Inventory](src/tools/categories/inventory.ts) | 库存商品、报价、地点、商品分组、批量操作、SKU/地点映射 |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | 订单、配送、退款、纠纷、付款纠纷证据 |
@@ -246,6 +249,8 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | [Communication](src/tools/categories/communication.ts) | 买卖双方消息、议价、通知、评价 |
 | [Metadata](src/tools/categories/metadata.ts) | 退货政策、销售税辖区、汽车兼容性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 类目树、商品属性、商品成色 |
+| [Browse](src/tools/categories/browse.ts) | 已售/已完成 listing 搜索（Finding API）用于比价 |
+| [Other](src/tools/categories/other.ts) | Identity、VeRO、翻译与国际物流支持 API（Compliance 工具会报告 eBay 于 2026-03-30 的下线） |
 | [Trading（旧版 XML）](src/tools/categories/trading.ts) | 固定价格刊登的创建、修改、重新刊登和结束 |
 | [Developer](src/tools/categories/developer.ts) | 速率限制、签名密钥、客户端注册 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 生成与令牌管理 |

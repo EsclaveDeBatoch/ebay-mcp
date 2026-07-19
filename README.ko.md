@@ -45,6 +45,8 @@
 
 ---
 
+> **참고:** 최신 제품 설명(도구 패밀리, API 폐기, 버전 노트)의 기준 문서는 영어 [README.md](README.md)입니다. 이 번역은 뒤처질 수 있습니다.
+
 **eBay MCP**는 AI 어시스턴트 —Claude Desktop, Claude Code, Cursor, Cline, Windsurf, Zed, Continue.dev, Roo Code, Amazon Q— 를 **eBay의 Sell API**에 직접 연결하는 로컬 [Model Context Protocol](https://modelcontextprotocol.io) 서버입니다. **eBay Sell API 전체(고유 엔드포인트 270개)의 100%**를 포괄하는 **322개 도구**를 제공하여 재고 관리, 주문 처리, 프로모션 광고 마케팅, 분석, 개발자 도구를 다룹니다. 모든 것은 STDIO 또는 로컬 HTTP를 통해 사용자의 컴퓨터에서 실행되며 — **클라우드 중계가 없고** — eBay 자격 증명은 절대 사용자의 컴퓨터를 벗어나지 않습니다.
 
 > **면책 조항:** 비공식 서드파티 프로젝트로서 **eBay Inc.와 제휴하거나 보증받지 않습니다.** "있는 그대로" 제공되며 어떠한 보증도 없습니다. [eBay API 라이선스 계약](https://developer.ebay.com/join/api-license-agreement) 및 [데이터 처리 요건](https://developer.ebay.com/api-docs/static/data-handling-update.html) 준수, 자격 증명의 안전한 보관, 속도 제한 준수는 사용자의 책임입니다. 프로덕션 전에 샌드박스에서 테스트하세요. [LICENSE](LICENSE), [SECURITY.md](SECURITY.md), [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md)를 참조하세요.
@@ -238,6 +240,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 
 | 카테고리 | 할 수 있는 일 |
 | --- | --- |
+| [Connector](src/tools/categories/connector.ts) | eBay MCP 카탈로그용 ChatGPT 커넥터 search/fetch 도구 |
 | [Account](src/tools/categories/account.ts) | 비즈니스·배송·결제·반품 정책, 프로그램, 구독, 판매세 |
 | [Inventory](src/tools/categories/inventory.ts) | 재고 항목, 오퍼, 위치, 항목 그룹, 일괄 작업, SKU/위치 매핑 |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | 주문, 배송, 환불, 분쟁, 결제 분쟁 증거 |
@@ -246,6 +249,8 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | [Communication](src/tools/categories/communication.ts) | 구매자–판매자 메시지, 협상, 알림, 피드백 |
 | [Metadata](src/tools/categories/metadata.ts) | 반품 정책, 판매세 관할, 자동차 호환성 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 카테고리 트리, 항목 속성, 항목 상태 |
+| [Browse](src/tools/categories/browse.ts) | 가격 비교용 판매/완료 리스팅 검색(Finding API) |
+| [Other](src/tools/categories/other.ts) | Identity, VeRO, 번역 및 국제 배송 지원 API(Compliance 도구는 eBay 2026-03-30 폐기를 보고) |
 | [Trading(레거시 XML)](src/tools/categories/trading.ts) | 고정 가격 리스팅 생성, 수정, 재등록, 종료 |
 | [Developer](src/tools/categories/developer.ts) | 속도 제한, 서명 키, 클라이언트 등록 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 생성 및 토큰 관리 |

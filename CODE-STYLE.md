@@ -172,6 +172,17 @@ handler: (api, args) => api.account.getCustomPolicies(args.policyTypes as string
 _Why:_ One schema prevents schema/handler drift while keeping fallible runtime
 decode on Effect.
 
+### Schema File Ownership · [taste]
+
+| Surface | Owns |
+| --- | --- |
+| `src/tools/schemas.ts` | Shared primitives reused across families |
+| `src/schemas/<family>/` | Endpoint/tool input (and optional response) schemas for that family |
+| `src/types/**` | Generated eBay DTOs — regenerate with `pnpm run sync`; never hand-edit |
+
+Do not add a third schema home. Family folder names need not match MCP keys
+one-to-one; see the map in [ARCHITECTURE.md](ARCHITECTURE.md#family-map-mcp-key--folders).
+
 ### Unified Params Builder · [taste]
 
 Endpoint methods own the allowed keys and wire names, then pass them to one
@@ -349,10 +360,9 @@ endpoint (`search`, `fetch`, OAuth token helpers, and API status feed helpers)
 own their protocol response at that boundary; keep that shaping local, explicit,
 and backed by tagged Effect failures.
 
-If a large catalog still pairs definitions and handlers from separate files, it
-must enforce one public definition per handler and must not keep hidden aliases.
-New or migrated endpoint tools should close schema/handler mismatches first,
-then move into a co-located `defineTool` entry.
+Do not reintroduce a separate definitions/ vs handlers/ split. Tool types live
+in `src/tools/types.ts`; each family file under `src/tools/categories/` co-locates
+definition and handler via `defineTool`.
 
 _Why:_ Registry entries should make the tool-to-endpoint link obvious.
 
@@ -420,7 +430,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import type { EbayApiClient } from '@/api/client.js';
 import type { QueryParams } from '@/api/shared/request.js';
 import { customPolicyResponseSchema } from '@/schemas/account-management/account.js';
-import type { OutputArgs } from '@/tools/definitions/types.js';
+import type { OutputArgs } from '@/tools/types.js';
 import { defineTool } from '@/tools/defineTool.js';
 import type { components } from '@/types/sell-apps/account-management/sellAccountV1Oas3.js';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';

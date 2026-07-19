@@ -56,7 +56,7 @@ import {
   updateReturnPolicyInputSchema,
 } from '@/schemas/account-management/account.js';
 import { defineTool } from '@/tools/defineTool.js';
-import type { OutputArgs } from '@/tools/definitions/types.js';
+import type { OutputArgs } from '@/tools/types.js';
 import type { ToolEntry } from '@/tools/registry.js';
 
 const emptyResponseSchema: OutputArgs = {

@@ -1,3 +1,5 @@
+> **SUPERSEDED / mostly DONE (2026-07).** Historical findings from 2026-05. Handlers are co-located in `src/tools/categories/` via `defineTool`; registry + runtime + ADRs exist. Live map: [ARCHITECTURE.md](../../ARCHITECTURE.md) and [docs/adr/current/](../adr/current/). Do not implement this doc as if `handlers.ts` still exists.
+
 # Architecture Deepening Opportunities
 
 Date: 2026-05-09

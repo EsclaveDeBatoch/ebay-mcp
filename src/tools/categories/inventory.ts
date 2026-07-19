@@ -2,7 +2,7 @@ import { Effect } from 'effect';
 import { z } from '@/utils/effectSchema.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { defineTool } from '@/tools/defineTool.js';
-import type { OutputArgs } from '@/tools/definitions/types.js';
+import type { OutputArgs } from '@/tools/types.js';
 import type { ToolEntry } from '@/tools/registry.js';
 import {
   mapInventoryItemsToTable,

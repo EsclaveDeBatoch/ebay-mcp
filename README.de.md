@@ -45,6 +45,8 @@
 
 ---
 
+> **Hinweis:** Die englische [README.md](README.md) ist die Quelle der Wahrheit für aktuelle Produktangaben (Tool-Familien, API-Stilllegungen, Versionshinweise). Diese Übersetzung kann hinterherhinken.
+
 **eBay MCP** ist ein lokaler [Model-Context-Protocol](https://modelcontextprotocol.io)-Server, der KI-Assistenten —Claude Desktop, Claude Code, Cursor, Cline, Windsurf, Zed, Continue.dev, Roo Code und Amazon Q— direkt mit den **Sell-APIs von eBay** verbindet. Er stellt **322 Tools** bereit, die **100% der eBay-Sell-API-Oberfläche** (270 eindeutige Endpunkte) abdecken — für Bestandsverwaltung, Auftragsabwicklung, Marketing mit beworbenen Angeboten, Analytik und Entwicklerwerkzeuge. Alles läuft auf deinem Rechner über STDIO oder lokales HTTP — **kein Cloud-Relay**, und deine eBay-Zugangsdaten verlassen niemals deinen Computer.
 
 > **Haftungsausschluss:** Inoffizielles Drittanbieterprojekt — **ohne Zugehörigkeit zu oder Billigung durch eBay Inc.** Bereitgestellt „wie besehen“, ohne Gewährleistung. Du bist selbst dafür verantwortlich, die [eBay-API-Lizenzvereinbarung](https://developer.ebay.com/join/api-license-agreement) und die [Anforderungen an die Datenverarbeitung](https://developer.ebay.com/api-docs/static/data-handling-update.html) einzuhalten, deine Zugangsdaten zu schützen und die Ratenlimits einzuhalten. Teste im Sandbox-Modus vor dem Produktivbetrieb. Siehe [LICENSE](LICENSE), [SECURITY.md](SECURITY.md) und [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md).
@@ -238,6 +240,7 @@ Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 20 und das
 
 | Kategorie | Was du tun kannst |
 | --- | --- |
+| [Connector](src/tools/categories/connector.ts) | ChatGPT-Connector-Search/Fetch über den eBay-MCP-Katalog |
 | [Account](src/tools/categories/account.ts) | Geschäfts-, Versand-, Zahlungs- und Rückgaberichtlinien; Programme; Abonnements; Verkaufssteuer |
 | [Inventory](src/tools/categories/inventory.ts) | Bestandsartikel, Angebote, Standorte, Artikelgruppen, Massenvorgänge, SKU/Standort-Zuordnung |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Bestellungen, Versand, Rückerstattungen, Streitfälle, Nachweise zu Zahlungsstreitfällen |
@@ -246,6 +249,8 @@ Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 20 und das
 | [Communication](src/tools/categories/communication.ts) | Käufer-Verkäufer-Nachrichten, Verhandlungen, Benachrichtigungen, Bewertungen |
 | [Metadata](src/tools/categories/metadata.ts) | Rückgaberichtlinien, Verkaufssteuer-Zuständigkeiten, Fahrzeugkompatibilität |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Kategoriebäume, Artikelmerkmale, Artikelzustände |
+| [Browse](src/tools/categories/browse.ts) | Suche nach verkauften/abgeschlossenen Angeboten (Finding API) für Preisvergleiche |
+| [Other](src/tools/categories/other.ts) | Identity, VeRO, Übersetzung und internationale Versand-Support-APIs (Compliance-Tools melden eBays Stilllegung vom 2026-03-30) |
 | [Trading (Legacy-XML)](src/tools/categories/trading.ts) | Festpreisangebote erstellen, überarbeiten, neu einstellen und beenden |
 | [Developer](src/tools/categories/developer.ts) | Ratenlimits, Signaturschlüssel, Client-Registrierung |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth-URL-Generierung und Token-Verwaltung |

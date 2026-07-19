@@ -45,6 +45,8 @@
 
 ---
 
+> **Nota:** o [README.md](README.md) em inglês é a fonte da verdade para claims de produto atuais (famílias de ferramentas, APIs descontinuadas, notas de versão). Esta tradução pode estar atrasada.
+
 **eBay MCP** é um servidor local do [Model Context Protocol](https://modelcontextprotocol.io) que conecta assistentes de IA —Claude Desktop, Claude Code, Cursor, Cline, Windsurf, Zed, Continue.dev, Roo Code e Amazon Q— diretamente às **Sell APIs do eBay**. Ele expõe **322 ferramentas** abrangendo **100% da superfície da Sell API do eBay** (270 endpoints únicos) para gestão de estoque, processamento de pedidos, marketing de anúncios patrocinados, analytics e ferramentas para desenvolvedores. Tudo roda na sua máquina via STDIO ou HTTP local — **sem relay na nuvem**, e suas credenciais do eBay nunca saem do seu computador.
 
 > **Aviso legal:** Projeto não oficial de terceiros — **sem afiliação ou endosso da eBay Inc.** Fornecido "como está", sem garantia. Você é responsável por cumprir o [Contrato de licença da API do eBay](https://developer.ebay.com/join/api-license-agreement) e os [requisitos de tratamento de dados](https://developer.ebay.com/api-docs/static/data-handling-update.html), por manter suas credenciais seguras e por respeitar os limites de taxa. Teste no sandbox antes de ir para produção. Consulte [LICENSE](LICENSE), [SECURITY.md](SECURITY.md) e [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md).
@@ -238,6 +240,7 @@ Autoconfigurados pelo `npm run setup`. Requer Node.js ≥ 20 e o protocolo MCP 1
 
 | Categoria | O que você pode fazer |
 | --- | --- |
+| [Connector](src/tools/categories/connector.ts) | Ferramentas search/fetch do conector ChatGPT sobre o catálogo eBay MCP |
 | [Account](src/tools/categories/account.ts) | Políticas de negócio, envio, pagamento e devolução; programas; assinaturas; imposto sobre vendas |
 | [Inventory](src/tools/categories/inventory.ts) | Itens de estoque, ofertas, locais, grupos de itens, operações em massa, mapeamento SKU/local |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Pedidos, envio, reembolsos, disputas, evidências de disputas de pagamento |
@@ -246,6 +249,8 @@ Autoconfigurados pelo `npm run setup`. Requer Node.js ≥ 20 e o protocolo MCP 1
 | [Communication](src/tools/categories/communication.ts) | Mensagens comprador–vendedor, negociações, notificações, avaliações |
 | [Metadata](src/tools/categories/metadata.ts) | Políticas de devolução, jurisdições de imposto sobre vendas, compatibilidade automotiva |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Árvores de categorias, aspectos de itens, condições de itens |
+| [Browse](src/tools/categories/browse.ts) | Busca de anúncios vendidos/concluídos (Finding API) para comparáveis de preço |
+| [Other](src/tools/categories/other.ts) | Identity, VeRO, tradução e APIs de suporte a envio internacional (ferramentas de Compliance reportam a desativação da eBay em 2026-03-30) |
 | [Trading (XML legado)](src/tools/categories/trading.ts) | Criar, revisar, republicar e encerrar anúncios de preço fixo |
 | [Developer](src/tools/categories/developer.ts) | Limites de taxa, chaves de assinatura, registro de clientes |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Geração de URL de OAuth e gestão de tokens |

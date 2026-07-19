@@ -1,7 +1,7 @@
 import type { EbaySellerApi } from '@/api/index.js';
-import type { OutputArgs, ToolAnnotations } from '@/tools/definitions/types.js';
+import type { OutputArgs, ToolAnnotations } from '@/tools/types.js';
 import type { ResolvedToolUi, ToolEntry } from '@/tools/registry.js';
-import type { ToolHandler } from '@/tools/tool-handlers/types.js';
+import type { ToolHandler } from '@/tools/types.js';
 import { uiArchetypes } from '@/tools/ui/archetypes.js';
 import type {
   CardViewModel,

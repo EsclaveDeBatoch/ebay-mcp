@@ -1,3 +1,4 @@
+import type { EbaySellerApi } from '@/api/index.js';
 import type { EffectBackedRawShape } from '@/utils/effectSchemaTypes.js';
 
 /** JSON-schema-like output contract attached to a tool definition. */
@@ -28,3 +29,9 @@ export interface ToolDefinition {
   annotations?: ToolAnnotations;
   _meta?: Record<string, unknown>;
 }
+
+/** Executes a tool against the configured eBay seller API client and parsed arguments. */
+export type ToolHandler = (api: EbaySellerApi, args: Record<string, unknown>) => unknown;
+
+/** Lookup table that binds registered tool names to their execution handlers. */
+export type ToolHandlerMap = Record<string, ToolHandler>;

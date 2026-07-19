@@ -45,6 +45,8 @@
 
 ---
 
+> **注意:** 最新の製品情報（ツールファミリー、API 廃止、バージョン注記）の正本は英語の [README.md](README.md) です。この翻訳は遅れている場合があります。
+
 **eBay MCP** は、AI アシスタント —Claude Desktop、Claude Code、Cursor、Cline、Windsurf、Zed、Continue.dev、Roo Code、Amazon Q— を **eBay の Sell API** に直接接続するローカルの [Model Context Protocol](https://modelcontextprotocol.io) サーバーです。**eBay Sell API の全面（270 の固有エンドポイント）の 100%** をカバーする **322 個のツール** を提供し、在庫管理、注文処理、プロモーション広告のマーケティング、分析、開発者向けツールに対応します。すべては STDIO またはローカル HTTP 経由であなたのマシン上で動作し、**クラウド中継はありません**。eBay の認証情報がコンピューターから外に出ることは決してありません。
 
 > **免責事項：** 非公式のサードパーティ製プロジェクトであり、**eBay Inc. との提携・承認はありません。** 「現状のまま」提供され、いかなる保証もありません。[eBay API ライセンス契約](https://developer.ebay.com/join/api-license-agreement) と [データ取り扱い要件](https://developer.ebay.com/api-docs/static/data-handling-update.html) の遵守、認証情報の安全な保管、レート制限の遵守はご自身の責任です。本番前にサンドボックスでテストしてください。[LICENSE](LICENSE)、[SECURITY.md](SECURITY.md)、[EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md) を参照してください。
@@ -238,6 +240,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 
 | カテゴリ | できること |
 | --- | --- |
+| [Connector](src/tools/categories/connector.ts) | eBay MCP カタログ向け ChatGPT コネクタの search/fetch |
 | [Account](src/tools/categories/account.ts) | ビジネス・配送・支払い・返品ポリシー、プログラム、サブスクリプション、販売税 |
 | [Inventory](src/tools/categories/inventory.ts) | 在庫アイテム、オファー、ロケーション、アイテムグループ、一括操作、SKU/ロケーションのマッピング |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | 注文、配送、返金、係争、支払い係争の証拠 |
@@ -246,6 +249,8 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Communication](src/tools/categories/communication.ts) | 購入者と出品者のメッセージ、交渉、通知、評価 |
 | [Metadata](src/tools/categories/metadata.ts) | 返品ポリシー、販売税の管轄、自動車適合性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | カテゴリツリー、アイテムの特性、アイテムのコンディション |
+| [Browse](src/tools/categories/browse.ts) | 価格比較のための売約済み/完了リスティング検索（Finding API） |
+| [Other](src/tools/categories/other.ts) | Identity、VeRO、翻訳、国際配送サポート API（Compliance ツールは eBay の 2026-03-30 廃止を報告） |
 | [Trading（レガシー XML）](src/tools/categories/trading.ts) | 固定価格出品の作成・修正・再出品・終了 |
 | [Developer](src/tools/categories/developer.ts) | レート制限、署名キー、クライアント登録 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL の生成とトークン管理 |

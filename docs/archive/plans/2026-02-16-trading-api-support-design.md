@@ -1,3 +1,5 @@
+> **ARCHIVED.** Completed trading-API design/implementation notes (2026-02). Live architecture: [ARCHITECTURE.md](../../../ARCHITECTURE.md).
+
 # Trading API Support for ebay-mcp
 
 ## Problem

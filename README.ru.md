@@ -45,6 +45,8 @@
 
 ---
 
+> **Примечание:** английский [README.md](README.md) — источник истины для актуальных продуктовых формулировок (семейства инструментов, вывод API из эксплуатации, заметки о версиях). Этот перевод может отставать.
+
 **eBay MCP** — это локальный сервер [Model Context Protocol](https://modelcontextprotocol.io), который подключает ИИ-ассистентов —Claude Desktop, Claude Code, Cursor, Cline, Windsurf, Zed, Continue.dev, Roo Code и Amazon Q— напрямую к **Sell API eBay**. Он предоставляет **322 инструмента**, охватывающих **100% поверхности Sell API eBay** (270 уникальных эндпоинтов): управление инвентарём, обработка заказов, маркетинг продвигаемых объявлений, аналитика и инструменты разработчика. Всё работает на вашей машине через STDIO или локальный HTTP — **без облачного ретранслятора**, и ваши учётные данные eBay никогда не покидают компьютер.
 
 > **Отказ от ответственности:** Неофициальный сторонний проект — **не связан с eBay Inc. и не одобрен ею.** Предоставляется «как есть», без гарантий. Вы сами отвечаете за соблюдение [Лицензионного соглашения API eBay](https://developer.ebay.com/join/api-license-agreement) и [требований к обработке данных](https://developer.ebay.com/api-docs/static/data-handling-update.html), за сохранность учётных данных и за соблюдение лимитов запросов. Протестируйте в песочнице перед продакшеном. См. [LICENSE](LICENSE), [SECURITY.md](SECURITY.md) и [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md).
@@ -238,6 +240,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 
 | Категория | Что вы можете делать |
 | --- | --- |
+| [Connector](src/tools/categories/connector.ts) | Инструменты search/fetch коннектора ChatGPT по каталогу eBay MCP |
 | [Account](src/tools/categories/account.ts) | Бизнес-, отгрузочные, платёжные и возвратные политики; программы; подписки; налог с продаж |
 | [Inventory](src/tools/categories/inventory.ts) | Товары инвентаря, предложения, локации, группы товаров, массовые операции, сопоставление SKU/локации |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Заказы, доставка, возвраты средств, споры, доказательства по платёжным спорам |
@@ -246,6 +249,8 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | [Communication](src/tools/categories/communication.ts) | Переписка покупатель–продавец, переговоры, уведомления, отзывы |
 | [Metadata](src/tools/categories/metadata.ts) | Политики возврата, юрисдикции налога с продаж, автомобильная совместимость |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Деревья категорий, характеристики товаров, состояния товаров |
+| [Browse](src/tools/categories/browse.ts) | Поиск проданных/завершённых лотов (Finding API) для сравнения цен |
+| [Other](src/tools/categories/other.ts) | Identity, VeRO, перевод и API международной доставки (инструменты Compliance сообщают о выводе eBay из эксплуатации 2026-03-30) |
 | [Trading (устаревший XML)](src/tools/categories/trading.ts) | Создание, изменение, повторное размещение и завершение объявлений с фиксированной ценой |
 | [Developer](src/tools/categories/developer.ts) | Лимиты запросов, ключи подписи, регистрация клиентов |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Генерация URL OAuth и управление токенами |

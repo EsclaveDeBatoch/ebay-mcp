@@ -1,4 +1,4 @@
-import type { OutputArgs, ToolAnnotations, ToolDefinition } from '@/tools/definitions/types.js';
+import type { OutputArgs, ToolAnnotations, ToolDefinition } from '@/tools/types.js';
 import { getToolEntries } from '@/tools/registry.js';
 import { isEffectBackedSchema } from '@/utils/effectSchema.js';
 

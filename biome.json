@@ -109,13 +109,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "src/schemas/**",
-        "src/tools/definitions/**",
-        "src/tools/categories/**",
-        "src/types/**",
-        "src/scripts/**"
-      ],
+      "includes": ["src/schemas/**", "src/tools/categories/**", "src/types/**", "src/scripts/**"],
       "linter": {
         "rules": {
           "style": {

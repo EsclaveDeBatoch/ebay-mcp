@@ -15,7 +15,7 @@ import {
   registerClientInputSchema,
   signingKeySchema,
 } from '@/schemas/developer/developer.js';
-import type { OutputArgs } from '@/tools/definitions/types.js';
+import type { OutputArgs } from '@/tools/types.js';
 import { getApiStatusFeed } from '@/utils/apiStatusFeed.js';
 import type { ToolEntry } from '@/tools/registry.js';
 
