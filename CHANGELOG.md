@@ -7,13 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
+## [1.14.0] - 2026-07-19
 
-- **Packaging** — Ship `build/mcp/**/*.js` in the published tarball. The architecture refactor in v1.8.9 moved runtime/HTTP transport into `src/mcp/`, but the `files` whitelist in `package.json` was not updated, so `npm install -g ebay-mcp@1.8.9` produced `ERR_MODULE_NOT_FOUND: Cannot find module '.../build/mcp/runtime.js'` at startup. ([#120](https://github.com/YosefHayim/ebay-mcp/issues/120))
+### Added
+
+- **Deploy / HTTP** — Container-friendly HTTP defaults (`PORT`, bind `0.0.0.0`, `MCP_AUTH_TOKEN`)
+- **Locale** — `Accept-Language` support and richer eBay error bodies
+- **Read-only mode** — `EBAY_READ_ONLY` filters write tools out of the MCP surface
+- **Finding comps** — Browse/Finding sold-listing helpers for pricing comps
+- **Seller CS helpers** — Fulfillment cancellation/refund scan tools
+- **Auth** — Basic-auth token introspection support
 
 ### Changed
 
-- **API Status Docs** — Refreshed API status snapshot documentation in 5 post-`v1.8.5` pushes (`[skip ci]` docs-only updates)
+- **Tool schemas** — Migrated tool schemas to the Effect-backed adapter
+- **Style** — Align code with the style guide; extract rate-limit tracker
+- **Tooling** — Migrate package management/CI to pnpm; restore reusable CI workflow templates
+- **Docs** — README hero refresh and structure polish
+
+### Fixed
+
+- **Negotiation** — Confirmed removal of `ebay_get_offers_to_buyers`, which called a nonexistent eBay endpoint (`GET /sell/negotiation/v1/offer`). Use `ebay_find_eligible_items` and `ebay_send_offer_to_interested_buyers` instead. ([#136](https://github.com/YosefHayim/ebay-mcp/issues/136))
+- **Compliance** — `ebay_get_listing_violations` / `ebay_get_listing_violations_summary` no longer hit a bare 404 after eBay decommissioned the Sell Compliance API on 2026-03-30; they fail fast with a clear Seller Hub Issue Resolution Center redirect. ([#137](https://github.com/YosefHayim/ebay-mcp/issues/137))
+- **Errors** — Typed API error modules and Effect call-site alignment for auth/trading failures
+- **CI** — Correct `ppnpm` typo in workflows
+
+## [1.13.3] - 2026-07-04
+
+### Changed
+
+- **Style backlog** — `@/` imports, UI in the CI gate, drop dead code
 
 ## [1.8.5] - 2026-03-21
 
