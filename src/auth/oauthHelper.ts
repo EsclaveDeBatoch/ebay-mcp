@@ -6,7 +6,7 @@ import chalk from 'chalk';
 import { createServer, type Server } from 'http';
 import type { EbayConfig } from '@/types/ebay.js';
 import { getOAuthAuthorizationUrl } from '@/config/environment.js';
-import { writeCliLine } from './cliOutput.js';
+import { writeCliLine } from '@/utils/cliOutput.js';
 
 /**
  * Result captured from the local OAuth callback endpoint. Exactly one of `code`

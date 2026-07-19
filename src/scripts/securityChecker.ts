@@ -8,7 +8,7 @@ import { execSync } from 'child_process';
 import chalk from 'chalk';
 import { Effect, Either } from 'effect';
 import process from 'node:process';
-import { writeCliLine } from './cliOutput.js';
+import { writeCliLine } from '@/utils/cliOutput.js';
 
 /**
  * Outcome of a pre-flight security or environment check.

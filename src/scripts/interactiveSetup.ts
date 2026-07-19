@@ -33,20 +33,20 @@ import {
   runSecurityChecks,
   displaySecurityResults,
   hasCriticalFailures,
-} from '@/utils/securityChecker.js';
+} from '@/scripts/securityChecker.js';
 import {
   displayFirstTimeDeveloperGuide,
   getRuNameHelp,
   interactiveOAuthFlow,
   displayManualOAuthInstructions,
-} from '@/utils/oauthHelper.js';
+} from '@/auth/oauthHelper.js';
 import {
   displayScopeCategories,
   getRecommendedScopes,
   displayScopeVerification,
-} from '@/utils/scopeHelper.js';
+} from '@/scripts/scopeHelper.js';
 import { detectLLMClients, configureLLMClient } from '@/utils/llmClientDetector.js';
-import { validateSetup, displayRecommendations } from '@/utils/setupValidator.js';
+import { validateSetup, displayRecommendations } from '@/scripts/setupValidator.js';
 import { loadExistingConfig, readEnvironment } from './setupShared.js';
 import { EbaySellerApi } from '@/api/index.js';
 import { EbayOAuthClient } from '@/auth/oauth.js';

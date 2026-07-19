@@ -10,7 +10,7 @@
 
 import { afterEach, describe, expect, it } from 'vitest';
 import type { Server } from 'http';
-import { startCallbackServer } from '@/utils/oauthHelper.js';
+import { startCallbackServer } from '@/auth/oauthHelper.js';
 
 /** Resolve the actual TCP port a `0`-bound server was assigned. */
 function portOf(server: Server): number {

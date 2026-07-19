@@ -4,7 +4,7 @@
 
 import chalk from 'chalk';
 import { getDefaultScopes } from '@/config/environment.js';
-import { writeCliLine } from './cliOutput.js';
+import { writeCliLine } from '@/utils/cliOutput.js';
 
 /**
  * Group of related OAuth scopes shown in setup guidance.

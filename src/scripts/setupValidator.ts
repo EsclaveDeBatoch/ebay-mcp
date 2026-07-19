@@ -9,11 +9,11 @@ import { join } from 'path';
 import chalk from 'chalk';
 import { EbayOAuthClient } from '@/auth/oauth.js';
 import { getOAuthAuthorizationUrl } from '@/config/environment.js';
-import { parseEnvFile } from './envParser.js';
+import { parseEnvFile } from '@/utils/envParser.js';
 import { getErrorMessage } from '@/utils/errors.js';
 import type { EbayConfig } from '@/types/ebay.js';
 import { Effect, Either } from 'effect';
-import { writeCliLine } from './cliOutput.js';
+import { writeCliLine } from '@/utils/cliOutput.js';
 
 /**
  * Result for one setup validation test.

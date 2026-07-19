@@ -1,7 +1,7 @@
 import { platform } from 'os';
 import { spawn } from 'child_process';
 import prompts from 'prompts';
-import { writeCliLine } from './cliOutput.js';
+import { writeCliLine } from '@/utils/cliOutput.js';
 
 type PromptValue = string | string[] | undefined;
 type MaybePromise<T> = T | Promise<T>;

@@ -12,16 +12,16 @@ src/
 ├── api/              # eBay API area classes + clients — one subfolder per area
 │                     #   (account-management, order-management, marketing-and-promotions, …)
 │                     #   plus client.ts (REST) and clientTrading.ts (Trading XML)
-├── auth/             # OAuth 2.0 flow, token store, JWT verification (jose)
+├── auth/             # OAuth 2.0 flow, token store, JWT verification, setup callback helper
 ├── config/           # environment loading, constants, toolFamilies
 ├── mcp/              # runtime.ts, httpTransport.ts, toolGating.ts, uiBridge.ts
 ├── tools/            # tool wiring: defineTool.ts, registry.ts, contracts.ts, schemas.ts,
 │                     #   types.ts, categories/ (one family file per EBAY_MCP_TOOLS key), ui/
 ├── schemas/          # Effect-backed endpoint input schemas by family
 ├── skills/           # agent-skills generator (`ebay-mcp skills`)
-├── scripts/          # CLI tooling (setup, skills, devSync, diagnostics, buildUi, …)
+├── scripts/          # CLI tooling (setup, skills, diagnostics, wizards/validators, …)
 ├── types/            # generated OpenAPI types — do NOT hand-edit (`pnpm run sync`)
-└── utils/            # logging, http, errors, effectSchema*, version, cliUi
+└── utils/            # platform primitives: logging, http, errors, effectSchema*, version, cliUi
 ```
 
 ## Pipeline — a tool call
@@ -55,9 +55,9 @@ Three parallel naming systems on purpose — do **not** mass-rename to force one
 | `connector` | `connector.ts` | — (catalogue meta) | — |
 | `token-management` | `tokenManagement.ts` | via `auth/` | — |
 | `account` | `account.ts` | `account-management/` | `account-management/` |
-| `inventory` | `inventory.ts` | `listing-management/` | `inventory-management/` |
+| `inventory` | `inventory.ts` | `listing-management/` (items/offers/locations + facade) | `inventory-management/` |
 | `fulfillment` | `fulfillment.ts` | `order-management/` | `fulfillment/` |
-| `marketing` | `marketing.ts` | `marketing-and-promotions/` | `marketing/` |
+| `marketing` | `marketing.ts` | `marketing-and-promotions/` (campaigns/ads/promotions/reports + facade) | `marketing/` (same slices + barrel) |
 | `analytics` | `analytics.ts` | `analytics-and-report/` | `analytics/` |
 | `metadata` | `metadata.ts` | `listing-metadata/` | `metadata/` |
 | `taxonomy` | `taxonomy.ts` | `listing-metadata/` (taxonomy) | `taxonomy/` |
@@ -68,8 +68,8 @@ Three parallel naming systems on purpose — do **not** mass-rename to force one
 | `trading` | `trading.ts` | `trading/` | — (Trading XML shapes in utils/tools) |
 
 Generated OpenAPI types live under `src/types/sell-apps/` (and application-settings) and
-mirror the `docs/sell-apps/` tree (including any upstream folder typos). Hand-written
-code should import those generated paths as-is; do not invent parallel DTOs.
+mirror the `docs/sell-apps/` tree (owned by `downloadSpecs` / `devSync` folder maps).
+Hand-written code should import those generated paths as-is; do not invent parallel DTOs.
 
 ## Schema ownership
 

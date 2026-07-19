@@ -10,7 +10,7 @@ import {
   requireObjectEffect,
   requireStringEffect,
 } from '@/api/shared/request.js';
-import type { components } from '@/types/sell-apps/markeitng-and-promotions/sellRecommendationV1Oas3.js';
+import type { components } from '@/types/sell-apps/marketing-and-promotions/sellRecommendationV1Oas3.js';
 import { Effect } from 'effect';
 
 /** Input accepted by findListingRecommendations. */
