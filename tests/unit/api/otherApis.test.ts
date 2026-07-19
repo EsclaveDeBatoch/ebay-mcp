@@ -243,49 +243,31 @@ describe('Other APIs', () => {
       api = new ComplianceApi(client);
     });
 
-    it('get listing violations', async () => {
-      const mockResponse = { listingViolations: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(
-        api.getListingViolations({ complianceType: 'PRODUCT_ADOPTION', limit: 10 }),
-      );
-
-      expect(client.get).toHaveBeenCalledWith('/sell/compliance/v1/listing_violation', {
-        compliance_type: 'PRODUCT_ADOPTION',
-        limit: 10,
-      });
-    });
-
-    it('get listing violations summary', async () => {
-      const mockResponse = { violationSummaries: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(
-        api.getListingViolationsSummary({ complianceType: 'PRODUCT_ADOPTION' }),
-      );
-
-      expect(client.get).toHaveBeenCalledWith('/sell/compliance/v1/listing_violation_summary', {
-        compliance_type: 'PRODUCT_ADOPTION',
-      });
-    });
-
-    it('get listing violations without optional params', async () => {
-      const mockResponse = { listingViolations: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getListingViolations());
-
-      expect(client.get).toHaveBeenCalledWith('/sell/compliance/v1/listing_violation');
-    });
-
-    it('reject invalid listing violation pagination before requesting eBay', async () => {
+    it('get listing violations fails with decommission message and does not call eBay', async () => {
       const error = await Effect.runPromise(
-        Effect.flip(api.getListingViolations({ offset: -1, limit: 0 })),
+        Effect.flip(api.getListingViolations({ complianceType: 'PRODUCT_ADOPTION', limit: 10 })),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('offset');
+      expect(error._tag).toBe('EbayApiError');
+      expect(error.message).toContain('decommissioned the Sell Compliance API on 2026-03-30');
+      expect(error.message).toContain('Issue Resolution Center');
+      expect(client.get).not.toHaveBeenCalled();
+    });
+
+    it('get listing violations summary fails with decommission message and does not call eBay', async () => {
+      const error = await Effect.runPromise(
+        Effect.flip(api.getListingViolationsSummary({ complianceType: 'PRODUCT_ADOPTION' })),
+      );
+
+      expect(error._tag).toBe('EbayApiError');
+      expect(error.message).toContain('decommissioned the Sell Compliance API on 2026-03-30');
+      expect(client.get).not.toHaveBeenCalled();
+    });
+
+    it('get listing violations without params still fails decommissioned (no network)', async () => {
+      const error = await Effect.runPromise(Effect.flip(api.getListingViolations()));
+
+      expect(error._tag).toBe('EbayApiError');
       expect(client.get).not.toHaveBeenCalled();
     });
   });

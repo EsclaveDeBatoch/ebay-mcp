@@ -95,7 +95,7 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
 | `communication` | Buyer-seller messaging, negotiations, notifications, and feedback | "Show recent buyer messages that need a response." |
 | `metadata` / `taxonomy` | Category trees, aspects, item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Find required item aspects for this category." |
-| `other` | Identity, compliance, VeRO, translation, and international shipping support APIs | "Show my current seller identity details." |
+| `other` | Identity, VeRO, translation, and international shipping support APIs (Compliance tools remain but report eBay's 2026-03-30 decommission) | "Show my current seller identity details." |
 | `developer` / `token-management` | Rate limits, signing keys, OAuth URLs, token refresh, and diagnostics | "Check my eBay API rate limits." |
 | `trading` | Legacy XML fixed-price listing create, revise, relist, and end operations | "Create a fixed-price listing draft from this SKU." |
 | `connector` | ChatGPT connector search/fetch tools over the eBay MCP catalogue | "Search the eBay tool catalogue for order tools." |
@@ -302,7 +302,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 | [Communication](src/tools/categories/communication.ts) | Buyerâ€“seller messaging, negotiations, notifications, feedback |
 | [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Category trees, item aspects, item conditions |
-| [Other](src/tools/categories/other.ts) | Identity, compliance, VeRO, translation, and international shipping support APIs |
+| [Other](src/tools/categories/other.ts) | Identity, VeRO, translation, and international shipping support APIs (Compliance tools report eBay decommission) |
 | [Trading (legacy XML)](src/tools/categories/trading.ts) | Fixed-price listing create, revise, relist, end |
 | [Developer](src/tools/categories/developer.ts) | Rate limits, signing keys, client registration |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |

@@ -1,18 +1,27 @@
 import type { EbayApiClient } from '@/api/client.js';
-import {
-  buildEndpointParams,
-  type EbayApiError,
-  type EndpointInputError,
-  optionalNonNegativeNumberEffect,
-  optionalPositiveNumberEffect,
-  optionalStringEffect,
-  requestGetEffect,
-  requireObjectEffect,
-} from '@/api/shared/request.js';
+import { EbayApiError, type EndpointInputError } from '@/api/shared/request.js';
 import type { SellComplianceComponents } from '@/types/sell-apps/other-apis/sellComplianceV1Oas3.js';
 import { Effect } from 'effect';
 
-/** Input accepted by getListingViolations. */
+/**
+ * eBay decommissioned the Sell Compliance API on 2026-03-30 with no API
+ * replacement. Seller Hub → Performance → Issue Resolution Center is the UI path.
+ *
+ * @see https://developer.ebay.com/develop/guides/api-deprecation-status
+ */
+const COMPLIANCE_API_DECOMMISSIONED_MESSAGE =
+  'eBay decommissioned the Sell Compliance API on 2026-03-30. There is no API equivalent; use Seller Hub → Performance → Issue Resolution Center instead.';
+
+const failDecommissioned = <A>(path: string): Effect.Effect<A, EbayApiError | EndpointInputError> =>
+  Effect.fail(
+    new EbayApiError({
+      method: 'GET',
+      path,
+      cause: new Error(COMPLIANCE_API_DECOMMISSIONED_MESSAGE),
+    }),
+  );
+
+/** Input accepted by getListingViolations (kept for call-site compatibility). */
 export interface GetListingViolationsInput {
   /** Compliance type filter, sent as compliance_type. */
   readonly complianceType?: string;
@@ -24,7 +33,7 @@ export interface GetListingViolationsInput {
   readonly limit?: number;
 }
 
-/** Input accepted by getListingViolationsSummary. */
+/** Input accepted by getListingViolationsSummary (kept for call-site compatibility). */
 export interface GetListingViolationsSummaryInput {
   /** Compliance type filter, sent as compliance_type. */
   readonly complianceType?: string;
@@ -46,96 +55,57 @@ export type ListingViolationsResponse =
 export type ListingViolationsSummaryResponse =
   SellComplianceComponents['schemas']['ComplianceSummary'];
 
-/** Compliance API - listing policy violation checks. */
+/** Clear error copy exported for tests and callers that match on the message. */
+export { COMPLIANCE_API_DECOMMISSIONED_MESSAGE };
+
+/** Compliance API - listing policy violation checks (decommissioned by eBay). */
 export class ComplianceApi {
   private readonly basePath = '/sell/compliance/v1';
 
-  public constructor(private readonly client: EbayApiClient) {}
+  public constructor(_client: EbayApiClient) {
+    // Client is unused: eBay decommissioned this API, so methods never call the network.
+    void _client;
+  }
 
   /**
-   * Retrieves listing violations for supported compliance types.
+   * Always fails: eBay decommissioned the Sell Compliance API on 2026-03-30.
    *
-   * @param input - Optional compliance type, compliance state filter, and pagination params.
-   * @returns An Effect that succeeds with eBay's PagedComplianceViolationCollection response.
+   * @param _input - Ignored; retained so existing call sites type-check.
+   * @returns An Effect that always fails with a clear decommission message.
    *
    * @example
    * ```ts
-   * const violations = await Effect.runPromise(
-   *   complianceApi.getListingViolations({ complianceType: 'PRODUCT_ADOPTION', limit: 10 }),
-   * );
+   * // Rejects with COMPLIANCE_API_DECOMMISSIONED_MESSAGE — no network call.
+   * await Effect.runPromise(complianceApi.getListingViolations({}));
    * ```
    *
    * @see https://developer.ebay.com/api-docs/sell/compliance/resources/listing_violation/methods/getListingViolations
    */
   public getListingViolations = (
-    input: GetListingViolationsInput = {},
+    _input: GetListingViolationsInput = {},
   ): Effect.Effect<ListingViolationsResponse, EbayApiError | EndpointInputError> => {
-    const client = this.client;
-    const basePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<GetListingViolationsInput>(input, 'input');
-      const complianceType = yield* optionalStringEffect(
-        validatedInput.complianceType,
-        'complianceType',
-      );
-      const filter = yield* optionalStringEffect(validatedInput.filter, 'filter');
-      const offset = yield* optionalNonNegativeNumberEffect(validatedInput.offset, 'offset');
-      const limit = yield* optionalPositiveNumberEffect(validatedInput.limit, 'limit');
-      const params = buildEndpointParams({
-        complianceType: { wireName: 'compliance_type', value: complianceType },
-        filter: { wireName: 'filter', value: filter },
-        offset: { wireName: 'offset', value: offset },
-        limit: { wireName: 'limit', value: limit },
-      });
-
-      return yield* requestGetEffect<ListingViolationsResponse>(
-        client,
-        `${basePath}/listing_violation`,
-        params,
-      );
-    });
+    void _input;
+    return failDecommissioned(`${this.basePath}/listing_violation`);
   };
 
   /**
-   * Retrieves listing violation counts grouped by marketplace and compliance type.
+   * Always fails: eBay decommissioned the Sell Compliance API on 2026-03-30.
    *
-   * @param input - Optional compliance type filter.
-   * @returns An Effect that succeeds with eBay's ComplianceSummary response.
+   * @param _input - Ignored; retained so existing call sites type-check.
+   * @returns An Effect that always fails with a clear decommission message.
    *
    * @example
    * ```ts
-   * const summary = await Effect.runPromise(
-   *   complianceApi.getListingViolationsSummary({ complianceType: 'PRODUCT_ADOPTION' }),
-   * );
+   * // Rejects with COMPLIANCE_API_DECOMMISSIONED_MESSAGE — no network call.
+   * await Effect.runPromise(complianceApi.getListingViolationsSummary({}));
    * ```
    *
    * @see https://developer.ebay.com/api-docs/sell/compliance/resources/listing_violation_summary/methods/getListingViolationsSummary
    */
   public getListingViolationsSummary = (
-    input: GetListingViolationsSummaryInput = {},
+    _input: GetListingViolationsSummaryInput = {},
   ): Effect.Effect<ListingViolationsSummaryResponse, EbayApiError | EndpointInputError> => {
-    const client = this.client;
-    const basePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<GetListingViolationsSummaryInput>(
-        input,
-        'input',
-      );
-      const complianceType = yield* optionalStringEffect(
-        validatedInput.complianceType,
-        'complianceType',
-      );
-      const params = buildEndpointParams({
-        complianceType: { wireName: 'compliance_type', value: complianceType },
-      });
-
-      return yield* requestGetEffect<ListingViolationsSummaryResponse>(
-        client,
-        `${basePath}/listing_violation_summary`,
-        params,
-      );
-    });
+    void _input;
+    return failDecommissioned(`${this.basePath}/listing_violation_summary`);
   };
 }
