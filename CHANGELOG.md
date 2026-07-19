@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.1] - 2026-07-19
+
+Patch release for structure cleanup since **1.14.0**. No intentional MCP tool renames or public API behavior changes.
+
+### Changed
+
+- **Marketing** — Split Marketing API and schemas into campaigns / ads / promotions / reports (+ stable facades). ([#138](https://github.com/YosefHayim/ebay-mcp/issues/138))
+- **Inventory** — Split Inventory API into items / offers / locations (+ stable facade). ([#138](https://github.com/YosefHayim/ebay-mcp/issues/138))
+- **Setup / auth** — Re-homed setup wizard, validator, security, and scope helpers into `scripts/`; OAuth callback helper into `auth/`. ([#139](https://github.com/YosefHayim/ebay-mcp/issues/139))
+- **OpenAPI paths** — Renamed generated folder `markeitng-and-promotions` → `marketing-and-promotions`. ([#140](https://github.com/YosefHayim/ebay-mcp/issues/140))
+- **Tools / docs** — Collocated tool types under `src/tools/types.ts`; truth-up ARCHITECTURE, AGENTS, and locale READMEs
+
 ## [1.14.0] - 2026-07-19
 
 ### Added
