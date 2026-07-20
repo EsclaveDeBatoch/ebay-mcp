@@ -4,6 +4,7 @@ import {
   getBaseUrl,
   getIdentityBaseUrl,
   getProxyAuthConfig,
+  getTradingSiteId,
   validateEnvironmentConfig,
 } from '@/config/environment.js';
 import process from 'node:process';
@@ -336,6 +337,43 @@ describe('Environment Configuration', () => {
       const proxy = getProxyAuthConfig();
 
       expect(proxy.warnings.some((w) => w.includes('transmitted unencrypted'))).toBe(false);
+    });
+  });
+
+  describe('getTradingSiteId', () => {
+    it('maps the configured marketplace to its Trading API site ID', () => {
+      process.env.EBAY_MARKETPLACE_ID = 'EBAY_DE';
+      delete process.env.EBAY_SITE_ID;
+
+      expect(getTradingSiteId()).toBe('77');
+    });
+
+    it('defaults to the US site when no marketplace is configured', () => {
+      delete process.env.EBAY_MARKETPLACE_ID;
+      delete process.env.EBAY_SITE_ID;
+
+      expect(getTradingSiteId()).toBe('0');
+    });
+
+    it('falls back to the US site for an unknown marketplace', () => {
+      process.env.EBAY_MARKETPLACE_ID = 'EBAY_ATLANTIS';
+      delete process.env.EBAY_SITE_ID;
+
+      expect(getTradingSiteId()).toBe('0');
+    });
+
+    it('lets EBAY_SITE_ID override the marketplace mapping', () => {
+      process.env.EBAY_MARKETPLACE_ID = 'EBAY_DE';
+      process.env.EBAY_SITE_ID = '3';
+
+      expect(getTradingSiteId()).toBe('3');
+    });
+
+    it('ignores a blank EBAY_SITE_ID override', () => {
+      process.env.EBAY_MARKETPLACE_ID = 'EBAY_DE';
+      process.env.EBAY_SITE_ID = '   ';
+
+      expect(getTradingSiteId()).toBe('77');
     });
   });
 });

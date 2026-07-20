@@ -3,7 +3,7 @@ import { XMLParser } from 'fast-xml-parser';
 import type { EbayApiClient } from '@/api/client.js';
 import { TradingApiFailure } from '@/api/clientTradingError.js';
 import { EbayApiError } from '@/api/shared/request.js';
-import { getBaseUrl } from '@/config/environment.js';
+import { getBaseUrl, getTradingSiteId } from '@/config/environment.js';
 import { getErrorMessage } from '@/utils/errors.js';
 import { httpRequestEffect } from '@/utils/http.js';
 import { apiLogger } from '@/utils/logger.js';
@@ -11,7 +11,6 @@ import { isRecord } from '@/utils/typeGuards.js';
 import { Effect } from 'effect';
 
 const COMPAT_LEVEL = '1451';
-const SITE_ID = '0';
 const TRADING_ENDPOINT_PATH = '/ws/api.dll';
 const TRADING_XMLNS = 'urn:ebay:apis:eBLBaseComponents';
 
@@ -50,7 +49,7 @@ interface TradingParseContext extends TradingFailureContext {
 const buildTradingPath = (baseUrl: string): string => `${baseUrl}${TRADING_ENDPOINT_PATH}`;
 
 const buildTradingHeaders = (callName: string): Record<string, string> => ({
-  'X-EBAY-API-SITEID': SITE_ID,
+  'X-EBAY-API-SITEID': getTradingSiteId(),
   'X-EBAY-API-COMPATIBILITY-LEVEL': COMPAT_LEVEL,
   'X-EBAY-API-CALL-NAME': callName,
   'Content-Type': 'text/xml',

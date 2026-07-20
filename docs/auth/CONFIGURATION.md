@@ -77,7 +77,15 @@ These credentials are obtained from the [eBay Developer Portal](https://develope
 - **Example:** `EBAY_US`, `EBAY_DE`, `EBAY_FR`
 - **Required:** No (optional default)
 - **Default:** `EBAY_US`
-- **Behavior:** Sent on all requests; defaults to `EBAY_US` if unset. Many tools accept a `marketplaceId` parameter that overrides this default.
+- **Behavior:** Sent on all requests; defaults to `EBAY_US` if unset. Many tools accept a `marketplaceId` parameter that overrides this default. REST calls send it as `X-EBAY-C-MARKETPLACE-ID`; Trading API calls (listing create/revise, order tools) send the matching numeric site as `X-EBAY-API-SITEID` — see `EBAY_SITE_ID`.
+
+#### `EBAY_SITE_ID`
+
+- **Description:** Trading API site ID override (`X-EBAY-API-SITEID`)
+- **Example:** `0` (US), `77` (Germany), `3` (UK)
+- **Required:** No
+- **Default:** derived from `EBAY_MARKETPLACE_ID` (e.g. `EBAY_DE` → `77`), falling back to `0`
+- **Behavior:** Only needed for sites the marketplace mapping does not cover, or when REST and Trading must target different sites. The site determines which currency a listing may use, so a mismatch fails with `Invalid auction currency`.
 
 #### `EBAY_CONTENT_LANGUAGE`
 
