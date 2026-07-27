@@ -436,28 +436,28 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getitemsawaitingfeedback: ['ebay_get_awaiting_feedback'],
   leavefeedback: ['ebay_leave_feedback_for_buyer'],
 
-  // Notification API
+  // Notification API — tools use the ebay_*_notification_* naming convention
   getconfig: ['ebay_get_notification_config'],
   updateconfig: ['ebay_update_notification_config'],
-  getdestinations: ['ebay_get_destinations'],
-  createdestination: ['ebay_create_destination'],
-  getdestination: ['ebay_get_destination'],
-  updatedestination: ['ebay_update_destination'],
-  deletedestination: ['ebay_delete_destination'],
-  getsubscriptions: ['ebay_get_subscriptions'],
-  createsubscription: ['ebay_create_subscription'],
-  getsubscription: ['ebay_get_subscription'],
-  updatesubscription: ['ebay_update_subscription'],
-  deletesubscription: ['ebay_delete_subscription'],
-  disablesubscription: ['ebay_disable_subscription'],
-  enablesubscription: ['ebay_enable_subscription'],
-  testsubscription: ['ebay_test_subscription'],
-  createsubscriptionfilter: ['ebay_create_subscription_filter'],
-  getsubscriptionfilter: ['ebay_get_subscription_filter'],
-  deletesubscriptionfilter: ['ebay_delete_subscription_filter'],
-  gettopic: ['ebay_get_topic'],
-  gettopics: ['ebay_get_topics'],
-  getpublickey: ['ebay_get_public_key'],
+  getdestinations: ['ebay_get_notification_destinations'],
+  createdestination: ['ebay_create_notification_destination'],
+  getdestination: ['ebay_get_notification_destination'],
+  updatedestination: ['ebay_update_notification_destination'],
+  deletedestination: ['ebay_delete_notification_destination'],
+  getsubscriptions: ['ebay_get_notification_subscriptions'],
+  createsubscription: ['ebay_create_notification_subscription'],
+  getsubscription: ['ebay_get_notification_subscription'],
+  updatesubscription: ['ebay_update_notification_subscription'],
+  deletesubscription: ['ebay_delete_notification_subscription'],
+  disablesubscription: ['ebay_disable_notification_subscription'],
+  enablesubscription: ['ebay_enable_notification_subscription'],
+  testsubscription: ['ebay_test_notification_subscription'],
+  createsubscriptionfilter: ['ebay_create_notification_subscription_filter'],
+  getsubscriptionfilter: ['ebay_get_notification_subscription_filter'],
+  deletesubscriptionfilter: ['ebay_delete_notification_subscription_filter'],
+  gettopic: ['ebay_get_notification_topic'],
+  gettopics: ['ebay_get_notification_topics'],
+  getpublickey: ['ebay_get_notification_public_key'],
 
   // Negotiation API
   findeligibleitems: ['ebay_find_eligible_items'],
@@ -514,12 +514,16 @@ function getImplementedApiMethods(): Set<string> {
         );
 
         if (Either.isRight(source)) {
-          // Match low-level async client methods and public arrow endpoint methods.
+          // Match async methods and class-field arrow endpoints (`name = (` / `public name = (`).
+          // Many area classes omit the `public` keyword (notification, trading, feedback, …).
           const methodMatches = source.right.matchAll(
-            /(?:async\s+(\w+)\s*\(|public\s+(\w+)\s*=\s*\()/g,
+            /(?:async\s+(\w+)\s*\(|(?:public\s+)?(\w+)\s*=\s*(?:async\s*)?\()/g,
           );
           for (const match of methodMatches) {
-            methods.add(normalizeForMatching(match[1] ?? match[2]));
+            const name = match[1] ?? match[2];
+            // Skip common non-method bindings that the broader regex can catch.
+            if (!name || name === 'const' || name === 'let' || name === 'var') continue;
+            methods.add(normalizeForMatching(name));
           }
         }
       }
