@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.2] - 2026-07-28
+
+### Fixed
+
+- **Trading API site ID** — Derive `X-EBAY-API-SITEID` from `EBAY_MARKETPLACE_ID` instead of hardcoding US site `0`, so non-US listing create/revise no longer fails with “Invalid auction currency.” Optional `EBAY_SITE_ID` override. ([#141](https://github.com/YosefHayim/ebay-mcp/pull/141))
+- **API Sync report** — Correct Notification tool name mappings and detect bare class-field API methods so weekly coverage no longer falsely flags already-implemented Commerce Notification endpoints. ([#142](https://github.com/YosefHayim/ebay-mcp/issues/142))
+
 ## [1.14.1] - 2026-07-19
 
 Patch release for structure cleanup since **1.14.0**. No intentional MCP tool renames or public API behavior changes.
