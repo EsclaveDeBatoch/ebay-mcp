@@ -312,6 +312,65 @@ export const getEbayConfig = (): EbayConfig => {
 };
 
 /**
+ * Trading API site IDs for each REST marketplace ID.
+ *
+ * The Trading API predates the REST marketplace IDs and identifies a site with
+ * a numeric `X-EBAY-API-SITEID` header instead. The mapping is fixed by eBay.
+ *
+ * @see https://developer.ebay.com/devzone/merchandising/docs/CallRef/Enums/GlobalIdList.html
+ */
+const TRADING_SITE_IDS: Readonly<Record<string, string>> = {
+  EBAY_AT: '16',
+  EBAY_AU: '15',
+  EBAY_BE: '23',
+  EBAY_CA: '2',
+  EBAY_CH: '193',
+  EBAY_DE: '77',
+  EBAY_ES: '186',
+  EBAY_FR: '71',
+  EBAY_GB: '3',
+  EBAY_HK: '201',
+  EBAY_IE: '205',
+  EBAY_IN: '203',
+  EBAY_IT: '101',
+  EBAY_MY: '207',
+  EBAY_NL: '146',
+  EBAY_PH: '211',
+  EBAY_PL: '212',
+  EBAY_SG: '216',
+  EBAY_US: '0',
+};
+
+const DEFAULT_TRADING_SITE_ID = '0';
+
+/**
+ * Get the Trading API site ID for the configured marketplace.
+ *
+ * Derived from `EBAY_MARKETPLACE_ID` so a single setting drives both REST and
+ * Trading traffic. `EBAY_SITE_ID` overrides it for sites this map does not
+ * cover, or when REST and Trading must target different sites.
+ *
+ * Listing on a non-US site with the wrong site ID fails at eBay: the currency
+ * belongs to the marketplace, so an EUR listing sent to site 0 is rejected
+ * with "Invalid auction currency".
+ *
+ * @returns Numeric Trading API site ID sent as `X-EBAY-API-SITEID`.
+ * @example
+ * ```ts
+ * // EBAY_MARKETPLACE_ID=EBAY_DE
+ * const siteId = getTradingSiteId(); // '77'
+ * ```
+ */
+export const getTradingSiteId = (): string => {
+  const override = (process.env.EBAY_SITE_ID ?? '').trim();
+  if (override !== '') {
+    return override;
+  }
+  const marketplaceId = (process.env.EBAY_MARKETPLACE_ID ?? '').trim() || 'EBAY_US';
+  return TRADING_SITE_IDS[marketplaceId] ?? DEFAULT_TRADING_SITE_ID;
+};
+
+/**
  * Get the eBay REST API base URL for the configured environment.
  *
  * @param environment eBay environment used when no override is configured.

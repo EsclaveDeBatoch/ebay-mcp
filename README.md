@@ -234,6 +234,7 @@ EBAY_CLIENT_SECRET=your_client_secret
 EBAY_ENVIRONMENT=sandbox            # or "production"
 EBAY_REDIRECT_URI=your_runame
 EBAY_MARKETPLACE_ID=EBAY_US         # default marketplace (overridable per tool)
+# EBAY_SITE_ID=0                    # Trading API site override; defaults from EBAY_MARKETPLACE_ID
 EBAY_CONTENT_LANGUAGE=en-US         # default request content language
 EBAY_USER_REFRESH_TOKEN=your_token  # for higher rate limits
 EBAY_MCP_UI=on                      # interactive MCP Apps views (beta); "off" forces plain JSON
