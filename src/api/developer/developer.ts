@@ -50,7 +50,7 @@ type GetSigningKeyInput = InferEffectSchema<typeof getSigningKeyInputSchema>;
  */
 export class DeveloperApi {
   private readonly analyticsBasePath = '/developer/analytics/v1_beta';
-  private readonly clientBasePath = '/developer/client_registration/v1';
+  private readonly clientBasePath = '/developer/registration/v1';
   private readonly keyBasePath = '/developer/key_management/v1';
 
   public constructor(private readonly client: EbayApiClient) {}
