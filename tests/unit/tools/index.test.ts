@@ -293,8 +293,6 @@ describe('Tools Layer', () => {
       getTokenInfo: vi.fn().mockReturnValue({
         hasUserToken: false,
         hasAppAccessToken: true,
-        accessTokenExpired: false,
-        refreshTokenExpired: false,
       }),
       hasUserTokens: vi.fn().mockReturnValue(false),
       isAuthenticated: vi.fn().mockReturnValue(true),
@@ -367,7 +365,7 @@ describe('Tools Layer', () => {
         product: {
           title: 'Test Product',
           description: 'Test Description',
-          aspects: { Brand: ['TestBrand'] },
+          aspects: '{"Brand":["TestBrand"]}',
         },
         condition: 'NEW',
       };
@@ -413,8 +411,6 @@ describe('Tools Layer', () => {
       vi.mocked(mockApi.getTokenInfo).mockReturnValue({
         hasUserToken: true,
         hasAppAccessToken: false,
-        accessTokenExpired: false,
-        refreshTokenExpired: false,
       });
 
       const result = await executeTool(mockApi, 'ebay_set_user_tokens', {
@@ -466,7 +462,10 @@ describe('Tools Layer', () => {
       const mockAuthClient = mockApi.getAuthClient().getOAuthClient();
       vi.mocked(mockAuthClient.getUserTokens).mockReturnValue({
         userAccessToken: 'test-access-token-abc123',
-        refreshToken: 'test-refresh-token-def456',
+        userRefreshToken: 'test-refresh-token-def456',
+        tokenType: 'User Access Token',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
         userAccessTokenExpiry: Date.now() + 3_600_000, // 1 hour from now
         userRefreshTokenExpiry: Date.now() + 18 * 30 * 24 * 60 * 60 * 1000, // 18 months
         scope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
@@ -479,8 +478,6 @@ describe('Tools Layer', () => {
       vi.mocked(mockApi.getTokenInfo).mockReturnValue({
         hasUserToken: true,
         hasAppAccessToken: true,
-        accessTokenExpired: false,
-        refreshTokenExpired: false,
       });
 
       const result = await executeTool(mockApi, 'ebay_display_credentials', {});
@@ -528,8 +525,6 @@ describe('Tools Layer', () => {
       vi.mocked(mockApi.getTokenInfo).mockReturnValue({
         hasUserToken: false,
         hasAppAccessToken: false,
-        accessTokenExpired: true,
-        refreshTokenExpired: true,
       });
 
       const result = await executeTool(mockApi, 'ebay_display_credentials', {});
@@ -554,7 +549,10 @@ describe('Tools Layer', () => {
       // Set up post-refresh token state
       vi.mocked(mockAuthClient.getUserTokens).mockReturnValue({
         userAccessToken: 'new-access-token-123456',
-        refreshToken: 'test-refresh-token-def456',
+        userRefreshToken: 'test-refresh-token-def456',
+        tokenType: 'User Access Token',
+        clientId: 'test-client-id',
+        clientSecret: 'test-client-secret',
         userAccessTokenExpiry: Date.now() + 7_200_000, // 2 hours
         userRefreshTokenExpiry: Date.now() + 18 * 30 * 24 * 60 * 60 * 1000,
       });
@@ -562,8 +560,6 @@ describe('Tools Layer', () => {
       vi.mocked(mockApi.getTokenInfo).mockReturnValue({
         hasUserToken: true,
         hasAppAccessToken: false,
-        accessTokenExpired: false,
-        refreshTokenExpired: false,
       });
 
       const result = await executeTool(mockApi, 'ebay_refresh_access_token', {});
@@ -708,7 +704,7 @@ describe('Tools Layer', () => {
 
   describe('executeTool - Account Management', () => {
     it('get custom policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { customPolicies: [] };
       vi.mocked(mockApi.account.getCustomPolicies).mockReturnValue(Effect.succeed(mockResponse));
 
       const result = await executeTool(mockApi, 'ebay_get_custom_policies', {
@@ -738,7 +734,7 @@ describe('Tools Layer', () => {
 
     it('create fulfillment policy', async () => {
       const mockPolicy = { name: 'Test Policy', marketplaceId: 'EBAY_US' };
-      const mockResponse = { policyId: 'POL123' };
+      const mockResponse = { fulfillmentPolicyId: 'POL123' };
       const input = {
         policy: mockPolicy,
       };
@@ -797,9 +793,7 @@ describe('Tools Layer', () => {
         sku: 'TEST-SKU',
         body: { product: { title: 'Test' } },
       };
-      vi.mocked(mockApi.inventory.createOrReplaceInventoryItem).mockReturnValue(
-        Effect.succeed(undefined),
-      );
+      vi.mocked(mockApi.inventory.createOrReplaceInventoryItem).mockReturnValue(Effect.succeed({}));
 
       await executeTool(mockApi, 'ebay_create_or_replace_inventory_item', input);
 
@@ -931,7 +925,7 @@ describe('Tools Layer', () => {
 
   describe('executeTool - Analytics', () => {
     it('get traffic report', async () => {
-      const mockResponse = { reports: [] };
+      const mockResponse = { records: [] };
       vi.mocked(mockApi.analytics.getTrafficReport).mockReturnValue(Effect.succeed(mockResponse));
 
       const result = await executeTool(mockApi, 'ebay_get_traffic_report', {
@@ -951,7 +945,7 @@ describe('Tools Layer', () => {
     });
 
     it('get seller standards profile', async () => {
-      const mockResponse = { profile: {} };
+      const mockResponse = { program: 'CUSTOMER_SERVICE', standardsLevel: 'TOP_RATED' };
       vi.mocked(mockApi.analytics.getSellerStandardsProfile).mockReturnValue(
         Effect.succeed(mockResponse),
       );

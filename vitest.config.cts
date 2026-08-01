@@ -28,9 +28,6 @@ const vitestConfig = defineConfig({
         // Exclude server entry points (tested via integration)
         'src/index.ts',
         'src/serverHttp.ts',
-        // Exclude simple template generators
-        'src/tools/token-template.ts',
-        'src/tools/tool-definitions.ts',
         // Exclude script files
         'src/scripts/**',
       ],

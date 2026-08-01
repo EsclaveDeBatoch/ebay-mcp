@@ -456,7 +456,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_kyc', async () => {
-      const mockResponse = { status: 'APPROVED' };
+      const mockResponse = { kycChecks: [] };
       vi.mocked(mockApi.account.getKyc).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_kyc', {});
       expect(mockApi.account.getKyc).toHaveBeenCalledWith({});
@@ -474,7 +474,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_payments_program_onboarding', async () => {
-      const mockResponse = { status: 'OPTED_IN' };
+      const mockResponse = { onboardingStatus: 'OPTED_IN' };
       const input = {
         marketplaceId: 'EBAY_US',
         paymentsProgramType: 'STANDARD',
@@ -547,7 +547,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_subscription', async () => {
-      const mockResponse = { subscriptionLevel: 'BASIC' };
+      const mockResponse = { subscriptions: [{ subscriptionLevel: 'BASIC' }] };
       const input = { limit: '10', continuationToken: 'next-page' };
       vi.mocked(mockApi.account.getSubscription).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_subscription', input);
@@ -585,7 +585,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_advertising_eligibility', async () => {
-      const mockResponse = { sellerEligibility: [] };
+      const mockResponse = { advertisingEligibility: [] };
       const input = { marketplaceId: 'EBAY_US', programTypes: 'PLA' };
       vi.mocked(mockApi.account.getAdvertisingEligibility).mockReturnValue(
         Effect.succeed(mockResponse),
@@ -614,9 +614,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_create_or_replace_inventory_item', async () => {
-      vi.mocked(mockApi.inventory.createOrReplaceInventoryItem).mockReturnValue(
-        Effect.succeed(undefined),
-      );
+      vi.mocked(mockApi.inventory.createOrReplaceInventoryItem).mockReturnValue(Effect.succeed({}));
       const body = { product: { title: 'Test' }, condition: 'NEW' };
       const input = {
         sku: 'SKU123',
@@ -675,7 +673,7 @@ describe('Comprehensive Tools Coverage', () => {
 
     it('ebay_create_or_replace_product_compatibility', async () => {
       vi.mocked(mockApi.inventory.createOrReplaceProductCompatibility).mockReturnValue(
-        Effect.succeed(undefined),
+        Effect.succeed({}),
       );
       const input = {
         sku: 'SKU123',
@@ -708,7 +706,7 @@ describe('Comprehensive Tools Coverage', () => {
 
     it('ebay_create_or_replace_inventory_item_group', async () => {
       vi.mocked(mockApi.inventory.createOrReplaceInventoryItemGroup).mockReturnValue(
-        Effect.succeed(undefined),
+        Effect.succeed({}),
       );
       const input = {
         inventoryItemGroupKey: 'GROUP123',
@@ -782,9 +780,7 @@ describe('Comprehensive Tools Coverage', () => {
       const input = {
         merchantLocationKey: 'LOC123',
       };
-      vi.mocked(mockApi.inventory.disableInventoryLocation).mockReturnValue(
-        Effect.succeed(undefined),
-      );
+      vi.mocked(mockApi.inventory.disableInventoryLocation).mockReturnValue(Effect.succeed({}));
       await executeTool(mockApi, 'ebay_disable_inventory_location', input);
       expect(mockApi.inventory.disableInventoryLocation).toHaveBeenCalledWith(input);
     });
@@ -793,9 +789,7 @@ describe('Comprehensive Tools Coverage', () => {
       const input = {
         merchantLocationKey: 'LOC123',
       };
-      vi.mocked(mockApi.inventory.enableInventoryLocation).mockReturnValue(
-        Effect.succeed(undefined),
-      );
+      vi.mocked(mockApi.inventory.enableInventoryLocation).mockReturnValue(Effect.succeed({}));
       await executeTool(mockApi, 'ebay_enable_inventory_location', input);
       expect(mockApi.inventory.enableInventoryLocation).toHaveBeenCalledWith(input);
     });
@@ -865,7 +859,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_withdraw_offer', async () => {
-      const mockResponse = { offerId: 'OFFER123' };
+      const mockResponse = { listingId: 'LISTING123' };
       const input = { offerId: 'OFFER123' };
       vi.mocked(mockApi.inventory.withdrawOffer).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_withdraw_offer', input);
@@ -1075,9 +1069,8 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_clone_campaign', async () => {
-      const mockResponse = { campaignId: 'CAMP124' };
       const request = { campaignName: 'Cloned' };
-      vi.mocked(mockApi.marketing.cloneCampaign).mockReturnValue(Effect.succeed(mockResponse));
+      vi.mocked(mockApi.marketing.cloneCampaign).mockReturnValue(Effect.succeed({}));
       const input = {
         campaignId: 'CAMP123',
         request,
@@ -1128,7 +1121,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_conversation', async () => {
-      const mockResponse = { messageId: 'MSG123' };
+      const mockResponse = { messages: [{ messageId: 'MSG123' }] };
       vi.mocked(mockApi.message.getConversation).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_conversation', {
         conversationId: 'CONV123',
@@ -1184,7 +1177,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_find_seller_standards_profiles', async () => {
-      const mockResponse = { standards: [] };
+      const mockResponse = { standardsProfiles: [] };
       vi.mocked(mockApi.analytics.findSellerStandardsProfiles).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1193,7 +1186,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_seller_standards_profile', async () => {
-      const mockResponse = { status: 'GOOD' };
+      const mockResponse = { standardsLevel: 'GOOD' };
       vi.mocked(mockApi.analytics.getSellerStandardsProfile).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1208,7 +1201,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_customer_service_metric', async () => {
-      const mockResponse = { metrics: [] };
+      const mockResponse = { dimensionMetrics: [] };
       vi.mocked(mockApi.analytics.getCustomerServiceMetric).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1227,7 +1220,7 @@ describe('Comprehensive Tools Coverage', () => {
 
   describe('Metadata Tools', () => {
     it('ebay_get_automotive_parts_compatibility_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { automotivePartsCompatibilityPolicies: [] };
       vi.mocked(mockApi.metadata.getAutomotivePartsCompatibilityPolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1240,7 +1233,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_category_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { categoryPolicies: [] };
       vi.mocked(mockApi.metadata.getCategoryPolicies).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_category_policies', {
         marketplaceId: 'EBAY_US',
@@ -1251,7 +1244,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_extended_producer_responsibility_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { extendedProducerResponsibilities: [] };
       vi.mocked(mockApi.metadata.getExtendedProducerResponsibilityPolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1264,7 +1257,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_hazardous_materials_labels', async () => {
-      const mockResponse = { labels: [] };
+      const mockResponse = { signalWords: [], statements: [], pictograms: [] };
       vi.mocked(mockApi.metadata.getHazardousMaterialsLabels).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1277,7 +1270,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_item_condition_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { itemConditionPolicies: [] };
       vi.mocked(mockApi.metadata.getItemConditionPolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1290,7 +1283,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_listing_structure_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { listingStructurePolicies: [] };
       vi.mocked(mockApi.metadata.getListingStructurePolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1303,7 +1296,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_negotiated_price_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { negotiatedPricePolicies: [] };
       vi.mocked(mockApi.metadata.getNegotiatedPricePolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1316,7 +1309,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_product_safety_labels', async () => {
-      const mockResponse = { labels: [] };
+      const mockResponse = { pictograms: [], statements: [] };
       vi.mocked(mockApi.metadata.getProductSafetyLabels).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1329,7 +1322,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_regulatory_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { regulatoryPolicies: [] };
       vi.mocked(mockApi.metadata.getRegulatoryPolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1342,7 +1335,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_classified_ad_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { classifiedAdPolicies: [] };
       vi.mocked(mockApi.metadata.getClassifiedAdPolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1355,7 +1348,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_currencies', async () => {
-      const mockResponse = { currencies: [] };
+      const mockResponse = { marketplaceId: 'EBAY_US', defaultCurrency: { code: 'USD' } };
       vi.mocked(mockApi.metadata.getCurrencies).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_currencies', {
         marketplaceId: 'EBAY_US',
@@ -1364,7 +1357,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_listing_type_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { listingTypePolicies: [] };
       vi.mocked(mockApi.metadata.getListingTypePolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1377,7 +1370,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_motors_listing_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { motorsListingPolicies: [] };
       vi.mocked(mockApi.metadata.getMotorsListingPolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1390,7 +1383,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_shipping_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { shippingPolicies: [] };
       vi.mocked(mockApi.metadata.getShippingPolicies).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_shipping_policies', {
         marketplaceId: 'EBAY_US',
@@ -1401,7 +1394,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_site_visibility_policies', async () => {
-      const mockResponse = { policies: [] };
+      const mockResponse = { siteVisibilityPolicies: [] };
       vi.mocked(mockApi.metadata.getSiteVisibilityPolicies).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1414,7 +1407,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_compatibilities_by_specification', async () => {
-      const mockResponse = { compatibilities: [] };
+      const mockResponse = { compatibilityDetails: [] };
       const specification = { categoryId: '123' };
       vi.mocked(mockApi.metadata.getCompatibilitiesBySpecification).mockReturnValue(
         Effect.succeed(mockResponse),
@@ -1430,7 +1423,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_compatibility_property_names', async () => {
-      const mockResponse = { names: [] };
+      const mockResponse = { properties: [] };
       const data = { categoryId: '6016' };
       vi.mocked(mockApi.metadata.getCompatibilityPropertyNames).mockReturnValue(
         Effect.succeed(mockResponse),
@@ -1446,7 +1439,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_compatibility_property_values', async () => {
-      const mockResponse = { values: [] };
+      const mockResponse = { propertyValues: [] };
       const data = { categoryId: '6016', propertyName: 'Make' };
       vi.mocked(mockApi.metadata.getCompatibilityPropertyValues).mockReturnValue(
         Effect.succeed(mockResponse),
@@ -1462,7 +1455,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_multi_compatibility_property_values', async () => {
-      const mockResponse = { values: [] };
+      const mockResponse = { compatibilities: [] };
       const data = { categoryId: '6016', propertyNames: ['Make', 'Model'] };
       vi.mocked(mockApi.metadata.getMultiCompatibilityPropertyValues).mockReturnValue(
         Effect.succeed(mockResponse),
@@ -1478,7 +1471,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_product_compatibilities', async () => {
-      const mockResponse = { compatibilities: [] };
+      const mockResponse = { compatibilityDetails: [] };
       const data = { productIdentifier: { epid: '12345' } };
       vi.mocked(mockApi.metadata.getProductCompatibilities).mockReturnValue(
         Effect.succeed(mockResponse),
@@ -1494,7 +1487,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_sales_tax_jurisdictions', async () => {
-      const mockResponse = { jurisdictions: [] };
+      const mockResponse = { salesTaxJurisdictions: [] };
       vi.mocked(mockApi.metadata.getSalesTaxJurisdictions).mockReturnValue(
         Effect.succeed(mockResponse),
       );
@@ -1613,14 +1606,16 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_vero_report_items', async () => {
-      const mockResponse = { items: [] };
+      const mockResponse = { reportedItemDetails: [] };
       vi.mocked(mockApi.vero.getVeroReportItems).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_vero_report_items', { filter: 'test' });
       expect(mockApi.vero.getVeroReportItems).toHaveBeenCalledWith({ filter: 'test' });
     });
 
     it('ebay_get_vero_reason_code', async () => {
-      const mockResponse = { veroReasonCodeId: 'CODE123', name: 'Trademark' };
+      const mockResponse = {
+        reasonCodeDetails: { veroReasonCodeId: 'CODE123', briefText: 'Trademark' },
+      };
       vi.mocked(mockApi.vero.getVeroReasonCode).mockReturnValue(Effect.succeed(mockResponse));
       const input = { veroReasonCodeId: 'CODE123' };
       await executeTool(mockApi, 'ebay_get_vero_reason_code', input);
@@ -1670,7 +1665,7 @@ describe('Comprehensive Tools Coverage', () => {
 
   describe('Notification Tools', () => {
     it('ebay_get_notification_config', async () => {
-      const mockResponse = { config: {} };
+      const mockResponse = { alertEmail: 'test@example.com' };
       vi.mocked(mockApi.notification.getConfig).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_notification_config', {});
       expect(mockApi.notification.getConfig).toHaveBeenCalledWith({});
@@ -1703,7 +1698,7 @@ describe('Comprehensive Tools Coverage', () => {
 
   describe('Feedback Tools', () => {
     it('ebay_get_feedback', async () => {
-      const mockResponse = { feedbackId: 'FEEDBACK123' };
+      const mockResponse = { feedbackEntries: [{ feedbackId: 'FEEDBACK123' }] };
       vi.mocked(mockApi.feedback.getFeedback).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_feedback', {
         userId: 'USER123',
@@ -1732,7 +1727,7 @@ describe('Comprehensive Tools Coverage', () => {
     });
 
     it('ebay_get_feedback_rating_summary', async () => {
-      const mockResponse = { feedbackScore: 100 };
+      const mockResponse = { feedbackRatingSummary: [] };
       vi.mocked(mockApi.feedback.getFeedbackRatingSummary).mockReturnValue(
         Effect.succeed(mockResponse),
       );

@@ -222,10 +222,6 @@ Taskfile.yml
 # hide (those rules target local agent scratch files, not project config/docs).
 !/.github/
 !/.github/**
-# Releases are changeset-driven, so an ignored .changeset/ silently drops release
-# notes: the file is written, committed without complaint, and never lands.
-!/.changeset/
-!/.changeset/**
 !/biome.json
 !/tsconfig.base.json
 !/ui/tsconfig.json

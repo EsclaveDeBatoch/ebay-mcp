@@ -95,10 +95,10 @@ describe('Inventory Tools Integration Tests', () => {
         mockResponse,
       );
 
-      const result = await executeTool(api, 'ebay_get_inventory_items', {
+      const result = (await executeTool(api, 'ebay_get_inventory_items', {
         limit: 25,
         offset: 0,
-      });
+      })) as typeof mockResponse;
 
       expect(result).toEqual(mockResponse);
       expect(result.inventoryItems).toHaveLength(2);
@@ -119,10 +119,10 @@ describe('Inventory Tools Integration Tests', () => {
         mockResponse,
       );
 
-      const result = await executeTool(api, 'ebay_get_inventory_items', {
+      const result = (await executeTool(api, 'ebay_get_inventory_items', {
         limit: 10,
         offset: 20,
-      });
+      })) as typeof mockResponse;
 
       expect(result.limit).toBe(10);
       expect(result.offset).toBe(20);
@@ -157,9 +157,9 @@ describe('Inventory Tools Integration Tests', () => {
         mockItem,
       );
 
-      const result = await executeTool(api, 'ebay_get_inventory_item', {
+      const result = (await executeTool(api, 'ebay_get_inventory_item', {
         sku: 'TEST-SKU-001',
-      });
+      })) as typeof mockItem;
 
       expect(result.sku).toBe('TEST-SKU-001');
       expect(result.product.title).toBe('Test Product');
@@ -260,9 +260,9 @@ describe('Inventory Tools Integration Tests', () => {
 
       mockEbayApiEndpoint('/sell/inventory/v1/offer?sku=TEST-001', 'get', 'sandbox', mockResponse);
 
-      const result = await executeTool(api, 'ebay_get_offers', {
+      const result = (await executeTool(api, 'ebay_get_offers', {
         sku: 'TEST-001',
-      });
+      })) as typeof mockResponse;
 
       expect(result.offers).toHaveLength(1);
       expect(result.offers[0].sku).toBe('TEST-001');
@@ -281,9 +281,9 @@ describe('Inventory Tools Integration Tests', () => {
         mockResponse,
       );
 
-      const result = await executeTool(api, 'ebay_get_offers', {
+      const result = (await executeTool(api, 'ebay_get_offers', {
         marketplaceId: 'EBAY_US',
-      });
+      })) as typeof mockResponse;
 
       expect(result.offers[0].marketplaceId).toBe('EBAY_US');
     });
@@ -310,9 +310,9 @@ describe('Inventory Tools Integration Tests', () => {
 
       mockEbayApiEndpoint('/sell/inventory/v1/offer', 'post', 'sandbox', mockResponse, 201);
 
-      const result = await executeTool(api, 'ebay_create_offer', {
+      const result = (await executeTool(api, 'ebay_create_offer', {
         body: offerData,
-      });
+      })) as typeof mockResponse;
 
       expect(result.offerId).toBe('9876543210');
     });
@@ -334,9 +334,9 @@ describe('Inventory Tools Integration Tests', () => {
         mockResponse,
       );
 
-      const result = await executeTool(api, 'ebay_publish_offer', {
+      const result = (await executeTool(api, 'ebay_publish_offer', {
         offerId: '1234567890',
-      });
+      })) as typeof mockResponse;
 
       expect(result.listingId).toBe('110123456789');
       expect(result.statusCode).toBe(200);
@@ -381,7 +381,11 @@ describe('Inventory Tools Integration Tests', () => {
 
       mockEbayApiEndpoint('/sell/inventory/v1/location', 'get', 'sandbox', mockResponse);
 
-      const result = await executeTool(api, 'ebay_get_inventory_locations', {});
+      const result = (await executeTool(
+        api,
+        'ebay_get_inventory_locations',
+        {},
+      )) as typeof mockResponse;
 
       expect(result.locations).toHaveLength(1);
       expect(result.locations[0].name).toBe('Main Warehouse');

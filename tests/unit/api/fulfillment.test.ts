@@ -127,8 +127,7 @@ describe('FulfillmentApi', () => {
     it('fails with a tagged input error when orderId is missing', async () => {
       const error = await Effect.runPromise(Effect.flip(fulfillmentApi.getOrder({ orderId: '' })));
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('orderId');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'orderId' });
     });
   });
 
@@ -168,8 +167,7 @@ describe('FulfillmentApi', () => {
         ),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('body');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'body' });
     });
   });
 
@@ -244,10 +242,6 @@ describe('FulfillmentApi', () => {
       const mockRefund: Refund = {
         refundId: 'REF-001',
         refundStatus: 'PENDING',
-        refundAmount: {
-          value: '99.99',
-          currency: 'USD',
-        },
       };
 
       vi.mocked(mockClient.post).mockResolvedValue(mockRefund);
@@ -280,10 +274,6 @@ describe('FulfillmentApi', () => {
       const mockRefund: Refund = {
         refundId: 'REF-002',
         refundStatus: 'PENDING',
-        refundAmount: {
-          value: '25.00',
-          currency: 'USD',
-        },
       };
 
       vi.mocked(mockClient.post).mockResolvedValue(mockRefund);

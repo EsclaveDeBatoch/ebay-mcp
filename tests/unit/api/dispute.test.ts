@@ -42,8 +42,7 @@ describe('DisputeApi', () => {
         Effect.flip(disputeApi.getPaymentDispute({ paymentDisputeId: '' })),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('paymentDisputeId');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'paymentDisputeId' });
     });
   });
 

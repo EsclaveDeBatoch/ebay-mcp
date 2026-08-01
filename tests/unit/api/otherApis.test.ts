@@ -230,8 +230,7 @@ describe('Other APIs', () => {
         Effect.flip(api.findListingRecommendations({ marketplaceId: '' })),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('marketplaceId');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'marketplaceId' });
       expect(client.post).not.toHaveBeenCalled();
     });
   });
@@ -361,8 +360,7 @@ describe('Other APIs', () => {
         Effect.flip(api.getVeroReasonCode({ veroReasonCodeId: '' })),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('veroReasonCodeId');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'veroReasonCodeId' });
       expect(client.get).not.toHaveBeenCalled();
     });
   });
@@ -733,7 +731,7 @@ describe('Other APIs', () => {
     // Other
     it('creates complaint with body input', async () => {
       const mockResponse = { complaintId: 'COMPLAINT123' };
-      const body = { complaintRequest: { description: 'Package damaged' } };
+      const body = { complaintRequest: { complaintReason: 'LOST', remark: 'Package damaged' } };
       vi.mocked(client.post).mockResolvedValue(mockResponse);
 
       await Effect.runPromise(api.createComplaint({ body }));
@@ -780,8 +778,7 @@ describe('Other APIs', () => {
 
       const error = await Effect.runPromise(Effect.flip(api.getUser({})));
 
-      expect(error._tag).toBe('EbayApiError');
-      expect(error.method).toBe('GET');
+      expect(error).toMatchObject({ _tag: 'EbayApiError', method: 'GET' });
       expect(error.path).toBe('/commerce/identity/v1/user');
       expect(error.cause).toBe(cause);
     });

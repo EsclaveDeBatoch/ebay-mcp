@@ -1,5 +1,4 @@
-import XmlBuilder, { type XMLBuilder as XmlBuilderInstance } from 'fast-xml-builder';
-import { XMLParser } from 'fast-xml-parser';
+import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 import type { EbayApiClient } from '@/api/client.js';
 import { TradingApiFailure } from '@/api/clientTradingError.js';
 import { EbayApiError } from '@/api/shared/request.js';
@@ -56,7 +55,7 @@ const buildTradingHeaders = (callName: string): Record<string, string> => ({
 });
 
 const buildTradingXmlBody = (
-  builder: XmlBuilderInstance,
+  builder: XMLBuilder,
   requestTag: string,
   params: Record<string, unknown>,
 ): string => {
@@ -229,7 +228,7 @@ export class TradingApiClient {
   private readonly restClient: EbayApiClient;
   private readonly baseUrl: string;
   private readonly parser: XMLParser;
-  private readonly builder: XmlBuilderInstance;
+  private readonly builder: XMLBuilder;
 
   constructor(restClient: EbayApiClient) {
     this.restClient = restClient;
@@ -258,7 +257,7 @@ export class TradingApiClient {
       },
     });
 
-    this.builder = new XmlBuilder({
+    this.builder = new XMLBuilder({
       ignoreAttributes: false,
       format: true,
       suppressEmptyNode: true,

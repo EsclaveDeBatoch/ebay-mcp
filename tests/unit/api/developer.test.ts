@@ -300,8 +300,7 @@ describe('DeveloperApi', () => {
     it('returns typed input error when signingKeyId is empty', async () => {
       const error = await Effect.runPromise(Effect.flip(api.getSigningKey({ signingKeyId: '' })));
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('signingKeyId');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'signingKeyId' });
     });
 
     it('returns typed input error when signingKeyId is null', async () => {
@@ -309,8 +308,7 @@ describe('DeveloperApi', () => {
         Effect.flip(api.getSigningKey(invalidInput({ signingKeyId: null }))),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('signingKeyId');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'signingKeyId' });
     });
 
     it('returns typed input error when input is undefined', async () => {
@@ -318,8 +316,7 @@ describe('DeveloperApi', () => {
         Effect.flip(api.getSigningKey(invalidInput(undefined))),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('input');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'input' });
     });
 
     it('returns typed input error when signingKeyId is not a string', async () => {
@@ -327,8 +324,7 @@ describe('DeveloperApi', () => {
         Effect.flip(api.getSigningKey(invalidInput({ signingKeyId: 123 }))),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('signingKeyId');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'signingKeyId' });
     });
 
     it('handle API errors when getting signing key', async () => {

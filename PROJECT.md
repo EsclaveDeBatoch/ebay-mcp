@@ -57,5 +57,6 @@ and analyse on eBay without bespoke integration code.
 - **Node ≥ 20**, ESM (`Node16`), pnpm. TypeScript strict; `src/types/` is
   generated (never hand-edited).
 - **stdout is the MCP channel** — all logging goes to stderr.
-- Releases are changeset/tag-driven and publish to npm via OIDC trusted
-  publishing (`publish.yml`).
+- Releases are tag-driven: `release.yml` bumps from the merged PR's `major` /
+  `minor` label (patch otherwise), tags, and hands off to `publish.yml`, which
+  publishes to npm via OIDC trusted publishing.

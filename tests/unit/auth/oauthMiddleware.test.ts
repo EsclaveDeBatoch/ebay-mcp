@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Mock } from 'vitest';
 import type { Request, Response, NextFunction } from 'express';
 import { createBearerAuthMiddleware, requireScopes } from '@/auth/oauthMiddleware.js';
 import type { TokenVerifier } from '@/auth/tokenVerifier.js';
@@ -13,14 +14,14 @@ describe('OAuth Middleware', () => {
     let mockRequest: AuthenticatedTestRequest;
     let mockResponse: Partial<Response>;
     let mockNext: NextFunction;
-    let statusMock: ReturnType<typeof vi.fn>;
-    let jsonMock: ReturnType<typeof vi.fn>;
-    let setHeaderMock: ReturnType<typeof vi.fn>;
+    let statusMock: Mock<Response['status']>;
+    let jsonMock: Mock<Response['json']>;
+    let setHeaderMock: Mock<Response['setHeader']>;
 
     beforeEach(() => {
-      jsonMock = vi.fn();
-      statusMock = vi.fn().mockReturnValue({ json: jsonMock });
-      setHeaderMock = vi.fn();
+      jsonMock = vi.fn<Response['json']>();
+      statusMock = vi.fn<Response['status']>();
+      setHeaderMock = vi.fn<Response['setHeader']>();
 
       mockRequest = {
         headers: {},
@@ -31,6 +32,7 @@ describe('OAuth Middleware', () => {
         json: jsonMock,
         setHeader: setHeaderMock,
       };
+      statusMock.mockReturnValue(mockResponse as Response);
 
       mockNext = vi.fn();
 
@@ -164,21 +166,22 @@ describe('OAuth Middleware', () => {
   });
 
   describe('requireScopes', () => {
-    let mockRequest: Partial<Request>;
+    let mockRequest: AuthenticatedTestRequest;
     let mockResponse: Partial<Response>;
     let mockNext: NextFunction;
-    let statusMock: ReturnType<typeof vi.fn>;
-    let jsonMock: ReturnType<typeof vi.fn>;
+    let statusMock: Mock<Response['status']>;
+    let jsonMock: Mock<Response['json']>;
 
     beforeEach(() => {
-      jsonMock = vi.fn();
-      statusMock = vi.fn().mockReturnValue({ json: jsonMock });
+      jsonMock = vi.fn<Response['json']>();
+      statusMock = vi.fn<Response['status']>();
 
       mockRequest = {};
       mockResponse = {
         status: statusMock,
         json: jsonMock,
       };
+      statusMock.mockReturnValue(mockResponse as Response);
       mockNext = vi.fn();
     });
 

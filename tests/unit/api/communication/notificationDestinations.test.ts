@@ -80,7 +80,7 @@ describe('updateDestination', () => {
 
   it('fail when destinationId is missing', async () => {
     const error = await Effect.runPromise(
-      Effect.flip(api.updateDestination({ destinationId: '', ...invalidInput({}) })),
+      Effect.flip(api.updateDestination({ ...invalidInput({}), destinationId: '' })),
     );
 
     expect(error._tag).toBe('EndpointInputError');

@@ -2,6 +2,7 @@ import { Effect } from 'effect';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccountApi } from '@/api/account-management/account.js';
 import type { EbayApiClient } from '@/api/client.js';
+import { MarketplaceId } from '@/types/ebayEnums.js';
 import type { components } from '@/types/sell-apps/account-management/sellAccountV1Oas3.js';
 
 type CustomPolicy = components['schemas']['CustomPolicy'];
@@ -50,7 +51,6 @@ describe('AccountApi', () => {
           {
             customPolicyId: '1234567890',
             name: 'Test Custom Policy',
-            description: 'Test description',
           },
         ],
       };
@@ -144,7 +144,7 @@ describe('AccountApi', () => {
       vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
 
       const result = await Effect.runPromise(
-        accountApi.getFulfillmentPolicies({ marketplaceId: 'EBAY_US' }),
+        accountApi.getFulfillmentPolicies({ marketplaceId: MarketplaceId.EBAY_US }),
       );
 
       expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/fulfillment_policy', {
@@ -181,7 +181,7 @@ describe('AccountApi', () => {
 
       const result = await Effect.runPromise(
         accountApi.getFulfillmentPolicyByName({
-          marketplaceId: 'EBAY_US',
+          marketplaceId: MarketplaceId.EBAY_US,
           name: 'Standard Shipping',
         }),
       );
@@ -199,7 +199,7 @@ describe('AccountApi', () => {
     it('creates, updates, and deletes a fulfillment policy', async () => {
       const policy = {
         name: 'New Shipping Policy',
-        marketplaceId: 'EBAY_US',
+        marketplaceId: MarketplaceId.EBAY_US,
       };
       const mockResponse = {
         fulfillmentPolicyId: '9876543210',
@@ -245,7 +245,7 @@ describe('AccountApi', () => {
       vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
 
       const result = await Effect.runPromise(
-        accountApi.getPaymentPolicies({ marketplaceId: 'EBAY_US' }),
+        accountApi.getPaymentPolicies({ marketplaceId: MarketplaceId.EBAY_US }),
       );
 
       expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/payment_policy', {
@@ -282,7 +282,7 @@ describe('AccountApi', () => {
 
       const result = await Effect.runPromise(
         accountApi.getPaymentPolicyByName({
-          marketplaceId: 'EBAY_US',
+          marketplaceId: MarketplaceId.EBAY_US,
           name: 'Immediate Payment',
         }),
       );
@@ -300,7 +300,7 @@ describe('AccountApi', () => {
     it('creates, updates, and deletes a payment policy', async () => {
       const policy = {
         name: 'New Payment Policy',
-        marketplaceId: 'EBAY_US',
+        marketplaceId: MarketplaceId.EBAY_US,
       };
       const mockResponse = {
         paymentPolicyId: '9876543210',
@@ -342,7 +342,7 @@ describe('AccountApi', () => {
       vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
 
       const result = await Effect.runPromise(
-        accountApi.getReturnPolicies({ marketplaceId: 'EBAY_US' }),
+        accountApi.getReturnPolicies({ marketplaceId: MarketplaceId.EBAY_US }),
       );
 
       expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/return_policy', {
@@ -379,7 +379,7 @@ describe('AccountApi', () => {
 
       const result = await Effect.runPromise(
         accountApi.getReturnPolicyByName({
-          marketplaceId: 'EBAY_US',
+          marketplaceId: MarketplaceId.EBAY_US,
           name: '30 Day Returns',
         }),
       );
@@ -397,7 +397,7 @@ describe('AccountApi', () => {
     it('creates, updates, and deletes a return policy', async () => {
       const policy = {
         name: 'New Return Policy',
-        marketplaceId: 'EBAY_US',
+        marketplaceId: MarketplaceId.EBAY_US,
       };
       const mockResponse = {
         returnPolicyId: '9876543210',
@@ -428,10 +428,9 @@ describe('AccountApi', () => {
     it('gets seller privileges, KYC, rate tables, and opted-in programs', async () => {
       const mockPrivileges: SellingPrivileges = { sellerRegistrationCompleted: true };
       const mockKyc: KycResponse = {
-        kycCheck: [
+        kycChecks: [
           {
             dataRequired: 'BUSINESS_VERIFICATION',
-            status: 'PASSED',
           },
         ],
       };
@@ -439,7 +438,7 @@ describe('AccountApi', () => {
         rateTables: [{ rateTableId: '123456', name: 'Domestic Shipping' }],
       };
       const mockPrograms: Programs = {
-        programs: [{ programType: 'OUT_OF_STOCK_CONTROL', programStatus: 'OPTED_IN' }],
+        programs: [{ programType: 'OUT_OF_STOCK_CONTROL' }],
       };
 
       vi.spyOn(mockClient, 'get')
@@ -464,8 +463,12 @@ describe('AccountApi', () => {
 
     it('gets subscription information with optional pagination fields', async () => {
       const mockSubscription: SubscriptionResponse = {
-        subscriptionId: 'sub_12345',
-        subscriptionType: 'STORE_SUBSCRIPTION',
+        subscriptions: [
+          {
+            subscriptionId: 'sub_12345',
+            subscriptionType: 'STORE_SUBSCRIPTION',
+          },
+        ],
       };
 
       vi.spyOn(mockClient, 'get').mockResolvedValue(mockSubscription);
@@ -494,7 +497,7 @@ describe('AccountApi', () => {
 
       const result = await Effect.runPromise(
         accountApi.getPaymentsProgram({
-          marketplaceId: 'EBAY_US',
+          marketplaceId: MarketplaceId.EBAY_US,
           paymentsProgramType: 'EBAY_PAYMENTS',
         }),
       );
@@ -507,16 +510,14 @@ describe('AccountApi', () => {
 
     it('gets payments program onboarding status', async () => {
       const mockResponse: PaymentsProgramOnboardingResponse = {
-        marketplaceId: 'EBAY_US',
-        paymentsProgramType: 'EBAY_PAYMENTS',
-        status: 'OPTED_IN',
+        onboardingStatus: 'OPTED_IN',
       };
 
       vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
 
       const result = await Effect.runPromise(
         accountApi.getPaymentsProgramOnboarding({
-          marketplaceId: 'EBAY_US',
+          marketplaceId: MarketplaceId.EBAY_US,
           paymentsProgramType: 'EBAY_PAYMENTS',
         }),
       );
@@ -531,7 +532,9 @@ describe('AccountApi', () => {
   describe('Sales Tax', () => {
     it('gets all sales taxes for a country', async () => {
       const mockResponse: SalesTaxes = {
-        salesTaxes: [{ countryCode: 'US', jurisdictionId: 'CA', salesTaxPercentage: '8.25' }],
+        salesTaxes: [
+          { countryCode: 'US', salesTaxJurisdictionId: 'CA', salesTaxPercentage: '8.25' },
+        ],
       };
 
       vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
@@ -547,7 +550,7 @@ describe('AccountApi', () => {
     it('gets a specific sales tax table entry', async () => {
       const mockSalesTax: SalesTax = {
         countryCode: 'US',
-        jurisdictionId: 'CA',
+        salesTaxJurisdictionId: 'CA',
         salesTaxPercentage: '8.25',
       };
 
@@ -623,14 +626,14 @@ describe('AccountApi', () => {
   describe('Advertising Eligibility', () => {
     it('gets advertising eligibility with the marketplace header and program filter', async () => {
       const mockResponse: SellerEligibilityMultiProgramResponse = {
-        sellerEligibility: [],
+        advertisingEligibility: [],
       };
 
       vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
 
       const result = await Effect.runPromise(
         accountApi.getAdvertisingEligibility({
-          marketplaceId: 'EBAY_US',
+          marketplaceId: MarketplaceId.EBAY_US,
           programTypes: 'PLA',
         }),
       );

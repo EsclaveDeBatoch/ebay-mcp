@@ -1,3 +1,4 @@
+import { isTokenExpired } from '@/auth/credentialSession.js';
 import type { StoredTokenData } from '@/types/ebay.js';
 
 /**
@@ -26,11 +27,11 @@ export class MockTokenStorage {
   }
 
   static isUserAccessTokenExpired(tokens: StoredTokenData): boolean {
-    return Date.now() >= tokens.userAccessTokenExpiry;
+    return isTokenExpired(tokens.userAccessTokenExpiry);
   }
 
   static isUserRefreshTokenExpired(tokens: StoredTokenData): boolean {
-    return Date.now() >= tokens.userRefreshTokenExpiry;
+    return isTokenExpired(tokens.userRefreshTokenExpiry);
   }
 
   // Helper methods for testing
@@ -64,6 +65,8 @@ export const createMockTokens = (overrides: Partial<StoredTokenData> = {}): Stor
     userAccessToken: 'mock_access_token',
     userRefreshToken: 'mock_refresh_token',
     tokenType: 'Bearer',
+    clientId: 'mock_client_id',
+    clientSecret: 'mock_client_secret',
     userAccessTokenExpiry: now + 7200 * 1000, // 2 hours from now
     userRefreshTokenExpiry: now + 18 * 30 * 24 * 60 * 60 * 1000, // 18 months
     scope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',

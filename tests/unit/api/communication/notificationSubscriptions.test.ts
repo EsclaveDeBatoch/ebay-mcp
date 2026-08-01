@@ -98,7 +98,7 @@ describe('updateSubscription', () => {
 
   it('fail when subscriptionId is missing', async () => {
     const error = await Effect.runPromise(
-      Effect.flip(api.updateSubscription({ subscriptionId: '', ...invalidInput({}) })),
+      Effect.flip(api.updateSubscription({ ...invalidInput({}), subscriptionId: '' })),
     );
 
     expect(error._tag).toBe('EndpointInputError');

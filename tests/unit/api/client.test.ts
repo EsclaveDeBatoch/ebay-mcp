@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import nock from 'nock';
 import { EbayApiClient } from '@/api/client.js';
 import { getEbayConfig } from '@/config/environment.js';

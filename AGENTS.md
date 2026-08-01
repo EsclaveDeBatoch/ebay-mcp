@@ -25,6 +25,8 @@ Run before opening a PR:
 
 ```bash
 npm run typecheck        # tsc --noEmit (src)                    — must pass
+npm run typecheck:ui     # tsc -p ui/tsconfig.json (ui)          — must pass
+npm run typecheck:tests  # tsc -p tsconfig.test.json (tests)     — must pass
 npm run check:ci         # biome ci . (lint + format)            — must pass
 npm test                 # vitest run (unit)                     — must pass
 npm run test:integration # vitest (hermetic integration suite)   — must pass
@@ -33,8 +35,9 @@ npm run build            # tsc + tsc-alias + UI bundle → build/  — must pass
 
 CI runs exactly these behind one **CI Gate** status check — see
 [docs/adr/current/0004-ci-workflow-architecture.md](docs/adr/current/0004-ci-workflow-architecture.md).
-The `typecheck` leg now also covers `ui/` (`npm run typecheck:ui`), so
-`npm run check` and `npm run verify` run the whole gate end-to-end.
+The `typecheck` leg covers all three trees — `src/`, `ui/`, and `tests/` — so
+`npm run check` and `npm run verify` run the whole gate end-to-end. Nothing
+hand-written is excluded from typecheck.
 
 Other useful scripts:
 
@@ -89,7 +92,7 @@ Other useful scripts:
 - **Logs** go to **stderr** in runtime code (stdout is reserved for the MCP protocol) — see [docs/logging.md](docs/logging.md). Human CLI commands may print to stdout.
 - **CLI:** keep the hand-written router lean. Bare TTY commands may prompt; flags or non-TTY must never hang. Scriptable diagnostics/plans should provide stable exit codes and `--json`.
 - **Tool exposure** is gated by `EBAY_MCP_TOOLS` (`all` | `dynamic` | family list). The env parsing/validation lives in `src/config/toolFamilies.ts` (kept free of tool-tree imports to avoid a cycle with `config/environment.ts`); the dynamic-mode discovery meta-tools and catalogue live in `src/mcp/toolGating.ts`; `src/mcp/runtime.ts` applies the mode. Family keys must stay in sync with `toolCategories` (a unit test enforces this).
-- Commit with [Conventional Commits](https://www.conventionalcommits.org/) (releases are changeset-driven).
+- Commit with [Conventional Commits](https://www.conventionalcommits.org/). Releases are tag-driven, and `release.yml` reads the merged PR's `major` / `minor` label to pick the bump — unlabelled means patch, so label any breaking or feature PR.
 
 Full style guide: [CODE-STYLE.md](CODE-STYLE.md). Architecture map: [ARCHITECTURE.md](ARCHITECTURE.md).
 

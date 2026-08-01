@@ -125,7 +125,9 @@ describe('InventoryApi', () => {
     });
 
     it('posts bulk price and quantity requests', async () => {
-      const body = { requests: [{ offerId: 'OFFER-1', availableQuantity: 3 }] };
+      const body = {
+        requests: [{ sku: 'SKU-1', offers: [{ offerId: 'OFFER-1', availableQuantity: 3 }] }],
+      };
       vi.mocked(client.post).mockResolvedValue({ responses: [] });
 
       await Effect.runPromise(api.bulkUpdatePriceQuantity({ body }));
@@ -162,7 +164,6 @@ describe('InventoryApi', () => {
   describe('inventory item groups', () => {
     it('gets, writes, and deletes inventory item groups', async () => {
       const body = {
-        aspects: {},
         inventoryItemGroupKey: 'GROUP-1',
         title: 'Test Group',
         variantSKUs: ['SKU-1'],
@@ -261,24 +262,26 @@ describe('InventoryApi', () => {
     });
 
     it('creates, gets, updates, and deletes offers', async () => {
-      const body = {
+      // sku, marketplaceId, and format are set at creation and are not accepted on update.
+      const createBody = {
         sku: 'SKU-1',
         marketplaceId: 'EBAY_US',
         format: 'FIXED_PRICE',
       };
+      const updateBody = { availableQuantity: 5 };
       vi.mocked(client.post).mockResolvedValue({ offerId: 'OFFER-1' });
       vi.mocked(client.get).mockResolvedValue({ offerId: 'OFFER-1' });
       vi.mocked(client.put).mockResolvedValue({ offerId: 'OFFER-1' });
       vi.mocked(client.delete).mockResolvedValue(undefined);
 
-      await Effect.runPromise(api.createOffer({ body }));
+      await Effect.runPromise(api.createOffer({ body: createBody }));
       await Effect.runPromise(api.getOffer({ offerId: 'OFFER-1' }));
-      await Effect.runPromise(api.updateOffer({ offerId: 'OFFER-1', body }));
+      await Effect.runPromise(api.updateOffer({ offerId: 'OFFER-1', body: updateBody }));
       await Effect.runPromise(api.deleteOffer({ offerId: 'OFFER-1' }));
 
-      expect(client.post).toHaveBeenCalledWith('/sell/inventory/v1/offer', body);
+      expect(client.post).toHaveBeenCalledWith('/sell/inventory/v1/offer', createBody);
       expect(client.get).toHaveBeenCalledWith('/sell/inventory/v1/offer/OFFER-1');
-      expect(client.put).toHaveBeenCalledWith('/sell/inventory/v1/offer/OFFER-1', body);
+      expect(client.put).toHaveBeenCalledWith('/sell/inventory/v1/offer/OFFER-1', updateBody);
       expect(client.delete).toHaveBeenCalledWith('/sell/inventory/v1/offer/OFFER-1');
     });
 

@@ -75,11 +75,12 @@ describe('MetadataApi', () => {
         ),
       );
 
-      expect(missingMarketplace._tag).toBe('EndpointInputError');
-      expect(missingMarketplace.parameter).toBe('marketplaceId');
+      expect(missingMarketplace).toMatchObject({
+        _tag: 'EndpointInputError',
+        parameter: 'marketplaceId',
+      });
       expect(invalidMarketplace._tag).toBe('EndpointInputError');
-      expect(invalidFilter._tag).toBe('EndpointInputError');
-      expect(invalidFilter.parameter).toBe('filter');
+      expect(invalidFilter).toMatchObject({ _tag: 'EndpointInputError', parameter: 'filter' });
       expect(mockClient.get).not.toHaveBeenCalled();
     });
 
@@ -352,10 +353,11 @@ describe('MetadataApi', () => {
         Effect.flip(api.getCompatibilitiesBySpecification(invalidInput('invalid'))),
       );
 
-      expect(missingSpecification._tag).toBe('EndpointInputError');
-      expect(missingSpecification.parameter).toBe('specification');
-      expect(invalidInputObject._tag).toBe('EndpointInputError');
-      expect(invalidInputObject.parameter).toBe('input');
+      expect(missingSpecification).toMatchObject({
+        _tag: 'EndpointInputError',
+        parameter: 'specification',
+      });
+      expect(invalidInputObject).toMatchObject({ _tag: 'EndpointInputError', parameter: 'input' });
       expect(mockClient.post).not.toHaveBeenCalled();
     });
 
@@ -386,8 +388,7 @@ describe('MetadataApi', () => {
         ),
       );
 
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.parameter).toBe('data');
+      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'data' });
       expect(mockClient.post).not.toHaveBeenCalled();
     });
 
@@ -482,8 +483,10 @@ describe('MetadataApi', () => {
         Effect.flip(api.getSalesTaxJurisdictions(invalidInput({ countryCode: 123 }))),
       );
 
-      expect(missingCountry._tag).toBe('EndpointInputError');
-      expect(missingCountry.parameter).toBe('countryCode');
+      expect(missingCountry).toMatchObject({
+        _tag: 'EndpointInputError',
+        parameter: 'countryCode',
+      });
       expect(invalidCountry._tag).toBe('EndpointInputError');
       expect(mockClient.get).not.toHaveBeenCalled();
     });
@@ -498,9 +501,11 @@ describe('MetadataApi', () => {
         Effect.flip(api.getCategoryPolicies({ marketplaceId: 'EBAY_US' })),
       );
 
-      expect(error._tag).toBe('EbayApiError');
-      expect(error.method).toBe('GET');
-      expect(error.path).toBe('/sell/metadata/v1/marketplace/EBAY_US/get_category_policies');
+      expect(error).toMatchObject({
+        _tag: 'EbayApiError',
+        method: 'GET',
+        path: '/sell/metadata/v1/marketplace/EBAY_US/get_category_policies',
+      });
       expect(error.cause).toBe(cause);
     });
 
@@ -517,11 +522,11 @@ describe('MetadataApi', () => {
         ),
       );
 
-      expect(error._tag).toBe('EbayApiError');
-      expect(error.method).toBe('POST');
-      expect(error.path).toBe(
-        '/sell/metadata/v1/compatibilities/get_compatibilities_by_specification',
-      );
+      expect(error).toMatchObject({
+        _tag: 'EbayApiError',
+        method: 'POST',
+        path: '/sell/metadata/v1/compatibilities/get_compatibilities_by_specification',
+      });
       expect(error.cause).toBe(cause);
     });
 
