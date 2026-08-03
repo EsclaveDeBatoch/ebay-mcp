@@ -3,6 +3,7 @@ import { getFeedbackTool, leaveFeedbackTool } from '@/ebay/commerce/feedback/fee
 import { getFeedbackRatingSummaryTool } from '@/ebay/commerce/feedback/feedbackRatingSummary.js';
 import { respondToFeedbackTool } from '@/ebay/commerce/feedback/respondToFeedback.js';
 import { getUserTool } from '@/ebay/commerce/identity/user.js';
+import { bulkUpdateConversationTool } from '@/ebay/commerce/message/bulkUpdateConversation.js';
 import { getConversationTool, getConversationsTool } from '@/ebay/commerce/message/conversation.js';
 import { sendMessageTool } from '@/ebay/commerce/message/sendMessage.js';
 import { updateConversationTool } from '@/ebay/commerce/message/updateConversation.js';
@@ -27,6 +28,7 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   leaveFeedbackTool,
   getFeedbackRatingSummaryTool,
   respondToFeedbackTool,
+  bulkUpdateConversationTool,
   getConversationsTool,
   getConversationTool,
   sendMessageTool,

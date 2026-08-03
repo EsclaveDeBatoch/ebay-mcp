@@ -64,6 +64,7 @@ describe('Commerce Message conversation MCP exposure', () => {
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
     expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
+      'ebay_commerce_message_bulk_update_conversation',
       getConversationsToolName,
       getConversationToolName,
       'ebay_commerce_message_send_message',

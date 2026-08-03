@@ -99,7 +99,7 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `sell.analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
 | `sell.negotiation` | Listings eligible for seller offers and seller-initiated discounted offers | "Find listings with interested buyers." |
 | `sell.recommendation` | Promoted Listings recommendations for active listings | "Which active listings should I promote?" |
-| `communication` | Notifications and remaining conversation status updates | "Archive this conversation." |
+| `communication` | Notification destinations, subscriptions, topics, and configuration | "Show my notification subscriptions." |
 | `metadata` / `taxonomy` | Category trees, aspects, item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Find required item aspects for this category." |
 | `other` | VeRO and international shipping support APIs (Compliance tools remain but report eBay's 2026-03-30 decommission) | "Show the available VeRO reason codes." |
 | `developer` / `token-management` | Rate limits, signing keys, OAuth URLs, token refresh, and diagnostics | "Check my eBay API rate limits." |
@@ -312,7 +312,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 | [Sell Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic reports, seller standards, and customer-service metrics under `sell.analytics` |
 | [Sell Negotiation](src/ebay/sell/negotiation/offer.ts) | Eligible listings and seller-initiated discounted offers under `sell.negotiation` |
 | [Sell Recommendation](src/ebay/sell/recommendation/listingRecommendation.ts) | Promoted Listings recommendations under `sell.recommendation` |
-| [Communication](src/tools/categories/communication.ts) | Notifications and remaining conversation status updates |
+| [Communication](src/tools/categories/communication.ts) | Notification destinations, subscriptions, topics, and configuration |
 | [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Category trees, item aspects, item conditions |
 | [Other](src/tools/categories/other.ts) | VeRO and international shipping support APIs (Compliance tools report eBay decommission) |

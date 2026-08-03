@@ -145,11 +145,10 @@ Schemas for inventory items, offers, locations, and product compatibility.
 
 ### 3. Communication (`communication/messages.ts`)
 
-Legacy schemas for messages and notifications.
+Legacy schemas for Commerce Notification.
 
 **Endpoints Covered:**
 
-- Remaining Message API write operations
 - Notification API (destinations, subscriptions, topics)
 
 **Key Schemas:**

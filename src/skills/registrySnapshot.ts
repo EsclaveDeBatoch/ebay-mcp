@@ -29,7 +29,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Promoted Listings recommendations for active listings from Sell Recommendation',
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   taxonomy: 'Category trees, category suggestions, and required item aspects',
-  communication: 'Notification settings and remaining conversation status updates',
+  communication: 'Notification destinations, subscriptions, topics, and configuration',
   browse: 'Sold/completed listing search (Finding API) for pricing comps',
   other: 'Feedback and assorted Sell-API helpers',
   developer: 'API status, rate limits, client registration, and signing keys',

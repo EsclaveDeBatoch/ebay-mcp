@@ -1,7 +1,6 @@
 import { defineTool } from '@/tools/defineTool.js';
 import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
-import { bulkUpdateConversationSchema } from '@/utils/communication/message.js';
 import {
   createDestinationSchema,
   createSubscriptionFilterSchema,
@@ -27,7 +26,7 @@ import {
 } from '@/utils/communication/notification.js';
 
 /**
- * Legacy Communication tools for notifications and remaining conversation status updates.
+ * Commerce Notification tools.
  *
  * Each tool derives its transport schema from the same Effect-backed object whose inferred
  * args are passed directly to the endpoint method. Handlers stay at the MCP
@@ -165,13 +164,5 @@ export const communicationEntries: ToolEntry[] = [
     description: 'Get a public key for verifying notification signatures',
     inputSchema: getPublicKeySchema.shape,
     handler: (api, args) => Effect.runPromise(api.notification.getPublicKey(args)),
-  }),
-  // Message API - Remaining conversation status updates
-  defineTool({
-    name: 'ebay_bulk_update_conversation',
-    description:
-      'Bulk update multiple conversations. Each entry sets conversationStatus (ACTIVE, ARCHIVE, DELETE, READ, UNREAD) for a conversationId.',
-    inputSchema: bulkUpdateConversationSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.message.bulkUpdateConversation(args)),
   }),
 ];

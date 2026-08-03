@@ -47,11 +47,6 @@ const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
     spec: 'specs/ebay/sell-apps/account-management/sell_account_v1_oas3.json',
   },
   {
-    file: 'src/api/communication/message.ts',
-    constant: 'basePath',
-    spec: 'specs/ebay/sell-apps/communication/commerce_message_v1_oas3.json',
-  },
-  {
     file: 'src/api/communication/notification.ts',
     constant: 'basePath',
     spec: 'specs/ebay/sell-apps/communication/commerce_notification_v1_oas3.json',

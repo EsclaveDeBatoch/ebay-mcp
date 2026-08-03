@@ -72,6 +72,7 @@ describe('toolNamesInExposurePaths', () => {
   it('returns the migrated Commerce Message resources under their official path', () => {
     const names = toolNamesInExposurePaths(['commerce.message']);
     expect([...names]).toEqual([
+      'ebay_commerce_message_bulk_update_conversation',
       'ebay_commerce_message_get_conversations',
       'ebay_commerce_message_get_conversation',
       'ebay_commerce_message_send_message',
