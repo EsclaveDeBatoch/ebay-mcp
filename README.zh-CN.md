@@ -252,7 +252,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | [Browse](src/tools/categories/browse.ts) | 已售/已完成 listing 搜索（Finding API）用于比价 |
 | [Other](src/tools/categories/other.ts) | Identity、VeRO、翻译与国际物流支持 API（Compliance 工具会报告 eBay 于 2026-03-30 的下线） |
 | [Trading（旧版 XML）](src/tools/categories/trading.ts) | 固定价格刊登的创建、修改、重新刊登和结束 |
-| [Developer](src/tools/categories/developer.ts) | 速率限制、签名密钥、客户端注册 |
+| [Developer](src/ebay/developer) | 速率限制、签名密钥和 API 状态 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 生成与令牌管理 |
 
 **示例工具：** `ebay_get_inventory_items`、`ebay_get_orders`、`ebay_create_offer`、`ebay_get_campaigns`、`ebay_get_oauth_url`。
@@ -383,7 +383,7 @@ TypeScript 和 Node.js（ESM），使用官方 MCP SDK、用于校验的 Zod 以
 - [eBay 数据处理要求](https://developer.ebay.com/api-docs/static/data-handling-update.html) — 数据保护与隐私
 - [MCP 文档](https://modelcontextprotocol.io/) — Model Context Protocol 规范
 - [OAuth 快速参考](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes、故障排查、示例
-- [eBay API 状态](https://developer.ebay.com/support/api-status) — 官方状态页面（也可通过 `ebay_get_api_status` 工具和[仓库内快照](docs/API_STATUS.md)）
+- [eBay API 状态](https://developer.ebay.com/support/api-status) — 官方状态页面（也可通过 `ebay_developer_status_get_incidents` 工具和[仓库内快照](docs/API_STATUS.md)）
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [问题跟踪](https://github.com/YosefHayim/ebay-mcp/issues) — 错误报告和功能请求
 

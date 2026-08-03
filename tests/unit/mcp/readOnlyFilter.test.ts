@@ -49,7 +49,7 @@ describe('isReadOnlyTool', () => {
     'ebay_list_something',
     'ebay_find_campaign_by_ad_reference',
     'ebay_fetch_payment_dispute_evidence_content',
-    'ebay_get_api_status',
+    'ebay_developer_status_get_incidents',
     'ebay_bulk_get_inventory_item',
     'ebay_get_offer',
     'ebay_get_offers',

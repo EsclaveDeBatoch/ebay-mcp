@@ -252,7 +252,7 @@ Configurés automatiquement par `npm run setup`. Nécessite Node.js ≥ 22.12 et
 | [Browse](src/tools/categories/browse.ts) | Recherche d’annonces vendues/terminées (Finding API) pour comparaisons de prix |
 | [Other](src/tools/categories/other.ts) | Identity, VeRO, traduction et APIs d’expédition internationale (les outils Compliance signalent la décommission eBay du 2026-03-30) |
 | [Trading (XML hérité)](src/tools/categories/trading.ts) | Créer, réviser, remettre en vente et clôturer des annonces à prix fixe |
-| [Developer](src/tools/categories/developer.ts) | Limites de débit, clés de signature, enregistrement de clients |
+| [Developer](src/ebay/developer) | Limites de débit, clés de signature et statut des API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Génération d'URL OAuth et gestion des jetons |
 
 **Outils d'exemple :** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
@@ -383,7 +383,7 @@ Les contributions sont les bienvenues. Forkez → créez une branche → ajoutez
 - [Exigences de traitement des données eBay](https://developer.ebay.com/api-docs/static/data-handling-update.html) — protection des données et confidentialité
 - [Documentation MCP](https://modelcontextprotocol.io/) — spécification du Model Context Protocol
 - [Référence rapide OAuth](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes, dépannage, exemples
-- [Statut de l'API eBay](https://developer.ebay.com/support/api-status) — page de statut officielle (aussi via l'outil `ebay_get_api_status` et l'[instantané dans le dépôt](docs/API_STATUS.md))
+- [Statut de l'API eBay](https://developer.ebay.com/support/api-status) — page de statut officielle (aussi via l'outil `ebay_developer_status_get_incidents` et l'[instantané dans le dépôt](docs/API_STATUS.md))
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [Suivi des problèmes](https://github.com/YosefHayim/ebay-mcp/issues) — rapports de bugs et demandes de fonctionnalités
 

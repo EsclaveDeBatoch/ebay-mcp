@@ -252,7 +252,7 @@ Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 22.12 und 
 | [Browse](src/tools/categories/browse.ts) | Suche nach verkauften/abgeschlossenen Angeboten (Finding API) für Preisvergleiche |
 | [Other](src/tools/categories/other.ts) | Identity, VeRO, Übersetzung und internationale Versand-Support-APIs (Compliance-Tools melden eBays Stilllegung vom 2026-03-30) |
 | [Trading (Legacy-XML)](src/tools/categories/trading.ts) | Festpreisangebote erstellen, überarbeiten, neu einstellen und beenden |
-| [Developer](src/tools/categories/developer.ts) | Ratenlimits, Signaturschlüssel, Client-Registrierung |
+| [Developer](src/ebay/developer) | Ratenlimits, Signaturschlüssel und API-Status |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth-URL-Generierung und Token-Verwaltung |
 
 **Beispiel-Tools:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
@@ -383,7 +383,7 @@ Beiträge sind willkommen. Forken → Branch erstellen → Tests hinzufügen →
 - [eBay-Anforderungen an die Datenverarbeitung](https://developer.ebay.com/api-docs/static/data-handling-update.html) — Datenschutz und Privatsphäre
 - [MCP-Dokumentation](https://modelcontextprotocol.io/) — Spezifikation des Model Context Protocol
 - [OAuth-Kurzreferenz](docs/auth/OAUTH_QUICK_REFERENCE.md) — Scopes, Fehlerbehebung, Beispiele
-- [eBay-API-Status](https://developer.ebay.com/support/api-status) — offizielle Statusseite (auch über das Tool `ebay_get_api_status` und den [Snapshot im Repository](docs/API_STATUS.md))
+- [eBay-API-Status](https://developer.ebay.com/support/api-status) — offizielle Statusseite (auch über das Tool `ebay_developer_status_get_incidents` und den [Snapshot im Repository](docs/API_STATUS.md))
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [Issue-Tracker](https://github.com/YosefHayim/ebay-mcp/issues) — Fehlerberichte und Funktionswünsche
 

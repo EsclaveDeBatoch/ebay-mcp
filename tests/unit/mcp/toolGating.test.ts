@@ -76,6 +76,11 @@ describe('toolNamesInExposurePaths', () => {
     ]);
   });
 
+  it('returns the public Developer Status resource under its explicit path', () => {
+    const developerStatusToolNames = toolNamesInExposurePaths(['developer.status']);
+    expect([...developerStatusToolNames]).toEqual(['ebay_developer_status_get_incidents']);
+  });
+
   it('returns the complete migrated Commerce Translation namespace under its official path', () => {
     const names = toolNamesInExposurePaths(['commerce.translation']);
     expect([...names]).toEqual(['ebay_commerce_translation_translate']);

@@ -252,7 +252,7 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | [Browse](src/tools/categories/browse.ts) | Búsqueda de listings vendidos/completados (Finding API) para comparables de precio |
 | [Other](src/tools/categories/other.ts) | Identity, VeRO, traducción y APIs de envío internacional (las herramientas de Compliance informan la desactivación de eBay del 2026-03-30) |
 | [Trading (XML heredado)](src/tools/categories/trading.ts) | Crear, revisar, volver a publicar y finalizar anuncios de precio fijo |
-| [Developer](src/tools/categories/developer.ts) | Límites de tasa, claves de firma, registro de clientes |
+| [Developer](src/ebay/developer) | Límites de tasa, claves de firma y estado de la API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Generación de URL de OAuth y gestión de tokens |
 
 **Herramientas de ejemplo:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
@@ -383,7 +383,7 @@ Las contribuciones son bienvenidas. Haz fork → crea una rama → añade prueba
 - [Requisitos de manejo de datos de eBay](https://developer.ebay.com/api-docs/static/data-handling-update.html) — protección de datos y privacidad
 - [Documentación de MCP](https://modelcontextprotocol.io/) — especificación del Model Context Protocol
 - [Referencia rápida de OAuth](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes, solución de problemas, ejemplos
-- [Estado de la API de eBay](https://developer.ebay.com/support/api-status) — página de estado oficial (también mediante la herramienta `ebay_get_api_status` y la [instantánea en el repositorio](docs/API_STATUS.md))
+- [Estado de la API de eBay](https://developer.ebay.com/support/api-status) — página de estado oficial (también mediante la herramienta `ebay_developer_status_get_incidents` y la [instantánea en el repositorio](docs/API_STATUS.md))
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [Gestor de incidencias](https://github.com/YosefHayim/ebay-mcp/issues) — informes de errores y solicitudes de funciones
 

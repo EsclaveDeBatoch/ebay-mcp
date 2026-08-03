@@ -252,7 +252,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Browse](src/tools/categories/browse.ts) | 価格比較のための売約済み/完了リスティング検索（Finding API） |
 | [Other](src/tools/categories/other.ts) | Identity、VeRO、翻訳、国際配送サポート API（Compliance ツールは eBay の 2026-03-30 廃止を報告） |
 | [Trading（レガシー XML）](src/tools/categories/trading.ts) | 固定価格出品の作成・修正・再出品・終了 |
-| [Developer](src/tools/categories/developer.ts) | レート制限、署名キー、クライアント登録 |
+| [Developer](src/ebay/developer) | レート制限、署名キー、API ステータス |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL の生成とトークン管理 |
 
 **ツール例：** `ebay_get_inventory_items`、`ebay_get_orders`、`ebay_create_offer`、`ebay_get_campaigns`、`ebay_get_oauth_url`。
@@ -383,7 +383,7 @@ TypeScript と Node.js（ESM）で、公式の MCP SDK、検証用の Zod、Open
 - [eBay データ取り扱い要件](https://developer.ebay.com/api-docs/static/data-handling-update.html) — データ保護とプライバシー
 - [MCP ドキュメント](https://modelcontextprotocol.io/) — Model Context Protocol の仕様
 - [OAuth クイックリファレンス](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes、トラブルシューティング、例
-- [eBay API ステータス](https://developer.ebay.com/support/api-status) — 公式ステータスページ（`ebay_get_api_status` ツールおよび[リポジトリ内スナップショット](docs/API_STATUS.md)経由でも）
+- [eBay API ステータス](https://developer.ebay.com/support/api-status) — 公式ステータスページ（`ebay_developer_status_get_incidents` ツールおよび[リポジトリ内スナップショット](docs/API_STATUS.md)経由でも）
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [課題トラッカー](https://github.com/YosefHayim/ebay-mcp/issues) — バグ報告と機能リクエスト
 

@@ -45,6 +45,7 @@ import {
   getSigningKeysTool,
   getSigningKeyTool,
 } from '@/ebay/developer/keyManagement/signingKey.js';
+import { getDeveloperStatusFeedTool } from '@/ebay/developer/status/incident.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
   findSellerStandardsProfilesTool,
@@ -102,6 +103,7 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getSigningKeysTool,
   createSigningKeyTool,
   getSigningKeyTool,
+  getDeveloperStatusFeedTool,
   getTrafficReportTool,
   findSellerStandardsProfilesTool,
   getSellerStandardsProfileTool,

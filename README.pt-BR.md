@@ -252,7 +252,7 @@ Autoconfigurados pelo `npm run setup`. Requer Node.js ≥ 22.12 e o protocolo MC
 | [Browse](src/tools/categories/browse.ts) | Busca de anúncios vendidos/concluídos (Finding API) para comparáveis de preço |
 | [Other](src/tools/categories/other.ts) | Identity, VeRO, tradução e APIs de suporte a envio internacional (ferramentas de Compliance reportam a desativação da eBay em 2026-03-30) |
 | [Trading (XML legado)](src/tools/categories/trading.ts) | Criar, revisar, republicar e encerrar anúncios de preço fixo |
-| [Developer](src/tools/categories/developer.ts) | Limites de taxa, chaves de assinatura, registro de clientes |
+| [Developer](src/ebay/developer) | Limites de taxa, chaves de assinatura e status da API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Geração de URL de OAuth e gestão de tokens |
 
 **Ferramentas de exemplo:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
@@ -383,7 +383,7 @@ Contribuições são bem-vindas. Faça fork → crie um branch → adicione test
 - [Requisitos de tratamento de dados do eBay](https://developer.ebay.com/api-docs/static/data-handling-update.html) — proteção de dados e privacidade
 - [Documentação do MCP](https://modelcontextprotocol.io/) — especificação do Model Context Protocol
 - [Referência rápida do OAuth](docs/auth/OAUTH_QUICK_REFERENCE.md) — escopos, solução de problemas, exemplos
-- [Status da API do eBay](https://developer.ebay.com/support/api-status) — página de status oficial (também pela ferramenta `ebay_get_api_status` e pelo [snapshot no repositório](docs/API_STATUS.md))
+- [Status da API do eBay](https://developer.ebay.com/support/api-status) — página de status oficial (também pela ferramenta `ebay_developer_status_get_incidents` e pelo [snapshot no repositório](docs/API_STATUS.md))
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [Rastreador de issues](https://github.com/YosefHayim/ebay-mcp/issues) — relatos de bugs e solicitações de recursos
 

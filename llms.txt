@@ -28,12 +28,12 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 - [Commerce Translation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/translation): Listing-title and description translation between supported languages
 - [Developer Analytics](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/developer/analytics/rateLimit.ts): Application and user API quota utilization
 - [Developer Key Management](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/developer/keyManagement/signingKey.ts): Application signing-key creation and public-key retrieval
+- [Developer Status](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/developer/status/incident.ts): Current incidents from the public eBay developer status feed
 - [Sell Analytics](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/analytics): Seller standards, traffic reports, customer-service metrics
 - [Sell Negotiation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/negotiation): Listings eligible for seller offers and seller-initiated discounted offers
 - [Sell Recommendation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/recommendation): Promoted Listings recommendations for active listings
 - [Metadata](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/metadata.ts): Return policies, sales-tax jurisdictions, automotive compatibility
 - [Other](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/other.ts): Compliance, VeRO, and international shipping support APIs
-- [Developer](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/developer.ts): Public eBay API status feed
 - [Trading](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/trading.ts): Legacy XML API — fixed-price listing management (create, revise, relist, end)
 - [Token Management](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/tokenManagement.ts): OAuth token retrieval, refresh, and diagnostics
 - [Connector](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/connector.ts): ChatGPT connector search/fetch tools over the eBay MCP catalogue

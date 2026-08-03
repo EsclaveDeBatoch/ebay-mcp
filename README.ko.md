@@ -252,7 +252,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | [Browse](src/tools/categories/browse.ts) | 가격 비교용 판매/완료 리스팅 검색(Finding API) |
 | [Other](src/tools/categories/other.ts) | Identity, VeRO, 번역 및 국제 배송 지원 API(Compliance 도구는 eBay 2026-03-30 폐기를 보고) |
 | [Trading(레거시 XML)](src/tools/categories/trading.ts) | 고정 가격 리스팅 생성, 수정, 재등록, 종료 |
-| [Developer](src/tools/categories/developer.ts) | 속도 제한, 서명 키, 클라이언트 등록 |
+| [Developer](src/ebay/developer) | 속도 제한, 서명 키, API 상태 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 생성 및 토큰 관리 |
 
 **예시 도구:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
@@ -383,7 +383,7 @@ TypeScript와 Node.js(ESM), 공식 MCP SDK, 검증용 Zod, OpenAPI에서 생성�
 - [eBay 데이터 처리 요건](https://developer.ebay.com/api-docs/static/data-handling-update.html) — 데이터 보호 및 개인정보
 - [MCP 문서](https://modelcontextprotocol.io/) — Model Context Protocol 사양
 - [OAuth 빠른 참조](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes, 문제 해결, 예시
-- [eBay API 상태](https://developer.ebay.com/support/api-status) — 공식 상태 페이지(`ebay_get_api_status` 도구 및 [리포지토리 내 스냅샷](docs/API_STATUS.md)으로도 가능)
+- [eBay API 상태](https://developer.ebay.com/support/api-status) — 공식 상태 페이지(`ebay_developer_status_get_incidents` 도구 및 [리포지토리 내 스냅샷](docs/API_STATUS.md)으로도 가능)
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [이슈 트래커](https://github.com/YosefHayim/ebay-mcp/issues) — 버그 신고 및 기능 요청
 

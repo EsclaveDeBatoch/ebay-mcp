@@ -28,6 +28,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   'developer.analytics': 'Application and user API quota utilization from Developer Analytics',
   'developer.key-management':
     'Application signing-key creation and public-key retrieval from Developer Key Management',
+  'developer.status': 'Current incidents from the public eBay developer status feed',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
   'sell.negotiation': 'Listings eligible for seller offers and seller-initiated discounted offers',
@@ -36,7 +37,6 @@ const FAMILY_BLURBS: Record<string, string> = {
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   browse: 'Sold/completed listing search (Finding API) for pricing comps',
   other: 'Feedback and assorted Sell-API helpers',
-  developer: 'Public eBay API status feed',
   trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',
 };
 
@@ -49,6 +49,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'commerce.translation', title: 'Commerce Translation' },
   { namespace: 'developer.analytics', title: 'Developer Analytics' },
   { namespace: 'developer.key-management', title: 'Developer Key Management' },
+  { namespace: 'developer.status', title: 'Developer Status' },
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },

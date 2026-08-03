@@ -252,7 +252,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | [Browse](src/tools/categories/browse.ts) | Поиск проданных/завершённых лотов (Finding API) для сравнения цен |
 | [Other](src/tools/categories/other.ts) | Identity, VeRO, перевод и API международной доставки (инструменты Compliance сообщают о выводе eBay из эксплуатации 2026-03-30) |
 | [Trading (устаревший XML)](src/tools/categories/trading.ts) | Создание, изменение, повторное размещение и завершение объявлений с фиксированной ценой |
-| [Developer](src/tools/categories/developer.ts) | Лимиты запросов, ключи подписи, регистрация клиентов |
+| [Developer](src/ebay/developer) | Лимиты запросов, ключи подписи и статус API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Генерация URL OAuth и управление токенами |
 
 **Примеры инструментов:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
@@ -383,7 +383,7 @@ TypeScript и Node.js (ESM), с официальным MCP SDK, Zod для ва�
 - [Требования к обработке данных eBay](https://developer.ebay.com/api-docs/static/data-handling-update.html) — защита данных и конфиденциальность
 - [Документация MCP](https://modelcontextprotocol.io/) — спецификация Model Context Protocol
 - [Краткий справочник по OAuth](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes, устранение неполадок, примеры
-- [Статус API eBay](https://developer.ebay.com/support/api-status) — официальная страница статуса (также через инструмент `ebay_get_api_status` и [снимок в репозитории](docs/API_STATUS.md))
+- [Статус API eBay](https://developer.ebay.com/support/api-status) — официальная страница статуса (также через инструмент `ebay_developer_status_get_incidents` и [снимок в репозитории](docs/API_STATUS.md))
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [Трекер задач](https://github.com/YosefHayim/ebay-mcp/issues) — сообщения об ошибках и запросы функций
 
