@@ -54,7 +54,7 @@ describe('Commerce Message conversation MCP exposure', () => {
     await mcpClient.close();
   });
 
-  it('exposes only the migrated conversation resource through commerce.message', async () => {
+  it('exposes the migrated message resources through commerce.message', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'commerce.message');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning<ConversationPage>({
@@ -66,6 +66,7 @@ describe('Commerce Message conversation MCP exposure', () => {
     expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
       getConversationsToolName,
       getConversationToolName,
+      'ebay_commerce_message_send_message',
     ]);
     await mcpClient.close();
   });

@@ -1,14 +1,10 @@
 import { z } from '@/utils/effectSchema.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { MessageReferenceType } from '@/types/ebayEnums.js';
 
 /**
- * Communication API Schemas - Messages, Feedback, and Notifications
+ * Communication Notification API schemas.
  *
- * This file contains Effect-backed schemas for all Communication endpoints including:
- * - Message API
- * - Feedback API
- * - Notification API
+ * Migrated Commerce Message resources own their direct Zod schemas beside each operation.
  */
 
 // ============================================================================
@@ -29,52 +25,6 @@ const errorSchema = z.object({
       }),
     )
     .optional(),
-});
-
-// ============================================================================
-// Message API Schemas
-// ============================================================================
-
-const messageReferenceSchema = z.object({
-  referenceId: z.string().optional(),
-  referenceType: z.nativeEnum(MessageReferenceType).optional(),
-});
-
-const messageMediaSchema = z.object({
-  mediaUrl: z.string().optional(),
-  mediaType: z.string().optional(),
-});
-
-/**
- * Validates the Communication API send message request payload.
- */
-export const sendMessageInputSchema = z.object({
-  messageText: z.string().describe('The text content of the message'),
-  conversationId: z
-    .string()
-    .optional()
-    .describe('The ID of the conversation to send the message in'),
-  otherPartyUsername: z
-    .string()
-    .optional()
-    .describe('The username of the other party (required if conversationId not provided)'),
-  reference: messageReferenceSchema
-    .optional()
-    .describe('Reference information for the message (e.g., item or order ID)'),
-  messageMedia: z
-    .array(messageMediaSchema)
-    .optional()
-    .describe('Media attachments for the message'),
-  emailCopyToSender: z.boolean().optional().describe('Whether to send an email copy to the sender'),
-});
-
-/**
- * Validates the Communication API send message response payload.
- */
-export const sendMessageOutputSchema = z.object({
-  messageId: z.string().optional(),
-  conversationId: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
 });
 
 // ============================================================================
@@ -208,10 +158,6 @@ export const getNotificationTopicsOutputSchema = z.object({
  */
 export const getCommunicationJsonSchemas = () => {
   return {
-    // Message API
-    sendMessageInput: zodToJsonSchema(sendMessageInputSchema, 'sendMessageInput'),
-    sendMessageOutput: zodToJsonSchema(sendMessageOutputSchema, 'sendMessageOutput'),
-
     // Notification API
     createNotificationDestinationInput: zodToJsonSchema(
       createNotificationDestinationInputSchema,

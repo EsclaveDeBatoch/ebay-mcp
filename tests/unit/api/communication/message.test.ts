@@ -17,25 +17,6 @@ beforeEach(() => {
   api = new MessageApi(client);
 });
 
-describe('sendMessage', () => {
-  it('send message', async () => {
-    const mockResponse = { messageId: '123' };
-    const messageData = { messageText: 'Hello', otherPartyUsername: 'buyer123' };
-    vi.mocked(client.post).mockResolvedValue(mockResponse);
-
-    await Effect.runPromise(api.sendMessage(messageData));
-
-    expect(client.post).toHaveBeenCalledWith('/commerce/message/v1/send_message', messageData);
-  });
-
-  it('fail when messageData is missing', async () => {
-    const error = await Effect.runPromise(Effect.flip(api.sendMessage(invalidInput(undefined))));
-
-    expect(error._tag).toBe('EndpointInputError');
-    expect(error.message).toContain('messageData is required');
-  });
-});
-
 describe('updateConversation', () => {
   it('update conversation', async () => {
     const mockResponse = { success: true };
@@ -90,14 +71,6 @@ describe('bulkUpdateConversation', () => {
 });
 
 describe('error handling', () => {
-  it('handle API errors in sendMessage', async () => {
-    vi.mocked(client.post).mockRejectedValue(new Error('API Error'));
-
-    const error = await Effect.runPromise(Effect.flip(api.sendMessage({ messageText: 'test' })));
-
-    expect(error._tag).toBe('EbayApiError');
-  });
-
   it('handle API errors in updateConversation', async () => {
     vi.mocked(client.post).mockRejectedValue(new Error('API Error'));
 

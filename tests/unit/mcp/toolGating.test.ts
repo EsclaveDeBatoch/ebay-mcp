@@ -69,11 +69,12 @@ describe('toolNamesInExposurePaths', () => {
     expect([...names]).toEqual(['ebay_commerce_identity_get_user']);
   });
 
-  it('returns the migrated Commerce Message conversation resource under its official path', () => {
+  it('returns the migrated Commerce Message resources under their official path', () => {
     const names = toolNamesInExposurePaths(['commerce.message']);
     expect([...names]).toEqual([
       'ebay_commerce_message_get_conversations',
       'ebay_commerce_message_get_conversation',
+      'ebay_commerce_message_send_message',
     ]);
   });
 

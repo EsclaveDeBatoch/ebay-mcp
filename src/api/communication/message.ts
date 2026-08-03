@@ -12,10 +12,6 @@ import { Effect } from 'effect';
 type BulkUpdateConversationsRequest = components['schemas']['BulkUpdateConversationsRequest'];
 /** Response returned by bulkUpdateConversation. */
 type BulkUpdateConversationsResponse = components['schemas']['BulkUpdateConversationsResponse'];
-/** Request body accepted by sendMessage. */
-type SendMessageRequest = components['schemas']['SendMessageRequest'];
-/** Response returned by sendMessage. */
-type SendMessageResponse = components['schemas']['SendMessageResponse'];
 /** Request body accepted by updateConversation. */
 type UpdateConversationRequest = components['schemas']['UpdateConversationRequest'];
 
@@ -56,34 +52,6 @@ export class MessageApi {
       );
 
       return yield* requestPostEffect<BulkUpdateConversationsResponse>(client, path, body);
-    });
-  };
-
-  /**
-   * Sends a message to another eBay user.
-   *
-   * @param messageData - Generated SendMessageRequest body.
-   * @returns An Effect that succeeds with eBay's generated SendMessageResponse.
-   *
-   * @example
-   * ```ts
-   * const sent = await Effect.runPromise(
-   *   messageApi.sendMessage({ messageText: 'Hello', otherPartyUsername: 'buyer_123' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/message/resources/send_message/methods/sendMessage
-   */
-  sendMessage = (
-    messageData: SendMessageRequest,
-  ): Effect.Effect<SendMessageResponse, EbayApiError | EndpointInputError> => {
-    const client = this.client;
-    const path = `${this.basePath}/send_message`;
-
-    return Effect.gen(function* () {
-      const body = yield* requireObjectEffect<SendMessageRequest>(messageData, 'messageData');
-
-      return yield* requestPostEffect<SendMessageResponse>(client, path, body);
     });
   };
 

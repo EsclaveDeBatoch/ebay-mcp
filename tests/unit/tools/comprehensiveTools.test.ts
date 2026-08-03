@@ -146,9 +146,6 @@ describe('Comprehensive Tools Coverage', () => {
         getCategorySuggestions: vi.fn(),
         getItemAspectsForCategory: vi.fn(),
       },
-      message: {
-        sendMessage: vi.fn(),
-      },
       notification: {
         getConfig: vi.fn(),
         updateConfig: vi.fn(),
@@ -1066,19 +1063,6 @@ describe('Comprehensive Tools Coverage', () => {
       };
       await executeTool(mockApi, 'ebay_get_promotions', input);
       expect(mockApi.marketing.getPromotions).toHaveBeenCalledWith(input);
-    });
-  });
-
-  describe('Communication Tools', () => {
-    it('ebay_send_message', async () => {
-      const mockResponse = { messageId: 'MSG123' };
-      vi.mocked(mockApi.message.sendMessage).mockReturnValue(Effect.succeed(mockResponse));
-      const messageData = {
-        messageText: 'Hello',
-        otherPartyUsername: 'buyer123',
-      };
-      await executeTool(mockApi, 'ebay_send_message', messageData);
-      expect(mockApi.message.sendMessage).toHaveBeenCalledWith(messageData);
     });
   });
 

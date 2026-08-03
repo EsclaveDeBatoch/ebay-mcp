@@ -154,7 +154,6 @@ Legacy schemas for messages and notifications.
 
 **Key Schemas:**
 
-- `sendMessageInputSchema` / `sendMessageOutputSchema`
 - `createNotificationSubscriptionInputSchema` / `createNotificationSubscriptionOutputSchema`
 
 ### 4. Fulfillment (`fulfillment/orders.ts`)

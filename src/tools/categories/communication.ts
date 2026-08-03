@@ -3,7 +3,6 @@ import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
 import {
   bulkUpdateConversationSchema,
-  sendMessageSchema,
   updateConversationSchema,
 } from '@/utils/communication/message.js';
 import {
@@ -31,7 +30,7 @@ import {
 } from '@/utils/communication/notification.js';
 
 /**
- * Communication API tools for member messages and notifications.
+ * Legacy Communication tools for notifications and remaining conversation status updates.
  *
  * Each tool derives its transport schema from the same Effect-backed object whose inferred
  * args are passed directly to the endpoint method. Handlers stay at the MCP
@@ -170,14 +169,7 @@ export const communicationEntries: ToolEntry[] = [
     inputSchema: getPublicKeySchema.shape,
     handler: (api, args) => Effect.runPromise(api.notification.getPublicKey(args)),
   }),
-  // Message API - Conversations
-  defineTool({
-    name: 'ebay_send_message',
-    description:
-      'Send a direct message to a buyer regarding a specific transaction or inquiry. Use this to communicate about orders, answer questions, resolve issues, or provide updates.',
-    inputSchema: sendMessageSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.message.sendMessage(args)),
-  }),
+  // Message API - Remaining conversation status updates
   defineTool({
     name: 'ebay_bulk_update_conversation',
     description:

@@ -68,7 +68,7 @@ describe('isReadOnlyTool', () => {
     'ebay_issue_refund',
     'ebay_accept_payment_dispute',
     'ebay_contest_payment_dispute',
-    'ebay_send_message',
+    'ebay_commerce_message_send_message',
     'ebay_set_user_tokens',
     'ebay_enable_inventory_location',
     'ebay_disable_inventory_location',

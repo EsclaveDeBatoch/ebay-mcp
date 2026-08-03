@@ -194,7 +194,6 @@ describe('Tools Layer', () => {
       },
       // Communication APIs
       message: {
-        sendMessage: vi.fn(),
         bulkUpdateConversation: vi.fn(),
         updateConversation: vi.fn(),
       },
@@ -307,7 +306,7 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_campaigns');
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
       expect(toolNames).toContain('ebay_get_category_tree'); // taxonomyTools
-      expect(toolNames).toContain('ebay_send_message'); // communicationTools
+      expect(toolNames).toContain('ebay_update_conversation'); // communicationTools
       expect(toolNames).toContain('ebay_get_vero_reason_codes'); // otherApiTools
     });
   });
