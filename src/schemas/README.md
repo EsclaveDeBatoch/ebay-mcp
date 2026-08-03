@@ -149,7 +149,7 @@ Legacy schemas for messages and notifications.
 
 **Endpoints Covered:**
 
-- Message API (conversations, messages)
+- Remaining Message API write operations
 - Notification API (destinations, subscriptions, topics)
 
 **Key Schemas:**

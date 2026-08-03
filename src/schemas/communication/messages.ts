@@ -77,70 +77,6 @@ export const sendMessageOutputSchema = z.object({
   warnings: z.array(errorSchema).optional(),
 });
 
-const messageSchema = z.object({
-  messageId: z.string().optional(),
-  messageText: z.string().optional(),
-  creationDate: z.string().optional(),
-  senderUsername: z.string().optional(),
-  recipientUsername: z.string().optional(),
-  messageType: z.string().optional(),
-  messageMedia: z.array(messageMediaSchema).optional(),
-});
-
-/**
- * Validates the Communication API get conversations request payload.
- */
-export const getConversationsInputSchema = z.object({
-  limit: z.number().optional().describe('Number of conversations to return'),
-  offset: z.number().optional().describe('Number of conversations to skip'),
-  status: z.string().optional().describe('Filter by conversation status'),
-});
-
-/**
- * Validates the Communication API get conversations response payload.
- */
-export const getConversationsOutputSchema = z.object({
-  conversations: z
-    .array(
-      z.object({
-        conversationId: z.string().optional(),
-        creationDate: z.string().optional(),
-        lastMessageDate: z.string().optional(),
-        subject: z.string().optional(),
-        otherPartyUsername: z.string().optional(),
-        unreadMessageCount: z.number().optional(),
-        status: z.string().optional(),
-      }),
-    )
-    .optional(),
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional(),
-  offset: z.number().optional(),
-  prev: z.string().optional(),
-  total: z.number().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Communication API get conversation request payload.
- */
-export const getConversationInputSchema = z.object({
-  conversationId: z.string().describe('The unique identifier of the conversation'),
-});
-
-/**
- * Validates the Communication API get conversation response payload.
- */
-export const getConversationOutputSchema = z.object({
-  conversationId: z.string().optional(),
-  messages: z.array(messageSchema).optional(),
-  otherPartyUsername: z.string().optional(),
-  subject: z.string().optional(),
-  creationDate: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
 // ============================================================================
 // Notification API Schemas
 // ============================================================================
@@ -275,10 +211,6 @@ export const getCommunicationJsonSchemas = () => {
     // Message API
     sendMessageInput: zodToJsonSchema(sendMessageInputSchema, 'sendMessageInput'),
     sendMessageOutput: zodToJsonSchema(sendMessageOutputSchema, 'sendMessageOutput'),
-    getConversationsInput: zodToJsonSchema(getConversationsInputSchema, 'getConversationsInput'),
-    getConversationsOutput: zodToJsonSchema(getConversationsOutputSchema, 'getConversationsOutput'),
-    getConversationInput: zodToJsonSchema(getConversationInputSchema, 'getConversationInput'),
-    getConversationOutput: zodToJsonSchema(getConversationOutputSchema, 'getConversationOutput'),
 
     // Notification API
     createNotificationDestinationInput: zodToJsonSchema(

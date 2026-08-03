@@ -186,6 +186,20 @@ describe('Scope Utils', () => {
       );
     });
 
+    it.each(['ebay_commerce_message_get_conversations', 'ebay_commerce_message_get_conversation'])(
+      'returns the production message scope for %s',
+      (toolName) => {
+        const requirement = getRequiredScopesForTool(toolName);
+
+        expect(requirement?.requiredScopes).toEqual([
+          'https://api.ebay.com/oauth/api_scope/commerce.message',
+        ]);
+        expect(requirement?.minimumScope).toBe(
+          'https://api.ebay.com/oauth/api_scope/commerce.message',
+        );
+      },
+    );
+
     it('returns the readonly inventory scope for eligible seller-offer listings', () => {
       const requirement = getRequiredScopesForTool('ebay_sell_negotiation_find_eligible_items');
 

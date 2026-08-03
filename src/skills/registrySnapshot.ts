@@ -20,6 +20,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   'commerce.feedback':
     'Pending tasks, feedback history, submissions, replies, and rating metrics from Commerce Feedback',
   'commerce.identity': 'Authenticated eBay account profile information',
+  'commerce.message': 'Buyer-seller conversation lookup from Commerce Message',
   'commerce.translation': 'Listing-title and description translation between supported languages',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
@@ -38,6 +39,7 @@ const FAMILY_BLURBS: Record<string, string> = {
 const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'commerce.feedback', title: 'Commerce Feedback' },
   { namespace: 'commerce.identity', title: 'Commerce Identity' },
+  { namespace: 'commerce.message', title: 'Commerce Message' },
   { namespace: 'commerce.translation', title: 'Commerce Translation' },
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },

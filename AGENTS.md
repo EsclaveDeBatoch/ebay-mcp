@@ -121,8 +121,8 @@ load-bearing constraints:
 - **MCP:** resource modules own schemas, aliases, operations, and named tool definitions.
   The explicit catalogue imports every tool individually. Each definition declares
   `operationKind: 'read' | 'write'`, which owns its MCP annotations and read-only gating.
-  Migrated exposure gates use official paths such as `sell.analytics` and
-  `commerce.feedback` or `sell.negotiation`; legacy categories retain short keys only until migration. Tool
+  Migrated exposure gates use official paths such as `sell.analytics`,
+  `commerce.feedback`, `commerce.message`, or `sell.negotiation`; legacy categories retain short keys only until migration. Tool
   handlers perform one eBay operation; multi-operation behavior receives a named workflow.
 - **UI:** projection happens only in `src/ui/presentation`. Props remain the source of
   truth; do not initialize state from a prop or synchronize props with effects. Use

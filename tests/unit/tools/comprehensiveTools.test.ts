@@ -148,8 +148,6 @@ describe('Comprehensive Tools Coverage', () => {
       },
       message: {
         sendMessage: vi.fn(),
-        getConversations: vi.fn(),
-        getConversation: vi.fn(),
       },
       notification: {
         getConfig: vi.fn(),
@@ -1072,34 +1070,6 @@ describe('Comprehensive Tools Coverage', () => {
   });
 
   describe('Communication Tools', () => {
-    it('ebay_get_conversations', async () => {
-      const mockResponse = { conversations: [] };
-      vi.mocked(mockApi.message.getConversations).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_conversations', {
-        conversationType: 'FROM_MEMBERS',
-        limit: 25,
-        offset: 0,
-      });
-      expect(mockApi.message.getConversations).toHaveBeenCalledWith({
-        conversationType: 'FROM_MEMBERS',
-        limit: 25,
-        offset: 0,
-      });
-    });
-
-    it('ebay_get_conversation', async () => {
-      const mockResponse = { messages: [{ messageId: 'MSG123' }] };
-      vi.mocked(mockApi.message.getConversation).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_conversation', {
-        conversationId: 'CONV123',
-        conversationType: 'FROM_MEMBERS',
-      });
-      expect(mockApi.message.getConversation).toHaveBeenCalledWith({
-        conversationId: 'CONV123',
-        conversationType: 'FROM_MEMBERS',
-      });
-    });
-
     it('ebay_send_message', async () => {
       const mockResponse = { messageId: 'MSG123' };
       vi.mocked(mockApi.message.sendMessage).mockReturnValue(Effect.succeed(mockResponse));

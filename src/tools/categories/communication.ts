@@ -3,8 +3,6 @@ import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
 import {
   bulkUpdateConversationSchema,
-  getConversationSchema,
-  getConversationsSchema,
   sendMessageSchema,
   updateConversationSchema,
 } from '@/utils/communication/message.js';
@@ -173,18 +171,6 @@ export const communicationEntries: ToolEntry[] = [
     handler: (api, args) => Effect.runPromise(api.notification.getPublicKey(args)),
   }),
   // Message API - Conversations
-  defineTool({
-    name: 'ebay_get_conversations',
-    description: 'Get all buyer-seller conversations (paginated)',
-    inputSchema: getConversationsSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.message.getConversations(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_conversation',
-    description: 'Get a specific conversation by ID',
-    inputSchema: getConversationSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.message.getConversation(args)),
-  }),
   defineTool({
     name: 'ebay_send_message',
     description:

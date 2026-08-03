@@ -265,6 +265,16 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
       description: 'Requires write access to reply to feedback',
     },
+    ebay_commerce_message_get_conversations: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
+      description: 'Requires access to retrieve buyer-seller conversations',
+    },
+    ebay_commerce_message_get_conversation: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
+      description: 'Requires access to retrieve one buyer-seller conversation',
+    },
 
     // Messaging Tools
     ebay_send_message: {

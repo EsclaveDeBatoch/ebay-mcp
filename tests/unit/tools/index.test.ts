@@ -195,8 +195,6 @@ describe('Tools Layer', () => {
       // Communication APIs
       message: {
         sendMessage: vi.fn(),
-        getConversations: vi.fn(),
-        getConversation: vi.fn(),
         bulkUpdateConversation: vi.fn(),
         updateConversation: vi.fn(),
       },

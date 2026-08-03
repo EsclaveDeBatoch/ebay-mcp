@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { EBAY_TOOL_EXPOSURE_PATHS } from '@/config/toolExposure.js';
 import {
   createToolGatingController,
   registerMetaTools,
@@ -68,6 +69,14 @@ describe('toolNamesInExposurePaths', () => {
     expect([...names]).toEqual(['ebay_commerce_identity_get_user']);
   });
 
+  it('returns the migrated Commerce Message conversation resource under its official path', () => {
+    const names = toolNamesInExposurePaths(['commerce.message']);
+    expect([...names]).toEqual([
+      'ebay_commerce_message_get_conversations',
+      'ebay_commerce_message_get_conversation',
+    ]);
+  });
+
   it('returns the migrated Commerce Feedback resource under its official path', () => {
     const names = toolNamesInExposurePaths(['commerce.feedback']);
     expect([...names]).toEqual([
@@ -104,7 +113,7 @@ describe('ToolGatingController', () => {
       const result = controller.list({}) as {
         families: { key: string; count: number }[];
       };
-      expect(result.families).toHaveLength(toolCategories.length + 6);
+      expect(result.families).toHaveLength(EBAY_TOOL_EXPOSURE_PATHS.length);
       const inventoryRow = result.families.find((row) => row.key === 'inventory');
       expect(inventoryRow?.count).toBe(inventory.entries.length);
     });

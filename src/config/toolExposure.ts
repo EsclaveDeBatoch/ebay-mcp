@@ -34,6 +34,7 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'trading',
   'commerce.feedback',
   'commerce.identity',
+  'commerce.message',
   'commerce.translation',
   'sell.analytics',
   'sell.negotiation',
