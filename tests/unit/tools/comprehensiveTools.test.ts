@@ -159,7 +159,6 @@ describe('Comprehensive Tools Coverage', () => {
       feedback: {
         getFeedback: vi.fn(),
         leaveFeedbackForBuyer: vi.fn(),
-        getFeedbackRatingSummary: vi.fn(),
       },
       compliance: {
         getListingViolations: vi.fn(),
@@ -1599,21 +1598,6 @@ describe('Comprehensive Tools Coverage', () => {
       };
       await executeTool(mockApi, 'ebay_leave_feedback_for_buyer', args);
       expect(mockApi.feedback.leaveFeedbackForBuyer).toHaveBeenCalledWith(args);
-    });
-
-    it('ebay_get_feedback_rating_summary', async () => {
-      const mockResponse = { feedbackRatingSummary: [] };
-      vi.mocked(mockApi.feedback.getFeedbackRatingSummary).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_feedback_rating_summary', {
-        userId: 'USER123',
-        filter: 'ratingType:{POSITIVE}',
-      });
-      expect(mockApi.feedback.getFeedbackRatingSummary).toHaveBeenCalledWith({
-        userId: 'USER123',
-        filter: 'ratingType:{POSITIVE}',
-      });
     });
   });
 });

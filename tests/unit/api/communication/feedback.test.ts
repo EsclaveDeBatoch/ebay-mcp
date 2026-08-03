@@ -73,25 +73,6 @@ describe('getFeedback', () => {
   });
 });
 
-describe('getFeedbackRatingSummary', () => {
-  it('get feedback rating summary', async () => {
-    const mockResponse = { positive: 100, negative: 0, neutral: 5 };
-    vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-    await Effect.runPromise(
-      api.getFeedbackRatingSummary({
-        userId: 'seller123',
-        filter: 'ratingType:OVERALL_EXPERIENCE',
-      }),
-    );
-
-    expect(client.get).toHaveBeenCalledWith('/commerce/feedback/v1/feedback_rating_summary', {
-      user_id: 'seller123',
-      filter: 'ratingType:OVERALL_EXPERIENCE',
-    });
-  });
-});
-
 describe('leaveFeedbackForBuyer', () => {
   it('leave feedback for buyer', async () => {
     const mockResponse = { feedbackId: '123' };

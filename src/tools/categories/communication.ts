@@ -3,7 +3,6 @@ import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
 import {
   getAwaitingFeedbackSchema,
-  getFeedbackRatingSummarySchema,
   getFeedbackSchema,
   leaveFeedbackForBuyerSchema,
   respondToFeedbackSchema,
@@ -238,11 +237,5 @@ export const communicationEntries: ToolEntry[] = [
     description: 'Respond to feedback received from a buyer',
     inputSchema: respondToFeedbackSchema.shape,
     handler: (api, args) => Effect.runPromise(api.feedback.respondToFeedback(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_feedback_rating_summary',
-    description: 'Get feedback rating summary for a user',
-    inputSchema: getFeedbackRatingSummarySchema.shape,
-    handler: (api, args) => Effect.runPromise(api.feedback.getFeedbackRatingSummary(args)),
   }),
 ];

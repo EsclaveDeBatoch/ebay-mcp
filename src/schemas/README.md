@@ -150,7 +150,7 @@ Legacy schemas for messages, feedback, and notifications.
 **Endpoints Covered:**
 
 - Message API (conversations, messages)
-- Feedback API (leave feedback, respond to feedback)
+- Remaining Feedback API operations (rating summaries use direct Zod in `src/ebay/commerce/feedback/`)
 - Notification API (destinations, subscriptions, topics)
 
 **Key Schemas:**

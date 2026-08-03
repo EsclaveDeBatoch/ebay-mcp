@@ -50,14 +50,6 @@ export interface GetFeedbackInput {
   readonly transactionId?: string;
 }
 
-/** Query parameters accepted by getFeedbackRatingSummary. */
-export interface GetFeedbackRatingSummaryInput {
-  /** eBay user ID whose feedback summary is being retrieved. */
-  readonly userId: string;
-  /** Required rating summary filter, including ratingType. */
-  readonly filter: string;
-}
-
 /** Response returned by getItemsAwaitingFeedback. */
 type AwaitingFeedbackResponse = components['schemas']['AwaitingFeedbackResponse'];
 /** Response returned by getFeedback. */
@@ -66,8 +58,6 @@ type GetFeedbackResponse = components['schemas']['GetFeedbackResponse'];
 type LeaveFeedbackRequest = components['schemas']['LeaveFeedbackRequest'];
 /** Response returned by leaveFeedback. */
 type LeaveFeedbackResponse = components['schemas']['LeaveFeedbackResponse'];
-/** Response returned by getFeedbackRatingSummary. */
-type GetFeedbackRatingSummaryResponse = components['schemas']['GetFeedbackRatingSummaryResponse'];
 /** Request body accepted by respondToFeedback. */
 type RespondToFeedbackRequest = components['schemas']['RespondToFeedbackRequest'];
 /** Response returned by respondToFeedback. */
@@ -169,43 +159,6 @@ export class FeedbackApi {
       });
 
       return yield* requestGetEffect<GetFeedbackResponse>(client, path, params);
-    });
-  };
-
-  /**
-   * Retrieves a feedback rating summary for a user.
-   *
-   * @param input - Required eBay user ID and rating summary filter.
-   * @returns An Effect that succeeds with eBay's generated GetFeedbackRatingSummaryResponse.
-   *
-   * @example
-   * ```ts
-   * const summary = await Effect.runPromise(
-   *   feedbackApi.getFeedbackRatingSummary({
-   *     userId: 'seller_123',
-   *     filter: 'ratingType:OVERALL_EXPERIENCE',
-   *   }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/feedback/resources/feedback_rating_summary/methods/getFeedbackRatingSummary
-   */
-  getFeedbackRatingSummary = (
-    input: GetFeedbackRatingSummaryInput,
-  ): Effect.Effect<GetFeedbackRatingSummaryResponse, EbayApiError | EndpointInputError> => {
-    const client = this.client;
-    const path = `${this.basePath}/feedback_rating_summary`;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<GetFeedbackRatingSummaryInput>(input, 'input');
-      const userId = yield* requireStringEffect(request.userId, 'userId');
-      const filter = yield* requireStringEffect(request.filter, 'filter');
-      const params = buildEndpointParams({
-        userId: { wireName: 'user_id', value: userId },
-        filter: { wireName: 'filter', value: filter },
-      });
-
-      return yield* requestGetEffect<GetFeedbackRatingSummaryResponse>(client, path, params);
     });
   };
 

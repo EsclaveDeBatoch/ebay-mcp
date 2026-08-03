@@ -237,6 +237,11 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope',
       description: 'Requires eBay public-data access for listing translation',
     },
+    ebay_commerce_feedback_get_feedback_rating_summary: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+      description: 'Requires read access to feedback rating summaries',
+    },
 
     // Messaging Tools
     ebay_send_message: {

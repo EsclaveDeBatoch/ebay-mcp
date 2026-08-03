@@ -32,6 +32,7 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'other',
   'developer',
   'trading',
+  'commerce.feedback',
   'commerce.identity',
   'commerce.translation',
   'sell.analytics',

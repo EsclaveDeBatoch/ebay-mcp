@@ -40,18 +40,18 @@ describe('tool registry', () => {
   });
 
   it('executes public handlers added by the registry instead of falling through', async () => {
-    const api = {
+    const legacyApi = {
       feedback: {
-        getFeedbackRatingSummary: vi.fn().mockReturnValue(Effect.succeed({ positive: 1 })),
+        getFeedback: vi.fn().mockReturnValue(Effect.succeed({ feedbackEntries: [] })),
       },
     };
 
-    await executeTool(api as never, 'ebay_get_feedback_rating_summary', {
+    await executeTool(legacyApi as never, 'ebay_get_feedback', {
+      feedbackType: 'FEEDBACK_RECEIVED',
       userId: 'seller',
-      filter: 'ratingType:ALL',
     });
 
-    expect(api.feedback.getFeedbackRatingSummary).toHaveBeenCalledOnce();
+    expect(legacyApi.feedback.getFeedback).toHaveBeenCalledOnce();
   });
 
   it('returns the current unknown-tool error', async () => {

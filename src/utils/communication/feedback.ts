@@ -92,22 +92,6 @@ export const getFeedbackSchema = z.object({
     .optional(),
 });
 
-/** Schema for getFeedbackRatingSummary input. */
-export const getFeedbackRatingSummarySchema = z.object({
-  userId: z.string({
-    message: 'User ID is required',
-    required_error: 'userId is required',
-    invalid_type_error: 'userId must be a string',
-    description: 'The unique identifier of the eBay user',
-  }),
-  filter: z.string({
-    message: 'Filter is required (must include ratingType)',
-    required_error: 'filter is required',
-    invalid_type_error: 'filter must be a string',
-    description: 'Filter with required ratingType parameter',
-  }),
-});
-
 /** Schema for leaveFeedback input. */
 export const leaveFeedbackForBuyerSchema = z.object({
   commentText: z
