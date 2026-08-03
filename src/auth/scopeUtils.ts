@@ -260,6 +260,11 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
       description: 'Requires write access to leave feedback',
     },
+    ebay_commerce_feedback_respond_to_feedback: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.feedback'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      description: 'Requires write access to reply to feedback',
+    },
 
     // Messaging Tools
     ebay_send_message: {

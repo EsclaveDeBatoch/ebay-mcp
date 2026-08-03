@@ -1,7 +1,6 @@
 import { defineTool } from '@/tools/defineTool.js';
 import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
-import { respondToFeedbackSchema } from '@/utils/communication/feedback.js';
 import {
   bulkUpdateConversationSchema,
   getConversationSchema,
@@ -34,7 +33,7 @@ import {
 } from '@/utils/communication/notification.js';
 
 /**
- * Communication API tools for member messages, notifications, and seller feedback.
+ * Communication API tools for member messages and notifications.
  *
  * Each tool derives its transport schema from the same Effect-backed object whose inferred
  * args are passed directly to the endpoint method. Handlers stay at the MCP
@@ -206,12 +205,5 @@ export const communicationEntries: ToolEntry[] = [
       'Update a single conversation (conversationStatus: ACTIVE, ARCHIVE, DELETE; or read flag).',
     inputSchema: updateConversationSchema.shape,
     handler: (api, args) => Effect.runPromise(api.message.updateConversation(args)),
-  }),
-  // Feedback API
-  defineTool({
-    name: 'ebay_respond_to_feedback',
-    description: 'Respond to feedback received from a buyer',
-    inputSchema: respondToFeedbackSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.feedback.respondToFeedback(args)),
   }),
 ];

@@ -142,26 +142,6 @@ export const getConversationOutputSchema = z.object({
 });
 
 // ============================================================================
-// Feedback API Schemas
-// ============================================================================
-
-/**
- * Validates the Communication API respond to feedback request payload.
- */
-export const respondToFeedbackInputSchema = z.object({
-  feedbackId: z.string().describe('The unique identifier of the feedback'),
-  responseText: z.string().describe('The response text'),
-});
-
-/**
- * Validates the Communication API respond to feedback response payload.
- */
-export const respondToFeedbackOutputSchema = z.object({
-  responseId: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-// ============================================================================
 // Notification API Schemas
 // ============================================================================
 
@@ -299,13 +279,6 @@ export const getCommunicationJsonSchemas = () => {
     getConversationsOutput: zodToJsonSchema(getConversationsOutputSchema, 'getConversationsOutput'),
     getConversationInput: zodToJsonSchema(getConversationInputSchema, 'getConversationInput'),
     getConversationOutput: zodToJsonSchema(getConversationOutputSchema, 'getConversationOutput'),
-
-    // Feedback API
-    respondToFeedbackInput: zodToJsonSchema(respondToFeedbackInputSchema, 'respondToFeedbackInput'),
-    respondToFeedbackOutput: zodToJsonSchema(
-      respondToFeedbackOutputSchema,
-      'respondToFeedbackOutput',
-    ),
 
     // Notification API
     createNotificationDestinationInput: zodToJsonSchema(

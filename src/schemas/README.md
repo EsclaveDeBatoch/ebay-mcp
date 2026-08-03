@@ -10,7 +10,7 @@ src/schemas/
 │   └── account.ts
 ├── inventory-management/  # Inventory items, offers, locations
 │   └── inventory.ts
-├── communication/         # Messages, feedback, notifications
+├── communication/         # Messages and notifications
 │   └── messages.ts
 ├── fulfillment/          # Orders, shipping, refunds
 │   └── orders.ts
@@ -145,12 +145,11 @@ Schemas for inventory items, offers, locations, and product compatibility.
 
 ### 3. Communication (`communication/messages.ts`)
 
-Legacy schemas for messages, feedback, and notifications.
+Legacy schemas for messages and notifications.
 
 **Endpoints Covered:**
 
 - Message API (conversations, messages)
-- Legacy respond-to-feedback operation (migrated resources use direct Zod in `src/ebay/commerce/feedback/`)
 - Notification API (destinations, subscriptions, topics)
 
 **Key Schemas:**
@@ -364,7 +363,7 @@ All eBay API endpoints now have comprehensive Effect-backed schemas!
 
 - [x] **Account Management** - 21 endpoints ✅
 - [x] **Inventory Management** - 30 endpoints ✅
-- [x] **Communication** - 11 endpoints ✅
+- [x] **Communication** - legacy message and notification schemas ✅
 - [x] **Fulfillment** - 16 endpoints ✅
 - [x] **Marketing & Promotions** - 71 endpoints ✅
 - [x] **Metadata** - 23 endpoints ✅

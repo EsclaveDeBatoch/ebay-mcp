@@ -20,13 +20,13 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 - [Inventory](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/inventory.ts): Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping
 - [Fulfillment](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/fulfillment.ts): Orders, shipping, refunds, disputes, payment-dispute evidence
 - [Marketing](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/marketing.ts): Promoted-listings campaigns, ads, promotions, bidding, reports
-- [Commerce Feedback](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/feedback): Pending tasks, feedback history, submissions, and user rating metrics
+- [Commerce Feedback](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/feedback): Pending tasks, feedback history, submissions, replies, and user rating metrics
 - [Commerce Identity](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/identity): Authenticated eBay account profile information
 - [Commerce Translation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/translation): Listing-title and description translation between supported languages
 - [Sell Analytics](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/analytics): Seller standards, traffic reports, customer-service metrics
 - [Sell Negotiation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/negotiation): Listings eligible for seller offers and seller-initiated discounted offers
 - [Sell Recommendation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/recommendation): Promoted Listings recommendations for active listings
-- [Communication](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/communication.ts): Buyer–seller messaging, notifications, and remaining feedback operations
+- [Communication](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/communication.ts): Buyer–seller messaging and notifications
 - [Taxonomy](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/taxonomy.ts): Category trees, item aspects, item conditions
 - [Metadata](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/metadata.ts): Return policies, sales-tax jurisdictions, automotive compatibility
 - [Other](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/other.ts): Compliance, VeRO, and international shipping support APIs

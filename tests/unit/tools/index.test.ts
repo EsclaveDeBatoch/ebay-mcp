@@ -222,9 +222,6 @@ describe('Tools Layer', () => {
         deleteSubscriptionFilter: vi.fn(),
         getPublicKey: vi.fn(),
       },
-      feedback: {
-        respondToFeedback: vi.fn(),
-      },
       // Other APIs
       compliance: {
         getListingViolations: vi.fn(),

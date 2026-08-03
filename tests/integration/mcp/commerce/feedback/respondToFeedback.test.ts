@@ -1,43 +1,48 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { FeedbackRatingSummary } from '@/ebay/commerce/feedback/feedbackRatingSummary.js';
+import type {
+  FeedbackReplyArguments,
+  FeedbackReplyConfirmation,
+} from '@/ebay/commerce/feedback/respondToFeedback.js';
 import type { EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
 import { ebayFailures, sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
-import { feedbackRatingSummaryDocument } from '@tests/fixtures/feedbackRatingSummary.js';
 import { callEbayTool, listEbayTools } from '@tests/fixtures/mcp.js';
 
-const toolName = 'ebay_commerce_feedback_get_feedback_rating_summary';
-const feedbackRatingSummaryArguments = {
-  filter: 'ratingType:OVERALL_EXPERIENCE,excludeRepeatFeedback:true,lookbackPeriodInDays:90',
-  user_id: 'seller-123',
+const toolName = 'ebay_commerce_feedback_respond_to_feedback';
+const feedbackReplyArguments: FeedbackReplyArguments = {
+  feedbackId: 'feedback-123',
+  recipientUserId: 'buyer-123',
+  responseText: 'Thank you for sharing your experience.',
+  responseType: 'REPLY',
 };
 
 afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-describe('Commerce Feedback rating-summary MCP exposure', () => {
-  it('does not retain the old flat compatibility name', async () => {
+describe('Commerce Feedback respond-to-feedback MCP exposure', () => {
+  it('exposes the official hierarchical name without its flat predecessor', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
-    const { sellerSession } = sellerSessionReturning<FeedbackRatingSummary>({
+    const { sellerSession } = sellerSessionReturning<FeedbackReplyConfirmation>({
       kind: 'ebayRequestSucceeded',
-      ebayDocument: feedbackRatingSummaryDocument,
+      ebayDocument: {},
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
-    const ratingSummaryTools = listedTools.tools
-      .map((ebayTool) => ebayTool.name)
-      .filter((listedToolName) => listedToolName.includes('feedback_rating_summary'));
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
 
-    expect(ratingSummaryTools).toEqual([toolName]);
+    expect(listedToolNames.filter((listedToolName) => listedToolName === toolName)).toEqual([
+      toolName,
+    ]);
+    expect(listedToolNames).not.toContain('ebay_respond_to_feedback');
     await mcpClient.close();
   });
 
-  it('shares its official namespace gate with the awaiting-feedback resource', async () => {
+  it('shares the official Commerce Feedback namespace gate', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'commerce.feedback');
     vi.stubEnv('EBAY_MCP_UI', 'off');
-    const { sellerSession } = sellerSessionReturning<FeedbackRatingSummary>({
+    const { sellerSession } = sellerSessionReturning<FeedbackReplyConfirmation>({
       kind: 'ebayRequestSucceeded',
-      ebayDocument: feedbackRatingSummaryDocument,
+      ebayDocument: {},
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
@@ -45,83 +50,83 @@ describe('Commerce Feedback rating-summary MCP exposure', () => {
       'ebay_commerce_feedback_get_items_awaiting_feedback',
       'ebay_commerce_feedback_get_feedback',
       'ebay_commerce_feedback_leave_feedback',
+      'ebay_commerce_feedback_get_feedback_rating_summary',
       toolName,
-      'ebay_commerce_feedback_respond_to_feedback',
     ]);
     await mcpClient.close();
   });
 
-  it('remains exposed when read-only mode is enabled', async () => {
+  it('is hidden when read-only mode is enabled', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'commerce.feedback');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     vi.stubEnv('EBAY_READ_ONLY', 'true');
-    const { sellerSession } = sellerSessionReturning<FeedbackRatingSummary>({
+    const { sellerSession } = sellerSessionReturning<FeedbackReplyConfirmation>({
       kind: 'ebayRequestSucceeded',
-      ebayDocument: feedbackRatingSummaryDocument,
+      ebayDocument: {},
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
     expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
       'ebay_commerce_feedback_get_items_awaiting_feedback',
       'ebay_commerce_feedback_get_feedback',
-      toolName,
+      'ebay_commerce_feedback_get_feedback_rating_summary',
     ]);
     await mcpClient.close();
   });
 });
 
-describe('Commerce Feedback rating-summary MCP call', () => {
-  it('returns every generated eBay field unchanged', async () => {
+describe('Commerce Feedback respond-to-feedback MCP call', () => {
+  it('submits the exact reply document and returns the empty confirmation unchanged', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
-    const successfulLookup: EbayRequestCompletion<FeedbackRatingSummary> = {
+    const successfulReply: EbayRequestCompletion<FeedbackReplyConfirmation> = {
       kind: 'ebayRequestSucceeded',
-      ebayDocument: feedbackRatingSummaryDocument,
+      ebayDocument: {},
     };
-    const { sellerSession, getCalls } = sellerSessionReturning(successfulLookup);
+    const { sellerSession, postCalls } = sellerSessionReturning(successfulReply);
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
       toolName,
-      feedbackRatingSummaryArguments,
+      feedbackReplyArguments,
     );
 
-    expect(getCalls).toEqual([
+    expect(postCalls).toEqual([
       {
-        endpoint: '/commerce/feedback/v1/feedback_rating_summary',
-        searchParameters: feedbackRatingSummaryArguments,
+        endpoint: '/commerce/feedback/v1/respond_to_feedback',
+        requestDocument: feedbackReplyArguments,
       },
     ]);
     expect(toolCompletion).toMatchObject({
-      content: [{ type: 'text', text: JSON.stringify(feedbackRatingSummaryDocument, null, 2) }],
+      content: [{ type: 'text', text: JSON.stringify({}, null, 2) }],
     });
     expect(toolCompletion.isError).not.toBe(true);
     await mcpClient.close();
   });
 });
 
-describe('Commerce Feedback rating-summary MCP validation', () => {
-  it('rejects an unsupported rating type and renamed user field before the seller session', async () => {
+describe('Commerce Feedback respond-to-feedback MCP validation', () => {
+  it('rejects incomplete feedback replies before the seller session', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
-    const { sellerSession, getCalls } = sellerSessionReturning<FeedbackRatingSummary>({
+    const { sellerSession, postCalls } = sellerSessionReturning<FeedbackReplyConfirmation>({
       kind: 'ebayRequestSucceeded',
-      ebayDocument: feedbackRatingSummaryDocument,
+      ebayDocument: {},
     });
 
     const { mcpClient, toolCompletion } = await callEbayTool(sellerSession, toolName, {
-      filter: 'ratingType:ALL',
-      userId: 'seller-123',
+      feedbackId: 'feedback-123',
+      responseText: 'Thank you.',
     });
 
     expect(toolCompletion).toMatchObject({ isError: true });
-    expect(getCalls).toEqual([]);
+    expect(postCalls).toEqual([]);
     await mcpClient.close();
   });
 });
 
-describe('Commerce Feedback rating-summary MCP failures', () => {
+describe('Commerce Feedback respond-to-feedback MCP failures', () => {
   it.each(ebayFailures)('translates a $kind failure once', async (ebayFailure) => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
-    const { sellerSession } = sellerSessionReturning<FeedbackRatingSummary>({
+    const { sellerSession } = sellerSessionReturning<FeedbackReplyConfirmation>({
       kind: 'ebayRequestFailed',
       ebayFailure,
     });
@@ -129,7 +134,7 @@ describe('Commerce Feedback rating-summary MCP failures', () => {
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
       toolName,
-      feedbackRatingSummaryArguments,
+      feedbackReplyArguments,
     );
 
     expect(toolCompletion).toMatchObject({

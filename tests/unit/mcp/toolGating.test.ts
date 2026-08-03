@@ -75,6 +75,7 @@ describe('toolNamesInExposurePaths', () => {
       'ebay_commerce_feedback_get_feedback',
       'ebay_commerce_feedback_leave_feedback',
       'ebay_commerce_feedback_get_feedback_rating_summary',
+      'ebay_commerce_feedback_respond_to_feedback',
     ]);
   });
 

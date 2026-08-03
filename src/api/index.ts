@@ -1,6 +1,5 @@
 import { AccountApi } from '@/api/account-management/account.js';
 import { EbayApiClient } from '@/api/client.js';
-import { FeedbackApi } from '@/api/communication/feedback.js';
 import { MessageApi } from '@/api/communication/message.js';
 import { NotificationApi } from '@/api/communication/notification.js';
 import { DeveloperApi } from '@/api/developer/developer.js';
@@ -37,7 +36,6 @@ export class EbaySellerApi {
   public taxonomy: TaxonomyApi;
   public message: MessageApi;
   public notification: NotificationApi;
-  public feedback: FeedbackApi;
   public compliance: ComplianceApi;
   public vero: VeroApi;
   public edelivery: EDeliveryApi;
@@ -59,7 +57,6 @@ export class EbaySellerApi {
     this.taxonomy = new TaxonomyApi(this.client);
     this.message = new MessageApi(this.client);
     this.notification = new NotificationApi(this.client);
-    this.feedback = new FeedbackApi(this.client);
     this.compliance = new ComplianceApi(this.client);
     this.vero = new VeroApi(this.client);
     this.edelivery = new EDeliveryApi(this.client);
@@ -130,7 +127,6 @@ export class EbaySellerApi {
 
 export * from '@/api/account-management/account.js';
 export * from '@/api/client.js';
-export * from '@/api/communication/feedback.js';
 export * from '@/api/communication/message.js';
 export * from '@/api/communication/notification.js';
 export * from '@/api/listing-management/inventory.js';

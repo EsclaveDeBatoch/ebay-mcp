@@ -156,9 +156,6 @@ describe('Comprehensive Tools Coverage', () => {
         updateConfig: vi.fn(),
         createDestination: vi.fn(),
       },
-      feedback: {
-        respondToFeedback: vi.fn(),
-      },
       compliance: {
         getListingViolations: vi.fn(),
         getListingViolationsSummary: vi.fn(),
