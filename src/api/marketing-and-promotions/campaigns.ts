@@ -15,10 +15,8 @@ import type {
   endCampaignInputSchema,
   findCampaignByAdReferenceInputSchema,
   getCampaignByNameInputSchema,
-  launchCampaignInputSchema,
   pauseCampaignInputSchema,
   resumeCampaignInputSchema,
-  setupQuickCampaignInputSchema,
   suggestBudgetInputSchema,
   suggestItemsInputSchema,
   suggestMaxCpcInputSchema,
@@ -45,10 +43,8 @@ type FindCampaignByAdReferenceInput = InferEffectSchema<
   typeof findCampaignByAdReferenceInputSchema
 >;
 type GetCampaignByNameInput = InferEffectSchema<typeof getCampaignByNameInputSchema>;
-type LaunchCampaignInput = InferEffectSchema<typeof launchCampaignInputSchema>;
 type PauseCampaignInput = InferEffectSchema<typeof pauseCampaignInputSchema>;
 type ResumeCampaignInput = InferEffectSchema<typeof resumeCampaignInputSchema>;
-type SetupQuickCampaignInput = InferEffectSchema<typeof setupQuickCampaignInputSchema>;
 type SuggestBudgetInput = InferEffectSchema<typeof suggestBudgetInputSchema>;
 type SuggestItemsInput = InferEffectSchema<typeof suggestItemsInputSchema>;
 type SuggestMaxCpcInput = InferEffectSchema<typeof suggestMaxCpcInputSchema>;
@@ -117,13 +113,6 @@ export type FindCampaignByAdReferenceResponse =
 export type GetCampaignByNameResponse = MarketingOperationResponse<'getCampaignByName'>;
 
 /**
- * Response returned by eBay Marketing API launchCampaign.
- *
- * @see https://developer.ebay.com/api-docs/sell/marketing/resources/campaign/methods/launchCampaign
- */
-export type LaunchCampaignResponse = MarketingOperationResponse<'launchCampaign'>;
-
-/**
  * Response returned by eBay Marketing API pauseCampaign.
  *
  * @see https://developer.ebay.com/api-docs/sell/marketing/resources/campaign/methods/pauseCampaign
@@ -136,13 +125,6 @@ export type PauseCampaignResponse = MarketingOperationResponse<'pauseCampaign'>;
  * @see https://developer.ebay.com/api-docs/sell/marketing/resources/campaign/methods/resumeCampaign
  */
 export type ResumeCampaignResponse = MarketingOperationResponse<'resumeCampaign'>;
-
-/**
- * Response returned by eBay Marketing API setupQuickCampaign.
- *
- * @see https://developer.ebay.com/api-docs/sell/marketing/resources/campaign/methods/setupQuickCampaign
- */
-export type SetupQuickCampaignResponse = MarketingOperationResponse<'setupQuickCampaign'>;
 
 /**
  * Response returned by eBay Marketing API suggestBudget.
@@ -381,26 +363,6 @@ export const createMarketingCampaignsMethods = (client: EbayApiClient) => ({
   },
 
   /**
-   * Launch campaign through the eBay Marketing API.
-   *
-   * @param input - Path, query, header, and request body values for launchCampaign.
-   * @returns An Effect that succeeds with eBay's generated launchCampaign response DTO.
-   *
-   * @example
-   * ```ts
-   * const response = await Effect.runPromise(marketingApi.launchCampaign({ campaignId: 'campaign-1' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/marketing/resources/campaign/methods/launchCampaign
-   */
-  launchCampaign: (
-    input: LaunchCampaignInput,
-  ): Effect.Effect<LaunchCampaignResponse, EbayApiError> => {
-    const path = `${MARKETING_BASE_PATH}/ad_campaign/${input.campaignId}/launch`;
-    return requestPostEffect<LaunchCampaignResponse>(client, path);
-  },
-
-  /**
    * Pause campaign through the eBay Marketing API.
    *
    * @param input - Path, query, header, and request body values for pauseCampaign.
@@ -438,26 +400,6 @@ export const createMarketingCampaignsMethods = (client: EbayApiClient) => ({
   ): Effect.Effect<ResumeCampaignResponse, EbayApiError> => {
     const path = `${MARKETING_BASE_PATH}/ad_campaign/${input.campaignId}/resume`;
     return requestPostEffect<ResumeCampaignResponse>(client, path);
-  },
-
-  /**
-   * Setup quick campaign through the eBay Marketing API.
-   *
-   * @param input - Path, query, header, and request body values for setupQuickCampaign.
-   * @returns An Effect that succeeds with eBay's generated setupQuickCampaign response DTO.
-   *
-   * @example
-   * ```ts
-   * const response = await Effect.runPromise(marketingApi.setupQuickCampaign({ request: { ... } }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/marketing/resources/campaign/methods/setupQuickCampaign
-   */
-  setupQuickCampaign: (
-    input: SetupQuickCampaignInput,
-  ): Effect.Effect<SetupQuickCampaignResponse, EbayApiError> => {
-    const path = `${MARKETING_BASE_PATH}/ad_campaign/setup_quick_campaign`;
-    return requestPostEffect<SetupQuickCampaignResponse>(client, path, input.request);
   },
 
   /**

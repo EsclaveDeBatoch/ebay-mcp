@@ -6,7 +6,6 @@ import { inventoryEntries } from './inventory.js';
 import { fulfillmentEntries } from './fulfillment.js';
 import { marketingEntries } from './marketing.js';
 import { metadataEntries } from './metadata.js';
-import { browseEntries } from './browse.js';
 import { otherEntries } from './other.js';
 import { tradingEntries } from './trading.js';
 
@@ -37,7 +36,6 @@ export const toolCategories: ToolCategory[] = [
   { key: 'fulfillment', title: 'Fulfillment', entries: fulfillmentEntries },
   { key: 'marketing', title: 'Marketing', entries: marketingEntries },
   { key: 'metadata', title: 'Metadata', entries: metadataEntries },
-  { key: 'browse', title: 'Browse', entries: browseEntries },
   { key: 'other', title: 'Other', entries: otherEntries },
   { key: 'trading', title: 'Trading', entries: tradingEntries },
 ];

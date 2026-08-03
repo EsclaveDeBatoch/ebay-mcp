@@ -203,18 +203,15 @@ Schemas for marketplace policies and product compatibility.
 
 ### 6. Other APIs (`other/otherApis.ts`)
 
-Legacy schemas for compliance, VERO, and international shipping.
+Legacy schemas for VeRO and international shipping.
 
 **Endpoints Covered:**
 
-- Sell Compliance API (listing violations, suppression)
 - Commerce VERO API (intellectual property rights reporting)
 - Sell eDelivery International Shipping API (actual costs, services, bundles, packages, labels, tracking)
 
 **Key Schemas:**
 
-- `getUserOutputSchema`
-- `getListingViolationsOutputSchema`
 - `createVeroReportInputSchema` / `createVeroReportOutputSchema`
 - `getActualCostsInputSchema` / `getActualCostsOutputSchema`
 - `createPackageInputSchema` / `createPackageOutputSchema`

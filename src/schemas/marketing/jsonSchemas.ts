@@ -10,7 +10,6 @@ import {
   campaignSchema,
   cloneCampaignRequestSchema,
   createCampaignRequestSchema,
-  quickSetupRequestSchema,
   suggestBudgetResponseSchema,
   suggestMaxCpcRequestSchema,
   suggestMaxCpcResponseSchema,
@@ -264,9 +263,6 @@ export const getMarketingJsonSchemas = () => {
     ),
     getEmailPreviewOutput: zodToJsonSchema(getEmailPreviewResponseSchema, 'getEmailPreviewOutput'),
     getEmailReportOutput: zodToJsonSchema(getEmailReportResponseSchema, 'getEmailReportOutput'),
-
-    // Quick Setup
-    quickSetupInput: zodToJsonSchema(quickSetupRequestSchema, 'quickSetupInput'),
 
     // Common schemas
     error: zodToJsonSchema(errorSchema, 'error'),

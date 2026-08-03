@@ -8,7 +8,7 @@ The checked-in implementation spreads one eBay operation across an Effect schema
 schema adapters, API classes, a global facade, tool categories, handler maps, registries,
 response schemas, and UI mappers. The scan behind this decision found hundreds of Effect
 programs and boundary runners, nearly 600 authored schemas, six schema-adapter files, and
-297 tools whose public behavior is difficult to understand from one place.
+a large tool catalogue whose public behavior is difficult to understand from one place.
 
 The MCP SDK accepts Zod schemas directly. The generated OpenAPI documents already describe
 eBay responses. eBay's own namespace/API/resource hierarchy is a more stable navigation
@@ -64,7 +64,7 @@ must not be expanded into a second permanent architecture.
 - Removing the facade and endpoint classes makes authentication and transport dependencies
   explicit.
 - The explicit catalogue is deliberately repetitive. Its repeated imports make the public
-  297-tool surface searchable and prevent silent discovery behavior.
+  tool surface searchable and prevent silent discovery behavior.
 - The migration is intentionally breaking at internal import and tool-name boundaries;
   recoverability comes from green pull requests, not compatibility layers.
 

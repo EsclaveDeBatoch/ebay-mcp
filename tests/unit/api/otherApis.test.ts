@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DisputeApi } from '@/api/order-management/dispute.js';
-import { ComplianceApi } from '@/api/other/compliance.js';
 import { VeroApi } from '@/api/other/vero.js';
 import { EDeliveryApi } from '@/api/other/edelivery.js';
 import type { EbayApiClient } from '@/api/client.js';
@@ -73,42 +72,6 @@ describe('Other APIs', () => {
         '/sell/fulfillment/v1/payment_dispute/DISPUTE123/accept',
         { returnAddress: {} },
       );
-    });
-  });
-
-  describe('ComplianceApi', () => {
-    let api: ComplianceApi;
-
-    beforeEach(() => {
-      api = new ComplianceApi(client);
-    });
-
-    it('get listing violations fails with decommission message and does not call eBay', async () => {
-      const error = await Effect.runPromise(
-        Effect.flip(api.getListingViolations({ complianceType: 'PRODUCT_ADOPTION', limit: 10 })),
-      );
-
-      expect(error._tag).toBe('EbayApiError');
-      expect(error.message).toContain('decommissioned the Sell Compliance API on 2026-03-30');
-      expect(error.message).toContain('Issue Resolution Center');
-      expect(client.get).not.toHaveBeenCalled();
-    });
-
-    it('get listing violations summary fails with decommission message and does not call eBay', async () => {
-      const error = await Effect.runPromise(
-        Effect.flip(api.getListingViolationsSummary({ complianceType: 'PRODUCT_ADOPTION' })),
-      );
-
-      expect(error._tag).toBe('EbayApiError');
-      expect(error.message).toContain('decommissioned the Sell Compliance API on 2026-03-30');
-      expect(client.get).not.toHaveBeenCalled();
-    });
-
-    it('get listing violations without params still fails decommissioned (no network)', async () => {
-      const error = await Effect.runPromise(Effect.flip(api.getListingViolations()));
-
-      expect(error._tag).toBe('EbayApiError');
-      expect(client.get).not.toHaveBeenCalled();
     });
   });
 

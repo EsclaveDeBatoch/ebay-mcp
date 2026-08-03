@@ -26,7 +26,6 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'fulfillment',
   'marketing',
   'metadata',
-  'browse',
   'other',
   'trading',
   'commerce.feedback',

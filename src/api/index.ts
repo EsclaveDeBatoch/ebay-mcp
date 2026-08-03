@@ -5,9 +5,7 @@ import { MetadataApi } from '@/api/listing-metadata/metadata.js';
 import { MarketingApi } from '@/api/marketing-and-promotions/marketing.js';
 import { DisputeApi } from '@/api/order-management/dispute.js';
 import { FulfillmentApi } from '@/api/order-management/fulfillment.js';
-import { ComplianceApi } from '@/api/other/compliance.js';
 import { EDeliveryApi } from '@/api/other/edelivery.js';
-import { FindingApi } from '@/api/other/finding.js';
 import { VeroApi } from '@/api/other/vero.js';
 import { TradingApiClient } from '@/api/clientTrading.js';
 import { TradingApi } from '@/api/trading/trading.js';
@@ -29,10 +27,8 @@ export class EbaySellerApi {
   public dispute: DisputeApi;
   public marketing: MarketingApi;
   public metadata: MetadataApi;
-  public compliance: ComplianceApi;
   public vero: VeroApi;
   public edelivery: EDeliveryApi;
-  public finding: FindingApi;
   public trading: TradingApi;
 
   constructor(config: EbayConfig) {
@@ -46,10 +42,8 @@ export class EbaySellerApi {
     this.dispute = new DisputeApi(this.client);
     this.marketing = new MarketingApi(this.client);
     this.metadata = new MetadataApi(this.client);
-    this.compliance = new ComplianceApi(this.client);
     this.vero = new VeroApi(this.client);
     this.edelivery = new EDeliveryApi(this.client);
-    this.finding = new FindingApi(this.client);
     const tradingClient = new TradingApiClient(this.client);
     this.trading = new TradingApi(tradingClient);
   }
@@ -120,9 +114,7 @@ export * from '@/api/listing-metadata/metadata.js';
 export * from '@/api/marketing-and-promotions/marketing.js';
 export * from '@/api/order-management/dispute.js';
 export * from '@/api/order-management/fulfillment.js';
-export * from '@/api/other/compliance.js';
 export * from '@/api/other/edelivery.js';
-export * from '@/api/other/finding.js';
 export * from '@/api/other/vero.js';
 export * from '@/api/trading/trading.js';
 export * from '@/api/clientTrading.js';

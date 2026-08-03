@@ -5,7 +5,7 @@ operating the server, use [README.md](README.md).
 
 ## What this is
 
-A local MCP server exposing 297 tools across eBay's selling APIs. The current TypeScript
+A local MCP server exposing 292 tools across eBay's selling APIs. The current TypeScript
 tree is migrating from Effect-backed, layer-first API/schema/tool code to direct Zod 4,
 native promises, and official eBay resource modules.
 

@@ -186,10 +186,6 @@ describe('Tools Layer', () => {
         getSalesTaxJurisdictions: vi.fn(),
       },
       // Other APIs
-      compliance: {
-        getListingViolations: vi.fn(),
-        getListingViolationsSummary: vi.fn(),
-      },
       vero: {
         reportInfringement: vi.fn(),
         getReportedItems: vi.fn(),
