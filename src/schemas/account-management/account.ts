@@ -92,45 +92,6 @@ export const getSalesTaxesOutputSchema = z.object({
   warnings: z.array(errorSchema).optional(),
 });
 
-// ============================================================================
-// Program Schemas
-// ============================================================================
-
-/**
- * Validates the Account Management API program request model.
- */
-export const programRequestSchema = z.object({
-  programType: z.string(),
-});
-
-/** Validates the Account Management API program opt-in request payload. */
-export const optInToProgramInputSchema = z.object({
-  request: programRequestSchema.describe('Program opt-in request'),
-});
-
-/** Validates the Account Management API program opt-out request payload. */
-export const optOutOfProgramInputSchema = z.object({
-  request: programRequestSchema.describe('Program opt-out request'),
-});
-
-/** Validates the Account Management API get opted-in programs request payload. */
-export const getOptedInProgramsInputSchema = z.object({});
-
-/**
- * Validates the Account Management API programs response payload.
- */
-export const programsOutputSchema = z.object({
-  programs: z
-    .array(
-      z.object({
-        programType: z.string().optional(),
-        programStatus: z.string().optional(),
-      }),
-    )
-    .optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
 /** Validates the Account Management API payments program request payload. */
 export const getPaymentsProgramInputSchema = z.object({
   marketplaceId: z.nativeEnum(MarketplaceId).describe('The eBay marketplace ID'),
@@ -158,13 +119,5 @@ export const getAccountManagementJsonSchemas = () => {
     // Sales Tax
     getSalesTaxesOutput: zodToJsonSchema(getSalesTaxesOutputSchema, 'getSalesTaxesOutput'),
     salesTaxDetails: zodToJsonSchema(salesTaxSchema, 'salesTaxDetails'),
-
-    // Programs
-    programRequest: zodToJsonSchema(programRequestSchema, 'programRequest'),
-    getOptedInProgramsInput: zodToJsonSchema(
-      getOptedInProgramsInputSchema,
-      'getOptedInProgramsInput',
-    ),
-    programsOutput: zodToJsonSchema(programsOutputSchema, 'programsOutput'),
   };
 };

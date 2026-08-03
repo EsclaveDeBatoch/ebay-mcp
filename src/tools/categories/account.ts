@@ -4,15 +4,11 @@ import {
   bulkCreateOrReplaceSalesTaxInputSchema,
   createOrReplaceSalesTaxInputSchema,
   deleteSalesTaxInputSchema,
-  getOptedInProgramsInputSchema,
   getPaymentsProgramInputSchema,
   getPaymentsProgramOnboardingInputSchema,
   getSalesTaxesInputSchema,
   getSalesTaxesOutputSchema,
   getSalesTaxInputSchema,
-  optInToProgramInputSchema,
-  optOutOfProgramInputSchema,
-  programsOutputSchema,
   salesTaxSchema,
 } from '@/schemas/account-management/account.js';
 import { defineTool } from '@/tools/defineTool.js';
@@ -25,7 +21,7 @@ const emptyResponseSchema: OutputArgs = {
   description: 'Empty response on successful operation',
 };
 
-/** Legacy Account API tools for seller tax and programs. */
+/** Legacy Account API tools for seller tax and deprecated payments-program status. */
 export const accountEntries: ToolEntry[] = [
   defineTool({
     name: 'ebay_get_payments_program',
@@ -88,32 +84,5 @@ export const accountEntries: ToolEntry[] = [
     }) as OutputArgs,
     annotations: { readOnlyHint: true },
     handler: (api, args) => Effect.runPromise(api.account.getSalesTaxes(args)),
-  }),
-  defineTool({
-    name: 'ebay_opt_in_to_program',
-    description: 'Opt-in to a seller program',
-    inputSchema: optInToProgramInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false },
-    handler: (api, args) => Effect.runPromise(api.account.optInToProgram(args)),
-  }),
-  defineTool({
-    name: 'ebay_opt_out_of_program',
-    description: 'Opt-out of a seller program',
-    inputSchema: optOutOfProgramInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false },
-    handler: (api, args) => Effect.runPromise(api.account.optOutOfProgram(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_opted_in_programs',
-    description: 'Get seller programs the account is opted into',
-    inputSchema: getOptedInProgramsInputSchema.shape,
-    outputSchema: zodToJsonSchema(programsOutputSchema, {
-      name: 'ProgramsResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getOptedInPrograms(args)),
   }),
 ];

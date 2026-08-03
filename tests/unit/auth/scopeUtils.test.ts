@@ -237,6 +237,32 @@ describe('Scope Utils', () => {
       });
     });
 
+    it('returns either account scope for seller program reads', () => {
+      const requirement = getRequiredScopesForTool('ebay_sell_account_get_opted_in_programs');
+
+      expect(requirement).toEqual({
+        requiredScopes: [
+          'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+          'https://api.ebay.com/oauth/api_scope/sell.account',
+        ],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        description: 'Requires read access to seller program enrollment',
+      });
+    });
+
+    it.each(['ebay_sell_account_opt_in_to_program', 'ebay_sell_account_opt_out_of_program'])(
+      'returns the account write scope for the hierarchical %s tool',
+      (programWriteToolName) => {
+        const requirement = getRequiredScopesForTool(programWriteToolName);
+
+        expect(requirement).toEqual({
+          requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+          minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+          description: 'Requires write access to seller program enrollment',
+        });
+      },
+    );
+
     it.each([
       'ebay_sell_analytics_get_traffic_report',
       'ebay_sell_analytics_find_seller_standards_profiles',

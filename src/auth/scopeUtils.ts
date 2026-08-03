@@ -416,6 +416,26 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires read access to seller account information',
     },
 
+    // Sell Account seller-program tools
+    ebay_sell_account_get_opted_in_programs: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller program enrollment',
+    },
+    ebay_sell_account_opt_in_to_program: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller program enrollment',
+    },
+    ebay_sell_account_opt_out_of_program: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller program enrollment',
+    },
+
     // Marketing Tools
     ebay_get_campaigns: {
       requiredScopes: [

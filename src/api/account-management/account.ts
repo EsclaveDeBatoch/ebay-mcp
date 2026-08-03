@@ -15,8 +15,6 @@ import type {
   getPaymentsProgramOnboardingInputSchema,
   getSalesTaxesInputSchema,
   getSalesTaxInputSchema,
-  optInToProgramInputSchema,
-  optOutOfProgramInputSchema,
 } from '@/schemas/account-management/account.js';
 import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
 import type { Effect } from 'effect';
@@ -24,7 +22,6 @@ import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
 const ACCOUNT_BASE_PATH = '/sell/account/v1';
 
-type EmptyAccountInput = Record<string, never>;
 type GetPaymentsProgramInput = InferEffectSchema<typeof getPaymentsProgramInputSchema>;
 type GetPaymentsProgramOnboardingInput = InferEffectSchema<
   typeof getPaymentsProgramOnboardingInputSchema
@@ -36,16 +33,13 @@ type BulkCreateOrReplaceSalesTaxInput = InferEffectSchema<
 type GetSalesTaxInput = InferEffectSchema<typeof getSalesTaxInputSchema>;
 type DeleteSalesTaxInput = InferEffectSchema<typeof deleteSalesTaxInputSchema>;
 type GetSalesTaxesInput = InferEffectSchema<typeof getSalesTaxesInputSchema>;
-type OptInToProgramInput = InferEffectSchema<typeof optInToProgramInputSchema>;
-type OptOutOfProgramInput = InferEffectSchema<typeof optOutOfProgramInputSchema>;
 
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
 type PaymentsProgramOnboardingResponse = components['schemas']['PaymentsProgramOnboardingResponse'];
-type Programs = components['schemas']['Programs'];
 type SalesTax = components['schemas']['SalesTax'];
 type SalesTaxes = components['schemas']['SalesTaxes'];
 
-/** Legacy Account API client for seller programs, tax, and eligibility. */
+/** Legacy Account API client for seller tax and deprecated payments-program status. */
 export class AccountApi {
   private readonly client: EbayApiClient;
 
@@ -101,58 +95,6 @@ export class AccountApi {
       this.client,
       `${ACCOUNT_BASE_PATH}/payments_program/${input.marketplaceId}/${input.paymentsProgramType}/onboarding`,
     );
-
-  /**
-   * Retrieves seller programs the account has opted into.
-   *
-   * @param _input - Empty object accepted for tool/API shape consistency.
-   * @returns An Effect that succeeds with eBay's generated Programs response.
-   *
-   * @example
-   * ```ts
-   * const programs = await Effect.runPromise(accountApi.getOptedInPrograms({}));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/program/methods/getOptedInPrograms
-   */
-  getOptedInPrograms = (_input: EmptyAccountInput = {}): Effect.Effect<Programs, EbayApiError> =>
-    requestGetEffect<Programs>(this.client, `${ACCOUNT_BASE_PATH}/program/get_opted_in_programs`);
-
-  /**
-   * Opts the seller into an Account API program.
-   *
-   * @param input - Program opt-in request body.
-   * @returns An Effect that succeeds when eBay accepts the opt-in request.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   accountApi.optInToProgram({ request: { programType: 'OUT_OF_STOCK_CONTROL' } }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/program/methods/optInToProgram
-   */
-  optInToProgram = (input: OptInToProgramInput): Effect.Effect<void, EbayApiError> =>
-    requestPostEffect<void>(this.client, `${ACCOUNT_BASE_PATH}/program/opt_in`, input.request);
-
-  /**
-   * Opts the seller out of an Account API program.
-   *
-   * @param input - Program opt-out request body.
-   * @returns An Effect that succeeds when eBay accepts the opt-out request.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   accountApi.optOutOfProgram({ request: { programType: 'OUT_OF_STOCK_CONTROL' } }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/program/methods/optOutOfProgram
-   */
-  optOutOfProgram = (input: OptOutOfProgramInput): Effect.Effect<void, EbayApiError> =>
-    requestPostEffect<void>(this.client, `${ACCOUNT_BASE_PATH}/program/opt_out`, input.request);
 
   /**
    * Creates or replaces one sales tax table entry.

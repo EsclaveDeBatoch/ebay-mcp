@@ -7,7 +7,6 @@ import type { components } from '@/generated/ebay/sell-apps/account-management/s
 
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
 type PaymentsProgramOnboardingResponse = components['schemas']['PaymentsProgramOnboardingResponse'];
-type Programs = components['schemas']['Programs'];
 type SalesTax = components['schemas']['SalesTax'];
 type SalesTaxes = components['schemas']['SalesTaxes'];
 
@@ -28,20 +27,6 @@ describe('AccountApi', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('Account Information', () => {
-    it('gets seller programs the account opted into', async () => {
-      const mockPrograms: Programs = {
-        programs: [{ programType: 'OUT_OF_STOCK_CONTROL' }],
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPrograms);
-
-      expect(await Effect.runPromise(accountApi.getOptedInPrograms({}))).toEqual(mockPrograms);
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/program/get_opted_in_programs');
-    });
   });
 
   describe('Payments Program', () => {
@@ -155,30 +140,6 @@ describe('AccountApi', () => {
         { requests },
       );
       expect(mockClient.delete).toHaveBeenCalledWith('/sell/account/v1/sales_tax/US/CA');
-    });
-  });
-
-  describe('Programs', () => {
-    it('opts in and out of a program', async () => {
-      const request = {
-        programType: 'OUT_OF_STOCK_CONTROL',
-      };
-
-      vi.spyOn(mockClient, 'post').mockResolvedValue(undefined);
-
-      await Effect.runPromise(accountApi.optInToProgram({ request }));
-      await Effect.runPromise(accountApi.optOutOfProgram({ request }));
-
-      expect(mockClient.post).toHaveBeenNthCalledWith(
-        1,
-        '/sell/account/v1/program/opt_in',
-        request,
-      );
-      expect(mockClient.post).toHaveBeenNthCalledWith(
-        2,
-        '/sell/account/v1/program/opt_out',
-        request,
-      );
     });
   });
 });

@@ -77,6 +77,11 @@ import {
   updatePaymentPolicyTool,
 } from '@/ebay/sell/account/paymentPolicy.js';
 import { getPrivilegesTool } from '@/ebay/sell/account/privilege.js';
+import {
+  getOptedInProgramsTool,
+  optInToProgramTool,
+  optOutOfProgramTool,
+} from '@/ebay/sell/account/program.js';
 import { getRateTablesTool } from '@/ebay/sell/account/rateTable.js';
 import {
   createReturnPolicyTool,
@@ -262,6 +267,9 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getAccountSubscriptionTool,
   getKycTool,
   getAdvertisingEligibilityTool,
+  getOptedInProgramsTool,
+  optInToProgramTool,
+  optOutOfProgramTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

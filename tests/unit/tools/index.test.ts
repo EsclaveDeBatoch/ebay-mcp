@@ -63,9 +63,6 @@ describe('Tools Layer', () => {
         deleteSalesTax: vi.fn(),
         getSalesTax: vi.fn(),
         getSalesTaxes: vi.fn(),
-        optInToProgram: vi.fn(),
-        optOutOfProgram: vi.fn(),
-        getOptedInPrograms: vi.fn(),
       },
       // Inventory API
       inventory: {

@@ -21,9 +21,6 @@ describe('Comprehensive Tools Coverage', () => {
         deleteSalesTax: vi.fn(),
         getSalesTax: vi.fn(),
         getSalesTaxes: vi.fn(),
-        optInToProgram: vi.fn(),
-        optOutOfProgram: vi.fn(),
-        getOptedInPrograms: vi.fn(),
       },
       inventory: {
         getInventoryItems: vi.fn(),
@@ -171,29 +168,6 @@ describe('Comprehensive Tools Coverage', () => {
       vi.mocked(mockApi.account.getSalesTaxes).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_sales_taxes', input);
       expect(mockApi.account.getSalesTaxes).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_opt_in_to_program', async () => {
-      const request = { programType: 'TOP_RATED' };
-      const input = { request };
-      vi.mocked(mockApi.account.optInToProgram).mockReturnValue(Effect.succeed(undefined));
-      await executeTool(mockApi, 'ebay_opt_in_to_program', input);
-      expect(mockApi.account.optInToProgram).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_opt_out_of_program', async () => {
-      const request = { programType: 'TOP_RATED' };
-      const input = { request };
-      vi.mocked(mockApi.account.optOutOfProgram).mockReturnValue(Effect.succeed(undefined));
-      await executeTool(mockApi, 'ebay_opt_out_of_program', input);
-      expect(mockApi.account.optOutOfProgram).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_opted_in_programs', async () => {
-      const mockResponse = { programs: [] };
-      vi.mocked(mockApi.account.getOptedInPrograms).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_opted_in_programs', {});
-      expect(mockApi.account.getOptedInPrograms).toHaveBeenCalledWith({});
     });
   });
 

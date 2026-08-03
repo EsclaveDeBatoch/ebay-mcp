@@ -6,7 +6,7 @@ This directory contains comprehensive Effect-backed schemas for eBay API endpoin
 
 ```
 src/schemas/
-├── account-management/    # Legacy Account tax and programs
+├── account-management/    # Legacy Account tax and deprecated payments status
 │   └── account.ts
 ├── inventory-management/  # Inventory items, offers, locations
 │   └── inventory.ts
@@ -97,12 +97,11 @@ const tool = {
 
 ### 1. Account Management (`account-management/account.ts`)
 
-Schemas for the legacy seller account settings and programs that have not migrated yet.
+Schemas for the legacy seller tax settings and deprecated payments-program operations.
 
 **Endpoints Covered:**
 
 - Sales Tax (jurisdiction-based tax rules)
-- Programs (opt-in/opt-out programs)
 - Payments Program (deprecated status and onboarding operations)
 
 **Key Schemas:**

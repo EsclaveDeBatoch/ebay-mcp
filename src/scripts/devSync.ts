@@ -431,6 +431,9 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getratetables: ['ebay_sell_account_get_rate_tables'],
   getkyc: ['ebay_sell_account_get_kyc'],
   getadvertisingeligibility: ['ebay_sell_account_get_advertising_eligibility'],
+  getoptedinprograms: ['ebay_sell_account_get_opted_in_programs'],
+  optintoprogram: ['ebay_sell_account_opt_in_to_program'],
+  optoutofprogram: ['ebay_sell_account_opt_out_of_program'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

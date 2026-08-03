@@ -51,13 +51,6 @@ export const salesTaxBaseSchema = z
   })
   .passthrough();
 
-/** Program enrollment request payload for eBay account programs. */
-export const programRequestSchema = z
-  .object({
-    programType: z.string(),
-  })
-  .passthrough();
-
 // ============================================================================
 // Inventory Management Schemas
 // ============================================================================
