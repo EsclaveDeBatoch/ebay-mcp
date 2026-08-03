@@ -196,9 +196,6 @@ describe('Tools Layer', () => {
       notification: {
         getTopic: vi.fn(),
         getTopics: vi.fn(),
-        createSubscriptionFilter: vi.fn(),
-        getSubscriptionFilter: vi.fn(),
-        deleteSubscriptionFilter: vi.fn(),
       },
       // Other APIs
       compliance: {
@@ -287,7 +284,7 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_campaigns');
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
       expect(toolNames).toContain('ebay_get_category_tree'); // taxonomyTools
-      expect(toolNames).toContain('ebay_create_notification_subscription_filter'); // communicationTools
+      expect(toolNames).toContain('ebay_get_notification_topics'); // communicationTools
       expect(toolNames).toContain('ebay_get_vero_reason_codes'); // otherApiTools
     });
   });

@@ -348,6 +348,15 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
         'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
       description: 'Requires read access to a notification subscription',
     },
+    ebay_commerce_notification_get_subscription_filter: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      ],
+      minimumScope:
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+      description: 'Requires read access to a notification subscription filter',
+    },
     ebay_commerce_notification_create_subscription: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
@@ -377,6 +386,16 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
       description: 'Requires write access to test notification subscriptions',
+    },
+    ebay_commerce_notification_create_subscription_filter: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to create notification subscription filters',
+    },
+    ebay_commerce_notification_delete_subscription_filter: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to delete notification subscription filters',
     },
 
     // Identity Tools

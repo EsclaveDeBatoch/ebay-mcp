@@ -26,6 +26,11 @@ import {
   testSubscriptionTool,
   updateSubscriptionTool,
 } from '@/ebay/commerce/notification/subscription.js';
+import {
+  createSubscriptionFilterTool,
+  deleteSubscriptionFilterTool,
+  getSubscriptionFilterTool,
+} from '@/ebay/commerce/notification/subscriptionFilter.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
@@ -68,6 +73,9 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   disableSubscriptionTool,
   enableSubscriptionTool,
   testSubscriptionTool,
+  createSubscriptionFilterTool,
+  getSubscriptionFilterTool,
+  deleteSubscriptionFilterTool,
   getUserTool,
   translateListingTextTool,
   getTrafficReportTool,

@@ -34,24 +34,3 @@ export const getTopicsSchema = z.object({
   limit: limitSchema,
   continuationToken: continuationTokenSchema,
 });
-
-/** Schema for createSubscriptionFilter input. */
-export const createSubscriptionFilterSchema = z.object({
-  subscriptionId: idSchema('Subscription ID', 'The unique identifier for the subscription'),
-  filterSchema: z
-    .record(z.string(), z.unknown())
-    .optional()
-    .describe('Valid JSON Schema Core document (version 2020-12 or later) to filter notifications'),
-});
-
-/** Schema for getSubscriptionFilter input. */
-export const getSubscriptionFilterSchema = z.object({
-  subscriptionId: idSchema('Subscription ID', 'The unique identifier for the subscription'),
-  filterId: idSchema('Filter ID', 'The unique identifier for the filter'),
-});
-
-/** Schema for deleteSubscriptionFilter input. */
-export const deleteSubscriptionFilterSchema = z.object({
-  subscriptionId: idSchema('Subscription ID', 'The unique identifier for the subscription'),
-  filterId: idSchema('Filter ID', 'The unique identifier for the filter'),
-});

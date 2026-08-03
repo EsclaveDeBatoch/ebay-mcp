@@ -22,7 +22,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   'commerce.identity': 'Authenticated eBay account profile information',
   'commerce.message': 'Buyer-seller conversation lookup and messaging from Commerce Message',
   'commerce.notification':
-    'Alert configuration, delivery destinations, subscriptions, and validation keys from Commerce Notification',
+    'Alert configuration, delivery destinations, subscriptions, filters, and validation keys from Commerce Notification',
   'commerce.translation': 'Listing-title and description translation between supported languages',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
@@ -31,7 +31,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Promoted Listings recommendations for active listings from Sell Recommendation',
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   taxonomy: 'Category trees, category suggestions, and required item aspects',
-  communication: 'Notification topics and subscription filters',
+  communication: 'Notification topics',
   browse: 'Sold/completed listing search (Finding API) for pricing comps',
   other: 'Feedback and assorted Sell-API helpers',
   developer: 'API status, rate limits, client registration, and signing keys',
