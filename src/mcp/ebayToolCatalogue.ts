@@ -76,6 +76,10 @@ import {
   getPaymentPolicyTool,
   updatePaymentPolicyTool,
 } from '@/ebay/sell/account/paymentPolicy.js';
+import {
+  getPaymentsProgramOnboardingTool,
+  getPaymentsProgramTool,
+} from '@/ebay/sell/account/paymentsProgram.js';
 import { getPrivilegesTool } from '@/ebay/sell/account/privilege.js';
 import {
   getOptedInProgramsTool,
@@ -282,6 +286,8 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   deleteSalesTaxTool,
   getSalesTaxTool,
   getSalesTaxesTool,
+  getPaymentsProgramTool,
+  getPaymentsProgramOnboardingTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

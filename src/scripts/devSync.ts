@@ -439,6 +439,8 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   deletesalestax: ['ebay_sell_account_delete_sales_tax'],
   getsalestax: ['ebay_sell_account_get_sales_tax'],
   getsalestaxes: ['ebay_sell_account_get_sales_taxes'],
+  getpaymentsprogram: ['ebay_sell_account_get_payments_program'],
+  getpaymentsprogramonboarding: ['ebay_sell_account_get_payments_program_onboarding'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

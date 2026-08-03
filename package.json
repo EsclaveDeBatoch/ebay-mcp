@@ -9,8 +9,9 @@
     "ebay-mcp": "build/index.js"
   },
   "scripts": {
-    "build": "tsc && tsc-alias && pnpm run build:ui",
+    "build": "pnpm run clean:build && tsc && tsc-alias && pnpm run build:ui",
     "build:ui": "tsx src/scripts/buildUi.ts",
+    "clean:build": "tsx scripts/dev/cleanBuild.ts",
     "start": "node build/index.js",
     "dev": "tsx src/index.ts",
     "test": "vitest run",
@@ -62,6 +63,7 @@
     "build/tools/**/*.js",
     "build/utils/**/*.js",
     "build/ui/*.html",
+    "build/ui/**/*.js",
     "build/types/index.js",
     "build/types/ebay.js",
     "build/types/ebayEnums.js",

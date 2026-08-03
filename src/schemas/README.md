@@ -6,8 +6,6 @@ This directory contains comprehensive Effect-backed schemas for eBay API endpoin
 
 ```
 src/schemas/
-├── account-management/    # Legacy deprecated payments status
-│   └── account.ts
 ├── inventory-management/  # Inventory items, offers, locations
 │   └── inventory.ts
 ├── fulfillment/          # Orders, shipping, refunds
@@ -44,12 +42,9 @@ The schemas in this directory serve multiple purposes:
 ### Basic Import
 
 ```typescript
-import { getPaymentsProgramInputSchema } from '@/schemas/account-management/account.js';
+import { getInventoryItemInputSchema } from '@/schemas/inventory-management/inventory.js';
 
-const paymentsProgramArguments = getPaymentsProgramInputSchema.parse({
-  marketplaceId: 'EBAY_US',
-  paymentsProgramType: 'EBAY_PAYMENTS',
-});
+const inventoryItemArguments = getInventoryItemInputSchema.parse({ sku: 'ABC123' });
 ```
 
 ### Using Effect-Backed Schemas for Validation
@@ -94,22 +89,7 @@ const tool = {
 
 ## 📚 Available Schema Categories
 
-### 1. Account Management (`account-management/account.ts`)
-
-Schemas for the legacy deprecated payments-program operations.
-
-**Endpoints Covered:**
-
-- Payments Program (deprecated status and onboarding operations)
-
-**Key Schemas:**
-
-- `getPaymentsProgramInputSchema` / `getPaymentsProgramOnboardingInputSchema`
-
-Migrated Sell Account resources own strict Zod schemas beside their operations. Sales-tax
-schemas live in [`src/ebay/sell/account/salesTax.ts`](../ebay/sell/account/salesTax.ts).
-
-### 2. Inventory Management (`inventory-management/inventory.ts`)
+### 1. Inventory Management (`inventory-management/inventory.ts`)
 
 Schemas for inventory items, offers, locations, and product compatibility.
 
@@ -129,7 +109,7 @@ Schemas for inventory items, offers, locations, and product compatibility.
 - `publishOfferInputSchema` / `publishOfferOutputSchema`
 - `bulkInventoryItemRequestSchema` / `bulkInventoryItemResponseSchema`
 
-### 3. Fulfillment (`fulfillment/orders.ts`)
+### 2. Fulfillment (`fulfillment/orders.ts`)
 
 Schemas for order management, shipping, refunds, and payment disputes.
 
@@ -147,7 +127,7 @@ Schemas for order management, shipping, refunds, and payment disputes.
 - `issueRefundInputSchema` / `issueRefundOutputSchema`
 - `getPaymentDisputeSummariesInputSchema` / `getPaymentDisputeSummariesOutputSchema`
 
-### 4. Marketing & Promotions (`marketing/marketing.ts`)
+### 3. Marketing & Promotions (`marketing/marketing.ts`)
 
 Schemas for advertising campaigns, ads, keywords, promotions, and recommendations.
 
@@ -173,7 +153,7 @@ Schemas for advertising campaigns, ads, keywords, promotions, and recommendation
 - `createItemPromotionInputSchema` / `createItemPromotionOutputSchema`
 - `suggestBidsOutputSchema` / `suggestKeywordsOutputSchema`
 
-### 5. Metadata (`metadata/metadata.ts`)
+### 4. Metadata (`metadata/metadata.ts`)
 
 Schemas for marketplace policies and product compatibility.
 

@@ -39,11 +39,6 @@ type BasePathBinding = {
  */
 const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
   {
-    file: 'src/api/account-management/account.ts',
-    constant: 'ACCOUNT_BASE_PATH',
-    spec: 'specs/ebay/sell-apps/account-management/sell_account_v1_oas3.json',
-  },
-  {
     file: 'src/api/listing-management/shared.ts',
     constant: 'INVENTORY_BASE_PATH',
     spec: 'specs/ebay/sell-apps/listing-management/sell_inventory_v1_oas3.json',

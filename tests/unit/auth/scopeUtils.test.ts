@@ -294,6 +294,22 @@ describe('Scope Utils', () => {
     });
 
     it.each([
+      'ebay_sell_account_get_payments_program',
+      'ebay_sell_account_get_payments_program_onboarding',
+    ])('returns either account scope for the hierarchical %s read', (paymentsProgramToolName) => {
+      const paymentsProgramScopeRequirement = getRequiredScopesForTool(paymentsProgramToolName);
+
+      expect(paymentsProgramScopeRequirement).toEqual({
+        requiredScopes: [
+          'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+          'https://api.ebay.com/oauth/api_scope/sell.account',
+        ],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        description: 'Requires read access to deprecated payments-program status',
+      });
+    });
+
+    it.each([
       'ebay_sell_analytics_get_traffic_report',
       'ebay_sell_analytics_find_seller_standards_profiles',
       'ebay_sell_analytics_get_seller_standards_profile',

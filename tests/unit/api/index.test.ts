@@ -56,7 +56,6 @@ describe('EbaySellerApi', () => {
     });
 
     it('have all API modules', () => {
-      expect(api.account).toBeDefined();
       expect(api.inventory).toBeDefined();
       expect(api.marketing).toBeDefined();
     });

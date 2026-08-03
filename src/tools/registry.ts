@@ -136,7 +136,7 @@ export const getToolDefinitions = (): ToolDefinition[] =>
  *
  * @example
  * ```ts
- * const handler = getToolHandler('ebay_get_payments_program');
+ * const handler = getToolHandler('ebay_get_inventory_item');
  * ```
  */
 export const getToolHandler = (toolName: string): ToolHandler | undefined =>
@@ -152,9 +152,8 @@ export const getToolHandler = (toolName: string): ToolHandler | undefined =>
  *
  * @example
  * ```ts
- * const paymentsProgram = await executeTool(api, 'ebay_get_payments_program', {
- *   marketplaceId: 'EBAY_US',
- *   paymentsProgramType: 'EBAY_PAYMENTS',
+ * const inventoryItem = await executeTool(api, 'ebay_get_inventory_item', {
+ *   sku: 'SKU-1',
  * });
  * ```
  */

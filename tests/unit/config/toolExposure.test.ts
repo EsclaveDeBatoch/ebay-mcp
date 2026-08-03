@@ -93,6 +93,13 @@ describe('toolExposure', () => {
       expect(gatingFailure).toContain('inventory');
     });
 
+    it('rejects the removed account compatibility path', () => {
+      const gatingFailure = getToolGatingConfigError({ EBAY_MCP_TOOLS: 'account' });
+
+      expect(gatingFailure).toContain('account');
+      expect(gatingFailure).toContain('sell.account');
+    });
+
     it('rejects a value that contains no exposure paths', () => {
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: ' , , ' })).toContain('no exposure paths');
     });

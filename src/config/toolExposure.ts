@@ -21,7 +21,6 @@ import process from 'node:process';
 export const EBAY_TOOL_EXPOSURE_PATHS = [
   'connector',
   'token-management',
-  'account',
   'inventory',
   'marketing',
   'trading',

@@ -469,6 +469,24 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires write access to seller sales-tax entries',
     },
 
+    // Sell Account deprecated payments-program tools
+    ebay_sell_account_get_payments_program: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to deprecated payments-program status',
+    },
+    ebay_sell_account_get_payments_program_onboarding: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to deprecated payments-program status',
+    },
+
     // Marketing Tools
     ebay_get_campaigns: {
       requiredScopes: [

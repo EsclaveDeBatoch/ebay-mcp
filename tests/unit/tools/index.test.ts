@@ -54,11 +54,6 @@ describe('Tools Layer', () => {
 
     // Create comprehensive mock API
     mockApi = {
-      // Account API
-      account: {
-        getPaymentsProgram: vi.fn(),
-        getPaymentsProgramOnboarding: vi.fn(),
-      },
       // Inventory API
       inventory: {
         getInventoryItems: vi.fn(),
@@ -150,7 +145,6 @@ describe('Tools Layer', () => {
 
       // Check for tools from each category
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-      expect(toolNames).toContain('ebay_get_payments_program'); // accountTools
       expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
       expect(toolNames).toContain('ebay_get_campaigns');
     });

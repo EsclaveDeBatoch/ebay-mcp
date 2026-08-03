@@ -13,10 +13,6 @@ describe('Comprehensive Tools Coverage', () => {
 
     // Create comprehensive mock API
     mockApi = {
-      account: {
-        getPaymentsProgram: vi.fn(),
-        getPaymentsProgramOnboarding: vi.fn(),
-      },
       inventory: {
         getInventoryItems: vi.fn(),
         getInventoryItem: vi.fn(),
@@ -84,33 +80,6 @@ describe('Comprehensive Tools Coverage', () => {
   afterEach(() => {
     process.env = originalEnv;
     vi.clearAllMocks();
-  });
-
-  // ===== ACCOUNT TOOLS =====
-  describe('Account Management Tools', () => {
-    it('ebay_get_payments_program', async () => {
-      const mockResponse = { status: 'OPTED_IN' };
-      const input = {
-        marketplaceId: 'EBAY_US',
-        paymentsProgramType: 'STANDARD',
-      };
-      vi.mocked(mockApi.account.getPaymentsProgram).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_payments_program', input);
-      expect(mockApi.account.getPaymentsProgram).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_payments_program_onboarding', async () => {
-      const mockResponse = { onboardingStatus: 'OPTED_IN' };
-      const input = {
-        marketplaceId: 'EBAY_US',
-        paymentsProgramType: 'STANDARD',
-      };
-      vi.mocked(mockApi.account.getPaymentsProgramOnboarding).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_payments_program_onboarding', input);
-      expect(mockApi.account.getPaymentsProgramOnboarding).toHaveBeenCalledWith(input);
-    });
   });
 
   // ===== INVENTORY TOOLS =====

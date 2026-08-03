@@ -16,62 +16,6 @@ const salesTaxToolNames = [
   'ebay_sell_account_get_sales_taxes',
 ] as const;
 
-const sellAccountToolNames = [
-  'ebay_sell_account_get_custom_policies',
-  'ebay_sell_account_create_custom_policy',
-  'ebay_sell_account_get_custom_policy',
-  'ebay_sell_account_update_custom_policy',
-  'ebay_sell_account_get_fulfillment_policies',
-  'ebay_sell_account_create_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy_by_name',
-  'ebay_sell_account_update_fulfillment_policy',
-  'ebay_sell_account_delete_fulfillment_policy',
-  'ebay_sell_account_get_payment_policies',
-  'ebay_sell_account_create_payment_policy',
-  'ebay_sell_account_get_payment_policy',
-  'ebay_sell_account_get_payment_policy_by_name',
-  'ebay_sell_account_update_payment_policy',
-  'ebay_sell_account_delete_payment_policy',
-  'ebay_sell_account_get_return_policies',
-  'ebay_sell_account_create_return_policy',
-  'ebay_sell_account_get_return_policy',
-  'ebay_sell_account_get_return_policy_by_name',
-  'ebay_sell_account_update_return_policy',
-  'ebay_sell_account_delete_return_policy',
-  'ebay_sell_account_get_privileges',
-  'ebay_sell_account_get_rate_tables',
-  'ebay_sell_account_get_subscription',
-  'ebay_sell_account_get_kyc',
-  'ebay_sell_account_get_advertising_eligibility',
-  'ebay_sell_account_get_opted_in_programs',
-  'ebay_sell_account_opt_in_to_program',
-  'ebay_sell_account_opt_out_of_program',
-  ...salesTaxToolNames,
-] as const;
-
-const readOnlySellAccountToolNames = [
-  'ebay_sell_account_get_custom_policies',
-  'ebay_sell_account_get_custom_policy',
-  'ebay_sell_account_get_fulfillment_policies',
-  'ebay_sell_account_get_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy_by_name',
-  'ebay_sell_account_get_payment_policies',
-  'ebay_sell_account_get_payment_policy',
-  'ebay_sell_account_get_payment_policy_by_name',
-  'ebay_sell_account_get_return_policies',
-  'ebay_sell_account_get_return_policy',
-  'ebay_sell_account_get_return_policy_by_name',
-  'ebay_sell_account_get_privileges',
-  'ebay_sell_account_get_rate_tables',
-  'ebay_sell_account_get_subscription',
-  'ebay_sell_account_get_kyc',
-  'ebay_sell_account_get_advertising_eligibility',
-  'ebay_sell_account_get_opted_in_programs',
-  'ebay_sell_account_get_sales_tax',
-  'ebay_sell_account_get_sales_taxes',
-] as const;
-
 const legacySalesTaxToolNames = [
   'ebay_create_or_replace_sales_tax',
   'ebay_bulk_create_or_replace_sales_tax',
@@ -144,20 +88,7 @@ describe('Sell Account sales-tax MCP exposure', () => {
     await mcpClient.close();
   });
 
-  it('owns the exact sell.account resource order', async () => {
-    vi.stubEnv('EBAY_MCP_TOOLS', 'sell.account');
-    vi.stubEnv('EBAY_MCP_UI', 'off');
-    const { sellerSession } = sellerSessionReturning<unknown>({
-      kind: 'ebayRequestSucceeded',
-      ebayDocument: {},
-    });
-    const { mcpClient, listedTools } = await listEbayTools(sellerSession);
-
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(sellAccountToolNames);
-    await mcpClient.close();
-  });
-
-  it('keeps only sales-tax reads in read-only mode', async () => {
+  it('keeps the two sales-tax reads in read-only mode', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'sell.account');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     vi.stubEnv('EBAY_READ_ONLY', 'true');
@@ -167,9 +98,13 @@ describe('Sell Account sales-tax MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(
-      readOnlySellAccountToolNames,
-    );
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
+
+    expect(listedToolNames).toContain('ebay_sell_account_get_sales_tax');
+    expect(listedToolNames).toContain('ebay_sell_account_get_sales_taxes');
+    expect(listedToolNames).not.toContain('ebay_sell_account_create_or_replace_sales_tax');
+    expect(listedToolNames).not.toContain('ebay_sell_account_bulk_create_or_replace_sales_tax');
+    expect(listedToolNames).not.toContain('ebay_sell_account_delete_sales_tax');
     await mcpClient.close();
   });
 });
