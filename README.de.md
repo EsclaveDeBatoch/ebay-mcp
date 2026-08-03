@@ -251,7 +251,7 @@ Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 22.12 und 
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Kategoriebäume, Artikelmerkmale, Artikelzustände |
 | [Commerce VeRO](src/ebay/commerce/vero/) | Meldungen zu Verletzungen geistigen Eigentums und VeRO-Grundcodes |
 | [Sell eDelivery](src/ebay/sell/edelivery/) | Internationaler Versand über die eDelivery API |
-| [Trading (Legacy-XML)](src/tools/categories/trading.ts) | Festpreisangebote erstellen, überarbeiten, neu einstellen und beenden |
+| [Trading (Legacy-XML)](src/ebay/trading/fixedPriceListing.ts) | Festpreisangebote erstellen, überarbeiten, neu einstellen und beenden |
 | [Developer](src/ebay/developer) | Ratenlimits, Signaturschlüssel und API-Status |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth-URL-Generierung und Token-Verwaltung |
 

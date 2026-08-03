@@ -5,8 +5,6 @@ import { MetadataApi } from '@/api/listing-metadata/metadata.js';
 import { MarketingApi } from '@/api/marketing-and-promotions/marketing.js';
 import { DisputeApi } from '@/api/order-management/dispute.js';
 import { FulfillmentApi } from '@/api/order-management/fulfillment.js';
-import { TradingApiClient } from '@/api/clientTrading.js';
-import { TradingApi } from '@/api/trading/trading.js';
 import type { EbayOAuthError } from '@/auth/oauth.js';
 import type { EbayConfig } from '@/types/ebay.js';
 import type { Effect } from 'effect';
@@ -25,7 +23,6 @@ export class EbaySellerApi {
   public dispute: DisputeApi;
   public marketing: MarketingApi;
   public metadata: MetadataApi;
-  public trading: TradingApi;
 
   constructor(config: EbayConfig) {
     this.config = config;
@@ -38,8 +35,6 @@ export class EbaySellerApi {
     this.dispute = new DisputeApi(this.client);
     this.marketing = new MarketingApi(this.client);
     this.metadata = new MetadataApi(this.client);
-    const tradingClient = new TradingApiClient(this.client);
-    this.trading = new TradingApi(tradingClient);
   }
 
   /**
@@ -108,5 +103,3 @@ export * from '@/api/listing-metadata/metadata.js';
 export * from '@/api/marketing-and-promotions/marketing.js';
 export * from '@/api/order-management/dispute.js';
 export * from '@/api/order-management/fulfillment.js';
-export * from '@/api/trading/trading.js';
-export * from '@/api/clientTrading.js';

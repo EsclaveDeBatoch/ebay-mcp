@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Effect } from 'effect';
 import { getToolDefinitions } from '@/tools/index.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
+import { sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 
 const mcpMock = vi.hoisted(() => ({
   close: vi.fn(),
@@ -36,9 +37,14 @@ describe('MCP runtime', () => {
     const fakeEbaySellerApi = {
       initialize: vi.fn(() => Effect.succeed(undefined)),
     };
+    const { sellerSession } = sellerSessionReturning<unknown>({
+      kind: 'ebayRequestSucceeded',
+      ebayDocument: {},
+    });
 
     const runtime = createEbayMcpRuntime({
       ebaySellerApi: fakeEbaySellerApi as never,
+      sellerSession,
       serverConfig: { name: 'test-mcp', version: '0.0.0' },
     });
 

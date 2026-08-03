@@ -58,6 +58,14 @@ import {
   getSellerStandardsProfileTool,
 } from '@/ebay/sell/analytics/sellerStandardsProfile.js';
 import { getTrafficReportTool } from '@/ebay/sell/analytics/trafficReport.js';
+import {
+  createListingTool,
+  endListingTool,
+  getActiveListingsTool,
+  getListingTool,
+  relistListingTool,
+  reviseListingTool,
+} from '@/ebay/trading/fixedPriceListing.js';
 import { getActualCostsTool } from '@/ebay/sell/edelivery/actualCost.js';
 import {
   cancelBundleTool,
@@ -183,4 +191,10 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   findEligibleItemsTool,
   sendOfferToInterestedBuyersTool,
   findListingRecommendationsTool,
+  getActiveListingsTool,
+  getListingTool,
+  createListingTool,
+  reviseListingTool,
+  endListingTool,
+  relistListingTool,
 ];

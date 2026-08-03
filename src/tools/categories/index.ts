@@ -6,7 +6,6 @@ import { inventoryEntries } from './inventory.js';
 import { fulfillmentEntries } from './fulfillment.js';
 import { marketingEntries } from './marketing.js';
 import { metadataEntries } from './metadata.js';
-import { tradingEntries } from './trading.js';
 
 /**
  * A named group of registered tool entries, owned by one eBay API area (or the
@@ -35,7 +34,6 @@ export const toolCategories: ToolCategory[] = [
   { key: 'fulfillment', title: 'Fulfillment', entries: fulfillmentEntries },
   { key: 'marketing', title: 'Marketing', entries: marketingEntries },
   { key: 'metadata', title: 'Metadata', entries: metadataEntries },
-  { key: 'trading', title: 'Trading', entries: tradingEntries },
 ];
 
 /**

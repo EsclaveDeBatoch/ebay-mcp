@@ -251,7 +251,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 类目树、商品属性、商品成色 |
 | [Commerce VeRO](src/ebay/commerce/vero/) | 知识产权侵权举报与 VeRO 原因代码 |
 | [Sell eDelivery](src/ebay/sell/edelivery/) | 通过 eDelivery API 进行国际配送 |
-| [Trading（旧版 XML）](src/tools/categories/trading.ts) | 固定价格刊登的创建、修改、重新刊登和结束 |
+| [Trading（旧版 XML）](src/ebay/trading/fixedPriceListing.ts) | 固定价格刊登的创建、修改、重新刊登和结束 |
 | [Developer](src/ebay/developer) | 速率限制、签名密钥和 API 状态 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 生成与令牌管理 |
 

@@ -38,7 +38,8 @@ const FAMILY_BLURBS: Record<string, string> = {
   'sell.recommendation':
     'Promoted Listings recommendations for active listings from Sell Recommendation',
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
-  trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',
+  trading:
+    'Legacy Trading API (XML) — retrieve, create, revise, relist, and end fixed-price listings',
 };
 
 const MIGRATED_NAMESPACE_TITLES = [
@@ -56,6 +57,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'sell.edelivery', title: 'Sell eDelivery' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },
+  { namespace: 'trading', title: 'Trading' },
 ] as const;
 
 function familyBlurbFor(familyPath: string, familyTitle: string): string {

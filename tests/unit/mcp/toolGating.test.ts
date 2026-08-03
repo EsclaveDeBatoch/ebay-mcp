@@ -92,6 +92,18 @@ describe('toolNamesInExposurePaths', () => {
     ]);
   });
 
+  it('returns the complete Trading listing namespace under its official path', () => {
+    const tradingToolNames = toolNamesInExposurePaths(['trading']);
+    expect([...tradingToolNames]).toEqual([
+      'ebay_trading_get_active_listings',
+      'ebay_trading_get_listing',
+      'ebay_trading_create_listing',
+      'ebay_trading_revise_listing',
+      'ebay_trading_end_listing',
+      'ebay_trading_relist_listing',
+    ]);
+  });
+
   it('returns the complete Developer Analytics namespace under its official path', () => {
     const developerAnalyticsToolNames = toolNamesInExposurePaths(['developer.analytics']);
     expect([...developerAnalyticsToolNames]).toEqual([

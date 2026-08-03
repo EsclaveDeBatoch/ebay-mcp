@@ -6,6 +6,7 @@ import type {
   EbayPutCall,
   EbaySellerSession,
 } from '@/ebay/ebaySellerSession.js';
+import type { TradingCall, TradingDocument } from '@/ebay/trading/tradingTransport.js';
 
 export const ebayFailures: readonly EbayFailure[] = [
   { kind: 'ebayAuthenticationFailed', message: 'Seller authorization expired' },
@@ -22,11 +23,13 @@ export const sellerSessionReturning = <EbayDocument>(
   readonly getCalls: EbayGetCall[];
   readonly postCalls: EbayPostCall[];
   readonly putCalls: EbayPutCall[];
+  readonly tradingCalls: TradingCall[];
 } => {
   const deleteCalls: EbayDeleteCall[] = [];
   const getCalls: EbayGetCall[] = [];
   const postCalls: EbayPostCall[] = [];
   const putCalls: EbayPutCall[] = [];
+  const tradingCalls: TradingCall[] = [];
   const deleteEbayDocument = <RequestedEbayDocument>(
     ebayDeleteCall: EbayDeleteCall,
   ): Promise<EbayRequestCompletion<RequestedEbayDocument>> => {
@@ -51,12 +54,19 @@ export const sellerSessionReturning = <EbayDocument>(
     putCalls.push(ebayPutCall);
     return Promise.resolve(ebayRequestCompletion as EbayRequestCompletion<RequestedEbayDocument>);
   };
+  const trading = <RequestedEbayDocument extends TradingDocument>(
+    tradingCall: TradingCall,
+  ): Promise<EbayRequestCompletion<RequestedEbayDocument>> => {
+    tradingCalls.push(tradingCall);
+    return Promise.resolve(ebayRequestCompletion as EbayRequestCompletion<RequestedEbayDocument>);
+  };
 
   return {
-    sellerSession: { delete: deleteEbayDocument, get, post, put },
+    sellerSession: { delete: deleteEbayDocument, get, post, put, trading },
     deleteCalls,
     getCalls,
     postCalls,
     putCalls,
+    tradingCalls,
   };
 };

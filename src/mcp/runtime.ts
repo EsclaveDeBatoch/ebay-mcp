@@ -3,14 +3,7 @@ import type { Implementation } from '@modelcontextprotocol/sdk/types.js';
 import { EbaySellerApi } from '@/api/index.js';
 import { getEbayConfig, mcpConfig } from '@/config/environment.js';
 import { parseToolGatingMode } from '@/config/toolExposure.js';
-import {
-  createEbaySellerSession,
-  type EbayDeleteCall,
-  type EbayGetCall,
-  type EbayPostCall,
-  type EbayPutCall,
-  type EbaySellerSession,
-} from '@/ebay/ebaySellerSession.js';
+import { createEbaySellerSession, type EbaySellerSession } from '@/ebay/ebaySellerSession.js';
 import type { EbayTool } from '@/mcp/defineTool.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import { isReadOnlyModeEnabled, isReadOnlyTool } from '@/mcp/readOnlyFilter.js';
@@ -152,16 +145,7 @@ function sellerSessionFor(
   if (runtimeDependencies.sellerSession !== undefined) {
     return runtimeDependencies.sellerSession;
   }
-  return {
-    delete: <EbayDocument>(ebayDeleteCall: EbayDeleteCall) =>
-      createEbaySellerSession(ebaySellerApi.getAuthClient()).delete<EbayDocument>(ebayDeleteCall),
-    get: <EbayDocument>(ebayGetCall: EbayGetCall) =>
-      createEbaySellerSession(ebaySellerApi.getAuthClient()).get<EbayDocument>(ebayGetCall),
-    post: <EbayDocument>(ebayPostCall: EbayPostCall) =>
-      createEbaySellerSession(ebaySellerApi.getAuthClient()).post<EbayDocument>(ebayPostCall),
-    put: <EbayDocument>(ebayPutCall: EbayPutCall) =>
-      createEbaySellerSession(ebaySellerApi.getAuthClient()).put<EbayDocument>(ebayPutCall),
-  };
+  return createEbaySellerSession(ebaySellerApi.getAuthClient());
 }
 
 function registerEbayResourceTool(

@@ -69,7 +69,7 @@ export const buildUsingDoc = (snapshot: RegistrySnapshot): SkillDoc => ({
         "`ebay_commerce_identity_get_user` returns the account profile fields authorized by the token's Identity scopes.",
         '',
         '**Legacy XML path (Trading API).**',
-        '`ebay_create_listing` / `ebay_revise_listing` / `ebay_relist_item` / `ebay_end_listing`, list via `ebay_get_active_listings`. Use only when you specifically need the legacy flow — do not mix it with the REST Inventory model for the same SKU.',
+        '`ebay_trading_create_listing` / `ebay_trading_revise_listing` / `ebay_trading_relist_listing` / `ebay_trading_end_listing`, list via `ebay_trading_get_active_listings`. Use only when you specifically need the legacy flow — do not mix it with the REST Inventory model for the same SKU.',
         '',
         '**Diagnose failing calls.**',
         '`ebay_get_token_status` (auth valid/expiring?) → `ebay_developer_analytics_get_rate_limits` / `ebay_developer_analytics_get_user_rate_limits` (quota hit?) → `ebay_developer_status_get_incidents` (eBay-side outage?).',

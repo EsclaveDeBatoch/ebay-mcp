@@ -2,6 +2,11 @@ import type { EbayApiClient } from '@/api/client.js';
 import { EbayClientRequestError } from '@/api/clientRequestError.js';
 import { getApizBaseUrl } from '@/config/environment.js';
 import type { EbayFailure, EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
+import {
+  createTradingTransport,
+  type TradingCall,
+  type TradingDocument,
+} from '@/ebay/trading/tradingTransport.js';
 import { getErrorMessage } from '@/utils/errors.js';
 
 /** Query values accepted by the shared eBay HTTP client. */
@@ -60,6 +65,9 @@ type EbaySellerSession = {
   readonly put: <EbayDocument>(
     ebayPutCall: EbayPutCall,
   ) => Promise<EbayRequestCompletion<EbayDocument>>;
+  readonly trading: <EbayDocument extends TradingDocument>(
+    tradingCall: TradingCall,
+  ) => Promise<EbayRequestCompletion<EbayDocument>>;
 };
 
 function classifyEbayFailure(thrownFailure: unknown): EbayFailure {
@@ -110,6 +118,67 @@ function completeEbayCall<EbayDocument>(
   );
 }
 
+function completeGetCall<EbayDocument>(
+  ebayApiClient: EbayApiClient,
+  ebayGetCall: EbayGetCall,
+): Promise<EbayRequestCompletion<EbayDocument>> {
+  if (ebayGetCall.apiHost === 'apiz') {
+    const ebaySettings = ebayApiClient.getConfig();
+    const apizBaseUrl = getApizBaseUrl(ebaySettings.environment, ebaySettings.apiBaseUrl);
+    return completeEbayCall(
+      ebayApiClient.getFromUrl<EbayDocument>(
+        `${apizBaseUrl}${ebayGetCall.endpoint}`,
+        ebayGetCall.searchParameters,
+      ),
+    );
+  }
+  if (ebayGetCall.requestHeaders !== undefined) {
+    return completeEbayCall(
+      ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters, {
+        headers: ebayGetCall.requestHeaders,
+      }),
+    );
+  }
+  return completeEbayCall(
+    ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters),
+  );
+}
+
+function completePostCall<EbayDocument>(
+  ebayApiClient: EbayApiClient,
+  ebayPostCall: EbayPostCall,
+): Promise<EbayRequestCompletion<EbayDocument>> {
+  if (ebayPostCall.apiHost === 'apiz') {
+    const ebaySettings = ebayApiClient.getConfig();
+    const apizBaseUrl = getApizBaseUrl(ebaySettings.environment, ebaySettings.apiBaseUrl);
+    const absoluteEndpoint = `${apizBaseUrl}${ebayPostCall.endpoint}`;
+    if (ebayPostCall.searchParameters === undefined && ebayPostCall.requestHeaders === undefined) {
+      return completeEbayCall(
+        ebayApiClient.postToUrl<EbayDocument>(absoluteEndpoint, ebayPostCall.requestDocument),
+      );
+    }
+    return completeEbayCall(
+      ebayApiClient.postToUrl<EbayDocument>(absoluteEndpoint, ebayPostCall.requestDocument, {
+        searchParameters: ebayPostCall.searchParameters,
+        headers: ebayPostCall.requestHeaders,
+      }),
+    );
+  }
+  if (
+    ebayPostCall.requestDocument === undefined &&
+    ebayPostCall.searchParameters === undefined &&
+    ebayPostCall.requestHeaders === undefined
+  ) {
+    return completeEbayCall(ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint));
+  }
+  return completeEbayCall(
+    ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint, ebayPostCall.requestDocument, {
+      searchParameters: ebayPostCall.searchParameters,
+      headers: ebayPostCall.requestHeaders,
+    }),
+  );
+}
+
 export type {
   EbayDeleteCall,
   EbayGetCall,
@@ -135,76 +204,28 @@ export type {
  * const sellerSession = createEbaySellerSession(api.getAuthClient());
  * ```
  */
-export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySellerSession => ({
-  delete: <EbayDocument>(ebayDeleteCall: EbayDeleteCall) =>
-    completeEbayCall(
-      ebayApiClient.delete<EbayDocument>(ebayDeleteCall.endpoint, {
-        searchParameters: ebayDeleteCall.searchParameters,
-        headers: ebayDeleteCall.requestHeaders,
-      }),
-    ),
-  get: <EbayDocument>(ebayGetCall: EbayGetCall) => {
-    if (ebayGetCall.apiHost === 'apiz') {
-      const ebaySettings = ebayApiClient.getConfig();
-      const apizBaseUrl = getApizBaseUrl(ebaySettings.environment, ebaySettings.apiBaseUrl);
-      return completeEbayCall(
-        ebayApiClient.getFromUrl<EbayDocument>(
-          `${apizBaseUrl}${ebayGetCall.endpoint}`,
-          ebayGetCall.searchParameters,
-        ),
-      );
-    }
-    if (ebayGetCall.requestHeaders !== undefined) {
-      return completeEbayCall(
-        ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters, {
-          headers: ebayGetCall.requestHeaders,
+export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySellerSession => {
+  const tradingTransport = createTradingTransport(ebayApiClient);
+  return {
+    delete: <EbayDocument>(ebayDeleteCall: EbayDeleteCall) =>
+      completeEbayCall(
+        ebayApiClient.delete<EbayDocument>(ebayDeleteCall.endpoint, {
+          searchParameters: ebayDeleteCall.searchParameters,
+          headers: ebayDeleteCall.requestHeaders,
         }),
-      );
-    }
-    return completeEbayCall(
-      ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters),
-    );
-  },
-  post: <EbayDocument>(ebayPostCall: EbayPostCall) => {
-    if (ebayPostCall.apiHost === 'apiz') {
-      const ebaySettings = ebayApiClient.getConfig();
-      const apizBaseUrl = getApizBaseUrl(ebaySettings.environment, ebaySettings.apiBaseUrl);
-      const absoluteEndpoint = `${apizBaseUrl}${ebayPostCall.endpoint}`;
-      if (
-        ebayPostCall.searchParameters === undefined &&
-        ebayPostCall.requestHeaders === undefined
-      ) {
-        return completeEbayCall(
-          ebayApiClient.postToUrl<EbayDocument>(absoluteEndpoint, ebayPostCall.requestDocument),
-        );
-      }
-      return completeEbayCall(
-        ebayApiClient.postToUrl<EbayDocument>(absoluteEndpoint, ebayPostCall.requestDocument, {
-          searchParameters: ebayPostCall.searchParameters,
-          headers: ebayPostCall.requestHeaders,
+      ),
+    get: <EbayDocument>(ebayGetCall: EbayGetCall) =>
+      completeGetCall<EbayDocument>(ebayApiClient, ebayGetCall),
+    post: <EbayDocument>(ebayPostCall: EbayPostCall) =>
+      completePostCall<EbayDocument>(ebayApiClient, ebayPostCall),
+    put: <EbayDocument>(ebayPutCall: EbayPutCall) =>
+      completeEbayCall(
+        ebayApiClient.put<EbayDocument>(ebayPutCall.endpoint, ebayPutCall.requestDocument, {
+          searchParameters: ebayPutCall.searchParameters,
+          headers: ebayPutCall.requestHeaders,
         }),
-      );
-    }
-    if (
-      ebayPostCall.requestDocument === undefined &&
-      ebayPostCall.searchParameters === undefined &&
-      ebayPostCall.requestHeaders === undefined
-    ) {
-      return completeEbayCall(ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint));
-    }
-
-    return completeEbayCall(
-      ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint, ebayPostCall.requestDocument, {
-        searchParameters: ebayPostCall.searchParameters,
-        headers: ebayPostCall.requestHeaders,
-      }),
-    );
-  },
-  put: <EbayDocument>(ebayPutCall: EbayPutCall) =>
-    completeEbayCall(
-      ebayApiClient.put<EbayDocument>(ebayPutCall.endpoint, ebayPutCall.requestDocument, {
-        searchParameters: ebayPutCall.searchParameters,
-        headers: ebayPutCall.requestHeaders,
-      }),
-    ),
-});
+      ),
+    trading: <EbayDocument extends TradingDocument>(tradingCall: TradingCall) =>
+      completeEbayCall(tradingTransport.execute<EbayDocument>(tradingCall)),
+  };
+};
