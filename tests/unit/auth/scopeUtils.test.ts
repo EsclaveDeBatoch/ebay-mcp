@@ -152,6 +152,29 @@ describe('Scope Utils', () => {
       );
     });
 
+    it('returns both accepted scopes for feedback lookup', () => {
+      const requirement = getRequiredScopesForTool('ebay_commerce_feedback_get_feedback');
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+      );
+    });
+
+    it('returns the write scope for feedback submission', () => {
+      const requirement = getRequiredScopesForTool('ebay_commerce_feedback_leave_feedback');
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      );
+    });
+
     it('returns the readonly inventory scope for eligible seller-offer listings', () => {
       const requirement = getRequiredScopesForTool('ebay_sell_negotiation_find_eligible_items');
 

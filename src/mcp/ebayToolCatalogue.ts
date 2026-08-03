@@ -1,4 +1,5 @@
 import { getItemsAwaitingFeedbackTool } from '@/ebay/commerce/feedback/awaitingFeedback.js';
+import { getFeedbackTool, leaveFeedbackTool } from '@/ebay/commerce/feedback/feedback.js';
 import { getFeedbackRatingSummaryTool } from '@/ebay/commerce/feedback/feedbackRatingSummary.js';
 import { getUserTool } from '@/ebay/commerce/identity/user.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
@@ -18,6 +19,8 @@ import type { EbayTool } from '@/mcp/defineTool.js';
 /** Explicit catalogue of migrated eBay resource tools. */
 export const ebayToolCatalogue: readonly EbayTool[] = [
   getItemsAwaitingFeedbackTool,
+  getFeedbackTool,
+  leaveFeedbackTool,
   getFeedbackRatingSummaryTool,
   getUserTool,
   translateListingTextTool,

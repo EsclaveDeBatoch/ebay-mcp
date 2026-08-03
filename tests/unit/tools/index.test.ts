@@ -223,8 +223,6 @@ describe('Tools Layer', () => {
         getPublicKey: vi.fn(),
       },
       feedback: {
-        getFeedback: vi.fn(),
-        leaveFeedbackForBuyer: vi.fn(),
         respondToFeedback: vi.fn(),
       },
       // Other APIs

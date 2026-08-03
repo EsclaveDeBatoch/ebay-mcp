@@ -157,8 +157,7 @@ describe('Comprehensive Tools Coverage', () => {
         createDestination: vi.fn(),
       },
       feedback: {
-        getFeedback: vi.fn(),
-        leaveFeedbackForBuyer: vi.fn(),
+        respondToFeedback: vi.fn(),
       },
       compliance: {
         getListingViolations: vi.fn(),
@@ -1567,37 +1566,6 @@ describe('Comprehensive Tools Coverage', () => {
       );
       await executeTool(mockApi, 'ebay_create_notification_destination', args);
       expect(mockApi.notification.createDestination).toHaveBeenCalledWith(args);
-    });
-  });
-
-  describe('Feedback Tools', () => {
-    it('ebay_get_feedback', async () => {
-      const mockResponse = { feedbackEntries: [{ feedbackId: 'FEEDBACK123' }] };
-      vi.mocked(mockApi.feedback.getFeedback).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_feedback', {
-        userId: 'USER123',
-        feedbackType: 'FEEDBACK_RECEIVED',
-        transactionId: 'TRANS123',
-      });
-      expect(mockApi.feedback.getFeedback).toHaveBeenCalledWith({
-        userId: 'USER123',
-        feedbackType: 'FEEDBACK_RECEIVED',
-        transactionId: 'TRANS123',
-      });
-    });
-
-    it('ebay_leave_feedback_for_buyer', async () => {
-      const mockResponse = { feedbackId: 'FEEDBACK123' };
-      vi.mocked(mockApi.feedback.leaveFeedbackForBuyer).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      const args = {
-        listingId: 'LISTING123',
-        commentText: 'Great buyer!',
-        commentType: 'POSITIVE',
-      };
-      await executeTool(mockApi, 'ebay_leave_feedback_for_buyer', args);
-      expect(mockApi.feedback.leaveFeedbackForBuyer).toHaveBeenCalledWith(args);
     });
   });
 });

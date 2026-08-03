@@ -1,11 +1,7 @@
 import { defineTool } from '@/tools/defineTool.js';
 import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
-import {
-  getFeedbackSchema,
-  leaveFeedbackForBuyerSchema,
-  respondToFeedbackSchema,
-} from '@/utils/communication/feedback.js';
+import { respondToFeedbackSchema } from '@/utils/communication/feedback.js';
 import {
   bulkUpdateConversationSchema,
   getConversationSchema,
@@ -212,19 +208,6 @@ export const communicationEntries: ToolEntry[] = [
     handler: (api, args) => Effect.runPromise(api.message.updateConversation(args)),
   }),
   // Feedback API
-  defineTool({
-    name: 'ebay_get_feedback',
-    description: 'Get feedback for a user by type',
-    inputSchema: getFeedbackSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.feedback.getFeedback(args)),
-  }),
-  defineTool({
-    name: 'ebay_leave_feedback_for_buyer',
-    description:
-      'Leave feedback for a buyer. Provide orderLineItemId, commentType (POSITIVE/NEUTRAL/NEGATIVE), and commentText.',
-    inputSchema: leaveFeedbackForBuyerSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.feedback.leaveFeedbackForBuyer(args)),
-  }),
   defineTool({
     name: 'ebay_respond_to_feedback',
     description: 'Respond to feedback received from a buyer',

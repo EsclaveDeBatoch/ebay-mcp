@@ -43,6 +43,8 @@ describe('Commerce Feedback rating-summary MCP exposure', () => {
 
     expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
       'ebay_commerce_feedback_get_items_awaiting_feedback',
+      'ebay_commerce_feedback_get_feedback',
+      'ebay_commerce_feedback_leave_feedback',
       toolName,
     ]);
     await mcpClient.close();
@@ -60,6 +62,7 @@ describe('Commerce Feedback rating-summary MCP exposure', () => {
 
     expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
       'ebay_commerce_feedback_get_items_awaiting_feedback',
+      'ebay_commerce_feedback_get_feedback',
       toolName,
     ]);
     await mcpClient.close();

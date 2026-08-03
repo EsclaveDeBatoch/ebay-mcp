@@ -72,6 +72,8 @@ describe('toolNamesInExposurePaths', () => {
     const names = toolNamesInExposurePaths(['commerce.feedback']);
     expect([...names]).toEqual([
       'ebay_commerce_feedback_get_items_awaiting_feedback',
+      'ebay_commerce_feedback_get_feedback',
+      'ebay_commerce_feedback_leave_feedback',
       'ebay_commerce_feedback_get_feedback_rating_summary',
     ]);
   });

@@ -46,6 +46,7 @@ describe('Commerce Feedback awaiting-feedback MCP exposure', () => {
 
     expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
       toolName,
+      'ebay_commerce_feedback_get_feedback',
       'ebay_commerce_feedback_get_feedback_rating_summary',
     ]);
     await mcpClient.close();

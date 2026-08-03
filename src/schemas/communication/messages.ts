@@ -1,6 +1,6 @@
 import { z } from '@/utils/effectSchema.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import { MessageReferenceType, FeedbackRating } from '@/types/ebayEnums.js';
+import { MessageReferenceType } from '@/types/ebayEnums.js';
 
 /**
  * Communication API Schemas - Messages, Feedback, and Notifications
@@ -144,64 +144,6 @@ export const getConversationOutputSchema = z.object({
 // ============================================================================
 // Feedback API Schemas
 // ============================================================================
-
-/**
- * Validates the Communication API leave feedback request payload.
- */
-export const leaveFeedbackInputSchema = z.object({
-  orderLineItemId: z.string().describe('The unique identifier of the order line item'),
-  rating: z
-    .nativeEnum(FeedbackRating)
-    .describe('The feedback rating (POSITIVE, NEGATIVE, NEUTRAL)'),
-  feedbackText: z.string().optional().describe('The feedback comment text'),
-});
-
-/**
- * Validates the Communication API leave feedback response payload.
- */
-export const leaveFeedbackOutputSchema = z.object({
-  feedbackId: z.string().optional(),
-  transactionId: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Communication API get feedback request payload.
- */
-export const getFeedbackInputSchema = z.object({
-  transactionId: z.string().describe('The transaction ID'),
-});
-
-const feedbackDetailSchema = z.object({
-  feedbackId: z.string().optional(),
-  rating: z.string().optional(),
-  feedbackText: z.string().optional(),
-  commentingUser: z.string().optional(),
-  creationDate: z.string().optional(),
-  itemId: z.string().optional(),
-  transactionId: z.string().optional(),
-  orderLineItemId: z.string().optional(),
-});
-
-/**
- * Validates the Communication API get feedback response payload.
- */
-export const getFeedbackOutputSchema = z.object({
-  feedback: feedbackDetailSchema.optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Communication API get feedback summary response payload.
- */
-export const getFeedbackSummaryOutputSchema = z.object({
-  positiveFeedbackPercent: z.string().optional(),
-  uniquePositiveFeedbackCount: z.number().optional(),
-  uniqueNegativeFeedbackCount: z.number().optional(),
-  uniqueNeutralFeedbackCount: z.number().optional(),
-  averageFeedbackRating: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
 
 /**
  * Validates the Communication API respond to feedback request payload.
@@ -359,14 +301,6 @@ export const getCommunicationJsonSchemas = () => {
     getConversationOutput: zodToJsonSchema(getConversationOutputSchema, 'getConversationOutput'),
 
     // Feedback API
-    leaveFeedbackInput: zodToJsonSchema(leaveFeedbackInputSchema, 'leaveFeedbackInput'),
-    leaveFeedbackOutput: zodToJsonSchema(leaveFeedbackOutputSchema, 'leaveFeedbackOutput'),
-    getFeedbackInput: zodToJsonSchema(getFeedbackInputSchema, 'getFeedbackInput'),
-    getFeedbackOutput: zodToJsonSchema(getFeedbackOutputSchema, 'getFeedbackOutput'),
-    getFeedbackSummaryOutput: zodToJsonSchema(
-      getFeedbackSummaryOutputSchema,
-      'getFeedbackSummaryOutput',
-    ),
     respondToFeedbackInput: zodToJsonSchema(respondToFeedbackInputSchema, 'respondToFeedbackInput'),
     respondToFeedbackOutput: zodToJsonSchema(
       respondToFeedbackOutputSchema,

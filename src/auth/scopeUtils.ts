@@ -247,19 +247,25 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
       description: 'Requires feedback access to retrieve line items awaiting feedback',
     },
+    ebay_commerce_feedback_get_feedback: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+      description: 'Requires read access to retrieve user feedback',
+    },
+    ebay_commerce_feedback_leave_feedback: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.feedback'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      description: 'Requires write access to leave feedback',
+    },
 
     // Messaging Tools
     ebay_send_message: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
       description: 'Requires access to messaging (production only)',
-    },
-
-    // Feedback Tools
-    ebay_leave_feedback_for_buyer: {
-      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.feedback'],
-      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
-      description: 'Requires write access to feedback',
     },
 
     // Identity Tools

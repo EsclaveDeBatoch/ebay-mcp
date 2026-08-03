@@ -92,7 +92,7 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
 | `browse` | Sold/completed listing search (Finding API) for pricing comps | "What have similar items sold for recently?" |
 | `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
-| `commerce.feedback` | Pending feedback tasks and rating metrics for eBay users | "Show transactions where I still owe feedback." |
+| `commerce.feedback` | Pending tasks, feedback history, submissions, and rating metrics | "Show feedback received by my seller account." |
 | `commerce.identity` | Authenticated eBay account profile information | "Show my authenticated eBay account profile." |
 | `commerce.translation` | Listing-title and description translation between supported languages | "Translate this listing title from English to Spanish." |
 | `sell.analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
@@ -304,13 +304,13 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 | [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Orders, shipping, refunds, disputes, payment-dispute evidence |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
-| [Commerce Feedback](src/ebay/commerce/feedback/awaitingFeedback.ts) | Pending feedback tasks and user rating metrics under `commerce.feedback` |
+| [Commerce Feedback](src/ebay/commerce/feedback/) | Pending tasks, feedback history, submissions, and rating metrics under `commerce.feedback` |
 | [Commerce Identity](src/ebay/commerce/identity/user.ts) | Authenticated eBay account profiles under `commerce.identity` |
 | [Commerce Translation](src/ebay/commerce/translation/language.ts) | Listing-title and description translation under `commerce.translation` |
 | [Sell Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic reports, seller standards, and customer-service metrics under `sell.analytics` |
 | [Sell Negotiation](src/ebay/sell/negotiation/offer.ts) | Eligible listings and seller-initiated discounted offers under `sell.negotiation` |
 | [Sell Recommendation](src/ebay/sell/recommendation/listingRecommendation.ts) | Promoted Listings recommendations under `sell.recommendation` |
-| [Communication](src/tools/categories/communication.ts) | Buyerâ€“seller messaging, notifications, feedback |
+| [Communication](src/tools/categories/communication.ts) | Buyerâ€“seller messaging, notifications, and legacy feedback responses |
 | [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Category trees, item aspects, item conditions |
 | [Other](src/tools/categories/other.ts) | VeRO and international shipping support APIs (Compliance tools report eBay decommission) |
@@ -318,7 +318,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 | [Developer](src/tools/categories/developer.ts) | Rate limits, signing keys, client registration |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |
 
-**Example tools:** `ebay_commerce_feedback_get_feedback_rating_summary`, `ebay_commerce_identity_get_user`, `ebay_commerce_translation_translate`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_translation_translate`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 For the complete machine-readable index, see [llms.txt](llms.txt).
 

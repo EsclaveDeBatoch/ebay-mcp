@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   executeTool,
   getToolContracts,
@@ -7,7 +7,6 @@ import {
   validateToolContracts,
   validateToolRegistry,
 } from '@/tools/index.js';
-import { Effect } from 'effect';
 
 const DECOMMISSIONED_LABEL = /DECOMMISSIONED/i;
 const ISSUE_RESOLUTION_CENTER = /Issue Resolution Center/;
@@ -37,21 +36,6 @@ describe('tool registry', () => {
     expect(validation.missingInputSchemas).toEqual([]);
     expect(contracts).toHaveLength(getToolDefinitions().length);
     expect(contracts.some((contract) => contract.outputSchema)).toBe(true);
-  });
-
-  it('executes public handlers added by the registry instead of falling through', async () => {
-    const legacyApi = {
-      feedback: {
-        getFeedback: vi.fn().mockReturnValue(Effect.succeed({ feedbackEntries: [] })),
-      },
-    };
-
-    await executeTool(legacyApi as never, 'ebay_get_feedback', {
-      feedbackType: 'FEEDBACK_RECEIVED',
-      userId: 'seller',
-    });
-
-    expect(legacyApi.feedback.getFeedback).toHaveBeenCalledOnce();
   });
 
   it('returns the current unknown-tool error', async () => {

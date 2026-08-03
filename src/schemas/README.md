@@ -150,13 +150,12 @@ Legacy schemas for messages, feedback, and notifications.
 **Endpoints Covered:**
 
 - Message API (conversations, messages)
-- Remaining Feedback API operations (migrated resources use direct Zod in `src/ebay/commerce/feedback/`)
+- Legacy respond-to-feedback operation (migrated resources use direct Zod in `src/ebay/commerce/feedback/`)
 - Notification API (destinations, subscriptions, topics)
 
 **Key Schemas:**
 
 - `sendMessageInputSchema` / `sendMessageOutputSchema`
-- `leaveFeedbackInputSchema` / `leaveFeedbackOutputSchema`
 - `createNotificationSubscriptionInputSchema` / `createNotificationSubscriptionOutputSchema`
 
 ### 4. Fulfillment (`fulfillment/orders.ts`)
