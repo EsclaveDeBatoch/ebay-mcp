@@ -56,7 +56,6 @@ describe('Tools Layer', () => {
     mockApi = {
       // Account API
       account: {
-        getCustomPolicies: vi.fn(),
         getFulfillmentPolicies: vi.fn(),
         getPaymentPolicies: vi.fn(),
         getReturnPolicies: vi.fn(),
@@ -75,9 +74,6 @@ describe('Tools Layer', () => {
         getReturnPolicyByName: vi.fn(),
         updateReturnPolicy: vi.fn(),
         deleteReturnPolicy: vi.fn(),
-        createCustomPolicy: vi.fn(),
-        getCustomPolicy: vi.fn(),
-        updateCustomPolicy: vi.fn(),
         getKyc: vi.fn(),
         getPaymentsProgram: vi.fn(),
         getPaymentsProgramOnboarding: vi.fn(),
@@ -185,7 +181,7 @@ describe('Tools Layer', () => {
 
       // Check for tools from each category
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-      expect(toolNames).toContain('ebay_get_custom_policies'); // accountTools
+      expect(toolNames).toContain('ebay_get_fulfillment_policies'); // accountTools
       expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
       expect(toolNames).toContain('ebay_get_campaigns');
     });
@@ -551,20 +547,6 @@ describe('Tools Layer', () => {
   });
 
   describe('executeTool - Account Management', () => {
-    it('get custom policies', async () => {
-      const mockResponse = { customPolicies: [] };
-      vi.mocked(mockApi.account.getCustomPolicies).mockReturnValue(Effect.succeed(mockResponse));
-
-      const result = await executeTool(mockApi, 'ebay_get_custom_policies', {
-        policyTypes: 'RETURN_POLICY',
-      });
-
-      expect(mockApi.account.getCustomPolicies).toHaveBeenCalledWith({
-        policyTypes: 'RETURN_POLICY',
-      });
-      expect(result).toBe(mockResponse);
-    });
-
     it('get fulfillment policies', async () => {
       const mockResponse = { fulfillmentPolicies: [] };
       const input = {

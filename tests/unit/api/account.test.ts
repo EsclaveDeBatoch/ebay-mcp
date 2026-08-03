@@ -5,8 +5,6 @@ import type { EbayApiClient } from '@/api/client.js';
 import { MarketplaceId } from '@/types/ebayEnums.js';
 import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
 
-type CustomPolicy = components['schemas']['CustomPolicy'];
-type CustomPolicyResponse = components['schemas']['CustomPolicyResponse'];
 type FulfillmentPolicy = components['schemas']['FulfillmentPolicy'];
 type FulfillmentPolicyResponse = components['schemas']['FulfillmentPolicyResponse'];
 type PaymentPolicy = components['schemas']['PaymentPolicy'];
@@ -42,91 +40,6 @@ describe('AccountApi', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('Custom Policies', () => {
-    it('gets all custom policies without filters', async () => {
-      const mockResponse: CustomPolicyResponse = {
-        customPolicies: [
-          {
-            customPolicyId: '1234567890',
-            name: 'Test Custom Policy',
-          },
-        ],
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(accountApi.getCustomPolicies());
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/custom_policy/');
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('gets custom policies with a policy type filter', async () => {
-      vi.spyOn(mockClient, 'get').mockResolvedValue({ customPolicies: [] });
-
-      await Effect.runPromise(accountApi.getCustomPolicies({ policyTypes: 'PRODUCT_COMPLIANCE' }));
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/custom_policy/', {
-        policy_types: 'PRODUCT_COMPLIANCE',
-      });
-    });
-
-    it('gets a specific custom policy by ID', async () => {
-      const mockPolicy: CustomPolicy = {
-        customPolicyId: '1234567890',
-        name: 'Test Policy',
-        description: 'Test description',
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPolicy);
-
-      const result = await Effect.runPromise(
-        accountApi.getCustomPolicy({ customPolicyId: '1234567890' }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/custom_policy/1234567890');
-      expect(result).toEqual(mockPolicy);
-    });
-
-    it('creates a custom policy', async () => {
-      const policy = {
-        name: 'New Custom Policy',
-        policyType: 'PRODUCT_COMPLIANCE',
-        description: 'New policy description',
-      };
-      const mockResponse: CustomPolicy = {
-        customPolicyId: '9876543210',
-        ...policy,
-      };
-
-      vi.spyOn(mockClient, 'post').mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(accountApi.createCustomPolicy({ policy }));
-
-      expect(mockClient.post).toHaveBeenCalledWith('/sell/account/v1/custom_policy/', policy);
-      expect(result.customPolicyId).toBe('9876543210');
-    });
-
-    it('updates a custom policy', async () => {
-      const policy = {
-        name: 'Updated Policy',
-        policyType: 'TAKE_BACK',
-        description: 'Updated description',
-      };
-
-      vi.spyOn(mockClient, 'put').mockResolvedValue(undefined);
-
-      await Effect.runPromise(
-        accountApi.updateCustomPolicy({ customPolicyId: '1234567890', policy }),
-      );
-
-      expect(mockClient.put).toHaveBeenCalledWith(
-        '/sell/account/v1/custom_policy/1234567890',
-        policy,
-      );
-    });
   });
 
   describe('Fulfillment Policies', () => {

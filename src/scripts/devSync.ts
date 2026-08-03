@@ -401,6 +401,12 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getpromotionreports: ['ebay_get_promotion_reports'],
   getaudiences: ['ebay_get_audiences'],
 
+  // Sell Account API
+  getcustompolicies: ['ebay_sell_account_get_custom_policies'],
+  createcustompolicy: ['ebay_sell_account_create_custom_policy'],
+  getcustompolicy: ['ebay_sell_account_get_custom_policy'],
+  updatecustompolicy: ['ebay_sell_account_update_custom_policy'],
+
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],
   getorder: ['ebay_sell_fulfillment_get_order'],

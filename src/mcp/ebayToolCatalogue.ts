@@ -52,6 +52,12 @@ import {
   getSigningKeyTool,
 } from '@/ebay/developer/keyManagement/signingKey.js';
 import { getDeveloperStatusFeedTool } from '@/ebay/developer/status/incident.js';
+import {
+  createCustomPolicyTool,
+  getCustomPoliciesTool,
+  getCustomPolicyTool,
+  updateCustomPolicyTool,
+} from '@/ebay/sell/account/customPolicy.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
   findSellerStandardsProfilesTool,
@@ -200,6 +206,10 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   createSigningKeyTool,
   getSigningKeyTool,
   getDeveloperStatusFeedTool,
+  getCustomPoliciesTool,
+  createCustomPolicyTool,
+  getCustomPolicyTool,
+  updateCustomPolicyTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

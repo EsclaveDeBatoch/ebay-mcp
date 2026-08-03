@@ -14,7 +14,6 @@ describe('Comprehensive Tools Coverage', () => {
     // Create comprehensive mock API
     mockApi = {
       account: {
-        getCustomPolicies: vi.fn(),
         getFulfillmentPolicies: vi.fn(),
         getPaymentPolicies: vi.fn(),
         getReturnPolicies: vi.fn(),
@@ -33,9 +32,6 @@ describe('Comprehensive Tools Coverage', () => {
         getReturnPolicyByName: vi.fn(),
         updateReturnPolicy: vi.fn(),
         deleteReturnPolicy: vi.fn(),
-        createCustomPolicy: vi.fn(),
-        getCustomPolicy: vi.fn(),
-        updateCustomPolicy: vi.fn(),
         getKyc: vi.fn(),
         getPaymentsProgram: vi.fn(),
         getPaymentsProgramOnboarding: vi.fn(),
@@ -123,14 +119,6 @@ describe('Comprehensive Tools Coverage', () => {
 
   // ===== ACCOUNT TOOLS =====
   describe('Account Management Tools', () => {
-    it('ebay_get_custom_policies', async () => {
-      const mockResponse = { customPolicies: [] };
-      const input = { policyTypes: 'RETURN' };
-      vi.mocked(mockApi.account.getCustomPolicies).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_custom_policies', input);
-      expect(mockApi.account.getCustomPolicies).toHaveBeenCalledWith(input);
-    });
-
     it('ebay_get_fulfillment_policies', async () => {
       const mockResponse = { fulfillmentPolicies: [] };
       const input = { marketplaceId: 'EBAY_US' };
@@ -306,34 +294,6 @@ describe('Comprehensive Tools Coverage', () => {
       vi.mocked(mockApi.account.deleteReturnPolicy).mockReturnValue(Effect.succeed(undefined));
       await executeTool(mockApi, 'ebay_delete_return_policy', input);
       expect(mockApi.account.deleteReturnPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_custom_policy', async () => {
-      const mockResponse = { customPolicyId: 'CP123' };
-      const policy = { name: 'Test', policyType: 'RETURN' };
-      const input = { policy };
-      vi.mocked(mockApi.account.createCustomPolicy).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_create_custom_policy', input);
-      expect(mockApi.account.createCustomPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_custom_policy', async () => {
-      const mockResponse = { customPolicyId: 'CP123' };
-      const input = { customPolicyId: 'CP123' };
-      vi.mocked(mockApi.account.getCustomPolicy).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_custom_policy', input);
-      expect(mockApi.account.getCustomPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_update_custom_policy', async () => {
-      const policy = { name: 'Updated', policyType: 'RETURN' };
-      const input = {
-        customPolicyId: 'CP123',
-        policy,
-      };
-      vi.mocked(mockApi.account.updateCustomPolicy).mockReturnValue(Effect.succeed(undefined));
-      await executeTool(mockApi, 'ebay_update_custom_policy', input);
-      expect(mockApi.account.updateCustomPolicy).toHaveBeenCalledWith(input);
     });
 
     it('ebay_get_kyc', async () => {

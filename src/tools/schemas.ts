@@ -179,16 +179,6 @@ export const returnPolicySchema = z
   })
   .passthrough();
 
-/** Custom policy payload for seller-defined account policies. */
-export const customPolicySchema = z
-  .object({
-    name: z.string(),
-    description: z.string().optional(),
-    policyType: z.string(),
-    label: z.string().optional(),
-  })
-  .passthrough();
-
 /** Sales tax base payload used for account tax configuration. */
 export const salesTaxBaseSchema = z
   .object({

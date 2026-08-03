@@ -9,7 +9,6 @@ import {
 } from '@/api/shared/request.js';
 import type {
   bulkCreateOrReplaceSalesTaxInputSchema,
-  createCustomPolicyInputSchema,
   createFulfillmentPolicyInputSchema,
   createOrReplaceSalesTaxInputSchema,
   createPaymentPolicyInputSchema,
@@ -19,8 +18,6 @@ import type {
   deleteReturnPolicyInputSchema,
   deleteSalesTaxInputSchema,
   getAdvertisingEligibilityInputSchema,
-  getCustomPoliciesInputSchema,
-  getCustomPolicyInputSchema,
   getFulfillmentPoliciesInputSchema,
   getFulfillmentPolicyByNameInputSchema,
   getFulfillmentPolicyInputSchema,
@@ -37,7 +34,6 @@ import type {
   getSubscriptionInputSchema,
   optInToProgramInputSchema,
   optOutOfProgramInputSchema,
-  updateCustomPolicyInputSchema,
   updateFulfillmentPolicyInputSchema,
   updatePaymentPolicyInputSchema,
   updateReturnPolicyInputSchema,
@@ -49,10 +45,6 @@ import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 const ACCOUNT_BASE_PATH = '/sell/account/v1';
 
 type EmptyAccountInput = Record<string, never>;
-type GetCustomPoliciesInput = InferEffectSchema<typeof getCustomPoliciesInputSchema>;
-type GetCustomPolicyInput = InferEffectSchema<typeof getCustomPolicyInputSchema>;
-type CreateCustomPolicyInput = InferEffectSchema<typeof createCustomPolicyInputSchema>;
-type UpdateCustomPolicyInput = InferEffectSchema<typeof updateCustomPolicyInputSchema>;
 type GetFulfillmentPoliciesInput = InferEffectSchema<typeof getFulfillmentPoliciesInputSchema>;
 type GetFulfillmentPolicyInput = InferEffectSchema<typeof getFulfillmentPolicyInputSchema>;
 type GetFulfillmentPolicyByNameInput = InferEffectSchema<
@@ -91,7 +83,6 @@ type GetAdvertisingEligibilityInput = InferEffectSchema<
   typeof getAdvertisingEligibilityInputSchema
 >;
 
-type CustomPolicy = components['schemas']['CustomPolicy'];
 type SetFulfillmentPolicyResponse = components['schemas']['SetFulfillmentPolicyResponse'];
 type FulfillmentPolicyResponse = components['schemas']['FulfillmentPolicyResponse'];
 type FulfillmentPolicy = components['schemas']['FulfillmentPolicy'];
@@ -113,13 +104,6 @@ type SalesTax = components['schemas']['SalesTax'];
 type SalesTaxes = components['schemas']['SalesTaxes'];
 type SubscriptionResponse = components['schemas']['SubscriptionResponse'];
 
-/**
- * Response returned by eBay Account API getCustomPolicies.
- *
- * @see https://developer.ebay.com/api-docs/sell/account/resources/custom_policy/methods/getCustomPolicies
- */
-export type GetCustomPoliciesResponse = components['schemas']['CustomPolicyResponse'];
-
 /** Account API client for seller account policies, programs, tax, and eligibility. */
 export class AccountApi {
   private readonly client: EbayApiClient;
@@ -127,102 +111,6 @@ export class AccountApi {
   constructor(client: EbayApiClient) {
     this.client = client;
   }
-
-  /**
-   * Retrieves custom policies defined for the seller account.
-   *
-   * @param input - Optional custom policy type filter.
-   * @returns An Effect that succeeds with eBay's generated CustomPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const policies = await Effect.runPromise(
-   *   accountApi.getCustomPolicies({ policyTypes: 'TAKE_BACK' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/custom_policy/methods/getCustomPolicies
-   */
-  getCustomPolicies = (
-    input: GetCustomPoliciesInput = {},
-  ): Effect.Effect<GetCustomPoliciesResponse, EbayApiError> => {
-    const params = buildEndpointParams({
-      policyTypes: { wireName: 'policy_types', value: input.policyTypes },
-    });
-
-    return requestGetEffect<GetCustomPoliciesResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/custom_policy/`,
-      params,
-    );
-  };
-
-  /**
-   * Retrieves one custom policy by ID.
-   *
-   * @param input - Custom policy identifier.
-   * @returns An Effect that succeeds with eBay's generated CustomPolicy.
-   *
-   * @example
-   * ```ts
-   * const policy = await Effect.runPromise(
-   *   accountApi.getCustomPolicy({ customPolicyId: '1234567890' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/custom_policy/methods/getCustomPolicy
-   */
-  getCustomPolicy = (input: GetCustomPolicyInput): Effect.Effect<CustomPolicy, EbayApiError> =>
-    requestGetEffect<CustomPolicy>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/custom_policy/${input.customPolicyId}`,
-    );
-
-  /**
-   * Creates a custom policy.
-   *
-   * @param input - Custom policy request body.
-   * @returns An Effect that succeeds with eBay's generated CustomPolicy.
-   *
-   * @example
-   * ```ts
-   * const policy = await Effect.runPromise(
-   *   accountApi.createCustomPolicy({ policy: { name: 'Compliance', policyType: 'PRODUCT_COMPLIANCE' } }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/custom_policy/methods/createCustomPolicy
-   */
-  createCustomPolicy = (
-    input: CreateCustomPolicyInput,
-  ): Effect.Effect<CustomPolicy, EbayApiError> =>
-    requestPostEffect<CustomPolicy>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/custom_policy/`,
-      input.policy,
-    );
-
-  /**
-   * Updates a custom policy by ID.
-   *
-   * @param input - Custom policy ID and full replacement policy payload.
-   * @returns An Effect that succeeds when eBay accepts the update.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   accountApi.updateCustomPolicy({ customPolicyId: '1234567890', policy }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/custom_policy/methods/updateCustomPolicy
-   */
-  updateCustomPolicy = (input: UpdateCustomPolicyInput): Effect.Effect<void, EbayApiError> =>
-    requestPutEffect<void>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/custom_policy/${input.customPolicyId}`,
-      input.policy,
-    );
 
   /**
    * Retrieves fulfillment policies for one marketplace.

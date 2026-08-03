@@ -121,7 +121,7 @@ load-bearing constraints:
 - **MCP:** resource modules own schemas, aliases, operations, and named tool definitions.
   The explicit catalogue imports every tool individually. Each definition declares
   `operationKind: 'read' | 'write'`, which owns its MCP annotations and read-only gating.
-  Migrated exposure gates use official paths such as `sell.analytics`, `sell.fulfillment`, `sell.metadata`,
+  Migrated exposure gates use official paths such as `sell.account`, `sell.analytics`, `sell.fulfillment`, `sell.metadata`,
   `commerce.feedback`, `commerce.message`, `commerce.notification`, or `sell.negotiation`;
   legacy categories retain short keys only until migration. Tool
   handlers perform one eBay operation; multi-operation behavior receives a named workflow.

@@ -66,69 +66,6 @@ const regionSetSchema = z.object({
 /**
  * Validates the Account Management API get custom policies request payload.
  */
-export const getCustomPoliciesInputSchema = z.object({
-  policyTypes: z
-    .string()
-    .optional()
-    .describe(
-      'Comma-delimited list of policy types to retrieve (e.g., PRODUCT_COMPLIANCE, TAKE_BACK)',
-    ),
-});
-
-// Output
-/**
- * Validates the Account Management API custom policy model.
- */
-export const customPolicySchema = z.object({
-  customPolicyId: z.string().optional(),
-  label: z.string().optional(),
-  name: z.string().optional(),
-  description: z.string().optional(),
-  policyType: z.string().optional(),
-});
-
-/**
- * Validates the Account Management API custom policy response payload.
- */
-export const customPolicyResponseSchema = z.object({
-  customPolicies: z.array(customPolicySchema).optional(),
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional(),
-  offset: z.number().optional(),
-  prev: z.string().optional(),
-  total: z.number().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Account Management API create custom policy request payload.
- */
-export const createCustomPolicyInputSchema = z.object({
-  policy: z.object({
-    name: z.string(),
-    description: z.string().optional(),
-    policyType: z.string(),
-    label: z.string().optional(),
-  }),
-});
-
-/** Validates the Account Management API get custom policy request payload. */
-export const getCustomPolicyInputSchema = z.object({
-  customPolicyId: z.string().describe('The custom policy ID'),
-});
-
-/** Validates the Account Management API update custom policy request payload. */
-export const updateCustomPolicyInputSchema = z.object({
-  customPolicyId: z.string().describe('The custom policy ID'),
-  policy: customPolicySchema.describe('Updated custom policy details'),
-});
-
-/**
- * Validates the Account Management API create custom policy response payload.
- */
-export const createCustomPolicyOutputSchema = customPolicySchema;
-
 // ============================================================================
 // Fulfillment Policy Schemas
 // ============================================================================
@@ -660,18 +597,6 @@ export const getPrivilegesInputSchema = z.object({});
  */
 export const getAccountManagementJsonSchemas = () => {
   return {
-    // Custom Policies
-    getCustomPoliciesInput: zodToJsonSchema(getCustomPoliciesInputSchema, 'getCustomPoliciesInput'),
-    getCustomPoliciesOutput: zodToJsonSchema(customPolicyResponseSchema, 'getCustomPoliciesOutput'),
-    createCustomPolicyInput: zodToJsonSchema(
-      createCustomPolicyInputSchema,
-      'createCustomPolicyInput',
-    ),
-    createCustomPolicyOutput: zodToJsonSchema(
-      createCustomPolicyOutputSchema,
-      'createCustomPolicyOutput',
-    ),
-
     // Fulfillment Policies
     getFulfillmentPoliciesInput: zodToJsonSchema(
       getFulfillmentPoliciesInputSchema,

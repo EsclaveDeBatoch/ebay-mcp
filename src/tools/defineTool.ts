@@ -112,10 +112,10 @@ function publicToolDefinition<Shape extends EffectBackedRawShape, Result>(
  * @example
  * ```ts
  * const entry = defineTool({
- *   name: 'ebay_get_custom_policies',
- *   description: 'Retrieve custom policies defined for the seller account',
- *   inputSchema: getCustomPoliciesInputSchema.shape,
- *   handler: (api, args) => Effect.runPromise(api.account.getCustomPolicies(args)),
+ *   name: 'ebay_get_fulfillment_policies',
+ *   description: 'Retrieve fulfillment policies defined for the seller account',
+ *   inputSchema: getFulfillmentPoliciesInputSchema.shape,
+ *   handler: (api, args) => Effect.runPromise(api.account.getFulfillmentPolicies(args)),
  * });
  * ```
  */

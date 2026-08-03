@@ -223,7 +223,35 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires payment-dispute access',
     },
 
-    // Account Management Tools
+    // Sell Account custom-policy tools
+    ebay_sell_account_get_custom_policies: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller custom policies',
+    },
+    ebay_sell_account_create_custom_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller custom policies',
+    },
+    ebay_sell_account_get_custom_policy: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller custom policies',
+    },
+    ebay_sell_account_update_custom_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller custom policies',
+    },
+
+    // Legacy Account Management Tools
     ebay_get_fulfillment_policies: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.account.readonly',

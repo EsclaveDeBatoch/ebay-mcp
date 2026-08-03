@@ -88,6 +88,7 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | Family | What it unlocks | Good first request |
 | --- | --- | --- |
 | `account` | Business policies, fulfillment policies, payment policies, return policies, sales tax, subscriptions, and programs | "Show my eBay fulfillment policies." |
+| `sell.account` | Seller-defined product-compliance and take-back policies | "Show my take-back policies." |
 | `inventory` | Inventory items, offers, inventory locations, item groups, bulk offer flows, and SKU/location mapping | "List my active inventory items and their available quantity." |
 | `sell.fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
 | `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
@@ -266,7 +267,7 @@ By default all tools are advertised to the agent at once. On a long conversation
 | `dynamic`                   | Only three discovery tools are visible (`list_ebay_tools`, `enable_ebay_tools`, `disable_ebay_tools`). The agent searches the catalogue and loads only the tools it needs; they then appear natively. | hosts that honor `tools/listChanged` (e.g. Claude) |
 | `sell.analytics,inventory,…` | Registers **only** the named exposure paths (listed below), frozen for the session.                                                                    | every host (incl. ChatGPT, Cursor)      |
 
-The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`, and `trading`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.fulfillment`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `marketing`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`.
+The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.account`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`, and `trading`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.fulfillment`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `marketing`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.account`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`.
 
 ### Authentication & rate limits
 
@@ -306,6 +307,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
 | [Account](src/tools/categories/account.ts) | Business, fulfillment, payment, and return policies; programs; subscriptions; sales tax |
+| [Sell Account](src/ebay/sell/account/customPolicy.ts) | Seller-defined product-compliance and take-back policies under `sell.account` |
 | [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping |
 | [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |

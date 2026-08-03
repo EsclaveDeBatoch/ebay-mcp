@@ -2,8 +2,6 @@ import { Effect } from 'effect';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
   bulkCreateOrReplaceSalesTaxInputSchema,
-  createCustomPolicyInputSchema,
-  createCustomPolicyOutputSchema,
   createFulfillmentPolicyInputSchema,
   createFulfillmentPolicyOutputSchema,
   createOrReplaceSalesTaxInputSchema,
@@ -11,15 +9,12 @@ import {
   createPaymentPolicyOutputSchema,
   createReturnPolicyInputSchema,
   createReturnPolicyOutputSchema,
-  customPolicyResponseSchema,
   deleteFulfillmentPolicyInputSchema,
   deletePaymentPolicyInputSchema,
   deleteReturnPolicyInputSchema,
   deleteSalesTaxInputSchema,
   fulfillmentPolicyResponseSchema,
   getAdvertisingEligibilityInputSchema,
-  getCustomPoliciesInputSchema,
-  getCustomPolicyInputSchema,
   getFulfillmentPoliciesInputSchema,
   getFulfillmentPoliciesOutputSchema,
   getFulfillmentPolicyByNameInputSchema,
@@ -50,7 +45,6 @@ import {
   programsOutputSchema,
   returnPolicyResponseSchema,
   salesTaxSchema,
-  updateCustomPolicyInputSchema,
   updateFulfillmentPolicyInputSchema,
   updatePaymentPolicyInputSchema,
   updateReturnPolicyInputSchema,
@@ -67,47 +61,6 @@ const emptyResponseSchema: OutputArgs = {
 
 /** Account Management API tools for seller policies, tax, KYC, privileges, and programs. */
 export const accountEntries: ToolEntry[] = [
-  defineTool({
-    name: 'ebay_get_custom_policies',
-    description: 'Retrieve custom policies defined for the seller account',
-    inputSchema: getCustomPoliciesInputSchema.shape,
-    outputSchema: zodToJsonSchema(customPolicyResponseSchema, {
-      name: 'CustomPoliciesResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getCustomPolicies(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_custom_policy',
-    description: 'Create a new custom policy',
-    inputSchema: createCustomPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createCustomPolicyOutputSchema, {
-      name: 'CreateCustomPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: false },
-    handler: (api, args) => Effect.runPromise(api.account.createCustomPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_custom_policy',
-    description: 'Get a specific custom policy by ID',
-    inputSchema: getCustomPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createCustomPolicyOutputSchema, {
-      name: 'CustomPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getCustomPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_custom_policy',
-    description: 'Update an existing custom policy',
-    inputSchema: updateCustomPolicyInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false, idempotentHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.updateCustomPolicy(args)),
-  }),
   defineTool({
     name: 'ebay_get_fulfillment_policies',
     description:

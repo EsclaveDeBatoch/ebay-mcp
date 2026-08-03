@@ -29,6 +29,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   'developer.key-management':
     'Application signing-key creation and public-key retrieval from Developer Key Management',
   'developer.status': 'Current incidents from the public eBay developer status feed',
+  'sell.account': 'Seller-defined product-compliance and take-back policies',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
   'sell.edelivery':
@@ -54,6 +55,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'developer.analytics', title: 'Developer Analytics' },
   { namespace: 'developer.key-management', title: 'Developer Key Management' },
   { namespace: 'developer.status', title: 'Developer Status' },
+  { namespace: 'sell.account', title: 'Sell Account' },
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
   { namespace: 'sell.edelivery', title: 'Sell eDelivery' },
   { namespace: 'sell.fulfillment', title: 'Sell Fulfillment' },
