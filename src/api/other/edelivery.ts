@@ -15,7 +15,7 @@ import {
 import type {
   components,
   operations,
-} from '@/types/sell-apps/other-apis/sellEdeliveryInternationalShippingOas3.js';
+} from '@/generated/ebay/sell-apps/other-apis/sellEdeliveryInternationalShippingOas3.js';
 import { Effect } from 'effect';
 
 /** Input accepted by getAddressPreferences. */

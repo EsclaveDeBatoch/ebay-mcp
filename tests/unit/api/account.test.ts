@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccountApi } from '@/api/account-management/account.js';
 import type { EbayApiClient } from '@/api/client.js';
 import { MarketplaceId } from '@/types/ebayEnums.js';
-import type { components } from '@/types/sell-apps/account-management/sellAccountV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
 
 type CustomPolicy = components['schemas']['CustomPolicy'];
 type CustomPolicyResponse = components['schemas']['CustomPolicyResponse'];

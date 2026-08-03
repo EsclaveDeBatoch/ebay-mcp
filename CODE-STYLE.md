@@ -395,7 +395,7 @@ OpenAPI inputs live under `specs/ebay` and generated TypeScript lives under `src
 // src/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.ts
 
 // ✗ mixed human and generated ownership
-// docs/sell-apps/analytics-and-report/sell_analytics_v1_oas3.json
+// specs/ebay/sell-apps/analytics-and-report/sell_analytics_v1_oas3.json
 // src/types/ebay.ts
 ```
 

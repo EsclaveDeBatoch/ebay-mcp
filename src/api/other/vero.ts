@@ -18,7 +18,7 @@ import type {
   getVeroReportInputSchema,
   getVeroReportItemsInputSchema,
 } from '@/schemas/other/otherApis.js';
-import type { components } from '@/types/sell-apps/other-apis/commerceVeroV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/other-apis/commerceVeroV1Oas3.js';
 import { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 

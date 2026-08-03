@@ -34,7 +34,7 @@ src/schemas/
 | --- | --- |
 | `src/tools/schemas.ts` | Shared primitives reused across families |
 | `src/schemas/<family>/` | Endpoint/tool input (and optional response) schemas for that family |
-| `src/types/**` | Generated eBay DTOs — regenerate with `pnpm run sync`; never hand-edit |
+| `src/generated/ebay/**` | Generated eBay DTOs — regenerate with `pnpm run sync`; never hand-edit |
 
 See [ARCHITECTURE.md](../../ARCHITECTURE.md#schema-ownership) for the family map.
 

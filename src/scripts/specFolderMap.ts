@@ -1,10 +1,10 @@
 import path from 'node:path';
 
 /**
- * Where each eBay OpenAPI spec lands under `docs/`.
+ * Where each eBay OpenAPI spec lands under `specs/ebay/`.
  *
  * `downloadSpecs` writes specs here and `devSync` reads them back to regenerate
- * `src/types/` and report endpoint drift, so the two must agree exactly — they
+ * `src/generated/ebay/` and report endpoint drift, so the two must agree exactly — they
  * previously kept byte-identical copies of this table and could silently diverge.
  *
  * The table is intentionally wider than what `docs/sell-apps/README.md` currently
@@ -77,7 +77,7 @@ export const SPEC_FOLDER_MAP: Record<string, string> = {
 const FALLBACK_SPEC_FOLDER = 'other-apis';
 
 /**
- * Resolves the `docs/` subfolder that owns a spec.
+ * Finds the `specs/ebay/` subfolder that owns a spec.
  *
  * @param specPathOrUrl - Spec filename, local path, or download URL.
  * @returns The mapped subfolder, or `other-apis` when the spec is unmapped.
@@ -87,5 +87,12 @@ const FALLBACK_SPEC_FOLDER = 'other-apis';
  * getSpecFolder('https://.../sell_inventory_v1_oas3.json'); // 'sell-apps/listing-management'
  * ```
  */
-export const getSpecFolder = (specPathOrUrl: string): string =>
-  SPEC_FOLDER_MAP[path.basename(specPathOrUrl)] ?? FALLBACK_SPEC_FOLDER;
+export const getSpecFolder = (specPathOrUrl: string): string => {
+  const specFileName = path.basename(specPathOrUrl);
+  const mappedFolder = SPEC_FOLDER_MAP[specFileName];
+  if (mappedFolder === undefined) {
+    return FALLBACK_SPEC_FOLDER;
+  }
+
+  return mappedFolder;
+};

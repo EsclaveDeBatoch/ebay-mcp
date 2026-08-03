@@ -1,4 +1,4 @@
-import type { components } from '@/types/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
 import type { EbayApiClient } from '@/api/client.js';
 import {
   buildEndpointParams,
@@ -59,7 +59,7 @@ export type GetCustomerServiceMetricResponse =
 
 /**
  * Analytics API - Sales and traffic analytics
- * Based on: docs/sell-apps/analytics-and-report/sell_analytics_v1_oas3.json
+ * Based on: specs/ebay/sell-apps/analytics-and-report/sell_analytics_v1_oas3.json
  */
 export class AnalyticsApi {
   private readonly basePath = '/sell/analytics/v1';

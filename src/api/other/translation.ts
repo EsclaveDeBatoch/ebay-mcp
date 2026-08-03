@@ -5,7 +5,7 @@ import {
   requestPostEffect,
   requireObjectEffect,
 } from '@/api/shared/request.js';
-import type { components } from '@/types/sell-apps/other-apis/commerceTranslationV1BetaOas3.js';
+import type { components } from '@/generated/ebay/sell-apps/other-apis/commerceTranslationV1BetaOas3.js';
 import { Effect } from 'effect';
 
 /**

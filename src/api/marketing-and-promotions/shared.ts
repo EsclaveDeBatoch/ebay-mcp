@@ -1,5 +1,5 @@
 import type { EbayRequestConfig } from '@/api/client.js';
-import type { operations } from '@/types/sell-apps/marketing-and-promotions/sellMarketingV1Oas3.js';
+import type { operations } from '@/generated/ebay/sell-apps/marketing-and-promotions/sellMarketingV1Oas3.js';
 
 export const MARKETING_BASE_PATH = '/sell/marketing/v1';
 

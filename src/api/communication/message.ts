@@ -11,7 +11,7 @@ import {
   requireObjectEffect,
   requireStringEffect,
 } from '@/api/shared/request.js';
-import type { components } from '@/types/sell-apps/communication/commerceMessageV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/communication/commerceMessageV1Oas3.js';
 import { Effect } from 'effect';
 
 /** Query parameters accepted by getConversations. */
@@ -66,7 +66,7 @@ type UpdateConversationRequest = components['schemas']['UpdateConversationReques
 
 /**
  * Message API - Buyer-seller messaging
- * Based on: docs/sell-apps/communication/commerce_message_v1_oas3.json
+ * Based on: specs/ebay/sell-apps/communication/commerce_message_v1_oas3.json
  */
 export class MessageApi {
   private readonly basePath = '/commerce/message/v1';

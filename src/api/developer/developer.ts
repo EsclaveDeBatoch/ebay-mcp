@@ -16,9 +16,9 @@ import type {
   getUserRateLimitsInputSchema,
   registerClientInputSchema,
 } from '@/schemas/developer/developer.js';
-import type { DeveloperAnalyticsComponents as AnalyticsComponents } from '@/types/application-settings/developerAnalyticsV1BetaOas3.js';
-import type { DeveloperClientRegistrationComponents as ClientComponents } from '@/types/application-settings/developerClientRegistrationV1Oas3.js';
-import type { DeveloperKeyManagementComponents as KeyComponents } from '@/types/application-settings/developerKeyManagementV1Oas3.js';
+import type { components as AnalyticsComponents } from '@/generated/ebay/application-settings/developerAnalyticsV1BetaOas3.js';
+import type { components as ClientComponents } from '@/generated/ebay/application-settings/developerClientRegistrationV1Oas3.js';
+import type { components as KeyComponents } from '@/generated/ebay/application-settings/developerKeyManagementV1Oas3.js';
 import { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
@@ -44,9 +44,9 @@ type GetSigningKeyInput = InferEffectSchema<typeof getSigningKeyInputSchema>;
 /**
  * Developer API - Rate limits, client registration, and signing keys
  * Based on:
- * - docs/sell-apps/application-settings/developer_analytics_v1_beta_oas3.json
- * - docs/sell-apps/application-settings/developer_client_registration_v1_oas3.json
- * - docs/sell-apps/application-settings/developer_key_management_v1_oas3.json
+ * - specs/ebay/application-settings/developer_analytics_v1_beta_oas3.json
+ * - specs/ebay/application-settings/developer_client_registration_v1_oas3.json
+ * - specs/ebay/application-settings/developer_key_management_v1_oas3.json
  */
 export class DeveloperApi {
   private readonly analyticsBasePath = '/developer/analytics/v1_beta';

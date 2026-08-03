@@ -3,7 +3,7 @@
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!!src/types/sell_*", "!!docs"]
+    "includes": ["**", "!!src/generated/ebay", "!!specs/ebay", "!!docs"]
   },
   "formatter": {
     "enabled": true,

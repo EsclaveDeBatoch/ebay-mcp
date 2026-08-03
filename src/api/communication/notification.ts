@@ -12,7 +12,7 @@ import {
   requireObjectEffect,
   requireStringEffect,
 } from '@/api/shared/request.js';
-import type { components } from '@/types/sell-apps/communication/commerceNotificationV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/communication/commerceNotificationV1Oas3.js';
 import type {
   createDestinationSchema,
   createSubscriptionFilterSchema,
@@ -128,7 +128,7 @@ export type GetNotificationTopicsResponse = components['schemas']['TopicSearchRe
 
 /**
  * Notification API - Event notifications and subscriptions
- * Based on: docs/sell-apps/communication/commerce_notification_v1_oas3.json
+ * Based on: specs/ebay/sell-apps/communication/commerce_notification_v1_oas3.json
  */
 export class NotificationApi {
   private readonly basePath = '/commerce/notification/v1';

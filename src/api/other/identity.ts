@@ -1,7 +1,7 @@
 import type { EbayApiClient } from '@/api/client.js';
 import { EbayApiError } from '@/api/shared/request.js';
 import { getIdentityBaseUrl } from '@/config/environment.js';
-import type { components } from '@/types/sell-apps/other-apis/commerceIdentityV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/other-apis/commerceIdentityV1Oas3.js';
 import { Effect } from 'effect';
 
 /** Input accepted by Identity API getUser. */

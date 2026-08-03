@@ -14,7 +14,7 @@ import {
 import type {
   components,
   operations,
-} from '@/types/sell-apps/order-management/sellFulfillmentV1Oas3.js';
+} from '@/generated/ebay/sell-apps/order-management/sellFulfillmentV1Oas3.js';
 import { isRecord } from '@/utils/typeGuards.js';
 import { Effect } from 'effect';
 

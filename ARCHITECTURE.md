@@ -11,10 +11,12 @@ The repository currently separates one operation across layers:
 src/api/       endpoint classes and transports
 src/schemas/   Effect-backed endpoint schemas
 src/tools/     category definitions, handlers, registry, and UI metadata
-src/types/     generated and handwritten types mixed under one root
+src/types/     handwritten migration-era contracts
 src/utils/     unrelated platform primitives and schema adapters
 src/scripts/   shipped commands and development automation mixed together
-docs/          documentation mixed with upstream specifications
+src/generated/ebay/  openapi-typescript output only
+specs/ebay/          official eBay OpenAPI inputs
+docs/                human-owned documentation
 ```
 
 These roots remain real until their final callers migrate. They are not patterns for new

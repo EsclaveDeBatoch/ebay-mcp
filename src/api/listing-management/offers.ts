@@ -16,7 +16,7 @@ import {
 import type {
   components,
   operations,
-} from '@/types/sell-apps/listing-management/sellInventoryV1Oas3.js';
+} from '@/generated/ebay/sell-apps/listing-management/sellInventoryV1Oas3.js';
 import { Effect } from 'effect';
 import { INVENTORY_BASE_PATH } from './shared.js';
 

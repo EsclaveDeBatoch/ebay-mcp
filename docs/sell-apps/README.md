@@ -1,10 +1,10 @@
 # eBay API Spec Sources
 
-Spec-URL manifest consumed by `npm run sync` (`src/scripts/dev-sync.ts`). The sync
+Spec-URL manifest consumed by `npm run sync` (`src/scripts/devSync.ts`). The sync
 tool extracts every `*_oas3.json` link listed below, downloads each OpenAPI spec
-into `docs/`, regenerates TypeScript types, and reports endpoints that have no tool
-yet. Keep example/illustrative URLs out of this file — the scraper treats every
-JSON link it finds here as a real download target.
+into `specs/ebay/`, regenerates TypeScript types under `src/generated/ebay/`, and
+reports endpoints that have no tool yet. Keep example/illustrative URLs out of this
+file — the scraper treats every JSON link it finds here as a real download target.
 
 > **Scope:** This project covers eBay's **Sell** (plus shared Commerce and Developer)
 > APIs only — see the package description. The Buying Apps specs are intentionally

@@ -42,7 +42,7 @@ import type {
   updatePaymentPolicyInputSchema,
   updateReturnPolicyInputSchema,
 } from '@/schemas/account-management/account.js';
-import type { components } from '@/types/sell-apps/account-management/sellAccountV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
 import type { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 

@@ -11,7 +11,7 @@ import {
   requireObjectEffect,
   requireStringEffect,
 } from '@/api/shared/request.js';
-import type { components } from '@/types/sell-apps/communication/commerceFeedbackV1BetaOas3.js';
+import type { components } from '@/generated/ebay/sell-apps/communication/commerceFeedbackV1BetaOas3.js';
 import { Effect } from 'effect';
 
 /** Query parameters accepted by getItemsAwaitingFeedback. */
@@ -75,7 +75,7 @@ type RespondToFeedbackResponse = Record<string, never>;
 
 /**
  * Feedback API - Manage buyer and seller feedback
- * Based on: docs/sell-apps/communication/commerce_feedback_v1_beta_oas3.json
+ * Based on: specs/ebay/sell-apps/communication/commerce_feedback_v1_beta_oas3.json
  */
 export class FeedbackApi {
   private readonly basePath = '/commerce/feedback/v1';

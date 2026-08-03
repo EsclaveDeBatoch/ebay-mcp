@@ -32,10 +32,10 @@ import type {
   TableViewModel,
   Tone,
 } from '@/tools/ui/viewModels.js';
-import type { DeveloperAnalyticsComponents } from '@/types/application-settings/developerAnalyticsV1BetaOas3.js';
-import type { components as AnalyticsSchemas } from '@/types/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
-import type { components as InventorySchemas } from '@/types/sell-apps/listing-management/sellInventoryV1Oas3.js';
-import type { components as FulfillmentSchemas } from '@/types/sell-apps/order-management/sellFulfillmentV1Oas3.js';
+import type { components as DeveloperAnalyticsComponents } from '@/generated/ebay/application-settings/developerAnalyticsV1BetaOas3.js';
+import type { components as AnalyticsSchemas } from '@/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
+import type { components as InventorySchemas } from '@/generated/ebay/sell-apps/listing-management/sellInventoryV1Oas3.js';
+import type { components as FulfillmentSchemas } from '@/generated/ebay/sell-apps/order-management/sellFulfillmentV1Oas3.js';
 
 type Order = FulfillmentSchemas['schemas']['Order'];
 type OrderSearchPagedCollection = FulfillmentSchemas['schemas']['OrderSearchPagedCollection'];

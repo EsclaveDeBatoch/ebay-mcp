@@ -10,7 +10,7 @@ import {
   requestPostEffect,
   requireObjectEffect,
 } from '@/api/shared/request.js';
-import type { components } from '@/types/sell-apps/communication/sellNegotiationV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/communication/sellNegotiationV1Oas3.js';
 import type {
   findEligibleItemsSchema,
   sendOfferToInterestedBuyersSchema,
@@ -39,7 +39,7 @@ export type SendOfferToInterestedBuyersResponse =
 
 /**
  * Negotiation API - Buyer-seller negotiations and offers
- * Based on: docs/sell-apps/communication/sell_negotiation_v1_oas3.json
+ * Based on: specs/ebay/sell-apps/communication/sell_negotiation_v1_oas3.json
  */
 export class NegotiationApi {
   private readonly basePath = '/sell/negotiation/v1';

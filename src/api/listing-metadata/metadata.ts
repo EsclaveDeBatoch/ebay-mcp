@@ -9,7 +9,7 @@ import {
   requireStringEffect,
   optionalStringEffect,
 } from '@/api/shared/request.js';
-import type { components } from '@/types/sell-apps/listing-metadata/sellMetadataV1Oas3.js';
+import type { components } from '@/generated/ebay/sell-apps/listing-metadata/sellMetadataV1Oas3.js';
 import { Effect } from 'effect';
 
 /** Input accepted by marketplace-scoped Metadata policy endpoints. */
