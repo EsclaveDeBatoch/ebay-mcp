@@ -451,6 +451,9 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
     'ebay_sell_inventory_create_or_replace_product_compatibility',
   ],
   deleteproductcompatibility: ['ebay_sell_inventory_delete_product_compatibility'],
+  getskulocationmapping: ['ebay_sell_inventory_get_sku_location_mapping'],
+  createorreplaceskulocationmapping: ['ebay_sell_inventory_create_or_replace_sku_location_mapping'],
+  deleteskulocationmapping: ['ebay_sell_inventory_delete_sku_location_mapping'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

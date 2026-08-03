@@ -243,7 +243,7 @@ Autoconfigurados pelo `npm run setup`. Requer Node.js ≥ 22.12 e o protocolo MC
 | [Connector](src/tools/categories/connector.ts) | Ferramentas search/fetch do conector ChatGPT sobre o catálogo eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Status do vendedor, adesão a programas, imposto sobre vendas, assinaturas, tabelas de tarifas, elegibilidade para publicidade, status obsoleto do programa de pagamentos e políticas comerciais |
 | [Inventory](src/tools/categories/inventory.ts) | Itens de estoque, ofertas, locais, operações em massa, mapeamento SKU/local |
-| [Sell Inventory](src/ebay/sell/inventory/) | Grupos de itens e compatibilidade de veículos em `sell.inventory` |
+| [Sell Inventory](src/ebay/sell/inventory/) | Grupos de itens, compatibilidade de veículos e mapeamentos de localização de SKU em `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Pedidos, envio, reembolsos, disputas, evidências de disputas de pagamento |
 | [Marketing](src/tools/categories/marketing.ts) | Campanhas de anúncios patrocinados, anúncios, promoções, lances, operações em massa |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Relatórios de tráfego, padrões do vendedor, métricas de atendimento ao cliente |

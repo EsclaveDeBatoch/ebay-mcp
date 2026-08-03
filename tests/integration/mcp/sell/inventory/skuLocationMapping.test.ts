@@ -1,50 +1,59 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { ProductCompatibility } from '@/ebay/sell/inventory/productCompatibility.js';
+import type { SkuLocationMapping } from '@/ebay/sell/inventory/skuLocationMapping.js';
 import { ebayFailures, sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 import { callEbayTool, listEbayTools } from '@tests/fixtures/mcp.js';
 
-const productCompatibilityToolNames = [
+const skuLocationMappingToolNames = [
+  'ebay_sell_inventory_get_sku_location_mapping',
+  'ebay_sell_inventory_create_or_replace_sku_location_mapping',
+  'ebay_sell_inventory_delete_sku_location_mapping',
+] as const;
+
+const sellInventoryToolNames = [
+  'ebay_sell_inventory_get_inventory_item_group',
+  'ebay_sell_inventory_create_or_replace_inventory_item_group',
+  'ebay_sell_inventory_delete_inventory_item_group',
   'ebay_sell_inventory_get_product_compatibility',
   'ebay_sell_inventory_create_or_replace_product_compatibility',
   'ebay_sell_inventory_delete_product_compatibility',
+  ...skuLocationMappingToolNames,
 ] as const;
 
-const legacyProductCompatibilityToolNames = [
-  'ebay_get_product_compatibility',
-  'ebay_create_or_replace_product_compatibility',
-  'ebay_delete_product_compatibility',
+const legacySkuLocationMappingToolNames = [
+  'ebay_get_sku_location_mapping',
+  'ebay_create_or_replace_sku_location_mapping',
+  'ebay_delete_sku_location_mapping',
 ] as const;
 
-const productCompatibilityFailureCalls = [
+const skuLocationMappingFailureCalls = [
   {
-    ebayArguments: { sku: 'BRAKE-PAD-1' },
-    toolName: 'ebay_sell_inventory_get_product_compatibility',
+    ebayArguments: { listingId: 'LISTING-1', sku: 'SKU-1' },
+    toolName: 'ebay_sell_inventory_get_sku_location_mapping',
   },
   {
     ebayArguments: {
-      sku: 'BRAKE-PAD-1',
-      'Content-Language': 'en-US',
-      compatibleProducts: [],
+      listingId: 'LISTING-1',
+      sku: 'SKU-1',
+      locations: [{ merchantLocationKey: 'FULFILLMENT-1' }],
     },
-    toolName: 'ebay_sell_inventory_create_or_replace_product_compatibility',
+    toolName: 'ebay_sell_inventory_create_or_replace_sku_location_mapping',
   },
   {
-    ebayArguments: { sku: 'BRAKE-PAD-1' },
-    toolName: 'ebay_sell_inventory_delete_product_compatibility',
+    ebayArguments: { listingId: 'LISTING-1', sku: 'SKU-1' },
+    toolName: 'ebay_sell_inventory_delete_sku_location_mapping',
   },
 ] as const;
 
-const productCompatibilityFailureScenarios = productCompatibilityFailureCalls.flatMap(
-  (productCompatibilityCall) =>
-    ebayFailures.map((ebayFailure) => ({ ebayFailure, ...productCompatibilityCall })),
+const skuLocationMappingFailureScenarios = skuLocationMappingFailureCalls.flatMap((mappingCall) =>
+  ebayFailures.map((ebayFailure) => ({ ebayFailure, ...mappingCall })),
 );
 
 afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-describe('Sell Inventory product-compatibility MCP exposure', () => {
+describe('Sell Inventory SKU-location-mapping MCP exposure', () => {
   it('exposes all three operations once without compatibility names', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning<unknown>({
@@ -54,13 +63,13 @@ describe('Sell Inventory product-compatibility MCP exposure', () => {
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
     const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
 
-    for (const productCompatibilityToolName of productCompatibilityToolNames) {
+    for (const skuLocationMappingToolName of skuLocationMappingToolNames) {
       expect(
-        listedToolNames.filter((listedToolName) => listedToolName === productCompatibilityToolName),
-      ).toEqual([productCompatibilityToolName]);
+        listedToolNames.filter((listedToolName) => listedToolName === skuLocationMappingToolName),
+      ).toEqual([skuLocationMappingToolName]);
     }
-    for (const legacyProductCompatibilityToolName of legacyProductCompatibilityToolNames) {
-      expect(listedToolNames).not.toContain(legacyProductCompatibilityToolName);
+    for (const legacySkuLocationMappingToolName of legacySkuLocationMappingToolNames) {
+      expect(listedToolNames).not.toContain(legacySkuLocationMappingToolName);
     }
     await mcpClient.close();
   });
@@ -74,11 +83,7 @@ describe('Sell Inventory product-compatibility MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(
-      listedTools.tools
-        .map((ebayTool) => ebayTool.name)
-        .filter((listedToolName) => listedToolName.includes('product_compatibility')),
-    ).toEqual(productCompatibilityToolNames);
+    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(sellInventoryToolNames);
     await mcpClient.close();
   });
 
@@ -92,45 +97,40 @@ describe('Sell Inventory product-compatibility MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(
-      listedTools.tools
-        .map((ebayTool) => ebayTool.name)
-        .filter((listedToolName) => listedToolName.includes('product_compatibility')),
-    ).toEqual(['ebay_sell_inventory_get_product_compatibility']);
+    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
+      'ebay_sell_inventory_get_inventory_item_group',
+      'ebay_sell_inventory_get_product_compatibility',
+      'ebay_sell_inventory_get_sku_location_mapping',
+    ]);
     await mcpClient.close();
   });
 });
 
-describe('Sell Inventory product-compatibility MCP calls', () => {
-  it('returns one unchanged compatibility list', async () => {
+describe('Sell Inventory SKU-location-mapping MCP calls', () => {
+  it('returns one unchanged location mapping', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
-    const productCompatibility: ProductCompatibility = {
-      sku: 'BRAKE-PAD-1',
-      compatibleProducts: [
-        {
-          compatibilityProperties: [
-            { name: 'make', value: 'Toyota' },
-            { name: 'model', value: 'Camry' },
-          ],
-        },
+    const skuLocationMapping: SkuLocationMapping = {
+      locations: [
+        { merchantLocationKey: 'FULFILLMENT-1' },
+        { merchantLocationKey: 'FULFILLMENT-2' },
       ],
     };
-    const { sellerSession, getCalls } = sellerSessionReturning<ProductCompatibility>({
+    const { sellerSession, getCalls } = sellerSessionReturning<SkuLocationMapping>({
       kind: 'ebayRequestSucceeded',
-      ebayDocument: productCompatibility,
+      ebayDocument: skuLocationMapping,
     });
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
-      'ebay_sell_inventory_get_product_compatibility',
-      { sku: 'BRAKE-PAD-1' },
+      'ebay_sell_inventory_get_sku_location_mapping',
+      { listingId: 'LISTING-1', sku: 'SKU-1' },
     );
 
     expect(getCalls).toEqual([
-      { endpoint: '/sell/inventory/v1/inventory_item/BRAKE-PAD-1/product_compatibility' },
+      { endpoint: '/sell/inventory/v1/listing/LISTING-1/sku/SKU-1/locations' },
     ]);
     expect(toolCompletion).toEqual({
-      content: [{ type: 'text', text: JSON.stringify(productCompatibility, null, 2) }],
+      content: [{ type: 'text', text: JSON.stringify(skuLocationMapping, null, 2) }],
     });
     await mcpClient.close();
   });
@@ -141,32 +141,29 @@ describe('Sell Inventory product-compatibility MCP calls', () => {
       kind: 'ebayRequestSucceeded',
       ebayDocument: undefined,
     });
-    const compatibilityReplacement = {
-      sku: 'BRAKE-PAD-1',
-      'Content-Language': 'en-US',
-      compatibleProducts: [{ productIdentifier: { epid: '123456789' } }],
+    const locationMappingReplacement = {
+      listingId: 'LISTING-1',
+      sku: 'SKU-1',
+      locations: [{ merchantLocationKey: 'FULFILLMENT-1' }],
     };
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
-      'ebay_sell_inventory_create_or_replace_product_compatibility',
-      compatibilityReplacement,
+      'ebay_sell_inventory_create_or_replace_sku_location_mapping',
+      locationMappingReplacement,
     );
 
     expect(putCalls).toEqual([
       {
-        endpoint: '/sell/inventory/v1/inventory_item/BRAKE-PAD-1/product_compatibility',
-        requestDocument: {
-          compatibleProducts: [{ productIdentifier: { epid: '123456789' } }],
-        },
-        requestHeaders: { 'Content-Language': 'en-US' },
+        endpoint: '/sell/inventory/v1/listing/LISTING-1/sku/SKU-1/locations',
+        requestDocument: { locations: [{ merchantLocationKey: 'FULFILLMENT-1' }] },
       },
     ]);
     expect(toolCompletion).toEqual({ content: [] });
     await mcpClient.close();
   });
 
-  it('deletes the encoded SKU path', async () => {
+  it('deletes the encoded listing and SKU path', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession, deleteCalls } = sellerSessionReturning<undefined>({
       kind: 'ebayRequestSucceeded',
@@ -175,19 +172,19 @@ describe('Sell Inventory product-compatibility MCP calls', () => {
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
-      'ebay_sell_inventory_delete_product_compatibility',
-      { sku: 'BRAKE/PAD' },
+      'ebay_sell_inventory_delete_sku_location_mapping',
+      { listingId: 'LISTING/1', sku: 'SKU/1' },
     );
 
     expect(deleteCalls).toEqual([
-      { endpoint: '/sell/inventory/v1/inventory_item/BRAKE%2FPAD/product_compatibility' },
+      { endpoint: '/sell/inventory/v1/listing/LISTING%2F1/sku/SKU%2F1/locations' },
     ]);
     expect(toolCompletion).toEqual({ content: [] });
     await mcpClient.close();
   });
 });
 
-describe('Sell Inventory product-compatibility MCP validation', () => {
+describe('Sell Inventory SKU-location-mapping MCP validation', () => {
   it('rejects the legacy body wrapper before the seller session', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession, putCalls } = sellerSessionReturning<never>({
@@ -197,11 +194,11 @@ describe('Sell Inventory product-compatibility MCP validation', () => {
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
-      'ebay_sell_inventory_create_or_replace_product_compatibility',
+      'ebay_sell_inventory_create_or_replace_sku_location_mapping',
       {
-        sku: 'BRAKE-PAD-1',
-        'Content-Language': 'en-US',
-        body: { compatibleProducts: [] },
+        listingId: 'LISTING-1',
+        sku: 'SKU-1',
+        body: { locations: [{ merchantLocationKey: 'FULFILLMENT-1' }] },
       },
     );
 
@@ -211,8 +208,8 @@ describe('Sell Inventory product-compatibility MCP validation', () => {
   });
 });
 
-describe('Sell Inventory product-compatibility MCP failures', () => {
-  it.each(productCompatibilityFailureScenarios)(
+describe('Sell Inventory SKU-location-mapping MCP failures', () => {
+  it.each(skuLocationMappingFailureScenarios)(
     'translates every $ebayFailure.kind failure once for $toolName',
     async ({ ebayArguments, ebayFailure, toolName }) => {
       vi.stubEnv('EBAY_MCP_UI', 'off');

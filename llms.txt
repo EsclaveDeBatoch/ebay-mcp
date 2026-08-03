@@ -18,7 +18,7 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 
 - [Sell Account](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/account): Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies under `sell.account`
 - [Inventory](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/inventory.ts): Inventory items, offers, locations, bulk operations, SKU/location mapping
-- [Sell Inventory](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/inventory): Seller-defined item groups and vehicle compatibility under `sell.inventory`
+- [Sell Inventory](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/inventory): Item groups, vehicle compatibility, and SKU location mappings under `sell.inventory`
 - [Fulfillment](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/sell/fulfillment/): Orders, shipping, refunds, disputes, payment-dispute evidence
 - [Marketing](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/marketing.ts): Promoted-listings campaigns, ads, promotions, bidding, reports
 - [Commerce Feedback](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/feedback): Pending tasks, feedback history, submissions, replies, and user rating metrics

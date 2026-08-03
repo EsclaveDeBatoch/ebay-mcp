@@ -23,7 +23,6 @@ import type {
   CreateOfferRequest,
   GetListingFeesRequest,
   InventoryItem,
-  LocationMapping,
   PublishOfferByInventoryItemGroupRequest,
   UpdateInventoryLocationRequest,
   UpdateOfferRequest,
@@ -142,29 +141,6 @@ const bulkMigrateListingInputSchema = z.object({
   body: generatedBodySchema<BulkMigrateListingRequest>('Generated BulkMigrateListing request body'),
 });
 
-const skuLocationMappingInputSchema = z.object({
-  listingId: z.string().describe('The listing ID'),
-  sku: z.string().describe('The seller-defined SKU'),
-});
-
-const locationMappingSchema = z
-  .object({
-    locations: z
-      .array(
-        z
-          .object({
-            merchantLocationKey: z.string().describe('The fulfillment center location key'),
-          })
-          .passthrough(),
-      )
-      .optional(),
-  })
-  .passthrough();
-
-const createOrReplaceSkuLocationMappingInputSchema = skuLocationMappingInputSchema.extend({
-  body: generatedBodySchema<LocationMapping>('Generated LocationMapping request body'),
-});
-
 const publishOfferByInventoryItemGroupInputSchema = z.object({
   body: generatedBodySchema<PublishOfferByInventoryItemGroupRequest>(
     'Generated PublishByInventoryItemGroup body',
@@ -175,10 +151,6 @@ const withdrawOfferByInventoryItemGroupInputSchema = z.object({
   body: generatedBodySchema<WithdrawOfferByInventoryItemGroupRequest>(
     'Generated WithdrawByInventoryItemGroup body',
   ),
-});
-
-const locationMappingOutputSchema = locationMappingSchema.extend({
-  warnings: z.array(z.object({}).passthrough()).optional(),
 });
 
 const listingFeesOutputSchema = z
@@ -433,34 +405,6 @@ export const inventoryEntries: ToolEntry[] = [
       $refStrategy: 'none',
     }) as OutputArgs,
     handler: (api, args) => Effect.runPromise(api.inventory.bulkMigrateListing(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_sku_location_mapping',
-    description:
-      'Get inventory locations for a specific listing and SKU.\n\nRequired OAuth Scope: sell.inventory.readonly or sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
-    inputSchema: skuLocationMappingInputSchema.shape,
-    outputSchema: zodToJsonSchema(locationMappingOutputSchema, {
-      name: 'GetSkuLocationMappingResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.getSkuLocationMapping(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_or_replace_sku_location_mapping',
-    description:
-      'Create or replace SKU location mapping for a listing. Maps a SKU to fulfillment center locations.\n\nRequired OAuth Scope: sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory',
-    inputSchema: createOrReplaceSkuLocationMappingInputSchema.shape,
-    outputSchema: emptyOutputSchema,
-    handler: (api, args) =>
-      Effect.runPromise(api.inventory.createOrReplaceSkuLocationMapping(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_sku_location_mapping',
-    description:
-      'Delete SKU location mapping for a listing. Removes fulfillment center location mappings for a SKU.\n\nRequired OAuth Scope: sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory',
-    inputSchema: skuLocationMappingInputSchema.shape,
-    outputSchema: emptyOutputSchema,
-    handler: (api, args) => Effect.runPromise(api.inventory.deleteSkuLocationMapping(args)),
   }),
   defineTool({
     name: 'ebay_publish_offer_by_inventory_item_group',

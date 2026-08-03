@@ -57,20 +57,6 @@ export interface BulkMigrateListingInput {
   readonly body: BulkMigrateListingRequest;
 }
 
-/** Input accepted by listing SKU location mapping ID endpoints. */
-export interface SkuLocationMappingInput {
-  /** eBay listing ID that owns the SKU. */
-  readonly listingId: string;
-  /** Seller-defined SKU value inside the listing. */
-  readonly sku: string;
-}
-
-/** Input accepted by createOrReplaceSkuLocationMapping. */
-export interface CreateOrReplaceSkuLocationMappingInput extends SkuLocationMappingInput {
-  /** Generated LocationMapping body. */
-  readonly body: LocationMapping;
-}
-
 /**
  * Request body accepted by bulkCreateOrReplaceInventoryItem.
  *
@@ -162,27 +148,6 @@ export type BulkMigrateListingRequest = components['schemas']['BulkMigrateListin
  * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/methods/bulkMigrateListing
  */
 export type BulkMigrateListingResponse = components['schemas']['BulkMigrateListingResponse'];
-
-/**
- * Generated location mapping body and response.
- *
- * @see https://developer.ebay.com/api-docs/sell/inventory/resources/listing/methods/getSkuLocationMapping
- */
-export type LocationMapping = components['schemas']['LocationMapping'];
-
-/**
- * No-content response returned by createOrReplaceSkuLocationMapping.
- *
- * @see https://developer.ebay.com/api-docs/sell/inventory/resources/listing/methods/createOrReplaceSkuLocationMapping
- */
-export type CreateOrReplaceSkuLocationMappingResponse = void;
-
-/**
- * No-content response returned by deleteSkuLocationMapping.
- *
- * @see https://developer.ebay.com/api-docs/sell/inventory/resources/listing/methods/deleteSkuLocationMapping
- */
-export type DeleteSkuLocationMappingResponse = void;
 
 /** Inventory API — items methods closed over a shared client. */
 export const createInventoryItemsMethods = (client: EbayApiClient) => ({
@@ -435,114 +400,6 @@ export const createInventoryItemsMethods = (client: EbayApiClient) => ({
       );
 
       return yield* requestPostEffect<BulkMigrateListingResponse>(client, path, body);
-    });
-  },
-
-  /**
-   * Retrieves SKU location mappings for one listing/SKU pair.
-   *
-   * @param input - Listing ID and seller-defined SKU value.
-   * @returns An Effect that succeeds with eBay's LocationMapping response.
-   *
-   * @example
-   * ```ts
-   * const mapping = await Effect.runPromise(
-   *   inventoryApi.getSkuLocationMapping({ listingId: '123', sku: 'SKU-1' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/listing/methods/getSkuLocationMapping
-   */
-  getSkuLocationMapping: (
-    input: SkuLocationMappingInput,
-  ): Effect.Effect<LocationMapping, EbayApiError | EndpointInputError> => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<SkuLocationMappingInput>(input, 'input');
-      const listingId = yield* requireStringEffect(validatedInput.listingId, 'listingId');
-      const sku = yield* requireStringEffect(validatedInput.sku, 'sku');
-
-      return yield* requestGetEffect<LocationMapping>(
-        client,
-        `${basePath}/listing/${listingId}/sku/${sku}/locations`,
-      );
-    });
-  },
-
-  /**
-   * Creates or replaces SKU location mappings for one listing/SKU pair.
-   *
-   * @param input - Listing ID, SKU, and generated LocationMapping body.
-   * @returns An Effect that succeeds when eBay returns no content.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   inventoryApi.createOrReplaceSkuLocationMapping({
-   *     listingId: '123',
-   *     sku: 'SKU-1',
-   *     body: { locations: [] },
-   *   }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/listing/methods/createOrReplaceSkuLocationMapping
-   */
-  createOrReplaceSkuLocationMapping: (
-    input: CreateOrReplaceSkuLocationMappingInput,
-  ): Effect.Effect<
-    CreateOrReplaceSkuLocationMappingResponse,
-    EbayApiError | EndpointInputError
-  > => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<CreateOrReplaceSkuLocationMappingInput>(
-        input,
-        'input',
-      );
-      const listingId = yield* requireStringEffect(validatedInput.listingId, 'listingId');
-      const sku = yield* requireStringEffect(validatedInput.sku, 'sku');
-      const body = yield* requireObjectEffect<LocationMapping>(validatedInput.body, 'body');
-
-      return yield* requestPutEffect<CreateOrReplaceSkuLocationMappingResponse>(
-        client,
-        `${basePath}/listing/${listingId}/sku/${sku}/locations`,
-        body,
-      );
-    });
-  },
-
-  /**
-   * Deletes SKU location mappings for one listing/SKU pair.
-   *
-   * @param input - Listing ID and seller-defined SKU value.
-   * @returns An Effect that succeeds when eBay returns no content.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   inventoryApi.deleteSkuLocationMapping({ listingId: '123', sku: 'SKU-1' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/listing/methods/deleteSkuLocationMapping
-   */
-  deleteSkuLocationMapping: (
-    input: SkuLocationMappingInput,
-  ): Effect.Effect<DeleteSkuLocationMappingResponse, EbayApiError | EndpointInputError> => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<SkuLocationMappingInput>(input, 'input');
-      const listingId = yield* requireStringEffect(validatedInput.listingId, 'listingId');
-      const sku = yield* requireStringEffect(validatedInput.sku, 'sku');
-
-      return yield* requestDeleteEffect<DeleteSkuLocationMappingResponse>(
-        client,
-        `${basePath}/listing/${listingId}/sku/${sku}/locations`,
-      );
     });
   },
 });

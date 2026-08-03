@@ -139,54 +139,6 @@ describe('InventoryApi', () => {
     });
   });
 
-  describe('SKU location mappings', () => {
-    it('gets, writes, and deletes SKU location mappings by generated operation names', async () => {
-      const body = {
-        locations: [{ merchantLocationKey: 'LOC-1' }],
-      };
-      vi.mocked(client.get).mockResolvedValue(body);
-      vi.mocked(client.put).mockResolvedValue(undefined);
-      vi.mocked(client.delete).mockResolvedValue(undefined);
-
-      await Effect.runPromise(api.getSkuLocationMapping({ listingId: 'LISTING-1', sku: 'SKU-1' }));
-      await Effect.runPromise(
-        api.createOrReplaceSkuLocationMapping({
-          listingId: 'LISTING-1',
-          sku: 'SKU-1',
-          body,
-        }),
-      );
-      await Effect.runPromise(
-        api.deleteSkuLocationMapping({ listingId: 'LISTING-1', sku: 'SKU-1' }),
-      );
-
-      expect(client.get).toHaveBeenCalledWith(
-        '/sell/inventory/v1/listing/LISTING-1/sku/SKU-1/locations',
-      );
-      expect(client.put).toHaveBeenCalledWith(
-        '/sell/inventory/v1/listing/LISTING-1/sku/SKU-1/locations',
-        body,
-      );
-      expect(client.delete).toHaveBeenCalledWith(
-        '/sell/inventory/v1/listing/LISTING-1/sku/SKU-1/locations',
-      );
-    });
-
-    it('rejects missing SKU location mapping IDs before calling eBay', async () => {
-      await expectEndpointInputError(
-        api.getSkuLocationMapping({ listingId: '', sku: 'SKU-1' }),
-        'listingId',
-      );
-      await expectEndpointInputError(
-        api.deleteSkuLocationMapping({ listingId: 'LISTING-1', sku: '' }),
-        'sku',
-      );
-
-      expect(client.get).not.toHaveBeenCalled();
-      expect(client.delete).not.toHaveBeenCalled();
-    });
-  });
-
   describe('offers', () => {
     it('gets offers with generated query parameter names', async () => {
       vi.mocked(client.get).mockResolvedValue({ offers: [] });

@@ -89,7 +89,7 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | --- | --- | --- |
 | `sell.account` | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies | "Show my eBay sales-tax settings." |
 | `inventory` | Inventory items, offers, inventory locations, bulk offer flows, and SKU/location mapping | "List my active inventory items and their available quantity." |
-| `sell.inventory` | Seller-defined inventory item groups and vehicle compatibility | "Show the variants in this inventory item group." |
+| `sell.inventory` | Item groups, vehicle compatibility, and SKU location mappings | "Show the fulfillment locations mapped to this SKU." |
 | `sell.fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
 | `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
 | `commerce.feedback` | Pending tasks, feedback history, submissions, replies, and rating metrics | "Show feedback received by my seller account." |
@@ -308,7 +308,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 | [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
 | [Sell Account](src/ebay/sell/account/) | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies under `sell.account` |
 | [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, bulk operations, SKU/location mapping |
-| [Sell Inventory](src/ebay/sell/inventory/) | Seller-defined item groups and vehicle compatibility under `sell.inventory` |
+| [Sell Inventory](src/ebay/sell/inventory/) | Item groups, vehicle compatibility, and SKU location mappings under `sell.inventory` |
 | [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
 | [Commerce Feedback](src/ebay/commerce/feedback/) | Pending tasks, feedback history, submissions, replies, and rating metrics under `commerce.feedback` |

@@ -91,7 +91,7 @@ const tool = {
 
 ### 1. Inventory Management (`inventory-management/inventory.ts`)
 
-Schemas for the remaining legacy inventory items, offers, locations, and bulk operations.
+Schemas for the remaining legacy inventory items, offers, inventory locations, and bulk operations.
 
 **Endpoints Covered:**
 

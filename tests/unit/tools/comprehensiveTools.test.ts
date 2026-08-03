@@ -39,9 +39,6 @@ describe('Comprehensive Tools Coverage', () => {
         bulkPublishOffer: vi.fn(),
         getListingFees: vi.fn(),
         bulkMigrateListing: vi.fn(),
-        getSkuLocationMapping: vi.fn(),
-        createOrReplaceSkuLocationMapping: vi.fn(),
-        deleteSkuLocationMapping: vi.fn(),
         publishOfferByInventoryItemGroup: vi.fn(),
         withdrawOfferByInventoryItemGroup: vi.fn(),
       },
@@ -307,38 +304,6 @@ describe('Comprehensive Tools Coverage', () => {
       vi.mocked(mockApi.inventory.bulkMigrateListing).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_bulk_migrate_listing', input);
       expect(mockApi.inventory.bulkMigrateListing).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_sku_location_mapping', async () => {
-      const mockResponse = { locations: [] };
-      const input = { listingId: 'LISTING123', sku: 'SKU123' };
-      vi.mocked(mockApi.inventory.getSkuLocationMapping).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_sku_location_mapping', input);
-      expect(mockApi.inventory.getSkuLocationMapping).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_or_replace_sku_location_mapping', async () => {
-      const input = {
-        listingId: 'LISTING123',
-        sku: 'SKU123',
-        body: { locations: [{ merchantLocationKey: 'LOC123' }] },
-      };
-      vi.mocked(mockApi.inventory.createOrReplaceSkuLocationMapping).mockReturnValue(
-        Effect.succeed(undefined),
-      );
-      await executeTool(mockApi, 'ebay_create_or_replace_sku_location_mapping', input);
-      expect(mockApi.inventory.createOrReplaceSkuLocationMapping).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_delete_sku_location_mapping', async () => {
-      const input = { listingId: 'LISTING123', sku: 'SKU123' };
-      vi.mocked(mockApi.inventory.deleteSkuLocationMapping).mockReturnValue(
-        Effect.succeed(undefined),
-      );
-      await executeTool(mockApi, 'ebay_delete_sku_location_mapping', input);
-      expect(mockApi.inventory.deleteSkuLocationMapping).toHaveBeenCalledWith(input);
     });
 
     it('ebay_publish_offer_by_inventory_item_group', async () => {

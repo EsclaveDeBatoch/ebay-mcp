@@ -137,6 +137,11 @@ import {
   getProductCompatibilityTool,
 } from '@/ebay/sell/inventory/productCompatibility.js';
 import {
+  createOrReplaceSkuLocationMappingTool,
+  deleteSkuLocationMappingTool,
+  getSkuLocationMappingTool,
+} from '@/ebay/sell/inventory/skuLocationMapping.js';
+import {
   getCompatibilitiesBySpecificationTool,
   getCompatibilityPropertyNamesTool,
   getCompatibilityPropertyValuesTool,
@@ -304,6 +309,9 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getProductCompatibilityTool,
   createOrReplaceProductCompatibilityTool,
   deleteProductCompatibilityTool,
+  getSkuLocationMappingTool,
+  createOrReplaceSkuLocationMappingTool,
+  deleteSkuLocationMappingTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

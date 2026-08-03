@@ -15,8 +15,6 @@ export type {
   BulkGetInventoryItemInput,
   BulkUpdatePriceQuantityInput,
   BulkMigrateListingInput,
-  SkuLocationMappingInput,
-  CreateOrReplaceSkuLocationMappingInput,
   BulkCreateOrReplaceInventoryItemRequest,
   BulkCreateOrReplaceInventoryItemResponse,
   BulkGetInventoryItemRequest,
@@ -30,9 +28,6 @@ export type {
   GetInventoryItemsResponse,
   BulkMigrateListingRequest,
   BulkMigrateListingResponse,
-  LocationMapping,
-  CreateOrReplaceSkuLocationMappingResponse,
-  DeleteSkuLocationMappingResponse,
 } from './items.js';
 export type {
   GetOffersInput,

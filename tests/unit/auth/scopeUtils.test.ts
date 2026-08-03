@@ -373,6 +373,39 @@ describe('Scope Utils', () => {
       },
     );
 
+    it('returns either inventory scope for the hierarchical SKU-location-mapping read', () => {
+      const skuLocationMappingScopeRequirement = getRequiredScopesForTool(
+        'ebay_sell_inventory_get_sku_location_mapping',
+      );
+
+      expect(skuLocationMappingScopeRequirement).toEqual({
+        requiredScopes: [
+          'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+          'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        ],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        description: 'Requires read access to inventory SKU location mappings',
+      });
+    });
+
+    it.each([
+      'ebay_sell_inventory_create_or_replace_sku_location_mapping',
+      'ebay_sell_inventory_delete_sku_location_mapping',
+    ])(
+      'returns the inventory write scope for the hierarchical %s tool',
+      (skuLocationMappingToolName) => {
+        const skuLocationMappingScopeRequirement = getRequiredScopesForTool(
+          skuLocationMappingToolName,
+        );
+
+        expect(skuLocationMappingScopeRequirement).toEqual({
+          requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+          minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+          description: 'Requires write access to inventory SKU location mappings',
+        });
+      },
+    );
+
     it.each([
       'ebay_sell_analytics_get_traffic_report',
       'ebay_sell_analytics_find_seller_standards_profiles',

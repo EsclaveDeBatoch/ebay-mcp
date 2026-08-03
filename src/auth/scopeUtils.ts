@@ -524,6 +524,24 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
       description: 'Requires write access to inventory product compatibility',
     },
+    ebay_sell_inventory_get_sku_location_mapping: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory SKU location mappings',
+    },
+    ebay_sell_inventory_create_or_replace_sku_location_mapping: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory SKU location mappings',
+    },
+    ebay_sell_inventory_delete_sku_location_mapping: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory SKU location mappings',
+    },
 
     // Marketing Tools
     ebay_get_campaigns: {
