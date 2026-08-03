@@ -10,8 +10,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "resolveJsonModule": true,
-    "baseUrl": "..",
-    "paths": { "@/*": ["src/*"] },
+    "paths": { "@/*": ["../src/*"] },
     "isolatedModules": true,
     "moduleDetection": "force",
     "allowImportingTsExtensions": true

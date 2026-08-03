@@ -220,7 +220,7 @@ Die Limits des Benutzer-Tokens variieren je nach Kontostufe (Individual 10k · C
 
 ### MCP-Client-Kompatibilität
 
-Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 20 und das MCP-Protokoll 1.0+ über STDIO (Standard) oder HTTP.
+Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 22.12 und das MCP-Protokoll 1.0+ über STDIO (Standard) oder HTTP.
 
 | Client                 | Plattform             | Konfigurationspfad                                                          |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -331,7 +331,7 @@ Es läuft vollständig auf deinem Rechner über STDIO (oder lokales HTTP). Es gi
 
 ### Was brauche ich, um loszulegen?
 
-Node.js ≥ 20, ein kostenloses [eBay-Entwicklerkonto](https://developer.ebay.com/) (Client ID + Client Secret) und dann `npm run setup`.
+Node.js ≥ 22.12, ein kostenloses [eBay-Entwicklerkonto](https://developer.ebay.com/) (Client ID + Client Secret) und dann `npm run setup`.
 
 ### Wie hoch sind die Ratenlimits der eBay-API?
 

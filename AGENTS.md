@@ -10,8 +10,7 @@ tree is migrating from Effect-backed, layer-first API/schema/tool code to direct
 native promises, and official eBay resource modules.
 
 - Current entries: `src/index.ts` for STDIO and `src/serverHttp.ts` for HTTP.
-- Current runtime declaration: Node 20 or newer. The approved dependency slice raises this
-  to Node 22.12 and tests Node 22 and 24.
+- Runtime: Node 22.12 or newer, tested on Node 22 and 24.
 - Package manager: pnpm (`pnpm@10.14.0`); npm scripts remain supported.
 
 ## Read order and authority

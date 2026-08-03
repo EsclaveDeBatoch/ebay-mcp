@@ -1,5 +1,5 @@
 import { Data, type Schema } from 'effect';
-import type { z as zodTypes } from 'zod';
+import type { z as zodTypes } from 'zod/v3';
 
 /** Effect Schema value accepted by the Zod compatibility carrier. */
 export type AnyEffectSchema = Schema.Schema.Any | Schema.PropertySignature.All;

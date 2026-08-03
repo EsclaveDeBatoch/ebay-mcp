@@ -16,18 +16,25 @@ import { describe, expect, it } from 'vitest';
  * reintroduced, so that single-source-of-truth invariant cannot silently regress.
  */
 const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
+const exactPackageVersionPattern = /^\d+\.\d+\.\d+(?:-[\dA-Za-z.-]+)?$/;
 
 /** Minimal view of package.json — only the fields these guards assert on. */
-interface PackageManifest {
-  packageManager?: string;
-  pnpm?: { overrides?: Record<string, string> };
-}
+type DependencyManifest = {
+  readonly dependencies?: Readonly<Record<string, string>>;
+  readonly devDependencies?: Readonly<Record<string, string>>;
+  readonly engines?: { readonly node?: string };
+  readonly packageManager?: string;
+  readonly pnpm?: unknown;
+};
 
-const manifest = JSON.parse(readFileSync(`${repoRoot}package.json`, 'utf8')) as PackageManifest;
+const dependencyManifest = JSON.parse(
+  readFileSync(`${repoRoot}package.json`, 'utf8'),
+) as DependencyManifest;
 
 describe('supply-chain hygiene', () => {
   it('declares pnpm as the single package manager', () => {
-    expect(manifest.packageManager).toMatch(/^pnpm@/);
+    expect(dependencyManifest.packageManager).toBe('pnpm@10.14.0');
+    expect(existsSync(`${repoRoot}pnpm-workspace.yaml`)).toBe(true);
   });
 
   it('commits exactly one lockfile — pnpm-lock.yaml, never package-lock.json or yarn.lock', () => {
@@ -36,15 +43,22 @@ describe('supply-chain hygiene', () => {
     expect(existsSync(`${repoRoot}yarn.lock`)).toBe(false);
   });
 
-  it('pins the security overrides that force patched transitives', () => {
-    // esbuild >=0.28.1 and yaml >=2.8.3 sit below vite's declared ranges, and js-yaml
-    // >=4.2.0 patches GHSA-h67p-54hq-rp68 (quadratic-complexity DoS) pulled in by
-    // @redocly/openapi-core via openapi-typescript. Without these overrides the
-    // dev-tooling chain resolves back to vulnerable versions.
-    expect(manifest.pnpm?.overrides).toMatchObject({
-      esbuild: expect.stringContaining('0.28.1'),
-      yaml: expect.stringContaining('2.8.3'),
-      'js-yaml': expect.stringContaining('4.2.0'),
-    });
+  it('pins direct packages and the maintained Node floor exactly', () => {
+    if (dependencyManifest.dependencies === undefined) {
+      throw new Error('package.json must declare runtime dependencies');
+    }
+
+    if (dependencyManifest.devDependencies === undefined) {
+      throw new Error('package.json must declare development dependencies');
+    }
+
+    const runtimeVersions = Object.values(dependencyManifest.dependencies);
+    const developmentVersions = Object.values(dependencyManifest.devDependencies);
+    const directVersions = [...runtimeVersions, ...developmentVersions];
+
+    expect(directVersions.length).toBeGreaterThan(0);
+    expect(directVersions.every((version) => exactPackageVersionPattern.test(version))).toBe(true);
+    expect(dependencyManifest.engines).toEqual({ node: '>=22.12.0' });
+    expect(dependencyManifest.pnpm).toBeUndefined();
   });
 });

@@ -93,7 +93,7 @@ Entirely locally over STDIO or local HTTP. There is no cloud relay; eBay credent
 
 ### What do I need to get started?
 
-Node.js >= 20, a free eBay Developer account (Client ID and Client Secret), then run `npm run setup`.
+Node.js >= 22.12, a free eBay Developer account (Client ID and Client Secret), then run `npm run setup`.
 
 ### What are the eBay API rate limits?
 

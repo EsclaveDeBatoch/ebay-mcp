@@ -51,8 +51,7 @@ tree is in [ARCHITECTURE.md](ARCHITECTURE.md).
 ## Constraints
 
 - ESM TypeScript, pnpm, strict typechecking, and named exports.
-- The current package still declares Node 20 while the approved dependency-foundation
-  slice moves the minimum to Node 22.12 and tests Node 22 and 24.
+- Node 22.12 is the minimum runtime; CI tests maintained Node 22 and 24.
 - STDOUT is the MCP protocol channel in server mode; runtime logs use structured STDERR.
 - Specifications and generated TypeScript are machine-owned and never hand-edited.
 - Releases are tag-driven. The merged pull request's `major` or `minor` label chooses the

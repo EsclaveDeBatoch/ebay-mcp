@@ -426,7 +426,7 @@ It runs entirely on your machine over STDIO (or local HTTP). There is no cloud r
 <details>
 <summary><strong>What do I need to get started?</strong></summary>
 
-Node.js ≥ 20, a free [eBay Developer Account](https://developer.ebay.com/) (Client ID + Client Secret), then run `npm run setup`.
+Node.js ≥ 22.12, a free [eBay Developer Account](https://developer.ebay.com/) (Client ID + Client Secret), then run `npm run setup`.
 
 </details>
 

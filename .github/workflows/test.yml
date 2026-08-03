@@ -3,7 +3,7 @@ name: Test
 # Single-purpose, reusable (workflow_call): the unit + integration suites across
 # the supported matrix (OS x Node), where cross-environment bugs actually surface.
 # The matrix earns its cost here (unlike biome/typecheck) — package.json
-# `engines: node >=20`. Integration tests are hermetic (nock; no network).
+# `engines: node >=22.12`. Integration tests are hermetic (nock; no network).
 # Coverage runs once, informational and non-blocking.
 
 on:
@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [20, 22, 24]
+        node: [22, 24]
     steps:
       - name: Checkout code
         uses: actions/checkout@v6

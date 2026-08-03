@@ -220,7 +220,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 
 ### MCP クライアント互換性
 
-`npm run setup` により自動設定されます。Node.js ≥ 20 と、STDIO（既定）または HTTP 経由の MCP プロトコル 1.0+ が必要です。
+`npm run setup` により自動設定されます。Node.js ≥ 22.12 と、STDIO（既定）または HTTP 経由の MCP プロトコル 1.0+ が必要です。
 
 | クライアント           | プラットフォーム      | 設定パス                                                                    |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -331,7 +331,7 @@ STDIO（またはローカル HTTP）経由で完全にあなたのマシン上�
 
 ### 始めるには何が必要ですか？
 
-Node.js ≥ 20、無料の [eBay 開発者アカウント](https://developer.ebay.com/)（Client ID + Client Secret）、そして `npm run setup` の実行です。
+Node.js ≥ 22.12、無料の [eBay 開発者アカウント](https://developer.ebay.com/)（Client ID + Client Secret）、そして `npm run setup` の実行です。
 
 ### eBay API のレート制限はどれくらいですか？
 

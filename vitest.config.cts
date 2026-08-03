@@ -1,5 +1,5 @@
-import path from 'node:path';
-import { defineConfig } from 'vitest/config';
+const path = require('node:path');
+const { defineConfig } = require('vitest/config');
 
 const vitestConfig = defineConfig({
   resolve: {

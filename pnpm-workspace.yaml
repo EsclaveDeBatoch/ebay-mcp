@@ -1,0 +1,7 @@
+packages:
+  - .
+
+peerDependencyRules:
+  allowedVersions:
+    # openapi-typescript 7.13 declares TypeScript 5, but its CLI is verified with 6.0.3.
+    typescript: 6.0.3

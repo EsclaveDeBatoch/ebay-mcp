@@ -220,7 +220,7 @@ Los límites del token de usuario varían según el nivel de cuenta (Individual 
 
 ### Compatibilidad de clientes MCP
 
-Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 20 y el protocolo MCP 1.0+ mediante STDIO (predeterminado) o HTTP.
+Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo MCP 1.0+ mediante STDIO (predeterminado) o HTTP.
 
 | Cliente                | Plataforma            | Ruta de configuración                                                       |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -331,7 +331,7 @@ Se ejecuta íntegramente en tu máquina mediante STDIO (o HTTP local). No hay re
 
 ### ¿Qué necesito para empezar?
 
-Node.js ≥ 20, una [cuenta de desarrollador de eBay](https://developer.ebay.com/) gratuita (Client ID + Client Secret) y luego ejecutar `npm run setup`.
+Node.js ≥ 22.12, una [cuenta de desarrollador de eBay](https://developer.ebay.com/) gratuita (Client ID + Client Secret) y luego ejecutar `npm run setup`.
 
 ### ¿Cuáles son los límites de tasa de la API de eBay?
 

@@ -220,7 +220,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 ### MCP 客户端兼容性
 
-由 `npm run setup` 自动配置。需要 Node.js ≥ 20 以及通过 STDIO（默认）或 HTTP 的 MCP 协议 1.0+。
+由 `npm run setup` 自动配置。需要 Node.js ≥ 22.12 以及通过 STDIO（默认）或 HTTP 的 MCP 协议 1.0+。
 
 | 客户端                 | 平台                  | 配置路径                                                                    |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -331,7 +331,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 ### 我需要什么才能开始？
 
-Node.js ≥ 20、一个免费的 [eBay 开发者账号](https://developer.ebay.com/)（Client ID + Client Secret），然后运行 `npm run setup`。
+Node.js ≥ 22.12、一个免费的 [eBay 开发者账号](https://developer.ebay.com/)（Client ID + Client Secret），然后运行 `npm run setup`。
 
 ### eBay API 的速率限制是多少？
 

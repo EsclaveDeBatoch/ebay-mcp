@@ -9,7 +9,7 @@
     "ebay-mcp": "build/index.js"
   },
   "scripts": {
-    "build": "tsc && tsc-alias && npm run build:ui",
+    "build": "tsc && tsc-alias && pnpm run build:ui",
     "build:ui": "tsx src/scripts/buildUi.ts",
     "start": "node build/index.js",
     "dev": "tsx src/index.ts",
@@ -23,15 +23,15 @@
     "typecheck": "tsc --noEmit",
     "typecheck:ui": "tsc -p ui/tsconfig.json --noEmit",
     "typecheck:tests": "tsc -p tsconfig.test.json --noEmit",
-    "check": "npm run typecheck && npm run typecheck:ui && npm run typecheck:tests && biome check \"{src,ui}/**/*.{ts,tsx,js,json,md,css,html}\"",
-    "check:ci": "biome ci . && npm run style:guide",
+    "check": "pnpm run typecheck && pnpm run typecheck:ui && pnpm run typecheck:tests && biome check \"{src,ui}/**/*.{ts,tsx,js,json,md,css,html}\"",
+    "check:ci": "biome ci . && pnpm run style:guide",
     "style:guide": "tsx scripts/dev/reportCodeStyleGuide.ts",
-    "verify": "npm run check:ci && npm run typecheck && npm run typecheck:ui && npm run typecheck:tests && npm run test && npm run build",
+    "verify": "pnpm run check:ci && pnpm run typecheck && pnpm run typecheck:ui && pnpm run typecheck:tests && pnpm run test && pnpm run build",
     "fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true \"{src,ui}/**/*.{ts,tsx,js,json,md,css,html}\"",
     "lint": "biome check .",
     "lint:fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true .",
     "format": "biome format --write .",
-    "prepare": "npm run build && husky"
+    "prepare": "pnpm run build && husky"
   },
   "keywords": [
     "mcp",
@@ -80,56 +80,49 @@
     "url": "https://github.com/YosefHayim/ebay-mcp/issues"
   },
   "dependencies": {
-    "@modelcontextprotocol/ext-apps": "1.7.4",
-    "@modelcontextprotocol/sdk": "1.29.0",
-    "chalk": "^5.6.2",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "dotenv-stringify": "^3.0.1",
-    "effect": "^3.21.4",
-    "express": "^5.2.1",
-    "fast-xml-parser": "^5.9.0",
-    "helmet": "^8.2.0",
-    "jose": "^6.2.3",
-    "prompts": "^2.4.2",
-    "update-notifier": "^7.3.1",
-    "winston": "^3.19.0",
-    "zod": "^3.25.76",
-    "zod-to-json-schema": "^3.25.2"
+    "@modelcontextprotocol/ext-apps": "1.7.5",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "chalk": "5.6.2",
+    "cors": "2.8.6",
+    "dotenv": "17.4.2",
+    "dotenv-stringify": "3.0.1",
+    "effect": "3.21.4",
+    "express": "5.2.1",
+    "fast-xml-parser": "5.10.1",
+    "helmet": "8.3.0",
+    "jose": "6.2.7",
+    "prompts": "2.4.2",
+    "update-notifier": "7.3.1",
+    "winston": "3.19.0",
+    "zod": "4.4.3",
+    "zod-to-json-schema": "3.25.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.1",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6",
-    "@types/node": "^25.9.3",
-    "@types/prompts": "^2.4.9",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@types/supertest": "^7.2.0",
-    "@types/update-notifier": "^6.0.8",
-    "@vitest/coverage-v8": "^4.1.9",
-    "husky": "^9.1.7",
-    "nock": "^14.0.15",
-    "openapi-typescript": "^7.13.0",
-    "react": "19.2.7",
-    "react-dom": "19.2.7",
-    "supertest": "^7.2.2",
-    "tsc-alias": "^1.8.17",
-    "tsx": "^4.22.4",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.5",
+    "@biomejs/biome": "2.5.6",
+    "@types/cors": "2.8.19",
+    "@types/express": "5.0.6",
+    "@types/node": "24.13.3",
+    "@types/prompts": "2.4.9",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@types/supertest": "7.2.1",
+    "@types/update-notifier": "6.0.8",
+    "@vitest/coverage-v8": "4.1.10",
+    "husky": "9.1.7",
+    "nock": "14.0.17",
+    "openapi-typescript": "7.13.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "supertest": "7.2.2",
+    "tsc-alias": "1.9.1",
+    "tsx": "4.23.5",
+    "typescript": "6.0.3",
+    "vite": "8.2.0",
     "vite-plugin-singlefile": "2.3.3",
-    "vitest": "^4.1.9"
+    "vitest": "4.1.10"
   },
   "packageManager": "pnpm@10.14.0",
   "engines": {
-    "node": ">=20.0.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "esbuild": ">=0.28.1",
-      "yaml": ">=2.8.3",
-      "js-yaml": ">=4.2.0"
-    }
+    "node": ">=22.12.0"
   }
 }

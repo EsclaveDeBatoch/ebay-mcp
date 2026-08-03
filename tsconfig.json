@@ -9,8 +9,7 @@
     "declaration": true,
     "declarationMap": false,
     "sourceMap": false,
-    "paths": { "@/*": ["./src/*"] },
-    "baseUrl": "."
+    "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "build", "docs", "tests", "vitest.config.cts"]

@@ -220,7 +220,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 
 ### MCP 클라이언트 호환성
 
-`npm run setup`으로 자동 구성됩니다. Node.js ≥ 20과 STDIO(기본) 또는 HTTP를 통한 MCP 프로토콜 1.0+가 필요합니다.
+`npm run setup`으로 자동 구성됩니다. Node.js ≥ 22.12와 STDIO(기본) 또는 HTTP를 통한 MCP 프로토콜 1.0+가 필요합니다.
 
 | 클라이언트             | 플랫폼                | 구성 경로                                                                   |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -331,7 +331,7 @@ STDIO(또는 로컬 HTTP)를 통해 전적으로 사용자의 컴퓨터에서 �
 
 ### 시작하려면 무엇이 필요한가요?
 
-Node.js ≥ 20, 무료 [eBay 개발자 계정](https://developer.ebay.com/)(Client ID + Client Secret), 그리고 `npm run setup` 실행입니다.
+Node.js ≥ 22.12, 무료 [eBay 개발자 계정](https://developer.ebay.com/)(Client ID + Client Secret), 그리고 `npm run setup` 실행입니다.
 
 ### eBay API 속도 제한은 어떻게 되나요?
 

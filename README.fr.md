@@ -220,7 +220,7 @@ Les limites du jeton utilisateur varient selon le niveau de compte (Individuel 1
 
 ### Compatibilité des clients MCP
 
-Configurés automatiquement par `npm run setup`. Nécessite Node.js ≥ 20 et le protocole MCP 1.0+ via STDIO (par défaut) ou HTTP.
+Configurés automatiquement par `npm run setup`. Nécessite Node.js ≥ 22.12 et le protocole MCP 1.0+ via STDIO (par défaut) ou HTTP.
 
 | Client                 | Plateforme            | Chemin de configuration                                                     |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -331,7 +331,7 @@ Il s'exécute entièrement sur votre machine via STDIO (ou HTTP local). Il n'y a
 
 ### De quoi ai-je besoin pour commencer ?
 
-Node.js ≥ 20, un [compte développeur eBay](https://developer.ebay.com/) gratuit (Client ID + Client Secret), puis lancez `npm run setup`.
+Node.js ≥ 22.12, un [compte développeur eBay](https://developer.ebay.com/) gratuit (Client ID + Client Secret), puis lancez `npm run setup`.
 
 ### Quelles sont les limites de débit de l'API eBay ?
 
