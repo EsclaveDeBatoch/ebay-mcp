@@ -23,7 +23,7 @@ code.
 
 ## Product boundaries
 
-- The repository exposes 292 tools covering the current Sell surface.
+- The repository exposes 290 tools covering the current Sell surface.
 - OAuth, token refresh, STDIO, HTTP, setup, diagnostics, and agent-skill installation are
   part of the product.
 - The service runs locally or in a user-controlled container; it is not a hosted

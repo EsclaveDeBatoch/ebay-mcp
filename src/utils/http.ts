@@ -42,7 +42,8 @@ export interface HttpRequestOptions {
   /**
    * Request body. An object is JSON-stringified (with a JSON content-type when
    * none is set); a `URLSearchParams` is form-encoded; strings/`Buffer` are sent
-   * as-is. `undefined` sends no body.
+   * as-is. Native `FormData` is sent unchanged so fetch owns its multipart boundary.
+   * `undefined` sends no body.
    */
   body?: unknown;
   /** Abort the request after this many milliseconds. */
@@ -206,6 +207,9 @@ const prepareBody = (body: unknown): PreparedBody => {
   }
   if (body instanceof URLSearchParams) {
     return { body: body.toString(), contentType: 'application/x-www-form-urlencoded' };
+  }
+  if (body instanceof FormData) {
+    return { body };
   }
   if (body instanceof Uint8Array || body instanceof ArrayBuffer) {
     return { body: body as BodyInit };

@@ -8,6 +8,7 @@ import {
   type TradingDocument,
 } from '@/ebay/trading/tradingTransport.js';
 import { getErrorMessage } from '@/utils/errors.js';
+import type { ResponseType } from '@/utils/http.js';
 
 /** Query values accepted by the shared eBay HTTP client. */
 type EbaySearchParameters = {
@@ -25,6 +26,7 @@ type EbayGetCall = {
   readonly endpoint: string;
   readonly searchParameters?: EbaySearchParameters;
   readonly requestHeaders?: EbayRequestHeaders;
+  readonly responseType?: ResponseType;
 };
 
 /** One authenticated POST call issued by an eBay resource operation. */
@@ -125,22 +127,29 @@ function completeGetCall<EbayDocument>(
   if (ebayGetCall.apiHost === 'apiz') {
     const ebaySettings = ebayApiClient.getConfig();
     const apizBaseUrl = getApizBaseUrl(ebaySettings.environment, ebaySettings.apiBaseUrl);
+    const absoluteEndpoint = `${apizBaseUrl}${ebayGetCall.endpoint}`;
+    if (ebayGetCall.requestHeaders === undefined && ebayGetCall.responseType === undefined) {
+      return completeEbayCall(
+        ebayApiClient.getFromUrl<EbayDocument>(absoluteEndpoint, ebayGetCall.searchParameters),
+      );
+    }
     return completeEbayCall(
-      ebayApiClient.getFromUrl<EbayDocument>(
-        `${apizBaseUrl}${ebayGetCall.endpoint}`,
-        ebayGetCall.searchParameters,
-      ),
-    );
-  }
-  if (ebayGetCall.requestHeaders !== undefined) {
-    return completeEbayCall(
-      ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters, {
+      ebayApiClient.getFromUrl<EbayDocument>(absoluteEndpoint, ebayGetCall.searchParameters, {
         headers: ebayGetCall.requestHeaders,
+        responseType: ebayGetCall.responseType,
       }),
     );
   }
+  if (ebayGetCall.requestHeaders === undefined && ebayGetCall.responseType === undefined) {
+    return completeEbayCall(
+      ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters),
+    );
+  }
   return completeEbayCall(
-    ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters),
+    ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters, {
+      headers: ebayGetCall.requestHeaders,
+      responseType: ebayGetCall.responseType,
+    }),
   );
 }
 

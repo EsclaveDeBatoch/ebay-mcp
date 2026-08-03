@@ -173,6 +173,33 @@ describe('authenticated eBay seller session alternate-host calls', () => {
     );
   });
 
+  it('passes binary decoding and headers to an alternate-host GET', async () => {
+    const authenticatedClient = ebayApiClient();
+    const evidenceBytes = Buffer.from('evidence');
+    const apizGetCall = vi
+      .spyOn(authenticatedClient, 'getFromUrl')
+      .mockResolvedValue(evidenceBytes);
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.get({
+        apiHost: 'apiz',
+        endpoint: '/sell/fulfillment/v1/payment_dispute/DISPUTE-1/fetch_evidence_content',
+        requestHeaders: { Accept: 'application/octet-stream' },
+        responseType: 'arraybuffer',
+        searchParameters: { evidence_id: 'EVIDENCE-1', file_id: 'FILE-1' },
+      }),
+    ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument: evidenceBytes });
+    expect(apizGetCall).toHaveBeenCalledWith(
+      'https://apiz.sandbox.ebay.com/sell/fulfillment/v1/payment_dispute/DISPUTE-1/fetch_evidence_content',
+      { evidence_id: 'EVIDENCE-1', file_id: 'FILE-1' },
+      {
+        headers: { Accept: 'application/octet-stream' },
+        responseType: 'arraybuffer',
+      },
+    );
+  });
+
   it('uses the configured apiz host for an alternate-host POST', async () => {
     const authenticatedClient = ebayApiClient();
     const ebayDocument = { signingKeyId: 'signing-key-123' };

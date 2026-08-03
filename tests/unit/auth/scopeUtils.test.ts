@@ -69,12 +69,28 @@ describe('Scope Utils', () => {
     });
 
     it('return scopes for order management tools', () => {
-      const requirement = getRequiredScopesForTool('ebay_get_orders');
+      const requirement = getRequiredScopesForTool('ebay_sell_fulfillment_get_orders');
 
       expect(requirement).toBeDefined();
       expect(requirement?.requiredScopes).toContain(
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
       );
+    });
+
+    it('uses the finances scope for direct order refunds', () => {
+      const requirement = getRequiredScopesForTool('ebay_sell_fulfillment_issue_refund');
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/sell.finances',
+      ]);
+    });
+
+    it('uses the payment-dispute scope for dispute evidence', () => {
+      const requirement = getRequiredScopesForTool('ebay_sell_fulfillment_add_evidence');
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      ]);
     });
 
     it.each([

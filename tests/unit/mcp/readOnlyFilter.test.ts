@@ -44,11 +44,11 @@ describe('isReadOnlyTool', () => {
   });
 
   it.each([
-    'ebay_get_orders',
+    'ebay_sell_fulfillment_get_orders',
     'ebay_get_inventory_item',
     'ebay_list_something',
     'ebay_find_campaign_by_ad_reference',
-    'ebay_fetch_payment_dispute_evidence_content',
+    'ebay_sell_fulfillment_fetch_evidence_content',
     'ebay_developer_status_get_incidents',
     'ebay_bulk_get_inventory_item',
     'ebay_get_offer',
@@ -65,9 +65,9 @@ describe('isReadOnlyTool', () => {
     'ebay_delete_offer',
     'ebay_publish_offer',
     'ebay_withdraw_offer',
-    'ebay_issue_refund',
-    'ebay_accept_payment_dispute',
-    'ebay_contest_payment_dispute',
+    'ebay_sell_fulfillment_issue_refund',
+    'ebay_sell_fulfillment_accept_payment_dispute',
+    'ebay_sell_fulfillment_contest_payment_dispute',
     'ebay_commerce_message_send_message',
     'ebay_set_user_tokens',
     'ebay_enable_inventory_location',
@@ -83,7 +83,7 @@ describe('isReadOnlyTool', () => {
     'ebay_trading_revise_listing',
     'ebay_sell_edelivery_cancel_package',
     'ebay_sell_edelivery_confirm_package',
-    'ebay_upload_payment_dispute_evidence_file',
+    'ebay_sell_fulfillment_upload_evidence_file',
   ])('classifies write-oriented name %s as not read-only', (name) => {
     expect(isReadOnlyTool(def(name))).toBe(false);
   });

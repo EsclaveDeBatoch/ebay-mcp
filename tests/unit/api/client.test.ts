@@ -150,6 +150,29 @@ describe('EbayApiClient Unit Tests', () => {
     });
   });
 
+  describe('multipart documents', () => {
+    it('lets native fetch set the multipart boundary instead of sending JSON', async () => {
+      const multipartDocument = new FormData();
+      const evidenceImage = new Blob([Uint8Array.from([1, 2, 3])], { type: 'image/png' });
+      multipartDocument.append('file', evidenceImage, 'delivery.png');
+      const uploadScope = nock('https://api.sandbox.ebay.com', {
+        reqheaders: {
+          'content-type': /^multipart\/form-data; boundary=/,
+        },
+      })
+        .post('/sell/fulfillment/v1/payment_dispute/DISPUTE-1/upload_evidence_file')
+        .reply(200, { fileId: 'FILE-1' });
+
+      const uploadedEvidence = await apiClient.post<{ fileId: string }>(
+        '/sell/fulfillment/v1/payment_dispute/DISPUTE-1/upload_evidence_file',
+        multipartDocument,
+      );
+
+      expect(uploadedEvidence).toEqual({ fileId: 'FILE-1' });
+      expect(uploadScope.isDone()).toBe(true);
+    });
+  });
+
   describe('429 Rate Limit Errors', () => {
     it('handle 429 errors with Retry-After header', async () => {
       nock('https://api.sandbox.ebay.com')

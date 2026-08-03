@@ -122,7 +122,7 @@ describe('table mappers', () => {
     expect(row.cells.fulfillment).toBe('Fulfilled');
     expect(row.cells.total).toBe('25.99 USD');
     expect(row.drill).toEqual({
-      tool: 'ebay_get_order',
+      tool: 'ebay_sell_fulfillment_get_order',
       arguments: { orderId: '12-3456' },
       label: 'View order',
     });
@@ -222,7 +222,10 @@ describe('table mappers', () => {
     });
     expect(view.rows[0].cells.status).toBe('Action needed');
     expect(view.rows[0].cells.amount).toBe('12.00 USD');
-    expect(view.rows[0].drill?.tool).toBe('ebay_get_payment_dispute');
+    expect(view.rows[0].drill).toMatchObject({
+      tool: 'ebay_sell_fulfillment_get_payment_dispute',
+      arguments: { payment_dispute_id: 'd1' },
+    });
   });
 });
 

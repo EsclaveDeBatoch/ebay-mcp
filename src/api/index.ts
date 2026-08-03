@@ -2,8 +2,6 @@ import { AccountApi } from '@/api/account-management/account.js';
 import { EbayApiClient } from '@/api/client.js';
 import { InventoryApi } from '@/api/listing-management/inventory.js';
 import { MarketingApi } from '@/api/marketing-and-promotions/marketing.js';
-import { DisputeApi } from '@/api/order-management/dispute.js';
-import { FulfillmentApi } from '@/api/order-management/fulfillment.js';
 import type { EbayOAuthError } from '@/auth/oauth.js';
 import type { EbayConfig } from '@/types/ebay.js';
 import type { Effect } from 'effect';
@@ -18,8 +16,6 @@ export class EbaySellerApi {
   // API categories
   public account: AccountApi;
   public inventory: InventoryApi;
-  public fulfillment: FulfillmentApi;
-  public dispute: DisputeApi;
   public marketing: MarketingApi;
 
   constructor(config: EbayConfig) {
@@ -29,8 +25,6 @@ export class EbaySellerApi {
     // Initialize API category handlers
     this.account = new AccountApi(this.client);
     this.inventory = new InventoryApi(this.client);
-    this.fulfillment = new FulfillmentApi(this.client);
-    this.dispute = new DisputeApi(this.client);
     this.marketing = new MarketingApi(this.client);
   }
 
@@ -97,5 +91,3 @@ export * from '@/api/account-management/account.js';
 export * from '@/api/client.js';
 export * from '@/api/listing-management/inventory.js';
 export * from '@/api/marketing-and-promotions/marketing.js';
-export * from '@/api/order-management/dispute.js';
-export * from '@/api/order-management/fulfillment.js';

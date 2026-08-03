@@ -402,11 +402,21 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getaudiences: ['ebay_get_audiences'],
 
   // Dispute/Fulfillment API
-  fetchevidencecontent: ['ebay_fetch_evidence_content'],
-  getactivities: ['ebay_get_payment_dispute_activities', 'ebay_get_activities'],
-  uploadevidencefile: ['ebay_upload_evidence_file'],
-  addevidence: ['ebay_add_evidence'],
-  updateevidence: ['ebay_update_evidence'],
+  getorders: ['ebay_sell_fulfillment_get_orders'],
+  getorder: ['ebay_sell_fulfillment_get_order'],
+  issuerefund: ['ebay_sell_fulfillment_issue_refund'],
+  getshippingfulfillments: ['ebay_sell_fulfillment_get_shipping_fulfillments'],
+  createshippingfulfillment: ['ebay_sell_fulfillment_create_shipping_fulfillment'],
+  getshippingfulfillment: ['ebay_sell_fulfillment_get_shipping_fulfillment'],
+  getpaymentdispute: ['ebay_sell_fulfillment_get_payment_dispute'],
+  fetchevidencecontent: ['ebay_sell_fulfillment_fetch_evidence_content'],
+  getactivities: ['ebay_sell_fulfillment_get_activities'],
+  getpaymentdisputesummaries: ['ebay_sell_fulfillment_get_payment_dispute_summaries'],
+  contestpaymentdispute: ['ebay_sell_fulfillment_contest_payment_dispute'],
+  acceptpaymentdispute: ['ebay_sell_fulfillment_accept_payment_dispute'],
+  uploadevidencefile: ['ebay_sell_fulfillment_upload_evidence_file'],
+  addevidence: ['ebay_sell_fulfillment_add_evidence'],
+  updateevidence: ['ebay_sell_fulfillment_update_evidence'],
 };
 
 /**

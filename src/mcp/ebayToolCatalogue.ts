@@ -58,6 +58,23 @@ import {
   getSellerStandardsProfileTool,
 } from '@/ebay/sell/analytics/sellerStandardsProfile.js';
 import { getTrafficReportTool } from '@/ebay/sell/analytics/trafficReport.js';
+import { getOrderTool, getOrdersTool, issueRefundTool } from '@/ebay/sell/fulfillment/order.js';
+import {
+  acceptPaymentDisputeTool,
+  addEvidenceTool,
+  contestPaymentDisputeTool,
+  fetchEvidenceContentTool,
+  getActivitiesTool,
+  getPaymentDisputeSummariesTool,
+  getPaymentDisputeTool,
+  updateEvidenceTool,
+  uploadEvidenceFileTool,
+} from '@/ebay/sell/fulfillment/paymentDispute.js';
+import {
+  createShippingFulfillmentTool,
+  getShippingFulfillmentTool,
+  getShippingFulfillmentsTool,
+} from '@/ebay/sell/fulfillment/shippingFulfillment.js';
 import {
   getCompatibilitiesBySpecificationTool,
   getCompatibilityPropertyNamesTool,
@@ -214,6 +231,21 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   findSellerStandardsProfilesTool,
   getSellerStandardsProfileTool,
   getCustomerServiceMetricTool,
+  getOrdersTool,
+  getOrderTool,
+  issueRefundTool,
+  getShippingFulfillmentsTool,
+  createShippingFulfillmentTool,
+  getShippingFulfillmentTool,
+  getPaymentDisputeTool,
+  fetchEvidenceContentTool,
+  getActivitiesTool,
+  getPaymentDisputeSummariesTool,
+  contestPaymentDisputeTool,
+  acceptPaymentDisputeTool,
+  uploadEvidenceFileTool,
+  addEvidenceTool,
+  updateEvidenceTool,
   getAutomotivePartsCompatibilityPoliciesTool,
   getCategoryPoliciesTool,
   getClassifiedAdPoliciesTool,

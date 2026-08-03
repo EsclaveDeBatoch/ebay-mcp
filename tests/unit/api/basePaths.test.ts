@@ -36,7 +36,6 @@ type BasePathBinding = {
  * Every base-path literal in `src/api`. A completeness check below fails when a new
  * one appears without being bound here, so a new API cannot ship an unverified path.
  *
- * Payment disputes live in the Fulfillment API, so `dispute.ts` shares its spec.
  */
 const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
   {
@@ -53,16 +52,6 @@ const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
     file: 'src/api/marketing-and-promotions/shared.ts',
     constant: 'MARKETING_BASE_PATH',
     spec: 'specs/ebay/sell-apps/marketing-and-promotions/sell_marketing_v1_oas3.json',
-  },
-  {
-    file: 'src/api/order-management/fulfillment.ts',
-    constant: 'basePath',
-    spec: 'specs/ebay/sell-apps/order-management/sell_fulfillment_v1_oas3.json',
-  },
-  {
-    file: 'src/api/order-management/dispute.ts',
-    constant: 'basePath',
-    spec: 'specs/ebay/sell-apps/order-management/sell_fulfillment_v1_oas3.json',
   },
 ];
 

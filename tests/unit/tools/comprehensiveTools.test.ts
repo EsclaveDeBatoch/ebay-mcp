@@ -90,23 +90,6 @@ describe('Comprehensive Tools Coverage', () => {
         publishOfferByInventoryItemGroup: vi.fn(),
         withdrawOfferByInventoryItemGroup: vi.fn(),
       },
-      fulfillment: {
-        getOrders: vi.fn(),
-        getOrder: vi.fn(),
-        createShippingFulfillment: vi.fn(),
-        issueRefund: vi.fn(),
-      },
-      dispute: {
-        getPaymentDisputeSummaries: vi.fn(),
-        getPaymentDispute: vi.fn(),
-        getActivities: vi.fn(),
-        fetchEvidenceContent: vi.fn(),
-        contestPaymentDispute: vi.fn(),
-        acceptPaymentDispute: vi.fn(),
-        uploadEvidenceFile: vi.fn(),
-        addEvidence: vi.fn(),
-        updateEvidence: vi.fn(),
-      },
       marketing: {
         getCampaigns: vi.fn(),
         getCampaign: vi.fn(),
@@ -849,66 +832,6 @@ describe('Comprehensive Tools Coverage', () => {
       );
       await executeTool(mockApi, 'ebay_withdraw_offer_by_inventory_item_group', input);
       expect(mockApi.inventory.withdrawOfferByInventoryItemGroup).toHaveBeenCalledWith(input);
-    });
-  });
-
-  // ===== FULFILLMENT TOOLS =====
-  describe('Fulfillment Tools', () => {
-    it('ebay_get_orders', async () => {
-      const mockResponse = { orders: [] };
-      const input = { filter: 'test', limit: 10 };
-      vi.mocked(mockApi.fulfillment.getOrders).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_orders', input);
-      expect(mockApi.fulfillment.getOrders).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_order', async () => {
-      const mockResponse = { orderId: 'ORDER123' };
-      const input = { orderId: 'ORDER123' };
-      vi.mocked(mockApi.fulfillment.getOrder).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_order', input);
-      expect(mockApi.fulfillment.getOrder).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_shipping_fulfillment', async () => {
-      const mockResponse = {};
-      const body = { lineItems: [], trackingNumber: '123' };
-      const input = {
-        orderId: 'ORDER123',
-        body,
-      };
-      vi.mocked(mockApi.fulfillment.createShippingFulfillment).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_create_shipping_fulfillment', input);
-      expect(mockApi.fulfillment.createShippingFulfillment).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_issue_refund', async () => {
-      const mockResponse = { refundId: 'REFUND123' };
-      const body = {
-        reasonForRefund: 'BUYER_CANCEL',
-        orderLevelRefundAmount: { value: '10', currency: 'USD' },
-      };
-      const input = {
-        orderId: 'ORDER123',
-        body,
-      };
-      vi.mocked(mockApi.fulfillment.issueRefund).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_issue_refund', input);
-      expect(mockApi.fulfillment.issueRefund).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_payment_dispute_summaries', async () => {
-      const mockResponse = { paymentDisputeSummaries: [] };
-      const input = { orderId: 'ORDER123', limit: 10 };
-      vi.mocked(mockApi.dispute.getPaymentDisputeSummaries).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-
-      await executeTool(mockApi, 'ebay_get_payment_dispute_summaries', input);
-
-      expect(mockApi.dispute.getPaymentDisputeSummaries).toHaveBeenCalledWith(input);
     });
   });
 

@@ -15,7 +15,6 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Business policies (payment, return, fulfillment), privileges, program opt-in, sales tax',
   inventory:
     'Inventory items, offers, locations, inventory groups, bulk publish — the REST listing model',
-  fulfillment: 'Orders, shipping fulfillments, refunds, and payment disputes',
   marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
   'commerce.feedback':
     'Pending tasks, feedback history, submissions, replies, and rating metrics from Commerce Feedback',
@@ -34,6 +33,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
   'sell.edelivery':
     'International package creation, consolidation, shipping documents, and tracking for Greater-China sellers',
+  'sell.fulfillment': 'Orders, shipping fulfillments, refunds, and payment disputes',
   'sell.negotiation': 'Listings eligible for seller offers and seller-initiated discounted offers',
   'sell.recommendation':
     'Promoted Listings recommendations for active listings from Sell Recommendation',
@@ -56,6 +56,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'developer.status', title: 'Developer Status' },
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
   { namespace: 'sell.edelivery', title: 'Sell eDelivery' },
+  { namespace: 'sell.fulfillment', title: 'Sell Fulfillment' },
   { namespace: 'sell.metadata', title: 'Sell Metadata' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },

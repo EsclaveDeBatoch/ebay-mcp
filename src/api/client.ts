@@ -216,8 +216,12 @@ export class EbayApiClient {
         );
       }
 
+      const defaultHeaders = this.getDefaultHeaders();
+      if (options.requestDocument instanceof FormData) {
+        delete defaultHeaders['Content-Type'];
+      }
       const headers: Record<string, string> = {
-        ...this.getDefaultHeaders(),
+        ...defaultHeaders,
         ...options.headers,
       };
 
@@ -551,9 +555,15 @@ export class EbayApiClient {
   getFromUrl = async <EbayDocument = unknown>(
     absoluteUrl: string,
     searchParameters?: Record<string, unknown>,
+    requestSettings?: EbayRequestConfig,
   ): Promise<EbayDocument> =>
     await this.request<EbayDocument>('GET', absoluteUrl, {
-      searchParameters,
+      searchParameters: {
+        ...searchParameters,
+        ...requestSettings?.searchParameters,
+      },
+      headers: requestSettings?.headers,
+      responseType: requestSettings?.responseType,
       absolute: true,
     });
 

@@ -43,7 +43,7 @@ const READ_NAME_PATTERN =
  *
  * @example
  * ```ts
- * isReadOnlyTool({ name: 'ebay_get_orders' }); // true
+ * isReadOnlyTool({ name: 'ebay_sell_fulfillment_get_orders' }); // true
  * isReadOnlyTool({ name: 'ebay_create_offer' }); // false
  * ```
  */

@@ -135,7 +135,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
     },
 
     // Order Management Tools
-    ebay_get_orders: {
+    ebay_sell_fulfillment_get_orders: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
@@ -143,7 +143,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
       description: 'Requires read access to order fulfillment',
     },
-    ebay_get_order: {
+    ebay_sell_fulfillment_get_order: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
@@ -151,15 +151,76 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
       description: 'Requires read access to order fulfillment',
     },
-    ebay_create_shipping_fulfillment: {
+    ebay_sell_fulfillment_get_shipping_fulfillments: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+      description: 'Requires read access to order fulfillment',
+    },
+    ebay_sell_fulfillment_get_shipping_fulfillment: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+      description: 'Requires read access to order fulfillment',
+    },
+    ebay_sell_fulfillment_create_shipping_fulfillment: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.fulfillment'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
       description: 'Requires write access to order fulfillment',
     },
-    ebay_issue_refund: {
-      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.fulfillment'],
-      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
-      description: 'Requires write access to order fulfillment',
+    ebay_sell_fulfillment_issue_refund: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.finances'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.finances',
+      description: 'Requires permission to issue order refunds',
+    },
+    ebay_sell_fulfillment_get_payment_dispute: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_fetch_evidence_content: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_get_activities: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_get_payment_dispute_summaries: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_contest_payment_dispute: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_accept_payment_dispute: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_upload_evidence_file: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_add_evidence: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_update_evidence: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
     },
 
     // Account Management Tools

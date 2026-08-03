@@ -85,7 +85,11 @@ export const mapOrdersToTable = (result: OrderSearchPagedCollection): TableViewM
         total: formatAmount(order.pricingSummary?.total),
       },
       drill: order.orderId
-        ? { tool: 'ebay_get_order', arguments: { orderId: order.orderId }, label: 'View order' }
+        ? {
+            tool: 'ebay_sell_fulfillment_get_order',
+            arguments: { orderId: order.orderId },
+            label: 'View order',
+          }
         : undefined,
     })),
     footnote: footnoteFor(orders.length, result.total),
@@ -288,8 +292,8 @@ export const mapDisputeSummariesToTable = (result: DisputeSummaryResponse): Tabl
       },
       drill: dispute.paymentDisputeId
         ? {
-            tool: 'ebay_get_payment_dispute',
-            arguments: { paymentDisputeId: dispute.paymentDisputeId },
+            tool: 'ebay_sell_fulfillment_get_payment_dispute',
+            arguments: { payment_dispute_id: dispute.paymentDisputeId },
             label: 'View dispute',
           }
         : undefined,

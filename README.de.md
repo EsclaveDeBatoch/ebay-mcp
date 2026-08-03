@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Der eBay MCP-Server — gib Claude, Cursor und jedem KI-Assistenten vollen Zugriff auf die Sell-APIs von eBay. 292 Tools für Bestand, Bestellungen, Marketing und Analytik, lokal ausgeführt mit deinen eigenen Schlüsseln.</strong>
+  <strong>Der eBay MCP-Server — gib Claude, Cursor und jedem KI-Assistenten vollen Zugriff auf die Sell-APIs von eBay. 290 Tools für Bestand, Bestellungen, Marketing und Analytik, lokal ausgeführt mit deinen eigenen Schlüsseln.</strong>
 </p>
 
 <p align="center"><sub>Inoffizielles Open-Source-Projekt — ohne Zugehörigkeit, Genehmigung oder Billigung durch eBay Inc.</sub></p>
@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/tools-292-8957e5?logo=ebay&logoColor=white" alt="292 eBay-API-Tools" />
+  <img src="https://img.shields.io/badge/tools-290-8957e5?logo=ebay&logoColor=white" alt="290 eBay-API-Tools" />
   <img src="https://img.shields.io/badge/Sell%20API%20coverage-100%25-success" alt="100% Abdeckung der eBay Sell API" />
   <img src="https://img.shields.io/badge/Model%20Context%20Protocol-compatible-000000" alt="Model Context Protocol kompatibel" />
   <img src="https://img.shields.io/badge/tests-1%2C000%2B%20passing-3fb950?logo=vitest&logoColor=white" alt="über 1000 bestandene Tests" />
@@ -47,7 +47,7 @@
 
 > **Hinweis:** Die englische [README.md](README.md) ist die Quelle der Wahrheit für aktuelle Produktangaben (Tool-Familien, API-Stilllegungen, Versionshinweise). Diese Übersetzung kann hinterherhinken.
 
-**eBay MCP** ist ein lokaler [Model-Context-Protocol](https://modelcontextprotocol.io)-Server, der KI-Assistenten —Claude Desktop, Claude Code, Cursor, Cline, Windsurf, Zed, Continue.dev, Roo Code und Amazon Q— direkt mit den **Sell-APIs von eBay** verbindet. Er stellt **292 Tools** bereit, die **100% der eBay-Sell-API-Oberfläche** (266 eindeutige Endpunkte) abdecken — für Bestandsverwaltung, Auftragsabwicklung, Marketing mit beworbenen Angeboten, Analytik und Entwicklerwerkzeuge. Alles läuft auf deinem Rechner über STDIO oder lokales HTTP — **kein Cloud-Relay**, und deine eBay-Zugangsdaten verlassen niemals deinen Computer.
+**eBay MCP** ist ein lokaler [Model-Context-Protocol](https://modelcontextprotocol.io)-Server, der KI-Assistenten —Claude Desktop, Claude Code, Cursor, Cline, Windsurf, Zed, Continue.dev, Roo Code und Amazon Q— direkt mit den **Sell-APIs von eBay** verbindet. Er stellt **290 Tools** bereit, die **100% der eBay-Sell-API-Oberfläche** (266 eindeutige Endpunkte) abdecken — für Bestandsverwaltung, Auftragsabwicklung, Marketing mit beworbenen Angeboten, Analytik und Entwicklerwerkzeuge. Alles läuft auf deinem Rechner über STDIO oder lokales HTTP — **kein Cloud-Relay**, und deine eBay-Zugangsdaten verlassen niemals deinen Computer.
 
 > **Haftungsausschluss:** Inoffizielles Drittanbieterprojekt — **ohne Zugehörigkeit zu oder Billigung durch eBay Inc.** Bereitgestellt „wie besehen“, ohne Gewährleistung. Du bist selbst dafür verantwortlich, die [eBay-API-Lizenzvereinbarung](https://developer.ebay.com/join/api-license-agreement) und die [Anforderungen an die Datenverarbeitung](https://developer.ebay.com/api-docs/static/data-handling-update.html) einzuhalten, deine Zugangsdaten zu schützen und die Ratenlimits einzuhalten. Teste im Sandbox-Modus vor dem Produktivbetrieb. Siehe [LICENSE](LICENSE), [SECURITY.md](SECURITY.md) und [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md).
 
@@ -71,7 +71,7 @@
 
 ## Funktionen
 
-- **292 eBay-API-Tools** — 100% Abdeckung der eBay-Sell-APIs für Bestand, Bestellungen, Marketing, Analytik, Metadaten, Taxonomie und Entwicklerwerkzeuge.
+- **290 eBay-API-Tools** — 100% Abdeckung der eBay-Sell-APIs für Bestand, Bestellungen, Marketing, Analytik, Metadaten, Taxonomie und Entwicklerwerkzeuge.
 - **9 KI-Clients, automatisch konfiguriert** — Claude Desktop, Cursor, Zed, Cline, Continue.dev, Windsurf, Roo Code, Claude Code CLI und Amazon Q Developer.
 - **OAuth 2.0 integriert** — vollständige Verwaltung von Benutzer-Tokens mit automatischer Erneuerung und intelligentem Rückfall von Benutzer-Tokens (10k–50k Anfragen/Tag) auf Client-Zugangsdaten (1k Anfragen/Tag).
 - **Standardmäßig robust** — automatischer Wiederholungsversuch mit exponentiellem Backoff bei `429`-Ratenlimits und konsistente, deutliche Fehlermeldungen.
@@ -93,7 +93,7 @@ Beide sprechen mit denselben eBay-Endpunkten — der Unterschied ist alles, was 
 | Eingabevalidierung | Zod-Schemata + TypeScript-Typen für jedes Tool | Keine — du validierst deine eigenen Payloads |
 | Einrichtung | Ein Assistent (`npm run setup`) | Auth, Header und Marketplace pro Aufruf |
 | Unterstützung von KI-Clients | 9 Clients automatisch konfiguriert | Nicht zutreffend |
-| API-Abdeckung | 292 Tools über 100% der Sell-APIs, einsatzbereit | Du baust jede Anfrage anhand der Doku selbst |
+| API-Abdeckung | 290 Tools über 100% der Sell-APIs, einsatzbereit | Du baust jede Anfrage anhand der Doku selbst |
 | Hosting | Läuft lokal, kein Cloud-Relay | Deine eigene Infrastruktur |
 
 ## KI-gestützte Einrichtung mit einem Klick
@@ -236,14 +236,14 @@ Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 22.12 und 
 
 ## Verfügbare Tools
 
-**292 Tools**, 100% Sell-API-Abdeckung, nach Kategorie geordnet. Jeder Link verweist auf die Tool-Definitionen und ihre Handler in [`src/tools/categories/`](src/tools/categories/):
+**290 Tools**, 100% Sell-API-Abdeckung, nach Kategorie geordnet. Jeder Link verweist auf die Tool-Definitionen und ihre Handler in [`src/tools/categories/`](src/tools/categories/):
 
 | Kategorie | Was du tun kannst |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | ChatGPT-Connector-Search/Fetch über den eBay-MCP-Katalog |
 | [Account](src/tools/categories/account.ts) | Geschäfts-, Versand-, Zahlungs- und Rückgaberichtlinien; Programme; Abonnements; Verkaufssteuer |
 | [Inventory](src/tools/categories/inventory.ts) | Bestandsartikel, Angebote, Standorte, Artikelgruppen, Massenvorgänge, SKU/Standort-Zuordnung |
-| [Fulfillment](src/tools/categories/fulfillment.ts) | Bestellungen, Versand, Rückerstattungen, Streitfälle, Nachweise zu Zahlungsstreitfällen |
+| [Fulfillment](src/ebay/sell/fulfillment/) | Bestellungen, Versand, Rückerstattungen, Streitfälle, Nachweise zu Zahlungsstreitfällen |
 | [Marketing](src/tools/categories/marketing.ts) | Kampagnen für beworbene Angebote, Anzeigen, Aktionen, Gebote, Massenvorgänge |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic-Berichte, Verkäuferstandards, Kundenservice-Kennzahlen |
 | [Communication](src/tools/categories/communication.ts) | Käufer-Verkäufer-Nachrichten, Verhandlungen, Benachrichtigungen, Bewertungen |
@@ -255,7 +255,7 @@ Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 22.12 und 
 | [Developer](src/ebay/developer) | Ratenlimits, Signaturschlüssel und API-Status |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth-URL-Generierung und Token-Verwaltung |
 
-**Beispiel-Tools:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Beispiel-Tools:** `ebay_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 Den vollständigen maschinenlesbaren Index findest du in [llms.txt](llms.txt).
 
@@ -274,8 +274,8 @@ Auf Hosts, die [MCP Apps](https://modelcontextprotocol.io) unterstützen, stelle
 
 | Archetyp | Tools |
 | --- | --- |
-| **Tabelle** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **Karte** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Tabelle** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Karte** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Diagramm** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 Die Ansichten werden mit `npm run build` (oder `npm run build:ui`) zu eigenständigem HTML gebaut; sie sind im veröffentlichten Paket enthalten und laden ohne eigenen Netzwerkzugriff.
@@ -286,7 +286,7 @@ Häufige Aufgaben, formuliert wie du sie deinem KI-Assistenten stellen würdest:
 
 - **OAuth einrichten** — *„Hilf mir, OAuth für mein eBay-Konto einzurichten.“* → generiert eine Autorisierungs-URL über `ebay_get_oauth_url` und konfiguriert dann das Refresh-Token. Schaltet 10k–50k Anfragen/Tag frei.
 - **Bestand verwalten** — *„Zeig mir alle meine aktiven Angebote.“* → `ebay_get_inventory_items` liefert SKUs, Mengen und Status.
-- **Bestellungen bearbeiten** — *„Hol alle unerledigten Bestellungen der letzten 7 Tage.“* → `ebay_get_orders` mit Datums- und Versandstatus-Filtern.
+- **Bestellungen bearbeiten** — *„Hol alle unerledigten Bestellungen der letzten 7 Tage.“* → `ebay_sell_fulfillment_get_orders` mit Datums- und Versandstatus-Filtern.
 - **Kampagnen erstellen** — *„Erstelle eine Kampagne für beworbene Angebote für Elektronik.“* → `ebay_create_campaign` und zugehörige Marketing-Tools.
 - **Massenvorgänge** — *„Gewähre 10% Rabatt auf alle Artikel der Kategorie 'Vintage-Uhren'.“* → `ebay_get_inventory_items` + `ebay_update_offer` über die Treffer.
 
@@ -299,7 +299,7 @@ Häufige Aufgaben, formuliert wie du sie deinem KI-Assistenten stellen würdest:
 
 ### Was ist der eBay MCP-Server?
 
-Ein lokaler [Model-Context-Protocol](https://modelcontextprotocol.io)-Server, der **292 Tools** bereitstellt, die **100% der Sell-APIs von eBay** (266 Endpunkte) für KI-Assistenten abdecken — Bestand, Auftragsabwicklung, Marketing, Analytik und Entwicklertools.
+Ein lokaler [Model-Context-Protocol](https://modelcontextprotocol.io)-Server, der **290 Tools** bereitstellt, die **100% der Sell-APIs von eBay** (266 Endpunkte) für KI-Assistenten abdecken — Bestand, Auftragsabwicklung, Marketing, Analytik und Entwicklertools.
 
 ### Ist das ein offizielles eBay-Produkt?
 
@@ -319,7 +319,7 @@ Interaktive Ansichten via [MCP Apps](#interaktive-oberfläche-mcp-apps) erschein
 
 ### Wie viele eBay-APIs und Tools deckt es ab?
 
-292 Tools über 266 eindeutige Endpunkte — 100% der Sell-APIs von eBay.
+290 Tools über 266 eindeutige Endpunkte — 100% der Sell-APIs von eBay.
 
 ### Ist es kostenlos und Open Source?
 

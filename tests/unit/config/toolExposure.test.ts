@@ -24,6 +24,7 @@ describe('toolExposure', () => {
         'developer.status',
         'sell.analytics',
         'sell.edelivery',
+        'sell.fulfillment',
         'sell.metadata',
         'sell.negotiation',
         'sell.recommendation',
@@ -45,9 +46,9 @@ describe('toolExposure', () => {
     });
 
     it('parses a comma list into trimmed, lowercased exposure paths', () => {
-      expect(parseToolGatingMode({ EBAY_MCP_TOOLS: ' Inventory , fulfillment ' })).toEqual({
+      expect(parseToolGatingMode({ EBAY_MCP_TOOLS: ' Inventory , sell.fulfillment ' })).toEqual({
         kind: 'static',
-        exposurePaths: ['inventory', 'fulfillment'],
+        exposurePaths: ['inventory', 'sell.fulfillment'],
       });
     });
   });
@@ -60,7 +61,9 @@ describe('toolExposure', () => {
     });
 
     it('accepts valid legacy and official exposure paths', () => {
-      expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'inventory,fulfillment' })).toBeUndefined();
+      expect(
+        getToolGatingConfigError({ EBAY_MCP_TOOLS: 'inventory,sell.fulfillment' }),
+      ).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.feedback' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.identity' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.message' })).toBeUndefined();
@@ -81,7 +84,7 @@ describe('toolExposure', () => {
 
     it('rejects an unknown exposure path and lists the valid ones', () => {
       const gatingFailure = getToolGatingConfigError({
-        EBAY_MCP_TOOLS: 'inventroy,fulfillment',
+        EBAY_MCP_TOOLS: 'inventroy,sell.fulfillment',
       });
       expect(gatingFailure).toContain('inventroy');
       expect(gatingFailure).toContain('Valid paths');
