@@ -25,7 +25,7 @@ type EbayGetCall = {
 /** One authenticated POST call issued by an eBay resource operation. */
 type EbayPostCall = {
   readonly endpoint: string;
-  readonly requestDocument: unknown;
+  readonly requestDocument?: unknown;
   readonly searchParameters?: EbaySearchParameters;
   readonly requestHeaders?: EbayRequestHeaders;
 };
@@ -167,13 +167,22 @@ export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySelle
       ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters),
     );
   },
-  post: <EbayDocument>(ebayPostCall: EbayPostCall) =>
-    completeEbayCall(
+  post: <EbayDocument>(ebayPostCall: EbayPostCall) => {
+    if (
+      ebayPostCall.requestDocument === undefined &&
+      ebayPostCall.searchParameters === undefined &&
+      ebayPostCall.requestHeaders === undefined
+    ) {
+      return completeEbayCall(ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint));
+    }
+
+    return completeEbayCall(
       ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint, ebayPostCall.requestDocument, {
         params: ebayPostCall.searchParameters,
         headers: ebayPostCall.requestHeaders,
       }),
-    ),
+    );
+  },
   put: <EbayDocument>(ebayPutCall: EbayPutCall) =>
     completeEbayCall(
       ebayApiClient.put<EbayDocument>(ebayPutCall.endpoint, ebayPutCall.requestDocument, {

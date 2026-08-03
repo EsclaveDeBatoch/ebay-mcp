@@ -94,6 +94,21 @@ describe('authenticated eBay seller session standard-host calls', () => {
     );
   });
 
+  it('omits the document and request settings for a bodyless POST', async () => {
+    const authenticatedClient = ebayApiClient();
+    const postCall = vi.spyOn(authenticatedClient, 'post').mockResolvedValue(undefined);
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.post({
+        endpoint: '/commerce/notification/v1/subscription/subscription-123/enable',
+      }),
+    ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument: undefined });
+    expect(postCall).toHaveBeenCalledWith(
+      '/commerce/notification/v1/subscription/subscription-123/enable',
+    );
+  });
+
   it('passes the PUT endpoint, document, search parameters, and headers to the client', async () => {
     const authenticatedClient = ebayApiClient();
     const putCall = vi.spyOn(authenticatedClient, 'put').mockResolvedValue(undefined);

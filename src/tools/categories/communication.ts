@@ -3,18 +3,10 @@ import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
 import {
   createSubscriptionFilterSchema,
-  createSubscriptionSchema,
   deleteSubscriptionFilterSchema,
-  deleteSubscriptionSchema,
-  disableSubscriptionSchema,
-  enableSubscriptionSchema,
   getSubscriptionFilterSchema,
-  getSubscriptionSchema,
-  getSubscriptionsSchema,
   getTopicSchema,
   getTopicsSchema,
-  testSubscriptionSchema,
-  updateSubscriptionSchema,
 } from '@/utils/communication/notification.js';
 
 /**
@@ -25,55 +17,6 @@ import {
  * boundary: they run one endpoint Effect and avoid response or input reshaping.
  */
 export const communicationEntries: ToolEntry[] = [
-  // Notification API - Subscription CRUD
-  defineTool({
-    name: 'ebay_get_notification_subscriptions',
-    description: 'Get all notification subscriptions (paginated)',
-    inputSchema: getSubscriptionsSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.getSubscriptions(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_notification_subscription',
-    description: 'Create a notification subscription',
-    inputSchema: createSubscriptionSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.createSubscription(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_notification_subscription',
-    description: 'Get a specific notification subscription by ID',
-    inputSchema: getSubscriptionSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.getSubscription(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_notification_subscription',
-    description: 'Update a notification subscription',
-    inputSchema: updateSubscriptionSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.updateSubscription(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_notification_subscription',
-    description: 'Delete a notification subscription',
-    inputSchema: deleteSubscriptionSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.deleteSubscription(args)),
-  }),
-  defineTool({
-    name: 'ebay_disable_notification_subscription',
-    description: 'Disable a notification subscription',
-    inputSchema: disableSubscriptionSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.disableSubscription(args)),
-  }),
-  defineTool({
-    name: 'ebay_enable_notification_subscription',
-    description: 'Enable a notification subscription',
-    inputSchema: enableSubscriptionSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.enableSubscription(args)),
-  }),
-  defineTool({
-    name: 'ebay_test_notification_subscription',
-    description: 'Test a notification subscription by sending a test message',
-    inputSchema: testSubscriptionSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.testSubscription(args)),
-  }),
   // Notification API - Subscription Filters
   defineTool({
     name: 'ebay_create_notification_subscription_filter',

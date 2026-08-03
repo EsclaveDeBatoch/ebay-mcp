@@ -16,6 +16,16 @@ import {
   updateDestinationTool,
 } from '@/ebay/commerce/notification/destination.js';
 import { getPublicKeyTool } from '@/ebay/commerce/notification/publicKey.js';
+import {
+  createSubscriptionTool,
+  deleteSubscriptionTool,
+  disableSubscriptionTool,
+  enableSubscriptionTool,
+  getSubscriptionTool,
+  getSubscriptionsTool,
+  testSubscriptionTool,
+  updateSubscriptionTool,
+} from '@/ebay/commerce/notification/subscription.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
@@ -50,6 +60,14 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   updateDestinationTool,
   deleteDestinationTool,
   getPublicKeyTool,
+  getSubscriptionsTool,
+  createSubscriptionTool,
+  getSubscriptionTool,
+  updateSubscriptionTool,
+  deleteSubscriptionTool,
+  disableSubscriptionTool,
+  enableSubscriptionTool,
+  testSubscriptionTool,
   getUserTool,
   translateListingTextTool,
   getTrafficReportTool,

@@ -8,62 +8,28 @@ import {
   requestDeleteEffect,
   requestGetEffect,
   requestPostEffect,
-  requestPutEffect,
   requireObjectEffect,
   requireStringEffect,
 } from '@/api/shared/request.js';
 import type { components } from '@/generated/ebay/sell-apps/communication/commerceNotificationV1Oas3.js';
 import type {
   createSubscriptionFilterSchema,
-  createSubscriptionSchema,
   deleteSubscriptionFilterSchema,
-  deleteSubscriptionSchema,
-  disableSubscriptionSchema,
-  enableSubscriptionSchema,
   getSubscriptionFilterSchema,
-  getSubscriptionSchema,
-  getSubscriptionsSchema,
   getTopicSchema,
   getTopicsSchema,
-  testSubscriptionSchema,
-  updateSubscriptionSchema,
 } from '@/utils/communication/notification.js';
 import { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
-type GetSubscriptionsInput = InferEffectSchema<typeof getSubscriptionsSchema>;
-type CreateSubscriptionInput = InferEffectSchema<typeof createSubscriptionSchema>;
-type GetSubscriptionInput = InferEffectSchema<typeof getSubscriptionSchema>;
-type UpdateSubscriptionInput = InferEffectSchema<typeof updateSubscriptionSchema>;
-type DeleteSubscriptionInput = InferEffectSchema<typeof deleteSubscriptionSchema>;
-type DisableSubscriptionInput = InferEffectSchema<typeof disableSubscriptionSchema>;
-type EnableSubscriptionInput = InferEffectSchema<typeof enableSubscriptionSchema>;
-type TestSubscriptionInput = InferEffectSchema<typeof testSubscriptionSchema>;
 type GetTopicInput = InferEffectSchema<typeof getTopicSchema>;
 type GetTopicsInput = InferEffectSchema<typeof getTopicsSchema>;
 type CreateSubscriptionFilterInput = InferEffectSchema<typeof createSubscriptionFilterSchema>;
 type GetSubscriptionFilterInput = InferEffectSchema<typeof getSubscriptionFilterSchema>;
 type DeleteSubscriptionFilterInput = InferEffectSchema<typeof deleteSubscriptionFilterSchema>;
-/** Subscription creation request body. */
-type CreateSubscriptionRequest = components['schemas']['CreateSubscriptionRequest'];
-/** Subscription update request body. */
-type UpdateSubscriptionRequest = components['schemas']['UpdateSubscriptionRequest'];
 /** Subscription filter body accepted by createSubscriptionFilter. */
 type CreateSubscriptionFilterRequest = Pick<CreateSubscriptionFilterInput, 'filterSchema'>;
 
-/**
- * Subscription search response returned by eBay getSubscriptions.
- *
- * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/getSubscriptions
- */
-export type GetNotificationSubscriptionsResponse =
-  components['schemas']['SubscriptionSearchResponse'];
-/**
- * Subscription response returned by eBay getSubscription.
- *
- * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/getSubscription
- */
-export type GetNotificationSubscriptionResponse = components['schemas']['Subscription'];
 /**
  * Subscription filter response returned by eBay getSubscriptionFilter.
  *
@@ -94,272 +60,6 @@ export class NotificationApi {
   constructor(client: EbayApiClient) {
     this.client = client;
   }
-
-  /**
-   * Retrieves configured notification subscriptions.
-   *
-   * @param input - Optional page size and continuation token.
-   * @returns An Effect that succeeds with eBay's generated SubscriptionSearchResponse.
-   *
-   * @example
-   * ```ts
-   * const subscriptions = await Effect.runPromise(notificationApi.getSubscriptions({ limit: 20 }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/getSubscriptions
-   */
-  getSubscriptions = (
-    input: GetSubscriptionsInput = {},
-  ): Effect.Effect<GetNotificationSubscriptionsResponse, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const path = `${this.basePath}/subscription`;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<GetSubscriptionsInput>(input, 'input');
-      const limit = yield* optionalPositiveNumberEffect(request.limit, 'limit');
-      const continuationToken = yield* optionalStringEffect(
-        request.continuationToken,
-        'continuationToken',
-      );
-      const params = buildEndpointParams({
-        limit: { wireName: 'limit', value: limit },
-        continuationToken: { wireName: 'continuation_token', value: continuationToken },
-      });
-
-      return yield* requestGetEffect<GetNotificationSubscriptionsResponse>(apiClient, path, params);
-    });
-  };
-
-  /**
-   * Creates a notification subscription.
-   *
-   * @param input - Subscription creation request body.
-   * @returns An Effect that succeeds when eBay accepts the subscription.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(notificationApi.createSubscription({ topicId: 'MARKETPLACE' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/createSubscription
-   */
-  createSubscription = (
-    input: CreateSubscriptionInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const path = `${this.basePath}/subscription`;
-
-    return Effect.gen(function* () {
-      const body = yield* requireObjectEffect<CreateSubscriptionRequest>(input, 'input');
-
-      return yield* requestPostEffect<void>(apiClient, path, body);
-    });
-  };
-
-  /**
-   * Retrieves one notification subscription.
-   *
-   * @param input - Subscription identifier.
-   * @returns An Effect that succeeds with eBay's generated Subscription response.
-   *
-   * @example
-   * ```ts
-   * const subscription = await Effect.runPromise(
-   *   notificationApi.getSubscription({ subscriptionId: 'sub-1' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/getSubscription
-   */
-  getSubscription = (
-    input: GetSubscriptionInput,
-  ): Effect.Effect<GetNotificationSubscriptionResponse, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<GetSubscriptionInput>(input, 'input');
-      const validatedSubscriptionId = yield* requireStringEffect(
-        request.subscriptionId,
-        'subscriptionId',
-      );
-
-      return yield* requestGetEffect<GetNotificationSubscriptionResponse>(
-        apiClient,
-        `${apiBasePath}/subscription/${validatedSubscriptionId}`,
-      );
-    });
-  };
-
-  /**
-   * Updates a notification subscription.
-   *
-   * @param input - Subscription identifier plus subscription update body fields.
-   * @returns An Effect that succeeds when eBay accepts the update.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   notificationApi.updateSubscription({ subscriptionId: 'sub-1', status: 'DISABLED' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/updateSubscription
-   */
-  updateSubscription = (
-    input: UpdateSubscriptionInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<UpdateSubscriptionInput>(input, 'input');
-      const { subscriptionId, ...subscription } = request;
-      const validatedSubscriptionId = yield* requireStringEffect(subscriptionId, 'subscriptionId');
-      const body = yield* requireObjectEffect<UpdateSubscriptionRequest>(
-        subscription,
-        'subscription',
-      );
-
-      return yield* requestPutEffect<void>(
-        apiClient,
-        `${apiBasePath}/subscription/${validatedSubscriptionId}`,
-        body,
-      );
-    });
-  };
-
-  /**
-   * Deletes a notification subscription.
-   *
-   * @param input - Subscription identifier.
-   * @returns An Effect that succeeds when eBay deletes the subscription.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(notificationApi.deleteSubscription({ subscriptionId: 'sub-1' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/deleteSubscription
-   */
-  deleteSubscription = (
-    input: DeleteSubscriptionInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<DeleteSubscriptionInput>(input, 'input');
-      const validatedSubscriptionId = yield* requireStringEffect(
-        request.subscriptionId,
-        'subscriptionId',
-      );
-
-      return yield* requestDeleteEffect<void>(
-        apiClient,
-        `${apiBasePath}/subscription/${validatedSubscriptionId}`,
-      );
-    });
-  };
-
-  /**
-   * Disables an active notification subscription.
-   *
-   * @param input - Subscription identifier.
-   * @returns An Effect that succeeds when eBay disables the subscription.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(notificationApi.disableSubscription({ subscriptionId: 'sub-1' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/disableSubscription
-   */
-  disableSubscription = (
-    input: DisableSubscriptionInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<DisableSubscriptionInput>(input, 'input');
-      const validatedSubscriptionId = yield* requireStringEffect(
-        request.subscriptionId,
-        'subscriptionId',
-      );
-
-      return yield* requestPostEffect<void>(
-        apiClient,
-        `${apiBasePath}/subscription/${validatedSubscriptionId}/disable`,
-      );
-    });
-  };
-
-  /**
-   * Enables a disabled notification subscription.
-   *
-   * @param input - Subscription identifier.
-   * @returns An Effect that succeeds when eBay enables the subscription.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(notificationApi.enableSubscription({ subscriptionId: 'sub-1' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/enableSubscription
-   */
-  enableSubscription = (
-    input: EnableSubscriptionInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<EnableSubscriptionInput>(input, 'input');
-      const validatedSubscriptionId = yield* requireStringEffect(
-        request.subscriptionId,
-        'subscriptionId',
-      );
-
-      return yield* requestPostEffect<void>(
-        apiClient,
-        `${apiBasePath}/subscription/${validatedSubscriptionId}/enable`,
-      );
-    });
-  };
-
-  /**
-   * Sends a test notification for a subscription.
-   *
-   * @param input - Subscription identifier.
-   * @returns An Effect that succeeds when eBay accepts the test notification.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(notificationApi.testSubscription({ subscriptionId: 'sub-1' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/subscription/methods/testSubscription
-   */
-  testSubscription = (
-    input: TestSubscriptionInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<TestSubscriptionInput>(input, 'input');
-      const validatedSubscriptionId = yield* requireStringEffect(
-        request.subscriptionId,
-        'subscriptionId',
-      );
-
-      return yield* requestPostEffect<void>(
-        apiClient,
-        `${apiBasePath}/subscription/${validatedSubscriptionId}/test`,
-      );
-    });
-  };
 
   /**
    * Retrieves one notification topic.

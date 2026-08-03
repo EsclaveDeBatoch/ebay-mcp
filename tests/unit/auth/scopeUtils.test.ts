@@ -219,6 +219,39 @@ describe('Scope Utils', () => {
       expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope');
     });
 
+    it.each([
+      'ebay_commerce_notification_get_subscriptions',
+      'ebay_commerce_notification_get_subscription',
+    ])('returns both subscription read scopes for %s', (subscriptionReadToolName) => {
+      const requirement = getRequiredScopesForTool(subscriptionReadToolName);
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+      );
+    });
+
+    it.each([
+      'ebay_commerce_notification_create_subscription',
+      'ebay_commerce_notification_update_subscription',
+      'ebay_commerce_notification_delete_subscription',
+      'ebay_commerce_notification_disable_subscription',
+      'ebay_commerce_notification_enable_subscription',
+      'ebay_commerce_notification_test_subscription',
+    ])('returns the subscription write scope for %s', (subscriptionWriteToolName) => {
+      const requirement = getRequiredScopesForTool(subscriptionWriteToolName);
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      );
+    });
+
     it('returns the readonly inventory scope for eligible seller-offer listings', () => {
       const requirement = getRequiredScopesForTool('ebay_sell_negotiation_find_eligible_items');
 

@@ -194,14 +194,6 @@ describe('Tools Layer', () => {
       },
       // Communication APIs
       notification: {
-        getSubscriptions: vi.fn(),
-        createSubscription: vi.fn(),
-        getSubscription: vi.fn(),
-        updateSubscription: vi.fn(),
-        deleteSubscription: vi.fn(),
-        disableSubscription: vi.fn(),
-        enableSubscription: vi.fn(),
-        testSubscription: vi.fn(),
         getTopic: vi.fn(),
         getTopics: vi.fn(),
         createSubscriptionFilter: vi.fn(),
@@ -295,7 +287,7 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_campaigns');
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
       expect(toolNames).toContain('ebay_get_category_tree'); // taxonomyTools
-      expect(toolNames).toContain('ebay_get_notification_subscriptions'); // communicationTools
+      expect(toolNames).toContain('ebay_create_notification_subscription_filter'); // communicationTools
       expect(toolNames).toContain('ebay_get_vero_reason_codes'); // otherApiTools
     });
   });

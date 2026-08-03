@@ -330,6 +330,54 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope',
       description: 'Requires public API access to retrieve a notification validation key',
     },
+    ebay_commerce_notification_get_subscriptions: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      ],
+      minimumScope:
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+      description: 'Requires read access to notification subscriptions',
+    },
+    ebay_commerce_notification_get_subscription: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      ],
+      minimumScope:
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+      description: 'Requires read access to a notification subscription',
+    },
+    ebay_commerce_notification_create_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to create notification subscriptions',
+    },
+    ebay_commerce_notification_update_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to update notification subscriptions',
+    },
+    ebay_commerce_notification_delete_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to delete notification subscriptions',
+    },
+    ebay_commerce_notification_disable_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to pause notification subscriptions',
+    },
+    ebay_commerce_notification_enable_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to resume notification subscriptions',
+    },
+    ebay_commerce_notification_test_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to test notification subscriptions',
+    },
 
     // Identity Tools
     ebay_commerce_identity_get_user: {
