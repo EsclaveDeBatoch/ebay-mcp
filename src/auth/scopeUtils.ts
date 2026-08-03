@@ -290,6 +290,16 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
       description: 'Requires access to update buyer-seller conversations in a batch',
     },
+    ebay_commerce_notification_get_config: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve notification alert configuration',
+    },
+    ebay_commerce_notification_update_config: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to update notification alert configuration',
+    },
 
     // Identity Tools
     ebay_commerce_identity_get_user: {

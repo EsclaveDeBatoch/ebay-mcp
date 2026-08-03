@@ -147,8 +147,6 @@ describe('Comprehensive Tools Coverage', () => {
         getItemAspectsForCategory: vi.fn(),
       },
       notification: {
-        getConfig: vi.fn(),
-        updateConfig: vi.fn(),
         createDestination: vi.fn(),
       },
       compliance: {
@@ -1488,20 +1486,6 @@ describe('Comprehensive Tools Coverage', () => {
   });
 
   describe('Notification Tools', () => {
-    it('ebay_get_notification_config', async () => {
-      const mockResponse = { alertEmail: 'test@example.com' };
-      vi.mocked(mockApi.notification.getConfig).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_notification_config', {});
-      expect(mockApi.notification.getConfig).toHaveBeenCalledWith({});
-    });
-
-    it('ebay_update_notification_config', async () => {
-      vi.mocked(mockApi.notification.updateConfig).mockReturnValue(Effect.succeed(undefined));
-      const args = { alertEmail: 'test@example.com' };
-      await executeTool(mockApi, 'ebay_update_notification_config', args);
-      expect(mockApi.notification.updateConfig).toHaveBeenCalledWith(args);
-    });
-
     it('ebay_create_notification_destination', async () => {
       const mockResponse = { destinationId: 'DEST123' };
       const args = {

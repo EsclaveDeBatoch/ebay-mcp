@@ -348,8 +348,8 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   // Feedback API
 
   // Notification API — tools use the ebay_*_notification_* naming convention
-  getconfig: ['ebay_get_notification_config'],
-  updateconfig: ['ebay_update_notification_config'],
+  getconfig: ['ebay_commerce_notification_get_config'],
+  updateconfig: ['ebay_commerce_notification_update_config'],
   getdestinations: ['ebay_get_notification_destinations'],
   createdestination: ['ebay_create_notification_destination'],
   getdestination: ['ebay_get_notification_destination'],

@@ -30,6 +30,14 @@ type EbayPostCall = {
   readonly requestHeaders?: EbayRequestHeaders;
 };
 
+/** One authenticated PUT call issued by an eBay resource operation. */
+type EbayPutCall = {
+  readonly endpoint: string;
+  readonly requestDocument: unknown;
+  readonly searchParameters?: EbaySearchParameters;
+  readonly requestHeaders?: EbayRequestHeaders;
+};
+
 /** Authenticated seller boundary used by eBay resource operations. */
 type EbaySellerSession = {
   readonly get: <EbayDocument>(
@@ -37,6 +45,9 @@ type EbaySellerSession = {
   ) => Promise<EbayRequestCompletion<EbayDocument>>;
   readonly post: <EbayDocument>(
     ebayPostCall: EbayPostCall,
+  ) => Promise<EbayRequestCompletion<EbayDocument>>;
+  readonly put: <EbayDocument>(
+    ebayPutCall: EbayPutCall,
   ) => Promise<EbayRequestCompletion<EbayDocument>>;
 };
 
@@ -91,6 +102,7 @@ function completeEbayCall<EbayDocument>(
 export type {
   EbayGetCall,
   EbayPostCall,
+  EbayPutCall,
   EbayRequestHeaders,
   EbaySearchParameters,
   EbaySellerSession,
@@ -142,6 +154,13 @@ export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySelle
       ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint, ebayPostCall.requestDocument, {
         params: ebayPostCall.searchParameters,
         headers: ebayPostCall.requestHeaders,
+      }),
+    ),
+  put: <EbayDocument>(ebayPutCall: EbayPutCall) =>
+    completeEbayCall(
+      ebayApiClient.put<EbayDocument>(ebayPutCall.endpoint, ebayPutCall.requestDocument, {
+        params: ebayPutCall.searchParameters,
+        headers: ebayPutCall.requestHeaders,
       }),
     ),
 });

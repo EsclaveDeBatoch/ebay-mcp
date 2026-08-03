@@ -22,7 +22,6 @@ import type {
   deleteSubscriptionSchema,
   disableSubscriptionSchema,
   enableSubscriptionSchema,
-  getConfigSchema,
   getDestinationSchema,
   getDestinationsSchema,
   getPublicKeySchema,
@@ -32,7 +31,6 @@ import type {
   getTopicSchema,
   getTopicsSchema,
   testSubscriptionSchema,
-  updateConfigSchema,
   updateDestinationSchema,
   updateSubscriptionSchema,
 } from '@/utils/communication/notification.js';
@@ -40,8 +38,6 @@ import { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
 type GetPublicKeyInput = InferEffectSchema<typeof getPublicKeySchema>;
-type GetConfigInput = InferEffectSchema<typeof getConfigSchema>;
-type UpdateConfigInput = InferEffectSchema<typeof updateConfigSchema>;
 type GetDestinationsInput = InferEffectSchema<typeof getDestinationsSchema>;
 type CreateDestinationInput = InferEffectSchema<typeof createDestinationSchema>;
 type GetDestinationInput = InferEffectSchema<typeof getDestinationSchema>;
@@ -69,12 +65,6 @@ type UpdateSubscriptionRequest = components['schemas']['UpdateSubscriptionReques
 /** Subscription filter body accepted by createSubscriptionFilter. */
 type CreateSubscriptionFilterRequest = Pick<CreateSubscriptionFilterInput, 'filterSchema'>;
 
-/**
- * Notification API configuration returned by eBay getConfig.
- *
- * @see https://developer.ebay.com/api-docs/commerce/notification/resources/config/methods/getConfig
- */
-export type GetNotificationConfigResponse = components['schemas']['Config'];
 /**
  * Destination search response returned by eBay getDestinations.
  *
@@ -165,52 +155,6 @@ export class NotificationApi {
         apiClient,
         `${apiBasePath}/public_key/${validatedPublicKeyId}`,
       );
-    });
-  };
-
-  /**
-   * Retrieves the Notification API alert configuration.
-   *
-   * @param input - Empty endpoint input object.
-   * @returns An Effect that succeeds with eBay's generated Config response.
-   *
-   * @example
-   * ```ts
-   * const config = await Effect.runPromise(notificationApi.getConfig({}));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/config/methods/getConfig
-   */
-  getConfig = (
-    input: GetConfigInput = {},
-  ): Effect.Effect<GetNotificationConfigResponse, EbayApiError> => {
-    void input;
-    return requestGetEffect<GetNotificationConfigResponse>(this.client, `${this.basePath}/config`);
-  };
-
-  /**
-   * Updates the Notification API alert configuration.
-   *
-   * @param input - Notification alert configuration body.
-   * @returns An Effect that succeeds when eBay accepts the update.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(notificationApi.updateConfig({ alertEmail: 'ops@example.com' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/config/methods/updateConfig
-   */
-  updateConfig = (
-    input: UpdateConfigInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const path = `${this.basePath}/config`;
-
-    return Effect.gen(function* () {
-      const body = yield* requireObjectEffect<UpdateConfigInput>(input, 'input');
-
-      return yield* requestPutEffect<void>(apiClient, path, body);
     });
   };
 

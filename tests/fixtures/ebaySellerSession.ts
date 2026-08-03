@@ -1,5 +1,10 @@
 import type { EbayFailure, EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
-import type { EbayGetCall, EbayPostCall, EbaySellerSession } from '@/ebay/ebaySellerSession.js';
+import type {
+  EbayGetCall,
+  EbayPostCall,
+  EbayPutCall,
+  EbaySellerSession,
+} from '@/ebay/ebaySellerSession.js';
 
 export const ebayFailures: readonly EbayFailure[] = [
   { kind: 'ebayAuthenticationFailed', message: 'Seller authorization expired' },
@@ -14,9 +19,11 @@ export const sellerSessionReturning = <EbayDocument>(
   readonly sellerSession: EbaySellerSession;
   readonly getCalls: EbayGetCall[];
   readonly postCalls: EbayPostCall[];
+  readonly putCalls: EbayPutCall[];
 } => {
   const getCalls: EbayGetCall[] = [];
   const postCalls: EbayPostCall[] = [];
+  const putCalls: EbayPutCall[] = [];
   const get = <RequestedEbayDocument>(
     ebayGetCall: EbayGetCall,
   ): Promise<EbayRequestCompletion<RequestedEbayDocument>> => {
@@ -29,6 +36,12 @@ export const sellerSessionReturning = <EbayDocument>(
     postCalls.push(ebayPostCall);
     return Promise.resolve(ebayRequestCompletion as EbayRequestCompletion<RequestedEbayDocument>);
   };
+  const put = <RequestedEbayDocument>(
+    ebayPutCall: EbayPutCall,
+  ): Promise<EbayRequestCompletion<RequestedEbayDocument>> => {
+    putCalls.push(ebayPutCall);
+    return Promise.resolve(ebayRequestCompletion as EbayRequestCompletion<RequestedEbayDocument>);
+  };
 
-  return { sellerSession: { get, post }, getCalls, postCalls };
+  return { sellerSession: { get, post, put }, getCalls, postCalls, putCalls };
 };

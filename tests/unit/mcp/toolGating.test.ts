@@ -80,6 +80,14 @@ describe('toolNamesInExposurePaths', () => {
     ]);
   });
 
+  it('returns the migrated Commerce Notification configuration under its official path', () => {
+    const names = toolNamesInExposurePaths(['commerce.notification']);
+    expect([...names]).toEqual([
+      'ebay_commerce_notification_get_config',
+      'ebay_commerce_notification_update_config',
+    ]);
+  });
+
   it('returns the migrated Commerce Feedback resource under its official path', () => {
     const names = toolNamesInExposurePaths(['commerce.feedback']);
     expect([...names]).toEqual([

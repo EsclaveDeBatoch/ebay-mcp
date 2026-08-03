@@ -203,6 +203,16 @@ describe('Scope Utils', () => {
       );
     });
 
+    it.each(['ebay_commerce_notification_get_config', 'ebay_commerce_notification_update_config'])(
+      'returns the public API scope for %s',
+      (toolName) => {
+        const requirement = getRequiredScopesForTool(toolName);
+
+        expect(requirement?.requiredScopes).toEqual(['https://api.ebay.com/oauth/api_scope']);
+        expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope');
+      },
+    );
+
     it('returns the readonly inventory scope for eligible seller-offer listings', () => {
       const requirement = getRequiredScopesForTool('ebay_sell_negotiation_find_eligible_items');
 

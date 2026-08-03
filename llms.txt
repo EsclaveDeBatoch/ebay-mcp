@@ -23,11 +23,12 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 - [Commerce Feedback](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/feedback): Pending tasks, feedback history, submissions, replies, and user rating metrics
 - [Commerce Identity](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/identity): Authenticated eBay account profile information
 - [Commerce Message](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/message): Buyer-seller conversation lookup and messaging
+- [Commerce Notification](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/notification): Application-level notification alert configuration
 - [Commerce Translation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/translation): Listing-title and description translation between supported languages
 - [Sell Analytics](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/analytics): Seller standards, traffic reports, customer-service metrics
 - [Sell Negotiation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/negotiation): Listings eligible for seller offers and seller-initiated discounted offers
 - [Sell Recommendation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/recommendation): Promoted Listings recommendations for active listings
-- [Communication](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/communication.ts): Notification destinations, subscriptions, topics, and configuration
+- [Communication](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/communication.ts): Notification destinations, subscriptions, topics, filters, and public keys
 - [Taxonomy](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/taxonomy.ts): Category trees, item aspects, item conditions
 - [Metadata](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/metadata.ts): Return policies, sales-tax jurisdictions, automotive compatibility
 - [Other](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/other.ts): Compliance, VeRO, and international shipping support APIs

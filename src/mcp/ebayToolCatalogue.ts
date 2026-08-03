@@ -7,6 +7,7 @@ import { bulkUpdateConversationTool } from '@/ebay/commerce/message/bulkUpdateCo
 import { getConversationTool, getConversationsTool } from '@/ebay/commerce/message/conversation.js';
 import { sendMessageTool } from '@/ebay/commerce/message/sendMessage.js';
 import { updateConversationTool } from '@/ebay/commerce/message/updateConversation.js';
+import { getConfigTool, updateConfigTool } from '@/ebay/commerce/notification/configuration.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
@@ -33,6 +34,8 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getConversationTool,
   sendMessageTool,
   updateConversationTool,
+  getConfigTool,
+  updateConfigTool,
   getUserTool,
   translateListingTextTool,
   getTrafficReportTool,

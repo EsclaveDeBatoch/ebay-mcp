@@ -80,22 +80,6 @@ export const getPublicKeySchema = z.object({
   publicKeyId: idSchema('Public key ID', 'The unique identifier for the public key'),
 });
 
-/** Schema for getConfig input. */
-export const getConfigSchema = z.object({});
-
-/** Schema for updateConfig input. */
-export const updateConfigSchema = z.object({
-  alertEmail: z
-    .string({
-      invalid_type_error: 'alertEmail must be a string',
-      description: 'Email address for Notification API alerts',
-    })
-    .email({
-      message: 'alertEmail must be a valid email address',
-    })
-    .optional(),
-});
-
 /** Schema for getDestinations input. */
 export const getDestinationsSchema = z.object({
   continuationToken: continuationTokenSchema,

@@ -10,7 +10,6 @@ import {
   deleteSubscriptionSchema,
   disableSubscriptionSchema,
   enableSubscriptionSchema,
-  getConfigSchema,
   getDestinationSchema,
   getDestinationsSchema,
   getPublicKeySchema,
@@ -20,7 +19,6 @@ import {
   getTopicSchema,
   getTopicsSchema,
   testSubscriptionSchema,
-  updateConfigSchema,
   updateDestinationSchema,
   updateSubscriptionSchema,
 } from '@/utils/communication/notification.js';
@@ -34,18 +32,6 @@ import {
  */
 export const communicationEntries: ToolEntry[] = [
   // Notification API
-  defineTool({
-    name: 'ebay_get_notification_config',
-    description: 'Get notification configuration',
-    inputSchema: getConfigSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.getConfig(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_notification_config',
-    description: 'Update notification configuration',
-    inputSchema: updateConfigSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.updateConfig(args)),
-  }),
   defineTool({
     name: 'ebay_get_notification_destinations',
     description: 'Get all notification destinations (paginated)',

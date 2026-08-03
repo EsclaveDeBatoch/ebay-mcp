@@ -93,6 +93,29 @@ describe('authenticated eBay seller session standard-host calls', () => {
       },
     );
   });
+
+  it('passes the PUT endpoint, document, search parameters, and headers to the client', async () => {
+    const authenticatedClient = ebayApiClient();
+    const putCall = vi.spyOn(authenticatedClient, 'put').mockResolvedValue(undefined);
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.put({
+        endpoint: '/commerce/notification/v1/config',
+        requestDocument: { alertEmail: 'alerts@example.com' },
+        searchParameters: { revision: '2' },
+        requestHeaders: { 'Content-Language': 'en-US' },
+      }),
+    ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument: undefined });
+    expect(putCall).toHaveBeenCalledWith(
+      '/commerce/notification/v1/config',
+      { alertEmail: 'alerts@example.com' },
+      {
+        params: { revision: '2' },
+        headers: { 'Content-Language': 'en-US' },
+      },
+    );
+  });
 });
 
 describe('authenticated eBay seller session alternate-host calls', () => {
