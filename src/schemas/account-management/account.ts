@@ -1,12 +1,6 @@
 import { z } from '@/utils/effectSchema.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import {
-  TimeDurationUnit,
-  RefundMethod,
-  ReturnMethod,
-  ReturnShippingCostPayer,
-  MarketplaceId,
-} from '@/types/ebayEnums.js';
+import { MarketplaceId } from '@/types/ebayEnums.js';
 
 /**
  * Account Management API Schemas
@@ -35,128 +29,9 @@ const errorSchema = z.object({
     .optional(),
 });
 
-const timeDurationSchema = z.object({
-  unit: z.nativeEnum(TimeDurationUnit).optional(),
-  value: z.number().optional(),
-});
-
 const amountSchema = z.object({
   currency: z.string().optional(),
   value: z.string().optional(),
-});
-
-/** Shared category group used by payment and return policies. */
-const categoryTypeSchema = z.object({
-  name: z.string().optional(),
-  default: z.boolean().optional(),
-});
-
-// ============================================================================
-// Return Policy Schemas
-// ============================================================================
-
-/**
- * Validates the Account Management API return policy model.
- */
-export const returnPolicySchema = z.object({
-  name: z.string(),
-  marketplaceId: z.nativeEnum(MarketplaceId),
-  categoryTypes: z.array(categoryTypeSchema).optional(),
-  description: z.string().optional(),
-  extendedHolidayReturnsOffered: z.boolean().optional(),
-  refundMethod: z.nativeEnum(RefundMethod).optional(),
-  restockingFeePercentage: z.string().optional(),
-  returnInstructions: z.string().optional(),
-  returnMethod: z.nativeEnum(ReturnMethod).optional(),
-  returnPeriod: timeDurationSchema.optional(),
-  returnsAccepted: z.boolean().optional(),
-  returnShippingCostPayer: z.nativeEnum(ReturnShippingCostPayer).optional(),
-});
-
-/**
- * Validates the Account Management API return policy response payload.
- */
-export const returnPolicyResponseSchema = z.object({
-  returnPolicyId: z.string().optional(),
-  categoryTypes: z.array(categoryTypeSchema).optional(),
-  description: z.string().optional(),
-  extendedHolidayReturnsOffered: z.boolean().optional(),
-  internationalOverride: z
-    .object({
-      returnMethod: z.string().optional(),
-      returnPeriod: timeDurationSchema.optional(),
-      returnsAccepted: z.boolean().optional(),
-      returnShippingCostPayer: z.string().optional(),
-    })
-    .optional(),
-  marketplaceId: z.string().optional(),
-  name: z.string().optional(),
-  refundMethod: z.string().optional(),
-  restockingFeePercentage: z.string().optional(), // DEPRECATED
-  returnInstructions: z.string().optional(),
-  returnMethod: z.string().optional(),
-  returnPeriod: timeDurationSchema.optional(),
-  returnsAccepted: z.boolean().optional(),
-  returnShippingCostPayer: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Account Management API get return policies request payload.
- */
-export const getReturnPoliciesInputSchema = z.object({
-  marketplaceId: z.nativeEnum(MarketplaceId).describe('eBay marketplace ID'),
-});
-
-/**
- * Validates the Account Management API get return policies response payload.
- */
-export const getReturnPoliciesOutputSchema = z.object({
-  returnPolicies: z.array(returnPolicyResponseSchema).optional(),
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional(),
-  offset: z.number().optional(),
-  prev: z.string().optional(),
-  total: z.number().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Account Management API create return policy request payload.
- */
-export const createReturnPolicyInputSchema = z.object({
-  policy: returnPolicySchema,
-});
-
-/** Validates the Account Management API get return policy request payload. */
-export const getReturnPolicyInputSchema = z.object({
-  returnPolicyId: z.string().describe('The return policy ID'),
-});
-
-/** Validates the Account Management API get return policy by name request payload. */
-export const getReturnPolicyByNameInputSchema = z.object({
-  marketplaceId: z.nativeEnum(MarketplaceId).describe('eBay marketplace ID'),
-  name: z.string().describe('Policy name'),
-});
-
-/** Validates the Account Management API update return policy request payload. */
-export const updateReturnPolicyInputSchema = z.object({
-  returnPolicyId: z.string().describe('The return policy ID'),
-  policy: returnPolicySchema.describe('Updated return policy details'),
-});
-
-/** Validates the Account Management API delete return policy request payload. */
-export const deleteReturnPolicyInputSchema = z.object({
-  returnPolicyId: z.string().describe('The return policy ID'),
-});
-
-/**
- * Validates the Account Management API create return policy response payload.
- */
-export const createReturnPolicyOutputSchema = z.object({
-  returnPolicyId: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
 });
 
 // ============================================================================
@@ -343,22 +218,6 @@ export const getPrivilegesInputSchema = z.object({});
  */
 export const getAccountManagementJsonSchemas = () => {
   return {
-    // Return Policies
-    getReturnPoliciesInput: zodToJsonSchema(getReturnPoliciesInputSchema, 'getReturnPoliciesInput'),
-    getReturnPoliciesOutput: zodToJsonSchema(
-      getReturnPoliciesOutputSchema,
-      'getReturnPoliciesOutput',
-    ),
-    createReturnPolicyInput: zodToJsonSchema(
-      createReturnPolicyInputSchema,
-      'createReturnPolicyInput',
-    ),
-    createReturnPolicyOutput: zodToJsonSchema(
-      createReturnPolicyOutputSchema,
-      'createReturnPolicyOutput',
-    ),
-    returnPolicyDetails: zodToJsonSchema(returnPolicyResponseSchema, 'returnPolicyDetails'),
-
     // Sales Tax
     getSalesTaxesOutput: zodToJsonSchema(getSalesTaxesOutputSchema, 'getSalesTaxesOutput'),
     salesTaxDetails: zodToJsonSchema(salesTaxSchema, 'salesTaxDetails'),

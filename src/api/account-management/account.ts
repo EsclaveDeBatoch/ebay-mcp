@@ -10,21 +10,15 @@ import {
 import type {
   bulkCreateOrReplaceSalesTaxInputSchema,
   createOrReplaceSalesTaxInputSchema,
-  createReturnPolicyInputSchema,
-  deleteReturnPolicyInputSchema,
   deleteSalesTaxInputSchema,
   getAdvertisingEligibilityInputSchema,
   getPaymentsProgramInputSchema,
   getPaymentsProgramOnboardingInputSchema,
-  getReturnPoliciesInputSchema,
-  getReturnPolicyByNameInputSchema,
-  getReturnPolicyInputSchema,
   getSalesTaxesInputSchema,
   getSalesTaxInputSchema,
   getSubscriptionInputSchema,
   optInToProgramInputSchema,
   optOutOfProgramInputSchema,
-  updateReturnPolicyInputSchema,
 } from '@/schemas/account-management/account.js';
 import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
 import type { Effect } from 'effect';
@@ -33,12 +27,6 @@ import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 const ACCOUNT_BASE_PATH = '/sell/account/v1';
 
 type EmptyAccountInput = Record<string, never>;
-type GetReturnPoliciesInput = InferEffectSchema<typeof getReturnPoliciesInputSchema>;
-type GetReturnPolicyInput = InferEffectSchema<typeof getReturnPolicyInputSchema>;
-type GetReturnPolicyByNameInput = InferEffectSchema<typeof getReturnPolicyByNameInputSchema>;
-type CreateReturnPolicyInput = InferEffectSchema<typeof createReturnPolicyInputSchema>;
-type UpdateReturnPolicyInput = InferEffectSchema<typeof updateReturnPolicyInputSchema>;
-type DeleteReturnPolicyInput = InferEffectSchema<typeof deleteReturnPolicyInputSchema>;
 type GetPaymentsProgramInput = InferEffectSchema<typeof getPaymentsProgramInputSchema>;
 type GetPaymentsProgramOnboardingInput = InferEffectSchema<
   typeof getPaymentsProgramOnboardingInputSchema
@@ -65,163 +53,17 @@ type SellerEligibilityMultiProgramResponse =
 type SellingPrivileges = components['schemas']['SellingPrivileges'];
 type Programs = components['schemas']['Programs'];
 type RateTableResponse = components['schemas']['RateTableResponse'];
-type SetReturnPolicyResponse = components['schemas']['SetReturnPolicyResponse'];
-type ReturnPolicyResponse = components['schemas']['ReturnPolicyResponse'];
-type ReturnPolicy = components['schemas']['ReturnPolicy'];
 type SalesTax = components['schemas']['SalesTax'];
 type SalesTaxes = components['schemas']['SalesTaxes'];
 type SubscriptionResponse = components['schemas']['SubscriptionResponse'];
 
-/** Account API client for seller account policies, programs, tax, and eligibility. */
+/** Legacy Account API client for seller programs, tax, and eligibility. */
 export class AccountApi {
   private readonly client: EbayApiClient;
 
   constructor(client: EbayApiClient) {
     this.client = client;
   }
-
-  /**
-   * Retrieves return policies for one marketplace.
-   *
-   * @param input - Marketplace ID used as the `marketplace_id` query parameter.
-   * @returns An Effect that succeeds with eBay's generated ReturnPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const policies = await Effect.runPromise(
-   *   accountApi.getReturnPolicies({ marketplaceId: 'EBAY_US' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/return_policy/methods/getReturnPolicies
-   */
-  getReturnPolicies = (
-    input: GetReturnPoliciesInput,
-  ): Effect.Effect<ReturnPolicyResponse, EbayApiError> => {
-    const params = buildEndpointParams({
-      marketplaceId: { wireName: 'marketplace_id', value: input.marketplaceId },
-    });
-
-    return requestGetEffect<ReturnPolicyResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/return_policy`,
-      params,
-    );
-  };
-
-  /**
-   * Creates a return policy.
-   *
-   * @param input - Return policy request body.
-   * @returns An Effect that succeeds with eBay's generated SetReturnPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const created = await Effect.runPromise(accountApi.createReturnPolicy({ policy }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/return_policy/methods/createReturnPolicy
-   */
-  createReturnPolicy = (
-    input: CreateReturnPolicyInput,
-  ): Effect.Effect<SetReturnPolicyResponse, EbayApiError> =>
-    requestPostEffect<SetReturnPolicyResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/return_policy`,
-      input.policy,
-    );
-
-  /**
-   * Retrieves one return policy by ID.
-   *
-   * @param input - Return policy identifier.
-   * @returns An Effect that succeeds with eBay's generated ReturnPolicy.
-   *
-   * @example
-   * ```ts
-   * const policy = await Effect.runPromise(accountApi.getReturnPolicy({ returnPolicyId: 'RP123' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/return_policy/methods/getReturnPolicy
-   */
-  getReturnPolicy = (input: GetReturnPolicyInput): Effect.Effect<ReturnPolicy, EbayApiError> =>
-    requestGetEffect<ReturnPolicy>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/return_policy/${input.returnPolicyId}`,
-    );
-
-  /**
-   * Retrieves one return policy by marketplace and policy name.
-   *
-   * @param input - Marketplace ID and seller-defined policy name.
-   * @returns An Effect that succeeds with eBay's generated ReturnPolicy.
-   *
-   * @example
-   * ```ts
-   * const policy = await Effect.runPromise(
-   *   accountApi.getReturnPolicyByName({ marketplaceId: 'EBAY_US', name: '30 Day Returns' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/return_policy/methods/getReturnPolicyByName
-   */
-  getReturnPolicyByName = (
-    input: GetReturnPolicyByNameInput,
-  ): Effect.Effect<ReturnPolicy, EbayApiError> => {
-    const params = buildEndpointParams({
-      marketplaceId: { wireName: 'marketplace_id', value: input.marketplaceId },
-      name: { wireName: 'name', value: input.name },
-    });
-
-    return requestGetEffect<ReturnPolicy>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/return_policy/get_by_policy_name`,
-      params,
-    );
-  };
-
-  /**
-   * Updates a return policy by ID.
-   *
-   * @param input - Return policy ID and full replacement policy payload.
-   * @returns An Effect that succeeds with eBay's generated SetReturnPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const updated = await Effect.runPromise(
-   *   accountApi.updateReturnPolicy({ returnPolicyId: 'RP123', policy }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/return_policy/methods/updateReturnPolicy
-   */
-  updateReturnPolicy = (
-    input: UpdateReturnPolicyInput,
-  ): Effect.Effect<SetReturnPolicyResponse, EbayApiError> =>
-    requestPutEffect<SetReturnPolicyResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/return_policy/${input.returnPolicyId}`,
-      input.policy,
-    );
-
-  /**
-   * Deletes a return policy by ID.
-   *
-   * @param input - Return policy identifier.
-   * @returns An Effect that succeeds when eBay deletes the policy.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(accountApi.deleteReturnPolicy({ returnPolicyId: 'RP123' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/return_policy/methods/deleteReturnPolicy
-   */
-  deleteReturnPolicy = (input: DeleteReturnPolicyInput): Effect.Effect<void, EbayApiError> =>
-    requestDeleteEffect<void>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/return_policy/${input.returnPolicyId}`,
-    );
 
   /**
    * Retrieves seller payments program status.

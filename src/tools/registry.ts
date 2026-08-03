@@ -136,7 +136,7 @@ export const getToolDefinitions = (): ToolDefinition[] =>
  *
  * @example
  * ```ts
- * const handler = getToolHandler('ebay_get_return_policies');
+ * const handler = getToolHandler('ebay_get_sales_taxes');
  * ```
  */
 export const getToolHandler = (toolName: string): ToolHandler | undefined =>
@@ -152,8 +152,8 @@ export const getToolHandler = (toolName: string): ToolHandler | undefined =>
  *
  * @example
  * ```ts
- * const result = await executeTool(api, 'ebay_get_return_policies', {
- *   marketplaceId: 'EBAY_US',
+ * const salesTaxes = await executeTool(api, 'ebay_get_sales_taxes', {
+ *   countryCode: 'US',
  * });
  * ```
  */

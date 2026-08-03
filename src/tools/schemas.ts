@@ -1,9 +1,6 @@
 import { z } from '@/utils/effectSchema.js';
 import {
   TimeDurationUnit,
-  RefundMethod,
-  ReturnMethod,
-  ReturnShippingCostPayer,
   Condition,
   LengthUnit,
   WeightUnit,
@@ -43,36 +40,6 @@ export const amountSchema = z
   .object({
     currency: z.string(),
     value: z.string(),
-  })
-  .passthrough();
-
-// ============================================================================
-// Account Management Schemas
-// ============================================================================
-
-/** Category type input used when selecting default or motor-vehicle policy scopes. */
-export const categoryTypeSchema = z
-  .object({
-    name: z.string().optional(),
-    default: z.boolean().optional(),
-  })
-  .passthrough();
-
-/** Return policy payload accepted by account management tools. */
-export const returnPolicySchema = z
-  .object({
-    name: z.string(),
-    marketplaceId: z.string(),
-    categoryTypes: z.array(categoryTypeSchema).optional(),
-    description: z.string().optional(),
-    extendedHolidayReturnsOffered: z.boolean().optional(),
-    refundMethod: z.nativeEnum(RefundMethod).optional(),
-    restockingFeePercentage: z.string().optional(),
-    returnInstructions: z.string().optional(),
-    returnMethod: z.nativeEnum(ReturnMethod).optional(),
-    returnPeriod: timeDurationSchema.optional(),
-    returnsAccepted: z.boolean().optional(),
-    returnShippingCostPayer: z.nativeEnum(ReturnShippingCostPayer).optional(),
   })
   .passthrough();
 

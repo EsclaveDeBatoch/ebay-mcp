@@ -3,7 +3,6 @@ import { Effect, Either } from 'effect';
 import {
   timeDurationSchema,
   amountSchema,
-  returnPolicySchema,
   inventoryItemSchema,
   offerSchema,
   locationSchema as inventoryLocationSchema,
@@ -97,34 +96,6 @@ describe('Schema Validation', () => {
 
         expect(decodeResult(amountSchema, missingValue).success).toBe(false);
         expect(decodeResult(amountSchema, missingCurrency).success).toBe(false);
-      });
-    });
-  });
-
-  describe('Account Management Schemas', () => {
-    describe('returnPolicySchema', () => {
-      it('validate return policy', () => {
-        const validPolicy = {
-          name: '30 Day Returns',
-          marketplaceId: 'EBAY_US',
-          categoryTypes: [{ name: 'ALL_EXCLUDING_MOTORS_VEHICLES', default: true }],
-          returnsAccepted: true,
-          returnPeriod: { unit: 'DAY', value: 30 },
-        };
-
-        const result = decodeResult(returnPolicySchema, validPolicy);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow no returns accepted', () => {
-        const noReturns = {
-          name: 'No Returns',
-          marketplaceId: 'EBAY_US',
-          returnsAccepted: false,
-        };
-
-        const result = decodeResult(returnPolicySchema, noReturns);
-        expect(result.success).toBe(true);
       });
     });
   });

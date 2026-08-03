@@ -333,6 +333,47 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires write access to seller payment policies',
     },
 
+    // Sell Account return-policy tools
+    ebay_sell_account_get_return_policies: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller return policies',
+    },
+    ebay_sell_account_create_return_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller return policies',
+    },
+    ebay_sell_account_get_return_policy: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller return policies',
+    },
+    ebay_sell_account_get_return_policy_by_name: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller return policies',
+    },
+    ebay_sell_account_update_return_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller return policies',
+    },
+    ebay_sell_account_delete_return_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller return policies',
+    },
+
     // Marketing Tools
     ebay_get_campaigns: {
       requiredScopes: [

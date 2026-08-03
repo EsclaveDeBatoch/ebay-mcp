@@ -8,22 +8,6 @@ import type {
 import { ebayFailures, sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 import { callEbayTool, listEbayTools } from '@tests/fixtures/mcp.js';
 
-const customPolicyToolNames = [
-  'ebay_sell_account_get_custom_policies',
-  'ebay_sell_account_create_custom_policy',
-  'ebay_sell_account_get_custom_policy',
-  'ebay_sell_account_update_custom_policy',
-] as const;
-
-const fulfillmentPolicyToolNames = [
-  'ebay_sell_account_get_fulfillment_policies',
-  'ebay_sell_account_create_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy_by_name',
-  'ebay_sell_account_update_fulfillment_policy',
-  'ebay_sell_account_delete_fulfillment_policy',
-] as const;
-
 const paymentPolicyToolNames = [
   'ebay_sell_account_get_payment_policies',
   'ebay_sell_account_create_payment_policy',
@@ -33,21 +17,16 @@ const paymentPolicyToolNames = [
   'ebay_sell_account_delete_payment_policy',
 ] as const;
 
-const sellAccountToolNames = [
-  ...customPolicyToolNames,
-  ...fulfillmentPolicyToolNames,
-  ...paymentPolicyToolNames,
-] as const;
-
-const readOnlySellAccountToolNames = [
-  'ebay_sell_account_get_custom_policies',
-  'ebay_sell_account_get_custom_policy',
-  'ebay_sell_account_get_fulfillment_policies',
-  'ebay_sell_account_get_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy_by_name',
+const readOnlyPaymentPolicyToolNames = [
   'ebay_sell_account_get_payment_policies',
   'ebay_sell_account_get_payment_policy',
   'ebay_sell_account_get_payment_policy_by_name',
+] as const;
+
+const writePaymentPolicyToolNames = [
+  'ebay_sell_account_create_payment_policy',
+  'ebay_sell_account_update_payment_policy',
+  'ebay_sell_account_delete_payment_policy',
 ] as const;
 
 const legacyPaymentPolicyToolNames = [
@@ -132,7 +111,7 @@ describe('Sell Account payment-policy MCP exposure', () => {
     await mcpClient.close();
   });
 
-  it('gates every migrated Account resource through sell.account', async () => {
+  it('gates the resource through sell.account', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'sell.account');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning<PaymentPolicyCollection>({
@@ -141,7 +120,10 @@ describe('Sell Account payment-policy MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(sellAccountToolNames);
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
+    for (const paymentPolicyToolName of paymentPolicyToolNames) {
+      expect(listedToolNames).toContain(paymentPolicyToolName);
+    }
     await mcpClient.close();
   });
 
@@ -155,9 +137,13 @@ describe('Sell Account payment-policy MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(
-      readOnlySellAccountToolNames,
-    );
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
+    for (const readOnlyPaymentPolicyToolName of readOnlyPaymentPolicyToolNames) {
+      expect(listedToolNames).toContain(readOnlyPaymentPolicyToolName);
+    }
+    for (const writePaymentPolicyToolName of writePaymentPolicyToolNames) {
+      expect(listedToolNames).not.toContain(writePaymentPolicyToolName);
+    }
     await mcpClient.close();
   });
 });

@@ -5,8 +5,6 @@ import type { EbayApiClient } from '@/api/client.js';
 import { MarketplaceId } from '@/types/ebayEnums.js';
 import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
 
-type ReturnPolicy = components['schemas']['ReturnPolicy'];
-type ReturnPolicyResponse = components['schemas']['ReturnPolicyResponse'];
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
 type PaymentsProgramOnboardingResponse = components['schemas']['PaymentsProgramOnboardingResponse'];
 type SellingPrivileges = components['schemas']['SellingPrivileges'];
@@ -36,103 +34,6 @@ describe('AccountApi', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('Return Policies', () => {
-    it('gets return policies for a marketplace', async () => {
-      const mockResponse: ReturnPolicyResponse = {
-        returnPolicies: [
-          {
-            returnPolicyId: '1234567890',
-            name: '30 Day Returns',
-            marketplaceId: 'EBAY_US',
-          },
-        ],
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(
-        accountApi.getReturnPolicies({ marketplaceId: MarketplaceId.EBAY_US }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/return_policy', {
-        marketplace_id: 'EBAY_US',
-      });
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('gets a return policy by ID', async () => {
-      const mockPolicy: ReturnPolicy = {
-        returnPolicyId: '1234567890',
-        name: 'Test Policy',
-        marketplaceId: 'EBAY_US',
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPolicy);
-
-      const result = await Effect.runPromise(
-        accountApi.getReturnPolicy({ returnPolicyId: '1234567890' }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/return_policy/1234567890');
-      expect(result).toEqual(mockPolicy);
-    });
-
-    it('gets a return policy by name', async () => {
-      const mockPolicy: ReturnPolicy = {
-        returnPolicyId: '1234567890',
-        name: '30 Day Returns',
-        marketplaceId: 'EBAY_US',
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPolicy);
-
-      const result = await Effect.runPromise(
-        accountApi.getReturnPolicyByName({
-          marketplaceId: MarketplaceId.EBAY_US,
-          name: '30 Day Returns',
-        }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        '/sell/account/v1/return_policy/get_by_policy_name',
-        {
-          marketplace_id: 'EBAY_US',
-          name: '30 Day Returns',
-        },
-      );
-      expect(result).toEqual(mockPolicy);
-    });
-
-    it('creates, updates, and deletes a return policy', async () => {
-      const policy = {
-        name: 'New Return Policy',
-        marketplaceId: MarketplaceId.EBAY_US,
-      };
-      const mockResponse = {
-        returnPolicyId: '9876543210',
-      };
-
-      vi.spyOn(mockClient, 'post').mockResolvedValue(mockResponse);
-      vi.spyOn(mockClient, 'put').mockResolvedValue(mockResponse);
-      vi.spyOn(mockClient, 'delete').mockResolvedValue(undefined);
-
-      const created = await Effect.runPromise(accountApi.createReturnPolicy({ policy }));
-      const updated = await Effect.runPromise(
-        accountApi.updateReturnPolicy({ returnPolicyId: '9876543210', policy }),
-      );
-      await Effect.runPromise(accountApi.deleteReturnPolicy({ returnPolicyId: '9876543210' }));
-
-      expect(mockClient.post).toHaveBeenCalledWith('/sell/account/v1/return_policy', policy);
-      expect(mockClient.put).toHaveBeenCalledWith(
-        '/sell/account/v1/return_policy/9876543210',
-        policy,
-      );
-      expect(mockClient.delete).toHaveBeenCalledWith('/sell/account/v1/return_policy/9876543210');
-      expect(created).toEqual(mockResponse);
-      expect(updated).toEqual(mockResponse);
-    });
   });
 
   describe('Account Information', () => {

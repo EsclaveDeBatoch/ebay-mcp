@@ -6,7 +6,7 @@ This directory contains comprehensive Effect-backed schemas for eBay API endpoin
 
 ```
 src/schemas/
-├── account-management/    # Account, policies, programs
+├── account-management/    # Account tax, privileges, programs
 │   └── account.ts
 ├── inventory-management/  # Inventory items, offers, locations
 │   └── inventory.ts
@@ -50,8 +50,7 @@ import { getAccountManagementJsonSchemas } from '@/schemas/account-management/ac
 const accountSchemas = getAccountManagementJsonSchemas();
 
 // Access specific schemas
-const inputSchema = accountSchemas.getReturnPoliciesInput;
-const outputSchema = accountSchemas.getReturnPoliciesOutput;
+const salesTaxSchema = accountSchemas.salesTaxDetails;
 ```
 
 ### Using Effect-Backed Schemas for Validation
@@ -98,11 +97,10 @@ const tool = {
 
 ### 1. Account Management (`account-management/account.ts`)
 
-Schemas for managing seller account settings, business policies, and programs.
+Schemas for the legacy seller account settings and programs that have not migrated yet.
 
 **Endpoints Covered:**
 
-- Return Policies (return period, refund method)
 - Sales Tax (jurisdiction-based tax rules)
 - Programs (opt-in/opt-out programs)
 - KYC (seller verification status)
@@ -110,7 +108,7 @@ Schemas for managing seller account settings, business policies, and programs.
 
 **Key Schemas:**
 
-- `getReturnPoliciesInputSchema` / `getReturnPoliciesOutputSchema`
+- `salesTaxSchema` / `getSalesTaxesOutputSchema`
 
 ### 2. Inventory Management (`inventory-management/inventory.ts`)
 

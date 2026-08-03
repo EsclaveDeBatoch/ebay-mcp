@@ -9,12 +9,8 @@ import {
   FormatType,
   OrderPaymentStatus,
   CampaignStatus,
-  RefundMethod,
-  ReturnMethod,
-  ReturnShippingCostPayer,
   ShippingCostType,
   ShippingOptionType,
-  CategoryType,
   LineItemFulfillmentStatus,
   OfferStatus,
   ListingStatus,
@@ -113,27 +109,6 @@ describe('eBay Enums', () => {
     });
   });
 
-  describe('RefundMethod', () => {
-    it('have refund method values', () => {
-      expect(RefundMethod.MONEY_BACK).toBe('MONEY_BACK');
-      expect(RefundMethod.MERCHANDISE_CREDIT).toBe('MERCHANDISE_CREDIT');
-    });
-  });
-
-  describe('ReturnMethod', () => {
-    it('have return method values', () => {
-      expect(ReturnMethod.REPLACEMENT).toBe('REPLACEMENT');
-      expect(ReturnMethod.EXCHANGE).toBe('EXCHANGE');
-    });
-  });
-
-  describe('ReturnShippingCostPayer', () => {
-    it('have shipping cost payer values', () => {
-      expect(ReturnShippingCostPayer.BUYER).toBe('BUYER');
-      expect(ReturnShippingCostPayer.SELLER).toBe('SELLER');
-    });
-  });
-
   describe('ShippingCostType', () => {
     it('have shipping cost type values', () => {
       expect(ShippingCostType.CALCULATED).toBe('CALCULATED');
@@ -146,13 +121,6 @@ describe('eBay Enums', () => {
     it('have shipping option type values', () => {
       expect(ShippingOptionType.DOMESTIC).toBe('DOMESTIC');
       expect(ShippingOptionType.INTERNATIONAL).toBe('INTERNATIONAL');
-    });
-  });
-
-  describe('CategoryType', () => {
-    it('have category type values', () => {
-      expect(CategoryType.ALL_EXCLUDING_MOTORS_VEHICLES).toBe('ALL_EXCLUDING_MOTORS_VEHICLES');
-      expect(CategoryType.MOTORS_VEHICLES).toBe('MOTORS_VEHICLES');
     });
   });
 
@@ -406,7 +374,7 @@ describe('eBay Enums', () => {
   });
 
   describe('Enum Completeness', () => {
-    it('have all 30 implemented enums', () => {
+    it('have all 26 implemented enums', () => {
       // Verify we have the expected number of enum types
       const enumTypes = [
         MarketplaceId,
@@ -414,12 +382,8 @@ describe('eBay Enums', () => {
         FormatType,
         OrderPaymentStatus,
         CampaignStatus,
-        RefundMethod,
-        ReturnMethod,
-        ReturnShippingCostPayer,
         ShippingCostType,
         ShippingOptionType,
-        CategoryType,
         LineItemFulfillmentStatus,
         OfferStatus,
         ListingStatus,
@@ -441,7 +405,7 @@ describe('eBay Enums', () => {
         ReportedItemType,
       ];
 
-      expect(enumTypes).toHaveLength(30);
+      expect(enumTypes).toHaveLength(26);
     });
   });
 });

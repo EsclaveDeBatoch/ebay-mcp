@@ -241,8 +241,8 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | Categoría | Lo que puedes hacer |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | Herramientas search/fetch del conector de ChatGPT sobre el catálogo eBay MCP |
-| [Account](src/tools/categories/account.ts) | Políticas de devolución; programas; suscripciones; impuesto sobre ventas |
-| [Sell Account](src/ebay/sell/account/) | Políticas de pago, envío, cumplimiento de producto y devolución definidas por el vendedor |
+| [Account](src/tools/categories/account.ts) | Privilegios de venta; programas; suscripciones; impuesto sobre ventas |
+| [Sell Account](src/ebay/sell/account/) | Políticas de pago, envío, devolución, cumplimiento de producto y recogida definidas por el vendedor |
 | [Inventory](src/tools/categories/inventory.ts) | Artículos de inventario, ofertas, ubicaciones, grupos de artículos, operaciones masivas, mapeo SKU/ubicación |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Pedidos, envíos, reembolsos, disputas, evidencias de disputas de pago |
 | [Marketing](src/tools/categories/marketing.ts) | Campañas de anuncios promocionados, anuncios, promociones, pujas, operaciones masivas |

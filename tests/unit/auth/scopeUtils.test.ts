@@ -188,6 +188,37 @@ describe('Scope Utils', () => {
     });
 
     it.each([
+      'ebay_sell_account_get_return_policies',
+      'ebay_sell_account_get_return_policy',
+      'ebay_sell_account_get_return_policy_by_name',
+    ])('returns either account scope for the hierarchical %s tool', (returnPolicyToolName) => {
+      const requirement = getRequiredScopesForTool(returnPolicyToolName);
+
+      expect(requirement).toEqual({
+        requiredScopes: [
+          'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+          'https://api.ebay.com/oauth/api_scope/sell.account',
+        ],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        description: 'Requires read access to seller return policies',
+      });
+    });
+
+    it.each([
+      'ebay_sell_account_create_return_policy',
+      'ebay_sell_account_update_return_policy',
+      'ebay_sell_account_delete_return_policy',
+    ])('returns the account write scope for the hierarchical %s tool', (returnPolicyToolName) => {
+      const requirement = getRequiredScopesForTool(returnPolicyToolName);
+
+      expect(requirement).toEqual({
+        requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+        description: 'Requires write access to seller return policies',
+      });
+    });
+
+    it.each([
       'ebay_sell_analytics_get_traffic_report',
       'ebay_sell_analytics_find_seller_standards_profiles',
       'ebay_sell_analytics_get_seller_standards_profile',

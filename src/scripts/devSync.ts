@@ -418,6 +418,12 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getpaymentpolicybyname: ['ebay_sell_account_get_payment_policy_by_name'],
   updatepaymentpolicy: ['ebay_sell_account_update_payment_policy'],
   deletepaymentpolicy: ['ebay_sell_account_delete_payment_policy'],
+  getreturnpolicies: ['ebay_sell_account_get_return_policies'],
+  createreturnpolicy: ['ebay_sell_account_create_return_policy'],
+  getreturnpolicy: ['ebay_sell_account_get_return_policy'],
+  getreturnpolicybyname: ['ebay_sell_account_get_return_policy_by_name'],
+  updatereturnpolicy: ['ebay_sell_account_update_return_policy'],
+  deletereturnpolicy: ['ebay_sell_account_delete_return_policy'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

@@ -305,51 +305,6 @@ export enum CampaignStatus {
 }
 
 /**
- * Refund Method Types
- *
- * Specifies the refund method for return policies.
- *
- * Reference: https://developer.ebay.com/api-docs/sell/account/types/api:RefundMethodEnum
- */
-export enum RefundMethod {
-  /** Refund in money back to buyer */
-  MONEY_BACK = 'MONEY_BACK',
-
-  /** Refund as merchandise credit */
-  MERCHANDISE_CREDIT = 'MERCHANDISE_CREDIT',
-}
-
-/**
- * Return Method Types
- *
- * Specifies how returns are handled.
- *
- * Reference: https://developer.ebay.com/api-docs/sell/account/types/api:ReturnMethodEnum
- */
-export enum ReturnMethod {
-  /** Replacement item provided */
-  REPLACEMENT = 'REPLACEMENT',
-
-  /** Item exchange */
-  EXCHANGE = 'EXCHANGE',
-}
-
-/**
- * Return Shipping Cost Payer
- *
- * Specifies who pays for return shipping.
- *
- * Reference: https://developer.ebay.com/api-docs/sell/account/types/api:ReturnShippingCostPayerEnum
- */
-export enum ReturnShippingCostPayer {
-  /** Buyer pays for return shipping */
-  BUYER = 'BUYER',
-
-  /** Seller pays for return shipping */
-  SELLER = 'SELLER',
-}
-
-/**
  * Time Duration Units
  *
  * Units for time-based durations used across multiple APIs.
@@ -416,21 +371,6 @@ export enum ShippingOptionType {
 
   /** International shipping */
   INTERNATIONAL = 'INTERNATIONAL',
-}
-
-/**
- * Category Types
- *
- * Specifies eBay category types for business policies.
- *
- * Reference: https://developer.ebay.com/api-docs/sell/account/types/api:CategoryTypeEnum
- */
-export enum CategoryType {
-  /** All categories */
-  ALL_EXCLUDING_MOTORS_VEHICLES = 'ALL_EXCLUDING_MOTORS_VEHICLES',
-
-  /** Motors vehicles category */
-  MOTORS_VEHICLES = 'MOTORS_VEHICLES',
 }
 
 /**
@@ -1256,27 +1196,6 @@ export const EbayEnums = {
   },
 
   /**
-   * Check if a refund method is valid
-   */
-  isValidRefundMethod(method: string): method is RefundMethod {
-    return Object.values(RefundMethod).includes(method as RefundMethod);
-  },
-
-  /**
-   * Check if a return method is valid
-   */
-  isValidReturnMethod(method: string): method is ReturnMethod {
-    return Object.values(ReturnMethod).includes(method as ReturnMethod);
-  },
-
-  /**
-   * Check if a return shipping cost payer is valid
-   */
-  isValidReturnShippingCostPayer(payer: string): payer is ReturnShippingCostPayer {
-    return Object.values(ReturnShippingCostPayer).includes(payer as ReturnShippingCostPayer);
-  },
-
-  /**
    * Check if a time duration unit is valid
    */
   isValidTimeDurationUnit(unit: string): unit is TimeDurationUnit {
@@ -1295,13 +1214,6 @@ export const EbayEnums = {
    */
   isValidShippingOptionType(type: string): type is ShippingOptionType {
     return Object.values(ShippingOptionType).includes(type as ShippingOptionType);
-  },
-
-  /**
-   * Check if a category type is valid
-   */
-  isValidCategoryType(type: string): type is CategoryType {
-    return Object.values(CategoryType).includes(type as CategoryType);
   },
 
   /**

@@ -6,7 +6,6 @@ import { describe, it, expect } from 'vitest';
 import { Effect, Either } from 'effect';
 import {
   timeDurationSchema,
-  returnPolicySchema,
   inventoryItemSchema,
   pricingSchema,
   offerSchema,
@@ -20,9 +19,6 @@ import {
 } from '@/tools/schemas.js';
 import {
   TimeDurationUnit,
-  RefundMethod,
-  ReturnMethod,
-  ReturnShippingCostPayer,
   Condition,
   LengthUnit,
   WeightUnit,
@@ -92,29 +88,6 @@ describe('Effect-backed schema enum validation', () => {
         value: 30,
       };
       expect(() => decode(timeDurationSchema, invalidData)).toThrow();
-    });
-  });
-
-  describe('returnPolicySchema', () => {
-    it('accept valid RefundMethod, ReturnMethod, and ReturnShippingCostPayer', () => {
-      const validData = {
-        name: 'Test Policy',
-        marketplaceId: 'EBAY_US',
-        refundMethod: RefundMethod.MONEY_BACK,
-        returnMethod: ReturnMethod.REPLACEMENT,
-        returnShippingCostPayer: ReturnShippingCostPayer.SELLER,
-        returnsAccepted: true,
-      };
-      expect(() => decode(returnPolicySchema, validData)).not.toThrow();
-    });
-
-    it('accept MERCHANDISE_CREDIT refund method', () => {
-      const data = {
-        name: 'Test Policy',
-        marketplaceId: 'EBAY_US',
-        refundMethod: RefundMethod.MERCHANDISE_CREDIT,
-      };
-      expect(() => decode(returnPolicySchema, data)).not.toThrow();
     });
   });
 

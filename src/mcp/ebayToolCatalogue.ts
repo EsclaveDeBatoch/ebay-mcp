@@ -74,6 +74,14 @@ import {
   getPaymentPolicyTool,
   updatePaymentPolicyTool,
 } from '@/ebay/sell/account/paymentPolicy.js';
+import {
+  createReturnPolicyTool,
+  deleteReturnPolicyTool,
+  getReturnPoliciesTool as getAccountReturnPoliciesTool,
+  getReturnPolicyByNameTool,
+  getReturnPolicyTool,
+  updateReturnPolicyTool,
+} from '@/ebay/sell/account/returnPolicy.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
   findSellerStandardsProfilesTool,
@@ -238,6 +246,12 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getPaymentPolicyByNameTool,
   updatePaymentPolicyTool,
   deletePaymentPolicyTool,
+  getAccountReturnPoliciesTool,
+  createReturnPolicyTool,
+  getReturnPolicyTool,
+  getReturnPolicyByNameTool,
+  updateReturnPolicyTool,
+  deleteReturnPolicyTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

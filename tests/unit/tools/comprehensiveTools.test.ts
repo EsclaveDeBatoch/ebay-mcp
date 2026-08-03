@@ -14,12 +14,6 @@ describe('Comprehensive Tools Coverage', () => {
     // Create comprehensive mock API
     mockApi = {
       account: {
-        getReturnPolicies: vi.fn(),
-        createReturnPolicy: vi.fn(),
-        getReturnPolicy: vi.fn(),
-        getReturnPolicyByName: vi.fn(),
-        updateReturnPolicy: vi.fn(),
-        deleteReturnPolicy: vi.fn(),
         getKyc: vi.fn(),
         getPaymentsProgram: vi.fn(),
         getPaymentsProgramOnboarding: vi.fn(),
@@ -107,63 +101,6 @@ describe('Comprehensive Tools Coverage', () => {
 
   // ===== ACCOUNT TOOLS =====
   describe('Account Management Tools', () => {
-    it('ebay_get_return_policies', async () => {
-      const mockResponse = { returnPolicies: [] };
-      const input = { marketplaceId: 'EBAY_US' };
-      vi.mocked(mockApi.account.getReturnPolicies).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_return_policies', input);
-      expect(mockApi.account.getReturnPolicies).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_return_policy', async () => {
-      const mockResponse = { returnPolicyId: 'RP123' };
-      const policy = { name: 'Test', marketplaceId: 'EBAY_US' };
-      const input = { policy };
-      vi.mocked(mockApi.account.createReturnPolicy).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_create_return_policy', input);
-      expect(mockApi.account.createReturnPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_return_policy', async () => {
-      const mockResponse = { returnPolicyId: 'RP123' };
-      const input = { returnPolicyId: 'RP123' };
-      vi.mocked(mockApi.account.getReturnPolicy).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_return_policy', input);
-      expect(mockApi.account.getReturnPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_return_policy_by_name', async () => {
-      const mockResponse = { returnPolicyId: 'RP123' };
-      const input = {
-        marketplaceId: 'EBAY_US',
-        name: 'Test',
-      };
-      vi.mocked(mockApi.account.getReturnPolicyByName).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_return_policy_by_name', input);
-      expect(mockApi.account.getReturnPolicyByName).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_update_return_policy', async () => {
-      const mockResponse = { returnPolicyId: 'RP123' };
-      const policy = { name: 'Updated', marketplaceId: 'EBAY_US' };
-      const input = {
-        returnPolicyId: 'RP123',
-        policy,
-      };
-      vi.mocked(mockApi.account.updateReturnPolicy).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_update_return_policy', input);
-      expect(mockApi.account.updateReturnPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_delete_return_policy', async () => {
-      const input = { returnPolicyId: 'RP123' };
-      vi.mocked(mockApi.account.deleteReturnPolicy).mockReturnValue(Effect.succeed(undefined));
-      await executeTool(mockApi, 'ebay_delete_return_policy', input);
-      expect(mockApi.account.deleteReturnPolicy).toHaveBeenCalledWith(input);
-    });
-
     it('ebay_get_kyc', async () => {
       const mockResponse = { kycChecks: [] };
       vi.mocked(mockApi.account.getKyc).mockReturnValue(Effect.succeed(mockResponse));

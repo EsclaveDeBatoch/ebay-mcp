@@ -3,9 +3,6 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
   bulkCreateOrReplaceSalesTaxInputSchema,
   createOrReplaceSalesTaxInputSchema,
-  createReturnPolicyInputSchema,
-  createReturnPolicyOutputSchema,
-  deleteReturnPolicyInputSchema,
   deleteSalesTaxInputSchema,
   getAdvertisingEligibilityInputSchema,
   getKycInputSchema,
@@ -14,10 +11,6 @@ import {
   getPaymentsProgramOnboardingInputSchema,
   getPrivilegesInputSchema,
   getRateTablesInputSchema,
-  getReturnPoliciesInputSchema,
-  getReturnPoliciesOutputSchema,
-  getReturnPolicyByNameInputSchema,
-  getReturnPolicyInputSchema,
   getSalesTaxesInputSchema,
   getSalesTaxesOutputSchema,
   getSalesTaxInputSchema,
@@ -27,9 +20,7 @@ import {
   optOutOfProgramInputSchema,
   privilegesOutputSchema,
   programsOutputSchema,
-  returnPolicyResponseSchema,
   salesTaxSchema,
-  updateReturnPolicyInputSchema,
 } from '@/schemas/account-management/account.js';
 import { defineTool } from '@/tools/defineTool.js';
 import type { OutputArgs } from '@/tools/types.js';
@@ -41,71 +32,8 @@ const emptyResponseSchema: OutputArgs = {
   description: 'Empty response on successful operation',
 };
 
-/** Account Management API tools for seller policies, tax, KYC, privileges, and programs. */
+/** Legacy Account API tools for seller tax, KYC, privileges, and programs. */
 export const accountEntries: ToolEntry[] = [
-  defineTool({
-    name: 'ebay_get_return_policies',
-    description: 'Get return policies for the seller',
-    inputSchema: getReturnPoliciesInputSchema.shape,
-    outputSchema: zodToJsonSchema(getReturnPoliciesOutputSchema, {
-      name: 'ReturnPoliciesResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getReturnPolicies(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_return_policy',
-    description: 'Create a new return policy',
-    inputSchema: createReturnPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createReturnPolicyOutputSchema, {
-      name: 'CreateReturnPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: false },
-    handler: (api, args) => Effect.runPromise(api.account.createReturnPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_return_policy',
-    description: 'Get a specific return policy by ID',
-    inputSchema: getReturnPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(returnPolicyResponseSchema, {
-      name: 'ReturnPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getReturnPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_return_policy_by_name',
-    description: 'Get a return policy by name',
-    inputSchema: getReturnPolicyByNameInputSchema.shape,
-    outputSchema: zodToJsonSchema(returnPolicyResponseSchema, {
-      name: 'ReturnPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getReturnPolicyByName(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_return_policy',
-    description: 'Update an existing return policy',
-    inputSchema: updateReturnPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createReturnPolicyOutputSchema, {
-      name: 'UpdateReturnPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: false, idempotentHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.updateReturnPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_return_policy',
-    description: 'Delete a return policy',
-    inputSchema: deleteReturnPolicyInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false, destructiveHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.deleteReturnPolicy(args)),
-  }),
   defineTool({
     name: 'ebay_get_kyc',
     description: 'Get seller KYC (Know Your Customer) status',
