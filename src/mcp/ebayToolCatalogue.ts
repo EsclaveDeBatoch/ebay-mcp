@@ -52,6 +52,7 @@ import {
   getSigningKeyTool,
 } from '@/ebay/developer/keyManagement/signingKey.js';
 import { getDeveloperStatusFeedTool } from '@/ebay/developer/status/incident.js';
+import { getAdvertisingEligibilityTool } from '@/ebay/sell/account/advertisingEligibility.js';
 import {
   createCustomPolicyTool,
   getCustomPoliciesTool,
@@ -66,6 +67,7 @@ import {
   getFulfillmentPolicyTool,
   updateFulfillmentPolicyTool,
 } from '@/ebay/sell/account/fulfillmentPolicy.js';
+import { getKycTool } from '@/ebay/sell/account/kyc.js';
 import {
   createPaymentPolicyTool,
   deletePaymentPolicyTool,
@@ -74,6 +76,8 @@ import {
   getPaymentPolicyTool,
   updatePaymentPolicyTool,
 } from '@/ebay/sell/account/paymentPolicy.js';
+import { getPrivilegesTool } from '@/ebay/sell/account/privilege.js';
+import { getRateTablesTool } from '@/ebay/sell/account/rateTable.js';
 import {
   createReturnPolicyTool,
   deleteReturnPolicyTool,
@@ -82,6 +86,7 @@ import {
   getReturnPolicyTool,
   updateReturnPolicyTool,
 } from '@/ebay/sell/account/returnPolicy.js';
+import { getSubscriptionTool as getAccountSubscriptionTool } from '@/ebay/sell/account/subscription.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
   findSellerStandardsProfilesTool,
@@ -252,6 +257,11 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getReturnPolicyByNameTool,
   updateReturnPolicyTool,
   deleteReturnPolicyTool,
+  getPrivilegesTool,
+  getRateTablesTool,
+  getAccountSubscriptionTool,
+  getKycTool,
+  getAdvertisingEligibilityTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

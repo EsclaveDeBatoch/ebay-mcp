@@ -7,15 +7,9 @@ import type { components } from '@/generated/ebay/sell-apps/account-management/s
 
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
 type PaymentsProgramOnboardingResponse = components['schemas']['PaymentsProgramOnboardingResponse'];
-type SellingPrivileges = components['schemas']['SellingPrivileges'];
 type Programs = components['schemas']['Programs'];
-type KycResponse = components['schemas']['KycResponse'];
-type RateTableResponse = components['schemas']['RateTableResponse'];
 type SalesTax = components['schemas']['SalesTax'];
 type SalesTaxes = components['schemas']['SalesTaxes'];
-type SubscriptionResponse = components['schemas']['SubscriptionResponse'];
-type SellerEligibilityMultiProgramResponse =
-  components['schemas']['SellerEligibilityMultiProgramResponse'];
 
 describe('AccountApi', () => {
   let accountApi: AccountApi;
@@ -37,63 +31,16 @@ describe('AccountApi', () => {
   });
 
   describe('Account Information', () => {
-    it('gets seller privileges, KYC, rate tables, and opted-in programs', async () => {
-      const mockPrivileges: SellingPrivileges = { sellerRegistrationCompleted: true };
-      const mockKyc: KycResponse = {
-        kycChecks: [
-          {
-            dataRequired: 'BUSINESS_VERIFICATION',
-          },
-        ],
-      };
-      const mockRateTables: RateTableResponse = {
-        rateTables: [{ rateTableId: '123456', name: 'Domestic Shipping' }],
-      };
+    it('gets seller programs the account opted into', async () => {
       const mockPrograms: Programs = {
         programs: [{ programType: 'OUT_OF_STOCK_CONTROL' }],
       };
 
-      vi.spyOn(mockClient, 'get')
-        .mockResolvedValueOnce(mockPrivileges)
-        .mockResolvedValueOnce(mockKyc)
-        .mockResolvedValueOnce(mockRateTables)
-        .mockResolvedValueOnce(mockPrograms);
+      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPrograms);
 
-      expect(await Effect.runPromise(accountApi.getPrivileges({}))).toEqual(mockPrivileges);
-      expect(await Effect.runPromise(accountApi.getKyc({}))).toEqual(mockKyc);
-      expect(await Effect.runPromise(accountApi.getRateTables({}))).toEqual(mockRateTables);
       expect(await Effect.runPromise(accountApi.getOptedInPrograms({}))).toEqual(mockPrograms);
 
-      expect(mockClient.get).toHaveBeenNthCalledWith(1, '/sell/account/v1/privilege');
-      expect(mockClient.get).toHaveBeenNthCalledWith(2, '/sell/account/v1/kyc');
-      expect(mockClient.get).toHaveBeenNthCalledWith(3, '/sell/account/v1/rate_table');
-      expect(mockClient.get).toHaveBeenNthCalledWith(
-        4,
-        '/sell/account/v1/program/get_opted_in_programs',
-      );
-    });
-
-    it('gets subscription information with optional pagination fields', async () => {
-      const mockSubscription: SubscriptionResponse = {
-        subscriptions: [
-          {
-            subscriptionId: 'sub_12345',
-            subscriptionType: 'STORE_SUBSCRIPTION',
-          },
-        ],
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockSubscription);
-
-      const result = await Effect.runPromise(
-        accountApi.getSubscription({ limit: '10', continuationToken: 'next-page' }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/subscription', {
-        limit: '10',
-        continuation_token: 'next-page',
-      });
-      expect(result).toEqual(mockSubscription);
+      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/program/get_opted_in_programs');
     });
   });
 
@@ -232,34 +179,6 @@ describe('AccountApi', () => {
         '/sell/account/v1/program/opt_out',
         request,
       );
-    });
-  });
-
-  describe('Advertising Eligibility', () => {
-    it('gets advertising eligibility with the marketplace header and program filter', async () => {
-      const mockResponse: SellerEligibilityMultiProgramResponse = {
-        advertisingEligibility: [],
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(
-        accountApi.getAdvertisingEligibility({
-          marketplaceId: MarketplaceId.EBAY_US,
-          programTypes: 'PLA',
-        }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        '/sell/account/v1/advertising_eligibility',
-        { program_types: 'PLA' },
-        {
-          headers: {
-            'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
-          },
-        },
-      );
-      expect(result).toEqual(mockResponse);
     });
   });
 });

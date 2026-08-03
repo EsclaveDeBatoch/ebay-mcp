@@ -29,11 +29,6 @@ const errorSchema = z.object({
     .optional(),
 });
 
-const amountSchema = z.object({
-  currency: z.string().optional(),
-  value: z.string().optional(),
-});
-
 // ============================================================================
 // Sales Tax Schemas
 // ============================================================================
@@ -136,22 +131,6 @@ export const programsOutputSchema = z.object({
   warnings: z.array(errorSchema).optional(),
 });
 
-// ============================================================================
-// KYC Schemas
-// ============================================================================
-
-/**
- * Validates the Account Management API KYC response payload.
- */
-export const kycOutputSchema = z.object({
-  kycCheck: z.string().optional(),
-  detailedStatus: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/** Validates the Account Management API get KYC request payload. */
-export const getKycInputSchema = z.object({});
-
 /** Validates the Account Management API payments program request payload. */
 export const getPaymentsProgramInputSchema = z.object({
   marketplaceId: z.nativeEnum(MarketplaceId).describe('The eBay marketplace ID'),
@@ -160,48 +139,6 @@ export const getPaymentsProgramInputSchema = z.object({
 
 /** Validates the Account Management API payments onboarding request payload. */
 export const getPaymentsProgramOnboardingInputSchema = getPaymentsProgramInputSchema;
-
-/** Validates the Account Management API subscription request payload. */
-export const getSubscriptionInputSchema = z.object({
-  limit: z.string().optional().describe('Optional subscription page size limit'),
-  continuationToken: z.string().optional().describe('Optional continuation token'),
-});
-
-/** Validates the Account Management API get rate tables request payload. */
-export const getRateTablesInputSchema = z.object({});
-
-/** Validates the Account Management API advertising eligibility request payload. */
-export const getAdvertisingEligibilityInputSchema = z.object({
-  marketplaceId: z
-    .nativeEnum(MarketplaceId)
-    .describe('eBay marketplace ID to check eligibility for'),
-  programTypes: z
-    .string()
-    .optional()
-    .describe('Optional comma-separated list of program types to check eligibility for'),
-});
-
-// ============================================================================
-// Privileges Schemas
-// ============================================================================
-
-/**
- * Validates the Account Management API privileges response payload.
- */
-export const privilegesOutputSchema = z.object({
-  sellingLimit: z
-    .object({
-      amount: amountSchema.optional(),
-      quantity: z.number().optional(),
-    })
-    .optional(),
-  qualifiesForSelling: z.boolean().optional(),
-  sellerRegistrationCompleted: z.boolean().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/** Validates the Account Management API get privileges request payload. */
-export const getPrivilegesInputSchema = z.object({});
 
 // ============================================================================
 // JSON Schema Conversion Functions
@@ -229,12 +166,5 @@ export const getAccountManagementJsonSchemas = () => {
       'getOptedInProgramsInput',
     ),
     programsOutput: zodToJsonSchema(programsOutputSchema, 'programsOutput'),
-
-    // KYC & Privileges
-    getKycInput: zodToJsonSchema(getKycInputSchema, 'getKycInput'),
-    kycOutput: zodToJsonSchema(kycOutputSchema, 'kycOutput'),
-    getRateTablesInput: zodToJsonSchema(getRateTablesInputSchema, 'getRateTablesInput'),
-    getPrivilegesInput: zodToJsonSchema(getPrivilegesInputSchema, 'getPrivilegesInput'),
-    privilegesOutput: zodToJsonSchema(privilegesOutputSchema, 'privilegesOutput'),
   };
 };

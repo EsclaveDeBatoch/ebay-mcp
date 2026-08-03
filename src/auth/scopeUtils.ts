@@ -374,6 +374,48 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires write access to seller return policies',
     },
 
+    // Sell Account read-resource tools
+    ebay_sell_account_get_privileges: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+    ebay_sell_account_get_rate_tables: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+    ebay_sell_account_get_subscription: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+    ebay_sell_account_get_kyc: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+    ebay_sell_account_get_advertising_eligibility: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+
     // Marketing Tools
     ebay_get_campaigns: {
       requiredScopes: [

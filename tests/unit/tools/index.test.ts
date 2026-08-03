@@ -56,21 +56,16 @@ describe('Tools Layer', () => {
     mockApi = {
       // Account API
       account: {
-        getKyc: vi.fn(),
         getPaymentsProgram: vi.fn(),
         getPaymentsProgramOnboarding: vi.fn(),
-        getRateTables: vi.fn(),
         createOrReplaceSalesTax: vi.fn(),
         bulkCreateOrReplaceSalesTax: vi.fn(),
         deleteSalesTax: vi.fn(),
         getSalesTax: vi.fn(),
         getSalesTaxes: vi.fn(),
-        getSubscription: vi.fn(),
         optInToProgram: vi.fn(),
         optOutOfProgram: vi.fn(),
         getOptedInPrograms: vi.fn(),
-        getPrivileges: vi.fn(),
-        getAdvertisingEligibility: vi.fn(),
       },
       // Inventory API
       inventory: {
@@ -163,7 +158,7 @@ describe('Tools Layer', () => {
 
       // Check for tools from each category
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-      expect(toolNames).toContain('ebay_get_kyc'); // accountTools
+      expect(toolNames).toContain('ebay_get_payments_program'); // accountTools
       expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
       expect(toolNames).toContain('ebay_get_campaigns');
     });

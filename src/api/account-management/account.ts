@@ -11,12 +11,10 @@ import type {
   bulkCreateOrReplaceSalesTaxInputSchema,
   createOrReplaceSalesTaxInputSchema,
   deleteSalesTaxInputSchema,
-  getAdvertisingEligibilityInputSchema,
   getPaymentsProgramInputSchema,
   getPaymentsProgramOnboardingInputSchema,
   getSalesTaxesInputSchema,
   getSalesTaxInputSchema,
-  getSubscriptionInputSchema,
   optInToProgramInputSchema,
   optOutOfProgramInputSchema,
 } from '@/schemas/account-management/account.js';
@@ -38,24 +36,14 @@ type BulkCreateOrReplaceSalesTaxInput = InferEffectSchema<
 type GetSalesTaxInput = InferEffectSchema<typeof getSalesTaxInputSchema>;
 type DeleteSalesTaxInput = InferEffectSchema<typeof deleteSalesTaxInputSchema>;
 type GetSalesTaxesInput = InferEffectSchema<typeof getSalesTaxesInputSchema>;
-type GetSubscriptionInput = InferEffectSchema<typeof getSubscriptionInputSchema>;
 type OptInToProgramInput = InferEffectSchema<typeof optInToProgramInputSchema>;
 type OptOutOfProgramInput = InferEffectSchema<typeof optOutOfProgramInputSchema>;
-type GetAdvertisingEligibilityInput = InferEffectSchema<
-  typeof getAdvertisingEligibilityInputSchema
->;
 
-type KycResponse = components['schemas']['KycResponse'];
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
 type PaymentsProgramOnboardingResponse = components['schemas']['PaymentsProgramOnboardingResponse'];
-type SellerEligibilityMultiProgramResponse =
-  components['schemas']['SellerEligibilityMultiProgramResponse'];
-type SellingPrivileges = components['schemas']['SellingPrivileges'];
 type Programs = components['schemas']['Programs'];
-type RateTableResponse = components['schemas']['RateTableResponse'];
 type SalesTax = components['schemas']['SalesTax'];
 type SalesTaxes = components['schemas']['SalesTaxes'];
-type SubscriptionResponse = components['schemas']['SubscriptionResponse'];
 
 /** Legacy Account API client for seller programs, tax, and eligibility. */
 export class AccountApi {
@@ -115,24 +103,6 @@ export class AccountApi {
     );
 
   /**
-   * Retrieves the seller account privileges.
-   *
-   * @param _input - Empty object accepted for tool/API shape consistency.
-   * @returns An Effect that succeeds with eBay's generated SellingPrivileges.
-   *
-   * @example
-   * ```ts
-   * const privileges = await Effect.runPromise(accountApi.getPrivileges({}));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/privilege/methods/getPrivileges
-   */
-  getPrivileges = (
-    _input: EmptyAccountInput = {},
-  ): Effect.Effect<SellingPrivileges, EbayApiError> =>
-    requestGetEffect<SellingPrivileges>(this.client, `${ACCOUNT_BASE_PATH}/privilege`);
-
-  /**
    * Retrieves seller programs the account has opted into.
    *
    * @param _input - Empty object accepted for tool/API shape consistency.
@@ -183,24 +153,6 @@ export class AccountApi {
    */
   optOutOfProgram = (input: OptOutOfProgramInput): Effect.Effect<void, EbayApiError> =>
     requestPostEffect<void>(this.client, `${ACCOUNT_BASE_PATH}/program/opt_out`, input.request);
-
-  /**
-   * Retrieves seller rate tables.
-   *
-   * @param _input - Empty object accepted for tool/API shape consistency.
-   * @returns An Effect that succeeds with eBay's generated RateTableResponse.
-   *
-   * @example
-   * ```ts
-   * const rateTables = await Effect.runPromise(accountApi.getRateTables({}));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/rate_table/methods/getRateTables
-   */
-  getRateTables = (
-    _input: EmptyAccountInput = {},
-  ): Effect.Effect<RateTableResponse, EbayApiError> =>
-    requestGetEffect<RateTableResponse>(this.client, `${ACCOUNT_BASE_PATH}/rate_table`);
 
   /**
    * Creates or replaces one sales tax table entry.
@@ -309,83 +261,5 @@ export class AccountApi {
     });
 
     return requestGetEffect<SalesTaxes>(this.client, `${ACCOUNT_BASE_PATH}/sales_tax`, params);
-  };
-
-  /**
-   * Retrieves seller subscription information.
-   *
-   * @param input - Optional subscription limit and continuation token.
-   * @returns An Effect that succeeds with eBay's generated SubscriptionResponse.
-   *
-   * @example
-   * ```ts
-   * const subscription = await Effect.runPromise(accountApi.getSubscription({ limit: '10' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/subscription/methods/getSubscription
-   */
-  getSubscription = (
-    input: GetSubscriptionInput = {},
-  ): Effect.Effect<SubscriptionResponse, EbayApiError> => {
-    const params = buildEndpointParams({
-      limit: { wireName: 'limit', value: input.limit },
-      continuationToken: { wireName: 'continuation_token', value: input.continuationToken },
-    });
-
-    return requestGetEffect<SubscriptionResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/subscription`,
-      params,
-    );
-  };
-
-  /**
-   * Retrieves seller KYC status.
-   *
-   * @param _input - Empty object accepted for tool/API shape consistency.
-   * @returns An Effect that succeeds with eBay's generated KycResponse.
-   *
-   * @example
-   * ```ts
-   * const kyc = await Effect.runPromise(accountApi.getKyc({}));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/kyc/methods/getKYC
-   */
-  getKyc = (_input: EmptyAccountInput = {}): Effect.Effect<KycResponse, EbayApiError> =>
-    requestGetEffect<KycResponse>(this.client, `${ACCOUNT_BASE_PATH}/kyc`);
-
-  /**
-   * Retrieves seller advertising-program eligibility for one marketplace.
-   *
-   * @param input - Marketplace header and optional comma-separated program type filter.
-   * @returns An Effect that succeeds with eBay's generated SellerEligibilityMultiProgramResponse.
-   *
-   * @example
-   * ```ts
-   * const eligibility = await Effect.runPromise(
-   *   accountApi.getAdvertisingEligibility({ marketplaceId: 'EBAY_US', programTypes: 'PLA' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/advertising_eligibility/methods/getAdvertisingEligibility
-   */
-  getAdvertisingEligibility = (
-    input: GetAdvertisingEligibilityInput,
-  ): Effect.Effect<SellerEligibilityMultiProgramResponse, EbayApiError> => {
-    const params = buildEndpointParams({
-      programTypes: { wireName: 'program_types', value: input.programTypes },
-    });
-
-    return requestGetEffect<SellerEligibilityMultiProgramResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/advertising_eligibility`,
-      params,
-      {
-        headers: {
-          'X-EBAY-C-MARKETPLACE-ID': input.marketplaceId,
-        },
-      },
-    );
   };
 }

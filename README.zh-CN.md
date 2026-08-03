@@ -241,8 +241,8 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | 类别 | 你可以做什么 |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | 面向 eBay MCP 目录的 ChatGPT 连接器 search/fetch 工具 |
-| [Account](src/tools/categories/account.ts) | 销售权限；计划；订阅；销售税 |
-| [Sell Account](src/ebay/sell/account/) | 卖家定义的付款、配送、退货、产品合规和回收政策 |
+| [Account](src/tools/categories/account.ts) | 付款计划状态；计划注册；销售税 |
+| [Sell Account](src/ebay/sell/account/) | 卖家状态、订阅、费率表、广告资格和业务政策 |
 | [Inventory](src/tools/categories/inventory.ts) | 库存商品、报价、地点、商品分组、批量操作、SKU/地点映射 |
 | [Fulfillment](src/ebay/sell/fulfillment/) | 订单、配送、退款、纠纷、付款纠纷证据 |
 | [Marketing](src/tools/categories/marketing.ts) | 推广刊登广告活动、广告、促销、出价、批量操作 |

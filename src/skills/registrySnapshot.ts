@@ -11,7 +11,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   connector:
     'ChatGPT connector protocol tools (`search`/`fetch`) — not used when driving the API directly',
   'token-management': 'OAuth URL, token status, refresh, and credential diagnostics',
-  account: 'Privileges, program opt-in, subscriptions, and sales tax',
+  account: 'Payments-program status, program enrollment, and sales tax',
   inventory:
     'Inventory items, offers, locations, inventory groups, bulk publish — the REST listing model',
   marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
@@ -29,7 +29,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Application signing-key creation and public-key retrieval from Developer Key Management',
   'developer.status': 'Current incidents from the public eBay developer status feed',
   'sell.account':
-    'Seller payment, fulfillment, return, product-compliance, and take-back policies from Sell Account',
+    'Seller status, subscriptions, rate tables, advertising eligibility, and business policies from Sell Account',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
   'sell.edelivery':

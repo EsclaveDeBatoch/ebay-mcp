@@ -372,7 +372,10 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   deletedestination: ['ebay_commerce_notification_delete_destination'],
   getsubscriptions: ['ebay_commerce_notification_get_subscriptions'],
   createsubscription: ['ebay_commerce_notification_create_subscription'],
-  getsubscription: ['ebay_commerce_notification_get_subscription'],
+  getsubscription: [
+    'ebay_commerce_notification_get_subscription',
+    'ebay_sell_account_get_subscription',
+  ],
   updatesubscription: ['ebay_commerce_notification_update_subscription'],
   deletesubscription: ['ebay_commerce_notification_delete_subscription'],
   disablesubscription: ['ebay_commerce_notification_disable_subscription'],
@@ -424,6 +427,10 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getreturnpolicybyname: ['ebay_sell_account_get_return_policy_by_name'],
   updatereturnpolicy: ['ebay_sell_account_update_return_policy'],
   deletereturnpolicy: ['ebay_sell_account_delete_return_policy'],
+  getprivileges: ['ebay_sell_account_get_privileges'],
+  getratetables: ['ebay_sell_account_get_rate_tables'],
+  getkyc: ['ebay_sell_account_get_kyc'],
+  getadvertisingeligibility: ['ebay_sell_account_get_advertising_eligibility'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

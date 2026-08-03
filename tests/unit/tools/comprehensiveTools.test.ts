@@ -14,21 +14,16 @@ describe('Comprehensive Tools Coverage', () => {
     // Create comprehensive mock API
     mockApi = {
       account: {
-        getKyc: vi.fn(),
         getPaymentsProgram: vi.fn(),
         getPaymentsProgramOnboarding: vi.fn(),
-        getRateTables: vi.fn(),
         createOrReplaceSalesTax: vi.fn(),
         bulkCreateOrReplaceSalesTax: vi.fn(),
         deleteSalesTax: vi.fn(),
         getSalesTax: vi.fn(),
         getSalesTaxes: vi.fn(),
-        getSubscription: vi.fn(),
         optInToProgram: vi.fn(),
         optOutOfProgram: vi.fn(),
         getOptedInPrograms: vi.fn(),
-        getPrivileges: vi.fn(),
-        getAdvertisingEligibility: vi.fn(),
       },
       inventory: {
         getInventoryItems: vi.fn(),
@@ -101,13 +96,6 @@ describe('Comprehensive Tools Coverage', () => {
 
   // ===== ACCOUNT TOOLS =====
   describe('Account Management Tools', () => {
-    it('ebay_get_kyc', async () => {
-      const mockResponse = { kycChecks: [] };
-      vi.mocked(mockApi.account.getKyc).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_kyc', {});
-      expect(mockApi.account.getKyc).toHaveBeenCalledWith({});
-    });
-
     it('ebay_get_payments_program', async () => {
       const mockResponse = { status: 'OPTED_IN' };
       const input = {
@@ -130,13 +118,6 @@ describe('Comprehensive Tools Coverage', () => {
       );
       await executeTool(mockApi, 'ebay_get_payments_program_onboarding', input);
       expect(mockApi.account.getPaymentsProgramOnboarding).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_rate_tables', async () => {
-      const mockResponse = { rateTables: [] };
-      vi.mocked(mockApi.account.getRateTables).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_rate_tables', {});
-      expect(mockApi.account.getRateTables).toHaveBeenCalledWith({});
     });
 
     it('ebay_create_or_replace_sales_tax', async () => {
@@ -192,14 +173,6 @@ describe('Comprehensive Tools Coverage', () => {
       expect(mockApi.account.getSalesTaxes).toHaveBeenCalledWith(input);
     });
 
-    it('ebay_get_subscription', async () => {
-      const mockResponse = { subscriptions: [{ subscriptionLevel: 'BASIC' }] };
-      const input = { limit: '10', continuationToken: 'next-page' };
-      vi.mocked(mockApi.account.getSubscription).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_subscription', input);
-      expect(mockApi.account.getSubscription).toHaveBeenCalledWith(input);
-    });
-
     it('ebay_opt_in_to_program', async () => {
       const request = { programType: 'TOP_RATED' };
       const input = { request };
@@ -221,23 +194,6 @@ describe('Comprehensive Tools Coverage', () => {
       vi.mocked(mockApi.account.getOptedInPrograms).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_opted_in_programs', {});
       expect(mockApi.account.getOptedInPrograms).toHaveBeenCalledWith({});
-    });
-
-    it('ebay_get_privileges', async () => {
-      const mockResponse = { sellerRegistrationCompleted: true };
-      vi.mocked(mockApi.account.getPrivileges).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_privileges', {});
-      expect(mockApi.account.getPrivileges).toHaveBeenCalledWith({});
-    });
-
-    it('ebay_get_advertising_eligibility', async () => {
-      const mockResponse = { advertisingEligibility: [] };
-      const input = { marketplaceId: 'EBAY_US', programTypes: 'PLA' };
-      vi.mocked(mockApi.account.getAdvertisingEligibility).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_advertising_eligibility', input);
-      expect(mockApi.account.getAdvertisingEligibility).toHaveBeenCalledWith(input);
     });
   });
 

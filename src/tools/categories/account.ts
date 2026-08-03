@@ -4,21 +4,14 @@ import {
   bulkCreateOrReplaceSalesTaxInputSchema,
   createOrReplaceSalesTaxInputSchema,
   deleteSalesTaxInputSchema,
-  getAdvertisingEligibilityInputSchema,
-  getKycInputSchema,
   getOptedInProgramsInputSchema,
   getPaymentsProgramInputSchema,
   getPaymentsProgramOnboardingInputSchema,
-  getPrivilegesInputSchema,
-  getRateTablesInputSchema,
   getSalesTaxesInputSchema,
   getSalesTaxesOutputSchema,
   getSalesTaxInputSchema,
-  getSubscriptionInputSchema,
-  kycOutputSchema,
   optInToProgramInputSchema,
   optOutOfProgramInputSchema,
-  privilegesOutputSchema,
   programsOutputSchema,
   salesTaxSchema,
 } from '@/schemas/account-management/account.js';
@@ -32,19 +25,8 @@ const emptyResponseSchema: OutputArgs = {
   description: 'Empty response on successful operation',
 };
 
-/** Legacy Account API tools for seller tax, KYC, privileges, and programs. */
+/** Legacy Account API tools for seller tax and programs. */
 export const accountEntries: ToolEntry[] = [
-  defineTool({
-    name: 'ebay_get_kyc',
-    description: 'Get seller KYC (Know Your Customer) status',
-    inputSchema: getKycInputSchema.shape,
-    outputSchema: zodToJsonSchema(kycOutputSchema, {
-      name: 'KYCResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getKyc(args)),
-  }),
   defineTool({
     name: 'ebay_get_payments_program',
     description:
@@ -60,13 +42,6 @@ export const accountEntries: ToolEntry[] = [
     inputSchema: getPaymentsProgramOnboardingInputSchema.shape,
     annotations: { readOnlyHint: true },
     handler: (api, args) => Effect.runPromise(api.account.getPaymentsProgramOnboarding(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_rate_tables',
-    description: 'Get seller rate tables',
-    inputSchema: getRateTablesInputSchema.shape,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getRateTables(args)),
   }),
   defineTool({
     name: 'ebay_create_or_replace_sales_tax',
@@ -115,13 +90,6 @@ export const accountEntries: ToolEntry[] = [
     handler: (api, args) => Effect.runPromise(api.account.getSalesTaxes(args)),
   }),
   defineTool({
-    name: 'ebay_get_subscription',
-    description: 'Get seller subscription information',
-    inputSchema: getSubscriptionInputSchema.shape,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getSubscription(args)),
-  }),
-  defineTool({
     name: 'ebay_opt_in_to_program',
     description: 'Opt-in to a seller program',
     inputSchema: optInToProgramInputSchema.shape,
@@ -147,25 +115,5 @@ export const accountEntries: ToolEntry[] = [
     }) as OutputArgs,
     annotations: { readOnlyHint: true },
     handler: (api, args) => Effect.runPromise(api.account.getOptedInPrograms(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_privileges',
-    description:
-      "Get seller's current set of privileges, including whether or not the seller's eBay registration has been completed, as well as the details of their site-wide sellingLimit (the maximum dollar value and quantity of items a seller can sell per day).\n\nRequired OAuth Scope: sell.account.readonly or sell.account",
-    inputSchema: getPrivilegesInputSchema.shape,
-    outputSchema: zodToJsonSchema(privilegesOutputSchema, {
-      name: 'PrivilegesResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getPrivileges(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_advertising_eligibility',
-    description:
-      'Check the seller eligibility status for eBay advertising programs. This allows developers to determine if a seller is eligible for various advertising programs on eBay.\n\nRequired OAuth Scope: sell.account.readonly or sell.account',
-    inputSchema: getAdvertisingEligibilityInputSchema.shape,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getAdvertisingEligibility(args)),
   }),
 ];
