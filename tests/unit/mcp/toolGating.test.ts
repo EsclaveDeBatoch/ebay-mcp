@@ -102,6 +102,8 @@ describe('toolNamesInExposurePaths', () => {
       'ebay_commerce_notification_create_subscription_filter',
       'ebay_commerce_notification_get_subscription_filter',
       'ebay_commerce_notification_delete_subscription_filter',
+      'ebay_commerce_notification_get_topics',
+      'ebay_commerce_notification_get_topic',
     ]);
   });
 

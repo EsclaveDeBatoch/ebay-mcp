@@ -330,6 +330,16 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope',
       description: 'Requires public API access to retrieve a notification validation key',
     },
+    ebay_commerce_notification_get_topic: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve a notification topic',
+    },
+    ebay_commerce_notification_get_topics: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve notification topics',
+    },
     ebay_commerce_notification_get_subscriptions: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',

@@ -10,8 +10,6 @@ src/schemas/
 │   └── account.ts
 ├── inventory-management/  # Inventory items, offers, locations
 │   └── inventory.ts
-├── communication/         # Messages and notifications
-│   └── messages.ts
 ├── fulfillment/          # Orders, shipping, refunds
 │   └── orders.ts
 ├── marketing/            # Campaigns, ads, keywords, promotions
@@ -143,19 +141,7 @@ Schemas for inventory items, offers, locations, and product compatibility.
 - `publishOfferInputSchema` / `publishOfferOutputSchema`
 - `bulkInventoryItemRequestSchema` / `bulkInventoryItemResponseSchema`
 
-### 3. Communication (`communication/messages.ts`)
-
-Legacy schemas for Commerce Notification.
-
-**Endpoints Covered:**
-
-- Notification API topics
-
-**Key Schemas:**
-
-- `createNotificationSubscriptionInputSchema` / `createNotificationSubscriptionOutputSchema`
-
-### 4. Fulfillment (`fulfillment/orders.ts`)
+### 3. Fulfillment (`fulfillment/orders.ts`)
 
 Schemas for order management, shipping, refunds, and payment disputes.
 
@@ -173,7 +159,7 @@ Schemas for order management, shipping, refunds, and payment disputes.
 - `issueRefundInputSchema` / `issueRefundOutputSchema`
 - `getPaymentDisputeSummariesInputSchema` / `getPaymentDisputeSummariesOutputSchema`
 
-### 5. Marketing & Promotions (`marketing/marketing.ts`)
+### 4. Marketing & Promotions (`marketing/marketing.ts`)
 
 Schemas for advertising campaigns, ads, keywords, promotions, and recommendations.
 
@@ -199,7 +185,7 @@ Schemas for advertising campaigns, ads, keywords, promotions, and recommendation
 - `createItemPromotionInputSchema` / `createItemPromotionOutputSchema`
 - `suggestBidsOutputSchema` / `suggestKeywordsOutputSchema`
 
-### 6. Metadata (`metadata/metadata.ts`)
+### 5. Metadata (`metadata/metadata.ts`)
 
 Schemas for marketplace policies and product compatibility.
 
@@ -217,7 +203,7 @@ Schemas for marketplace policies and product compatibility.
 - `getProductCompatibilitiesOutputSchema`
 - `getSalesTaxJurisdictionsOutputSchema`
 
-### 7. Taxonomy (`taxonomy/taxonomy.ts`)
+### 6. Taxonomy (`taxonomy/taxonomy.ts`)
 
 Schemas for category navigation, suggestions, and product aspects.
 
@@ -233,7 +219,7 @@ Schemas for category navigation, suggestions, and product aspects.
 - `getCategorySuggestionsInputSchema` / `getCategorySuggestionsOutputSchema`
 - `getItemAspectsForCategoryOutputSchema`
 
-### 8. Other APIs (`other/otherApis.ts`)
+### 7. Other APIs (`other/otherApis.ts`)
 
 Legacy schemas for compliance, VERO, and international shipping.
 

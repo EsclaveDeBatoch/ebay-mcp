@@ -212,6 +212,8 @@ describe('Scope Utils', () => {
       'ebay_commerce_notification_update_destination',
       'ebay_commerce_notification_delete_destination',
       'ebay_commerce_notification_get_public_key',
+      'ebay_commerce_notification_get_topic',
+      'ebay_commerce_notification_get_topics',
     ])('returns the public API scope for %s', (notificationToolName) => {
       const requirement = getRequiredScopesForTool(notificationToolName);
 

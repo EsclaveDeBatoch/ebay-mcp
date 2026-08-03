@@ -578,31 +578,6 @@ export const feedbackDataSchema = z
   })
   .passthrough();
 
-/** Notification configuration payload for communication notification tools. */
-export const notificationConfigSchema = z
-  .object({
-    deliveryConfigs: z
-      .array(
-        z
-          .object({
-            endpoint: z.string().optional(),
-            format: z.string().optional(),
-          })
-          .passthrough(),
-      )
-      .optional(),
-  })
-  .passthrough();
-
-/** Notification destination payload for webhook destination management. */
-export const notificationDestinationSchema = z
-  .object({
-    name: z.string(),
-    endpoint: z.string(),
-    verificationToken: z.string().optional(),
-  })
-  .passthrough();
-
 // ============================================================================
 // Metadata/Compatibility Schemas
 // ============================================================================

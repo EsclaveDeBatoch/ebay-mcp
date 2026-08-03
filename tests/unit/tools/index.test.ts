@@ -192,11 +192,6 @@ describe('Tools Layer', () => {
         getCategorySuggestions: vi.fn(),
         getItemAspectsForCategory: vi.fn(),
       },
-      // Communication APIs
-      notification: {
-        getTopic: vi.fn(),
-        getTopics: vi.fn(),
-      },
       // Other APIs
       compliance: {
         getListingViolations: vi.fn(),
@@ -284,7 +279,6 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_campaigns');
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
       expect(toolNames).toContain('ebay_get_category_tree'); // taxonomyTools
-      expect(toolNames).toContain('ebay_get_notification_topics'); // communicationTools
       expect(toolNames).toContain('ebay_get_vero_reason_codes'); // otherApiTools
     });
   });

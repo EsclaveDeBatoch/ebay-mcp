@@ -27,7 +27,6 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'marketing',
   'metadata',
   'taxonomy',
-  'communication',
   'browse',
   'other',
   'developer',

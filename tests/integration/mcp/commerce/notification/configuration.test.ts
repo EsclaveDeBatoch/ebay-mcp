@@ -69,6 +69,8 @@ describe('Commerce Notification configuration MCP exposure', () => {
       'ebay_commerce_notification_create_subscription_filter',
       'ebay_commerce_notification_get_subscription_filter',
       'ebay_commerce_notification_delete_subscription_filter',
+      'ebay_commerce_notification_get_topics',
+      'ebay_commerce_notification_get_topic',
     ]);
     await mcpClient.close();
   });
@@ -91,6 +93,8 @@ describe('Commerce Notification configuration MCP exposure', () => {
       'ebay_commerce_notification_get_subscriptions',
       'ebay_commerce_notification_get_subscription',
       'ebay_commerce_notification_get_subscription_filter',
+      'ebay_commerce_notification_get_topics',
+      'ebay_commerce_notification_get_topic',
     ]);
     await mcpClient.close();
   });
