@@ -434,6 +434,11 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getoptedinprograms: ['ebay_sell_account_get_opted_in_programs'],
   optintoprogram: ['ebay_sell_account_opt_in_to_program'],
   optoutofprogram: ['ebay_sell_account_opt_out_of_program'],
+  createorreplacesalestax: ['ebay_sell_account_create_or_replace_sales_tax'],
+  bulkcreateorreplacesalestax: ['ebay_sell_account_bulk_create_or_replace_sales_tax'],
+  deletesalestax: ['ebay_sell_account_delete_sales_tax'],
+  getsalestax: ['ebay_sell_account_get_sales_tax'],
+  getsalestaxes: ['ebay_sell_account_get_sales_taxes'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

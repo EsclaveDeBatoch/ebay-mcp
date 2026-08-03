@@ -58,11 +58,6 @@ describe('Tools Layer', () => {
       account: {
         getPaymentsProgram: vi.fn(),
         getPaymentsProgramOnboarding: vi.fn(),
-        createOrReplaceSalesTax: vi.fn(),
-        bulkCreateOrReplaceSalesTax: vi.fn(),
-        deleteSalesTax: vi.fn(),
-        getSalesTax: vi.fn(),
-        getSalesTaxes: vi.fn(),
       },
       // Inventory API
       inventory: {

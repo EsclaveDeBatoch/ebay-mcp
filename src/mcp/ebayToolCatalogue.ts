@@ -84,6 +84,13 @@ import {
 } from '@/ebay/sell/account/program.js';
 import { getRateTablesTool } from '@/ebay/sell/account/rateTable.js';
 import {
+  bulkCreateOrReplaceSalesTaxTool,
+  createOrReplaceSalesTaxTool,
+  deleteSalesTaxTool,
+  getSalesTaxesTool,
+  getSalesTaxTool,
+} from '@/ebay/sell/account/salesTax.js';
+import {
   createReturnPolicyTool,
   deleteReturnPolicyTool,
   getReturnPoliciesTool as getAccountReturnPoliciesTool,
@@ -270,6 +277,11 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getOptedInProgramsTool,
   optInToProgramTool,
   optOutOfProgramTool,
+  createOrReplaceSalesTaxTool,
+  bulkCreateOrReplaceSalesTaxTool,
+  deleteSalesTaxTool,
+  getSalesTaxTool,
+  getSalesTaxesTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

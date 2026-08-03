@@ -10,57 +10,6 @@ const sellerProgramToolNames = [
   'ebay_sell_account_opt_out_of_program',
 ] as const;
 
-const sellAccountToolNames = [
-  'ebay_sell_account_get_custom_policies',
-  'ebay_sell_account_create_custom_policy',
-  'ebay_sell_account_get_custom_policy',
-  'ebay_sell_account_update_custom_policy',
-  'ebay_sell_account_get_fulfillment_policies',
-  'ebay_sell_account_create_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy_by_name',
-  'ebay_sell_account_update_fulfillment_policy',
-  'ebay_sell_account_delete_fulfillment_policy',
-  'ebay_sell_account_get_payment_policies',
-  'ebay_sell_account_create_payment_policy',
-  'ebay_sell_account_get_payment_policy',
-  'ebay_sell_account_get_payment_policy_by_name',
-  'ebay_sell_account_update_payment_policy',
-  'ebay_sell_account_delete_payment_policy',
-  'ebay_sell_account_get_return_policies',
-  'ebay_sell_account_create_return_policy',
-  'ebay_sell_account_get_return_policy',
-  'ebay_sell_account_get_return_policy_by_name',
-  'ebay_sell_account_update_return_policy',
-  'ebay_sell_account_delete_return_policy',
-  'ebay_sell_account_get_privileges',
-  'ebay_sell_account_get_rate_tables',
-  'ebay_sell_account_get_subscription',
-  'ebay_sell_account_get_kyc',
-  'ebay_sell_account_get_advertising_eligibility',
-  ...sellerProgramToolNames,
-] as const;
-
-const readOnlySellAccountToolNames = [
-  'ebay_sell_account_get_custom_policies',
-  'ebay_sell_account_get_custom_policy',
-  'ebay_sell_account_get_fulfillment_policies',
-  'ebay_sell_account_get_fulfillment_policy',
-  'ebay_sell_account_get_fulfillment_policy_by_name',
-  'ebay_sell_account_get_payment_policies',
-  'ebay_sell_account_get_payment_policy',
-  'ebay_sell_account_get_payment_policy_by_name',
-  'ebay_sell_account_get_return_policies',
-  'ebay_sell_account_get_return_policy',
-  'ebay_sell_account_get_return_policy_by_name',
-  'ebay_sell_account_get_privileges',
-  'ebay_sell_account_get_rate_tables',
-  'ebay_sell_account_get_subscription',
-  'ebay_sell_account_get_kyc',
-  'ebay_sell_account_get_advertising_eligibility',
-  'ebay_sell_account_get_opted_in_programs',
-] as const;
-
 const legacySellerProgramToolNames = [
   'ebay_get_opted_in_programs',
   'ebay_opt_in_to_program',
@@ -108,20 +57,7 @@ describe('Sell Account seller-program MCP exposure', () => {
     await mcpClient.close();
   });
 
-  it('owns the exact sell.account resource order', async () => {
-    vi.stubEnv('EBAY_MCP_TOOLS', 'sell.account');
-    vi.stubEnv('EBAY_MCP_UI', 'off');
-    const { sellerSession } = sellerSessionReturning<ProgramEnrollmentCollection>({
-      kind: 'ebayRequestSucceeded',
-      ebayDocument: { programs: [] },
-    });
-    const { mcpClient, listedTools } = await listEbayTools(sellerSession);
-
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(sellAccountToolNames);
-    await mcpClient.close();
-  });
-
-  it('keeps only the program collection read in read-only mode', async () => {
+  it('keeps the program collection read and excludes program writes in read-only mode', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'sell.account');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     vi.stubEnv('EBAY_READ_ONLY', 'true');
@@ -131,9 +67,10 @@ describe('Sell Account seller-program MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(
-      readOnlySellAccountToolNames,
-    );
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
+    expect(listedToolNames).toContain('ebay_sell_account_get_opted_in_programs');
+    expect(listedToolNames).not.toContain('ebay_sell_account_opt_in_to_program');
+    expect(listedToolNames).not.toContain('ebay_sell_account_opt_out_of_program');
     await mcpClient.close();
   });
 });

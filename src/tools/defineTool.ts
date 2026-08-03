@@ -112,10 +112,10 @@ function publicToolDefinition<Shape extends EffectBackedRawShape, Result>(
  * @example
  * ```ts
  * const entry = defineTool({
- *   name: 'ebay_get_sales_taxes',
- *   description: 'Retrieve seller sales taxes for one country',
- *   inputSchema: getSalesTaxesInputSchema.shape,
- *   handler: (api, args) => Effect.runPromise(api.account.getSalesTaxes(args)),
+ *   name: 'ebay_get_payments_program',
+ *   description: 'Retrieve deprecated payments-program status',
+ *   inputSchema: getPaymentsProgramInputSchema.shape,
+ *   handler: (api, args) => Effect.runPromise(api.account.getPaymentsProgram(args)),
  * });
  * ```
  */

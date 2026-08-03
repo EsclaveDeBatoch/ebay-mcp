@@ -1,27 +1,12 @@
 import { Effect } from 'effect';
-import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
-  bulkCreateOrReplaceSalesTaxInputSchema,
-  createOrReplaceSalesTaxInputSchema,
-  deleteSalesTaxInputSchema,
   getPaymentsProgramInputSchema,
   getPaymentsProgramOnboardingInputSchema,
-  getSalesTaxesInputSchema,
-  getSalesTaxesOutputSchema,
-  getSalesTaxInputSchema,
-  salesTaxSchema,
 } from '@/schemas/account-management/account.js';
 import { defineTool } from '@/tools/defineTool.js';
-import type { OutputArgs } from '@/tools/types.js';
 import type { ToolEntry } from '@/tools/registry.js';
 
-const emptyResponseSchema: OutputArgs = {
-  type: 'object',
-  properties: {},
-  description: 'Empty response on successful operation',
-};
-
-/** Legacy Account API tools for seller tax and deprecated payments-program status. */
+/** Legacy Account API tools for deprecated payments-program status. */
 export const accountEntries: ToolEntry[] = [
   defineTool({
     name: 'ebay_get_payments_program',
@@ -38,51 +23,5 @@ export const accountEntries: ToolEntry[] = [
     inputSchema: getPaymentsProgramOnboardingInputSchema.shape,
     annotations: { readOnlyHint: true },
     handler: (api, args) => Effect.runPromise(api.account.getPaymentsProgramOnboarding(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_or_replace_sales_tax',
-    description: 'Create or replace sales tax table for a jurisdiction',
-    inputSchema: createOrReplaceSalesTaxInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false, idempotentHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.createOrReplaceSalesTax(args)),
-  }),
-  defineTool({
-    name: 'ebay_bulk_create_or_replace_sales_tax',
-    description: 'Bulk create or replace sales tax tables',
-    inputSchema: bulkCreateOrReplaceSalesTaxInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false, idempotentHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.bulkCreateOrReplaceSalesTax(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_sales_tax',
-    description: 'Delete sales tax table for a jurisdiction',
-    inputSchema: deleteSalesTaxInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false, destructiveHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.deleteSalesTax(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_sales_tax',
-    description: 'Get sales tax table for a jurisdiction',
-    inputSchema: getSalesTaxInputSchema.shape,
-    outputSchema: zodToJsonSchema(salesTaxSchema, {
-      name: 'SalesTaxResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getSalesTax(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_sales_taxes',
-    description: 'Get all sales tax tables for a country',
-    inputSchema: getSalesTaxesInputSchema.shape,
-    outputSchema: zodToJsonSchema(getSalesTaxesOutputSchema, {
-      name: 'GetSalesTaxesResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getSalesTaxes(args)),
   }),
 ];

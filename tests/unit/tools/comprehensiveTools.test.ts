@@ -16,11 +16,6 @@ describe('Comprehensive Tools Coverage', () => {
       account: {
         getPaymentsProgram: vi.fn(),
         getPaymentsProgramOnboarding: vi.fn(),
-        createOrReplaceSalesTax: vi.fn(),
-        bulkCreateOrReplaceSalesTax: vi.fn(),
-        deleteSalesTax: vi.fn(),
-        getSalesTax: vi.fn(),
-        getSalesTaxes: vi.fn(),
       },
       inventory: {
         getInventoryItems: vi.fn(),
@@ -115,59 +110,6 @@ describe('Comprehensive Tools Coverage', () => {
       );
       await executeTool(mockApi, 'ebay_get_payments_program_onboarding', input);
       expect(mockApi.account.getPaymentsProgramOnboarding).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_or_replace_sales_tax', async () => {
-      const salesTaxBase = { salesTaxPercentage: '8.5' };
-      const input = {
-        countryCode: 'US',
-        jurisdictionId: 'CA',
-        salesTaxBase,
-      };
-      vi.mocked(mockApi.account.createOrReplaceSalesTax).mockReturnValue(Effect.succeed(undefined));
-      await executeTool(mockApi, 'ebay_create_or_replace_sales_tax', input);
-      expect(mockApi.account.createOrReplaceSalesTax).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_bulk_create_or_replace_sales_tax', async () => {
-      const requests = [
-        { countryCode: 'US', jurisdictionId: 'CA', salesTaxBase: { salesTaxPercentage: '8.25' } },
-      ];
-      const input = { requests };
-      vi.mocked(mockApi.account.bulkCreateOrReplaceSalesTax).mockReturnValue(
-        Effect.succeed(undefined),
-      );
-      await executeTool(mockApi, 'ebay_bulk_create_or_replace_sales_tax', input);
-      expect(mockApi.account.bulkCreateOrReplaceSalesTax).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_delete_sales_tax', async () => {
-      const input = {
-        countryCode: 'US',
-        jurisdictionId: 'CA',
-      };
-      vi.mocked(mockApi.account.deleteSalesTax).mockReturnValue(Effect.succeed(undefined));
-      await executeTool(mockApi, 'ebay_delete_sales_tax', input);
-      expect(mockApi.account.deleteSalesTax).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_sales_tax', async () => {
-      const mockResponse = { salesTaxPercentage: '8.5' };
-      const input = {
-        countryCode: 'US',
-        jurisdictionId: 'CA',
-      };
-      vi.mocked(mockApi.account.getSalesTax).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_sales_tax', input);
-      expect(mockApi.account.getSalesTax).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_sales_taxes', async () => {
-      const mockResponse = { salesTaxes: [] };
-      const input = { countryCode: 'US' };
-      vi.mocked(mockApi.account.getSalesTaxes).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_sales_taxes', input);
-      expect(mockApi.account.getSalesTaxes).toHaveBeenCalledWith(input);
     });
   });
 

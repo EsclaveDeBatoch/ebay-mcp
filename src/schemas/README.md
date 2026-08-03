@@ -6,7 +6,7 @@ This directory contains comprehensive Effect-backed schemas for eBay API endpoin
 
 ```
 src/schemas/
-├── account-management/    # Legacy Account tax and deprecated payments status
+├── account-management/    # Legacy deprecated payments status
 │   └── account.ts
 ├── inventory-management/  # Inventory items, offers, locations
 │   └── inventory.ts
@@ -44,13 +44,12 @@ The schemas in this directory serve multiple purposes:
 ### Basic Import
 
 ```typescript
-import { getAccountManagementJsonSchemas } from '@/schemas/account-management/account.js';
+import { getPaymentsProgramInputSchema } from '@/schemas/account-management/account.js';
 
-// Get all JSON schemas for a specific category
-const accountSchemas = getAccountManagementJsonSchemas();
-
-// Access specific schemas
-const salesTaxSchema = accountSchemas.salesTaxDetails;
+const paymentsProgramArguments = getPaymentsProgramInputSchema.parse({
+  marketplaceId: 'EBAY_US',
+  paymentsProgramType: 'EBAY_PAYMENTS',
+});
 ```
 
 ### Using Effect-Backed Schemas for Validation
@@ -97,16 +96,18 @@ const tool = {
 
 ### 1. Account Management (`account-management/account.ts`)
 
-Schemas for the legacy seller tax settings and deprecated payments-program operations.
+Schemas for the legacy deprecated payments-program operations.
 
 **Endpoints Covered:**
 
-- Sales Tax (jurisdiction-based tax rules)
 - Payments Program (deprecated status and onboarding operations)
 
 **Key Schemas:**
 
-- `salesTaxSchema` / `getSalesTaxesOutputSchema`
+- `getPaymentsProgramInputSchema` / `getPaymentsProgramOnboardingInputSchema`
+
+Migrated Sell Account resources own strict Zod schemas beside their operations. Sales-tax
+schemas live in [`src/ebay/sell/account/salesTax.ts`](../ebay/sell/account/salesTax.ts).
 
 ### 2. Inventory Management (`inventory-management/inventory.ts`)
 

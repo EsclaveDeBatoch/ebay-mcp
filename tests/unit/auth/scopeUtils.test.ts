@@ -263,6 +263,36 @@ describe('Scope Utils', () => {
       },
     );
 
+    it.each(['ebay_sell_account_get_sales_tax', 'ebay_sell_account_get_sales_taxes'])(
+      'returns either account scope for the hierarchical %s read',
+      (salesTaxReadToolName) => {
+        const salesTaxScopeRequirement = getRequiredScopesForTool(salesTaxReadToolName);
+
+        expect(salesTaxScopeRequirement).toEqual({
+          requiredScopes: [
+            'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+            'https://api.ebay.com/oauth/api_scope/sell.account',
+          ],
+          minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+          description: 'Requires read access to seller sales-tax entries',
+        });
+      },
+    );
+
+    it.each([
+      'ebay_sell_account_create_or_replace_sales_tax',
+      'ebay_sell_account_bulk_create_or_replace_sales_tax',
+      'ebay_sell_account_delete_sales_tax',
+    ])('returns the account write scope for the hierarchical %s tool', (salesTaxWriteToolName) => {
+      const salesTaxScopeRequirement = getRequiredScopesForTool(salesTaxWriteToolName);
+
+      expect(salesTaxScopeRequirement).toEqual({
+        requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+        description: 'Requires write access to seller sales-tax entries',
+      });
+    });
+
     it.each([
       'ebay_sell_analytics_get_traffic_report',
       'ebay_sell_analytics_find_seller_standards_profiles',

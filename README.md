@@ -87,8 +87,8 @@ Use this map when deciding which tool family to expose, or when asking an assist
 
 | Family | What it unlocks | Good first request |
 | --- | --- | --- |
-| `account` | Deprecated payments-program status and sales tax | "Show my eBay sales-tax settings." |
-| `sell.account` | Seller status, program enrollment, subscriptions, rate tables, advertising eligibility, and business policies | "Show my opted-in eBay seller programs." |
+| `account` | Deprecated payments-program status | "Show my deprecated eBay payments-program status." |
+| `sell.account` | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, and business policies | "Show my eBay sales-tax settings." |
 | `inventory` | Inventory items, offers, inventory locations, item groups, bulk offer flows, and SKU/location mapping | "List my active inventory items and their available quantity." |
 | `sell.fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
 | `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
@@ -306,8 +306,8 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 | Category | What you can do |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
-| [Account](src/tools/categories/account.ts) | Deprecated payments-program status; sales tax |
-| [Sell Account](src/ebay/sell/account/) | Seller status, program enrollment, subscriptions, rate tables, advertising eligibility, and business policies under `sell.account` |
+| [Account](src/tools/categories/account.ts) | Deprecated payments-program status |
+| [Sell Account](src/ebay/sell/account/) | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, and business policies under `sell.account` |
 | [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping |
 | [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |

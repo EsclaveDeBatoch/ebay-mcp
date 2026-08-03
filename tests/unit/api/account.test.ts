@@ -7,8 +7,6 @@ import type { components } from '@/generated/ebay/sell-apps/account-management/s
 
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
 type PaymentsProgramOnboardingResponse = components['schemas']['PaymentsProgramOnboardingResponse'];
-type SalesTax = components['schemas']['SalesTax'];
-type SalesTaxes = components['schemas']['SalesTaxes'];
 
 describe('AccountApi', () => {
   let accountApi: AccountApi;
@@ -70,76 +68,6 @@ describe('AccountApi', () => {
         '/sell/account/v1/payments_program/EBAY_US/EBAY_PAYMENTS/onboarding',
       );
       expect(result).toEqual(mockResponse);
-    });
-  });
-
-  describe('Sales Tax', () => {
-    it('gets all sales taxes for a country', async () => {
-      const mockResponse: SalesTaxes = {
-        salesTaxes: [
-          { countryCode: 'US', salesTaxJurisdictionId: 'CA', salesTaxPercentage: '8.25' },
-        ],
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(accountApi.getSalesTaxes({ countryCode: 'US' }));
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/sales_tax', {
-        country_code: 'US',
-      });
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('gets a specific sales tax table entry', async () => {
-      const mockSalesTax: SalesTax = {
-        countryCode: 'US',
-        salesTaxJurisdictionId: 'CA',
-        salesTaxPercentage: '8.25',
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockSalesTax);
-
-      const result = await Effect.runPromise(
-        accountApi.getSalesTax({ countryCode: 'US', jurisdictionId: 'CA' }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/sales_tax/US/CA');
-      expect(result).toEqual(mockSalesTax);
-    });
-
-    it('creates, bulk creates, and deletes sales tax entries', async () => {
-      const salesTaxBase = {
-        salesTaxPercentage: '8.25',
-        shippingAndHandlingTaxed: false,
-      };
-      const requests = [
-        { countryCode: 'US', jurisdictionId: 'CA', salesTaxBase },
-        { countryCode: 'US', jurisdictionId: 'NY', salesTaxBase: { salesTaxPercentage: '4.0' } },
-      ];
-
-      vi.spyOn(mockClient, 'put').mockResolvedValue(undefined);
-      vi.spyOn(mockClient, 'post').mockResolvedValue(undefined);
-      vi.spyOn(mockClient, 'delete').mockResolvedValue(undefined);
-
-      await Effect.runPromise(
-        accountApi.createOrReplaceSalesTax({
-          countryCode: 'US',
-          jurisdictionId: 'CA',
-          salesTaxBase,
-        }),
-      );
-      await Effect.runPromise(accountApi.bulkCreateOrReplaceSalesTax({ requests }));
-      await Effect.runPromise(
-        accountApi.deleteSalesTax({ countryCode: 'US', jurisdictionId: 'CA' }),
-      );
-
-      expect(mockClient.put).toHaveBeenCalledWith('/sell/account/v1/sales_tax/US/CA', salesTaxBase);
-      expect(mockClient.post).toHaveBeenCalledWith(
-        '/sell/account/v1/bulk_create_or_replace_sales_tax',
-        { requests },
-      );
-      expect(mockClient.delete).toHaveBeenCalledWith('/sell/account/v1/sales_tax/US/CA');
     });
   });
 });

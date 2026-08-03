@@ -436,6 +436,39 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires write access to seller program enrollment',
     },
 
+    // Sell Account sales-tax tools
+    ebay_sell_account_get_sales_tax: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller sales-tax entries',
+    },
+    ebay_sell_account_get_sales_taxes: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller sales-tax entries',
+    },
+    ebay_sell_account_create_or_replace_sales_tax: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller sales-tax entries',
+    },
+    ebay_sell_account_bulk_create_or_replace_sales_tax: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller sales-tax entries',
+    },
+    ebay_sell_account_delete_sales_tax: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller sales-tax entries',
+    },
+
     // Marketing Tools
     ebay_get_campaigns: {
       requiredScopes: [

@@ -43,14 +43,6 @@ export const amountSchema = z
   })
   .passthrough();
 
-/** Sales tax base payload used for account tax configuration. */
-export const salesTaxBaseSchema = z
-  .object({
-    salesTaxPercentage: z.string(),
-    shippingAndHandlingTaxed: z.boolean().optional(),
-  })
-  .passthrough();
-
 // ============================================================================
 // Inventory Management Schemas
 // ============================================================================
@@ -532,21 +524,6 @@ export const bulkMigrateRequestSchema = z
       z
         .object({
           listingId: z.string(),
-        })
-        .passthrough(),
-    ),
-  })
-  .passthrough();
-
-/** Bulk sales tax request payload for account tax updates. */
-export const bulkSalesTaxRequestSchema = z
-  .object({
-    requests: z.array(
-      z
-        .object({
-          countryCode: z.string(),
-          jurisdictionId: z.string(),
-          salesTaxBase: salesTaxBaseSchema,
         })
         .passthrough(),
     ),
