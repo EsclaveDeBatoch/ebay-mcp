@@ -41,20 +41,6 @@ export interface CreateOrReplaceProductCompatibilityInput {
   readonly body: ProductCompatibility;
 }
 
-/** Input accepted by inventory item group ID endpoints. */
-export interface InventoryItemGroupKeyInput {
-  /** Seller-defined inventory item group key. */
-  readonly inventoryItemGroupKey: string;
-}
-
-/** Input accepted by createOrReplaceInventoryItemGroup. */
-export interface CreateOrReplaceInventoryItemGroupInput {
-  /** Seller-defined inventory item group key. */
-  readonly inventoryItemGroupKey: string;
-  /** Generated InventoryItemGroup body. */
-  readonly body: InventoryItemGroup;
-}
-
 /** Input accepted by bulk inventory item endpoints. */
 export interface BulkInventoryItemInput {
   /** Generated bulk inventory item body. */
@@ -184,20 +170,6 @@ export type ProductCompatibility = components['schemas']['Compatibility'];
  * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/product_compatibility/methods/deleteProductCompatibility
  */
 export type DeleteProductCompatibilityResponse = void;
-
-/**
- * Generated inventory item group body and response.
- *
- * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item_group/methods/getInventoryItemGroup
- */
-export type InventoryItemGroup = components['schemas']['InventoryItemGroup'];
-
-/**
- * No-content response returned by deleteInventoryItemGroup.
- *
- * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item_group/methods/deleteInventoryItemGroup
- */
-export type DeleteInventoryItemGroupResponse = void;
 
 /**
  * Request body accepted by bulkMigrateListing.
@@ -549,116 +521,6 @@ export const createInventoryItemsMethods = (client: EbayApiClient) => ({
       return yield* requestDeleteEffect<DeleteProductCompatibilityResponse>(
         client,
         `${basePath}/inventory_item/${sku}/product_compatibility`,
-      );
-    });
-  },
-
-  /**
-   * Retrieves one inventory item group.
-   *
-   * @param input - Seller-defined inventory item group key.
-   * @returns An Effect that succeeds with eBay's InventoryItemGroup response.
-   *
-   * @example
-   * ```ts
-   * const group = await Effect.runPromise(
-   *   inventoryApi.getInventoryItemGroup({ inventoryItemGroupKey: 'GROUP-1' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item_group/methods/getInventoryItemGroup
-   */
-  getInventoryItemGroup: (
-    input: InventoryItemGroupKeyInput,
-  ): Effect.Effect<InventoryItemGroup, EbayApiError | EndpointInputError> => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<InventoryItemGroupKeyInput>(input, 'input');
-      const inventoryItemGroupKey = yield* requireStringEffect(
-        validatedInput.inventoryItemGroupKey,
-        'inventoryItemGroupKey',
-      );
-
-      return yield* requestGetEffect<InventoryItemGroup>(
-        client,
-        `${basePath}/inventory_item_group/${inventoryItemGroupKey}`,
-      );
-    });
-  },
-
-  /**
-   * Creates or replaces one inventory item group.
-   *
-   * @param input - Seller-defined inventory item group key and generated InventoryItemGroup body.
-   * @returns An Effect that succeeds with eBay's BaseResponse.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   inventoryApi.createOrReplaceInventoryItemGroup({
-   *     inventoryItemGroupKey: 'GROUP-1',
-   *     body: { variantSKUs: ['SKU-1'] },
-   *   }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item_group/methods/createOrReplaceInventoryItemGroup
-   */
-  createOrReplaceInventoryItemGroup: (
-    input: CreateOrReplaceInventoryItemGroupInput,
-  ): Effect.Effect<BaseResponse, EbayApiError | EndpointInputError> => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<CreateOrReplaceInventoryItemGroupInput>(
-        input,
-        'input',
-      );
-      const inventoryItemGroupKey = yield* requireStringEffect(
-        validatedInput.inventoryItemGroupKey,
-        'inventoryItemGroupKey',
-      );
-      const body = yield* requireObjectEffect<InventoryItemGroup>(validatedInput.body, 'body');
-
-      return yield* requestPutEffect<BaseResponse>(
-        client,
-        `${basePath}/inventory_item_group/${inventoryItemGroupKey}`,
-        body,
-      );
-    });
-  },
-
-  /**
-   * Deletes one inventory item group.
-   *
-   * @param input - Seller-defined inventory item group key.
-   * @returns An Effect that succeeds when eBay returns no content.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   inventoryApi.deleteInventoryItemGroup({ inventoryItemGroupKey: 'GROUP-1' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item_group/methods/deleteInventoryItemGroup
-   */
-  deleteInventoryItemGroup: (
-    input: InventoryItemGroupKeyInput,
-  ): Effect.Effect<DeleteInventoryItemGroupResponse, EbayApiError | EndpointInputError> => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<InventoryItemGroupKeyInput>(input, 'input');
-      const inventoryItemGroupKey = yield* requireStringEffect(
-        validatedInput.inventoryItemGroupKey,
-        'inventoryItemGroupKey',
-      );
-
-      return yield* requestDeleteEffect<DeleteInventoryItemGroupResponse>(
-        client,
-        `${basePath}/inventory_item_group/${inventoryItemGroupKey}`,
       );
     });
   },

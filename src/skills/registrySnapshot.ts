@@ -34,6 +34,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   'sell.edelivery':
     'International package creation, consolidation, shipping documents, and tracking for Greater-China sellers',
   'sell.fulfillment': 'Orders, shipping fulfillments, refunds, and payment disputes',
+  'sell.inventory': 'Seller-defined item groups from Sell Inventory',
   'sell.negotiation': 'Listings eligible for seller offers and seller-initiated discounted offers',
   'sell.recommendation':
     'Promoted Listings recommendations for active listings from Sell Recommendation',
@@ -58,6 +59,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
   { namespace: 'sell.edelivery', title: 'Sell eDelivery' },
   { namespace: 'sell.fulfillment', title: 'Sell Fulfillment' },
+  { namespace: 'sell.inventory', title: 'Sell Inventory' },
   { namespace: 'sell.metadata', title: 'Sell Metadata' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },

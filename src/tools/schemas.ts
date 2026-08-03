@@ -190,34 +190,6 @@ export const productCompatibilitySchema = z
   })
   .passthrough();
 
-/** Inventory item group payload used for variation groups. */
-export const inventoryItemGroupSchema = z
-  .object({
-    aspects: z.record(z.array(z.string())),
-    description: z.string().optional(),
-    imageUrls: z.array(z.string()).optional(),
-    inventoryItemGroupKey: z.string(),
-    subtitle: z.string().optional(),
-    title: z.string(),
-    variantSKUs: z.array(z.string()).optional(),
-    variesBy: z
-      .object({
-        specifications: z
-          .array(
-            z
-              .object({
-                name: z.string(),
-                values: z.array(z.string()),
-              })
-              .passthrough(),
-          )
-          .optional(),
-      })
-      .passthrough()
-      .optional(),
-  })
-  .passthrough();
-
 /** Inventory location payload for seller warehouse and pickup locations. */
 export const locationSchema = z
   .object({

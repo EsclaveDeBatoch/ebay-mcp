@@ -161,35 +161,6 @@ describe('InventoryApi', () => {
     });
   });
 
-  describe('inventory item groups', () => {
-    it('gets, writes, and deletes inventory item groups', async () => {
-      const body = {
-        inventoryItemGroupKey: 'GROUP-1',
-        title: 'Test Group',
-        variantSKUs: ['SKU-1'],
-      };
-      vi.mocked(client.get).mockResolvedValue(body);
-      vi.mocked(client.put).mockResolvedValue({ warnings: [] });
-      vi.mocked(client.delete).mockResolvedValue(undefined);
-
-      await Effect.runPromise(api.getInventoryItemGroup({ inventoryItemGroupKey: 'GROUP-1' }));
-      await Effect.runPromise(
-        api.createOrReplaceInventoryItemGroup({
-          inventoryItemGroupKey: 'GROUP-1',
-          body,
-        }),
-      );
-      await Effect.runPromise(api.deleteInventoryItemGroup({ inventoryItemGroupKey: 'GROUP-1' }));
-
-      expect(client.get).toHaveBeenCalledWith('/sell/inventory/v1/inventory_item_group/GROUP-1');
-      expect(client.put).toHaveBeenCalledWith(
-        '/sell/inventory/v1/inventory_item_group/GROUP-1',
-        body,
-      );
-      expect(client.delete).toHaveBeenCalledWith('/sell/inventory/v1/inventory_item_group/GROUP-1');
-    });
-  });
-
   describe('SKU location mappings', () => {
     it('gets, writes, and deletes SKU location mappings by generated operation names', async () => {
       const body = {

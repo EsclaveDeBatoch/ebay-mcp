@@ -127,6 +127,11 @@ import {
   getShippingFulfillmentsTool,
 } from '@/ebay/sell/fulfillment/shippingFulfillment.js';
 import {
+  createOrReplaceInventoryItemGroupTool,
+  deleteInventoryItemGroupTool,
+  getInventoryItemGroupTool,
+} from '@/ebay/sell/inventory/inventoryItemGroup.js';
+import {
   getCompatibilitiesBySpecificationTool,
   getCompatibilityPropertyNamesTool,
   getCompatibilityPropertyValuesTool,
@@ -288,6 +293,9 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getSalesTaxesTool,
   getPaymentsProgramTool,
   getPaymentsProgramOnboardingTool,
+  getInventoryItemGroupTool,
+  createOrReplaceInventoryItemGroupTool,
+  deleteInventoryItemGroupTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

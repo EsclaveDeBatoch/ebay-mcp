@@ -442,6 +442,11 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getpaymentsprogram: ['ebay_sell_account_get_payments_program'],
   getpaymentsprogramonboarding: ['ebay_sell_account_get_payments_program_onboarding'],
 
+  // Sell Inventory API
+  getinventoryitemgroup: ['ebay_sell_inventory_get_inventory_item_group'],
+  createorreplaceinventoryitemgroup: ['ebay_sell_inventory_create_or_replace_inventory_item_group'],
+  deleteinventoryitemgroup: ['ebay_sell_inventory_delete_inventory_item_group'],
+
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],
   getorder: ['ebay_sell_fulfillment_get_order'],

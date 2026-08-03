@@ -485,49 +485,6 @@ export const getProductCompatibilityOutputSchema = productCompatibilitySchema.ex
 });
 
 // ============================================================================
-// Inventory Item Group Schemas
-// ============================================================================
-
-const specificationSchema = z.object({
-  name: z.string(),
-  values: z.array(z.string()),
-});
-
-const variesBySchema = z.object({
-  specifications: z.array(specificationSchema).optional(),
-  aspectsImageVariesBy: z.array(z.string()).optional(),
-});
-
-/**
- * Validates the Inventory Management API inventory item group model.
- */
-export const inventoryItemGroupSchema = z.object({
-  aspects: z.record(z.array(z.string())),
-  description: z.string().optional(),
-  imageUrls: z.array(z.string()).optional(),
-  inventoryItemGroupKey: z.string(),
-  subtitle: z.string().optional(),
-  title: z.string(),
-  variantSKUs: z.array(z.string()).optional(),
-  variesBy: variesBySchema.optional(),
-  videoIds: z.array(z.string()).optional(),
-});
-
-/**
- * Validates the Inventory Management API get inventory item group request payload.
- */
-export const getInventoryItemGroupInputSchema = z.object({
-  inventoryItemGroupKey: z.string().describe('The unique identifier for the inventory item group'),
-});
-
-/**
- * Validates the Inventory Management API get inventory item group response payload.
- */
-export const getInventoryItemGroupOutputSchema = inventoryItemGroupSchema.extend({
-  warnings: z.array(errorSchema).optional(),
-});
-
-// ============================================================================
 // Bulk Operation Schemas
 // ============================================================================
 
@@ -681,17 +638,6 @@ export const getInventoryManagementJsonSchemas = () => {
       getProductCompatibilityOutputSchema,
       'getProductCompatibilityOutput',
     ),
-
-    // Inventory Item Groups
-    getInventoryItemGroupInput: zodToJsonSchema(
-      getInventoryItemGroupInputSchema,
-      'getInventoryItemGroupInput',
-    ),
-    getInventoryItemGroupOutput: zodToJsonSchema(
-      getInventoryItemGroupOutputSchema,
-      'getInventoryItemGroupOutput',
-    ),
-    inventoryItemGroup: zodToJsonSchema(inventoryItemGroupSchema, 'inventoryItemGroup'),
 
     // Bulk Operations
     bulkInventoryItemRequest: zodToJsonSchema(

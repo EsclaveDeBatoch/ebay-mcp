@@ -309,6 +309,37 @@ describe('Scope Utils', () => {
       });
     });
 
+    it('returns either inventory scope for the hierarchical item-group read', () => {
+      const inventoryItemGroupScopeRequirement = getRequiredScopesForTool(
+        'ebay_sell_inventory_get_inventory_item_group',
+      );
+
+      expect(inventoryItemGroupScopeRequirement).toEqual({
+        requiredScopes: [
+          'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+          'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        ],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        description: 'Requires read access to inventory item groups',
+      });
+    });
+
+    it.each([
+      'ebay_sell_inventory_create_or_replace_inventory_item_group',
+      'ebay_sell_inventory_delete_inventory_item_group',
+    ])(
+      'returns the inventory write scope for the hierarchical %s tool',
+      (inventoryWriteToolName) => {
+        const inventoryItemGroupScopeRequirement = getRequiredScopesForTool(inventoryWriteToolName);
+
+        expect(inventoryItemGroupScopeRequirement).toEqual({
+          requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+          minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+          description: 'Requires write access to inventory item groups',
+        });
+      },
+    );
+
     it.each([
       'ebay_sell_analytics_get_traffic_report',
       'ebay_sell_analytics_find_seller_standards_profiles',

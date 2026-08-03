@@ -24,9 +24,6 @@ describe('Comprehensive Tools Coverage', () => {
         getProductCompatibility: vi.fn(),
         createOrReplaceProductCompatibility: vi.fn(),
         deleteProductCompatibility: vi.fn(),
-        getInventoryItemGroup: vi.fn(),
-        createOrReplaceInventoryItemGroup: vi.fn(),
-        deleteInventoryItemGroup: vi.fn(),
         getInventoryLocations: vi.fn(),
         getInventoryLocation: vi.fn(),
         createInventoryLocation: vi.fn(),
@@ -177,45 +174,6 @@ describe('Comprehensive Tools Coverage', () => {
       );
       await executeTool(mockApi, 'ebay_delete_product_compatibility', input);
       expect(mockApi.inventory.deleteProductCompatibility).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_inventory_item_group', async () => {
-      const mockResponse = { inventoryItemGroupKey: 'GROUP123' };
-      const input = {
-        inventoryItemGroupKey: 'GROUP123',
-      };
-      vi.mocked(mockApi.inventory.getInventoryItemGroup).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_inventory_item_group', input);
-      expect(mockApi.inventory.getInventoryItemGroup).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_or_replace_inventory_item_group', async () => {
-      vi.mocked(mockApi.inventory.createOrReplaceInventoryItemGroup).mockReturnValue(
-        Effect.succeed({}),
-      );
-      const input = {
-        inventoryItemGroupKey: 'GROUP123',
-        body: {
-          inventoryItemGroupKey: 'GROUP123',
-          title: 'Test Group',
-          aspects: {},
-        },
-      };
-      await executeTool(mockApi, 'ebay_create_or_replace_inventory_item_group', input);
-      expect(mockApi.inventory.createOrReplaceInventoryItemGroup).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_delete_inventory_item_group', async () => {
-      const input = {
-        inventoryItemGroupKey: 'GROUP123',
-      };
-      vi.mocked(mockApi.inventory.deleteInventoryItemGroup).mockReturnValue(
-        Effect.succeed(undefined),
-      );
-      await executeTool(mockApi, 'ebay_delete_inventory_item_group', input);
-      expect(mockApi.inventory.deleteInventoryItemGroup).toHaveBeenCalledWith(input);
     });
 
     it('ebay_get_inventory_locations', async () => {

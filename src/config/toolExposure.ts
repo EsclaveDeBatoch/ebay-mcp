@@ -38,6 +38,7 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'sell.analytics',
   'sell.edelivery',
   'sell.fulfillment',
+  'sell.inventory',
   'sell.metadata',
   'sell.negotiation',
   'sell.recommendation',

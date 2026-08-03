@@ -23,7 +23,6 @@ import type {
   CreateOfferRequest,
   GetListingFeesRequest,
   InventoryItem,
-  InventoryItemGroup,
   LocationMapping,
   ProductCompatibility,
   PublishOfferByInventoryItemGroupRequest,
@@ -38,7 +37,6 @@ import {
   createInventoryItemOutputSchema,
   createInventoryLocationOutputSchema,
   createOfferOutputSchema,
-  getInventoryItemGroupOutputSchema,
   getInventoryItemOutputSchema,
   getInventoryItemsOutputSchema,
   getInventoryLocationsOutputSchema,
@@ -94,14 +92,6 @@ const bulkUpdatePriceQuantityInputSchema = z.object({
 
 const createOrReplaceProductCompatibilityInputSchema = skuInputSchema.extend({
   body: generatedBodySchema<ProductCompatibility>('Generated Compatibility request body'),
-});
-
-const inventoryItemGroupKeyInputSchema = z.object({
-  inventoryItemGroupKey: z.string().describe('The inventory item group key'),
-});
-
-const createOrReplaceInventoryItemGroupInputSchema = inventoryItemGroupKeyInputSchema.extend({
-  body: generatedBodySchema<InventoryItemGroup>('Generated InventoryItemGroup request body'),
 });
 
 const merchantLocationKeyInputSchema = z.object({
@@ -306,34 +296,6 @@ export const inventoryEntries: ToolEntry[] = [
     inputSchema: skuInputSchema.shape,
     outputSchema: emptyOutputSchema,
     handler: (api, args) => Effect.runPromise(api.inventory.deleteProductCompatibility(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_inventory_item_group',
-    description: 'Get an inventory item group (variation group)',
-    inputSchema: inventoryItemGroupKeyInputSchema.shape,
-    outputSchema: zodToJsonSchema(getInventoryItemGroupOutputSchema, {
-      name: 'GetInventoryItemGroupResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.getInventoryItemGroup(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_or_replace_inventory_item_group',
-    description: 'Create or replace an inventory item group',
-    inputSchema: createOrReplaceInventoryItemGroupInputSchema.shape,
-    outputSchema: zodToJsonSchema(createInventoryItemOutputSchema, {
-      name: 'CreateInventoryItemGroupResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) =>
-      Effect.runPromise(api.inventory.createOrReplaceInventoryItemGroup(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_inventory_item_group',
-    description: 'Delete an inventory item group',
-    inputSchema: inventoryItemGroupKeyInputSchema.shape,
-    outputSchema: emptyOutputSchema,
-    handler: (api, args) => Effect.runPromise(api.inventory.deleteInventoryItemGroup(args)),
   }),
   defineTool({
     name: 'ebay_get_inventory_locations',
