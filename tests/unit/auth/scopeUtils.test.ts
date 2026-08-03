@@ -257,6 +257,30 @@ describe('Scope Utils', () => {
       );
     });
 
+    it.each([
+      'ebay_commerce_taxonomy_get_default_category_tree_id',
+      'ebay_commerce_taxonomy_get_category_tree',
+      'ebay_commerce_taxonomy_get_category_suggestions',
+    ])('returns the public API scope for %s', (taxonomyLookupToolName) => {
+      const requirement = getRequiredScopesForTool(taxonomyLookupToolName);
+
+      expect(requirement?.requiredScopes).toEqual(['https://api.ebay.com/oauth/api_scope']);
+      expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope');
+    });
+
+    it('returns the metadata insights scope for category aspects', () => {
+      const requirement = getRequiredScopesForTool(
+        'ebay_commerce_taxonomy_get_item_aspects_for_category',
+      );
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/metadata.insights',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/metadata.insights',
+      );
+    });
+
     it('returns the readonly inventory scope for eligible seller-offer listings', () => {
       const requirement = getRequiredScopesForTool('ebay_sell_negotiation_find_eligible_items');
 

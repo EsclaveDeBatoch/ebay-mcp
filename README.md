@@ -96,11 +96,12 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `commerce.identity` | Authenticated eBay account profile information | "Show my authenticated eBay account profile." |
 | `commerce.message` | Buyer-seller conversation lookup and messaging | "Send this update to the buyer." |
 | `commerce.notification` | Alert configuration, delivery destinations, topics, subscriptions, filters, and validation keys | "Show my notification subscriptions." |
+| `commerce.taxonomy` | Category trees, category suggestions, and required listing aspects | "Find required item aspects for this category." |
 | `commerce.translation` | Listing-title and description translation between supported languages | "Translate this listing title from English to Spanish." |
 | `sell.analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
 | `sell.negotiation` | Listings eligible for seller offers and seller-initiated discounted offers | "Find listings with interested buyers." |
 | `sell.recommendation` | Promoted Listings recommendations for active listings | "Which active listings should I promote?" |
-| `metadata` / `taxonomy` | Category trees, aspects, item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Find required item aspects for this category." |
+| `metadata` | Item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Show the listing policies for this marketplace." |
 | `other` | VeRO and international shipping support APIs (Compliance tools remain but report eBay's 2026-03-30 decommission) | "Show the available VeRO reason codes." |
 | `developer` / `token-management` | Rate limits, signing keys, OAuth URLs, token refresh, and diagnostics | "Check my eBay API rate limits." |
 | `trading` | Legacy XML fixed-price listing create, revise, relist, and end operations | "Create a fixed-price listing draft from this SKU." |
@@ -262,7 +263,7 @@ By default all tools are advertised to the agent at once. On a long conversation
 | `dynamic`                   | Only three discovery tools are visible (`list_ebay_tools`, `enable_ebay_tools`, `disable_ebay_tools`). The agent searches the catalogue and loads only the tools it needs; they then appear natively. | hosts that honor `tools/listChanged` (e.g. Claude) |
 | `sell.analytics,inventory,…` | Registers **only** the named exposure paths (listed below), frozen for the session.                                                                    | every host (incl. ChatGPT, Cursor)      |
 
-The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.translation`, `sell.analytics`, `sell.negotiation`, and `sell.recommendation`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `metadata`, `taxonomy`, `browse`, `other`, `developer`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.translation`, `sell.analytics`, `sell.negotiation`, `sell.recommendation`.
+The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `sell.analytics`, `sell.negotiation`, and `sell.recommendation`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `metadata`, `browse`, `other`, `developer`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `sell.analytics`, `sell.negotiation`, `sell.recommendation`.
 
 ### Authentication & rate limits
 
@@ -309,12 +310,12 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | [Commerce Identity](src/ebay/commerce/identity/user.ts) | Authenticated eBay account profiles under `commerce.identity` |
 | [Commerce Message](src/ebay/commerce/message/) | Buyer-seller conversation lookup and messaging under `commerce.message` |
 | [Commerce Notification](src/ebay/commerce/notification/) | Alert configuration, delivery destinations, topics, subscriptions, filters, and validation keys under `commerce.notification` |
+| [Commerce Taxonomy](src/ebay/commerce/taxonomy/categoryTree.ts) | Category trees, suggestions, and required listing aspects under `commerce.taxonomy` |
 | [Commerce Translation](src/ebay/commerce/translation/language.ts) | Listing-title and description translation under `commerce.translation` |
 | [Sell Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic reports, seller standards, and customer-service metrics under `sell.analytics` |
 | [Sell Negotiation](src/ebay/sell/negotiation/offer.ts) | Eligible listings and seller-initiated discounted offers under `sell.negotiation` |
 | [Sell Recommendation](src/ebay/sell/recommendation/listingRecommendation.ts) | Promoted Listings recommendations under `sell.recommendation` |
 | [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
-| [Taxonomy](src/tools/categories/taxonomy.ts) | Category trees, item aspects, item conditions |
 | [Other](src/tools/categories/other.ts) | VeRO and international shipping support APIs (Compliance tools report eBay decommission) |
 | [Trading (legacy XML)](src/tools/categories/trading.ts) | Fixed-price listing create, revise, relist, end |
 | [Developer](src/tools/categories/developer.ts) | Rate limits, signing keys, client registration |

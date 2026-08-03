@@ -15,6 +15,7 @@ describe('toolExposure', () => {
         'commerce.identity',
         'commerce.message',
         'commerce.notification',
+        'commerce.taxonomy',
         'commerce.translation',
         'sell.analytics',
         'sell.negotiation',

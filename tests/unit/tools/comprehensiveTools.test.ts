@@ -140,12 +140,6 @@ describe('Comprehensive Tools Coverage', () => {
         getProductCompatibilities: vi.fn(),
         getSalesTaxJurisdictions: vi.fn(),
       },
-      taxonomy: {
-        getDefaultCategoryTreeId: vi.fn(),
-        getCategoryTree: vi.fn(),
-        getCategorySuggestions: vi.fn(),
-        getItemAspectsForCategory: vi.fn(),
-      },
       compliance: {
         getListingViolations: vi.fn(),
         getListingViolationsSummary: vi.fn(),
@@ -1339,60 +1333,6 @@ describe('Comprehensive Tools Coverage', () => {
       });
       expect(mockApi.metadata.getSalesTaxJurisdictions).toHaveBeenCalledWith({
         countryCode: 'US',
-      });
-    });
-  });
-
-  describe('Taxonomy Tools', () => {
-    it('ebay_get_default_category_tree_id', async () => {
-      const mockResponse = { categoryTreeId: '0' };
-      vi.mocked(mockApi.taxonomy.getDefaultCategoryTreeId).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_default_category_tree_id', {
-        marketplaceId: 'EBAY_US',
-      });
-      expect(mockApi.taxonomy.getDefaultCategoryTreeId).toHaveBeenCalledWith({
-        marketplaceId: 'EBAY_US',
-      });
-    });
-
-    it('ebay_get_category_tree', async () => {
-      const mockResponse = { rootCategoryNode: {} };
-      vi.mocked(mockApi.taxonomy.getCategoryTree).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_category_tree', {
-        categoryTreeId: '0',
-      });
-      expect(mockApi.taxonomy.getCategoryTree).toHaveBeenCalledWith({ categoryTreeId: '0' });
-    });
-
-    it('ebay_get_category_suggestions', async () => {
-      const mockResponse = { categorySuggestions: [] };
-      vi.mocked(mockApi.taxonomy.getCategorySuggestions).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_category_suggestions', {
-        categoryTreeId: '0',
-        query: 'iPhone',
-      });
-      expect(mockApi.taxonomy.getCategorySuggestions).toHaveBeenCalledWith({
-        categoryTreeId: '0',
-        query: 'iPhone',
-      });
-    });
-
-    it('ebay_get_item_aspects_for_category', async () => {
-      const mockResponse = { aspects: [] };
-      vi.mocked(mockApi.taxonomy.getItemAspectsForCategory).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_item_aspects_for_category', {
-        categoryTreeId: '0',
-        categoryId: '123',
-      });
-      expect(mockApi.taxonomy.getItemAspectsForCategory).toHaveBeenCalledWith({
-        categoryTreeId: '0',
-        categoryId: '123',
       });
     });
   });

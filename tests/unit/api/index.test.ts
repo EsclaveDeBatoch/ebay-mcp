@@ -62,7 +62,6 @@ describe('EbaySellerApi', () => {
       expect(api.dispute).toBeDefined();
       expect(api.marketing).toBeDefined();
       expect(api.metadata).toBeDefined();
-      expect(api.taxonomy).toBeDefined();
       expect(api.compliance).toBeDefined();
       expect(api.vero).toBeDefined();
       expect(api.edelivery).toBeDefined();

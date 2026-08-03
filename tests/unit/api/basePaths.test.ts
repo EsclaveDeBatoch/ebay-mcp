@@ -72,11 +72,6 @@ const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
     spec: 'specs/ebay/sell-apps/listing-metadata/sell_metadata_v1_oas3.json',
   },
   {
-    file: 'src/api/listing-metadata/taxonomy.ts',
-    constant: 'basePath',
-    spec: 'specs/ebay/sell-apps/listing-metadata/commerce_taxonomy_v1_oas3.json',
-  },
-  {
     file: 'src/api/marketing-and-promotions/shared.ts',
     constant: 'MARKETING_BASE_PATH',
     spec: 'specs/ebay/sell-apps/marketing-and-promotions/sell_marketing_v1_oas3.json',

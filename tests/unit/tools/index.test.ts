@@ -185,13 +185,6 @@ describe('Tools Layer', () => {
         getProductCompatibilities: vi.fn(),
         getSalesTaxJurisdictions: vi.fn(),
       },
-      // Taxonomy API
-      taxonomy: {
-        getDefaultCategoryTreeId: vi.fn(),
-        getCategoryTree: vi.fn(),
-        getCategorySuggestions: vi.fn(),
-        getItemAspectsForCategory: vi.fn(),
-      },
       // Other APIs
       compliance: {
         getListingViolations: vi.fn(),
@@ -278,7 +271,6 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_orders'); // fulfillmentTools
       expect(toolNames).toContain('ebay_get_campaigns');
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
-      expect(toolNames).toContain('ebay_get_category_tree'); // taxonomyTools
       expect(toolNames).toContain('ebay_get_vero_reason_codes'); // otherApiTools
     });
   });
@@ -860,42 +852,6 @@ describe('Tools Layer', () => {
       await executeTool(mockApi, 'ebay_clone_campaign', input);
 
       expect(mockApi.marketing.cloneCampaign).toHaveBeenCalledWith(input);
-    });
-  });
-
-  describe('executeTool - Taxonomy', () => {
-    it('get default category tree ID', async () => {
-      const mockResponse = { categoryTreeId: '0' };
-      vi.mocked(mockApi.taxonomy.getDefaultCategoryTreeId).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-
-      const result = await executeTool(mockApi, 'ebay_get_default_category_tree_id', {
-        marketplaceId: 'EBAY_US',
-      });
-
-      expect(mockApi.taxonomy.getDefaultCategoryTreeId).toHaveBeenCalledWith({
-        marketplaceId: 'EBAY_US',
-      });
-      expect(result).toBe(mockResponse);
-    });
-
-    it('get category suggestions', async () => {
-      const mockResponse = { categorySuggestions: [] };
-      vi.mocked(mockApi.taxonomy.getCategorySuggestions).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-
-      const result = await executeTool(mockApi, 'ebay_get_category_suggestions', {
-        categoryTreeId: '0',
-        query: 'iPhone',
-      });
-
-      expect(mockApi.taxonomy.getCategorySuggestions).toHaveBeenCalledWith({
-        categoryTreeId: '0',
-        query: 'iPhone',
-      });
-      expect(result).toBe(mockResponse);
     });
   });
 

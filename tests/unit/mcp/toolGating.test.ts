@@ -69,6 +69,16 @@ describe('toolNamesInExposurePaths', () => {
     expect([...names]).toEqual(['ebay_commerce_identity_get_user']);
   });
 
+  it('returns the complete migrated Commerce Taxonomy namespace under its official path', () => {
+    const names = toolNamesInExposurePaths(['commerce.taxonomy']);
+    expect([...names]).toEqual([
+      'ebay_commerce_taxonomy_get_default_category_tree_id',
+      'ebay_commerce_taxonomy_get_category_tree',
+      'ebay_commerce_taxonomy_get_category_suggestions',
+      'ebay_commerce_taxonomy_get_item_aspects_for_category',
+    ]);
+  });
+
   it('returns the migrated Commerce Message resources under their official path', () => {
     const names = toolNamesInExposurePaths(['commerce.message']);
     expect([...names]).toEqual([

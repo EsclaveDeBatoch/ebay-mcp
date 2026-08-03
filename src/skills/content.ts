@@ -48,7 +48,7 @@ export const buildUsingDoc = (snapshot: RegistrySnapshot): SkillDoc => ({
         '4. `ebay_publish_offer` (offerId) → a live `listingId`. Use `ebay_bulk_publish_offer` for many at once.',
         '',
         '**Pick the right category & required item specifics first.**',
-        '`ebay_get_default_category_tree_id` (marketplace) → `ebay_get_category_suggestions` (query) → `ebay_get_item_aspects_for_category` to learn the required aspects to put on the inventory item.',
+        '`ebay_commerce_taxonomy_get_default_category_tree_id` (marketplace) → `ebay_commerce_taxonomy_get_category_suggestions` (listing text) → `ebay_commerce_taxonomy_get_item_aspects_for_category` to learn the required aspects to put on the inventory item.',
         '',
         '**Fulfill an order.**',
         '`ebay_get_orders` (filter unfulfilled) → `ebay_get_order` (detail) → `ebay_create_shipping_fulfillment` (tracking number + carrier).',

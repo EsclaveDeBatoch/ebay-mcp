@@ -32,6 +32,12 @@ import {
   getSubscriptionFilterTool,
 } from '@/ebay/commerce/notification/subscriptionFilter.js';
 import { getTopicsTool, getTopicTool } from '@/ebay/commerce/notification/topic.js';
+import {
+  getCategorySuggestionsTool,
+  getCategoryTreeTool,
+  getDefaultCategoryTreeIdTool,
+  getItemAspectsForCategoryTool,
+} from '@/ebay/commerce/taxonomy/categoryTree.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
@@ -79,6 +85,10 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   deleteSubscriptionFilterTool,
   getTopicsTool,
   getTopicTool,
+  getDefaultCategoryTreeIdTool,
+  getCategoryTreeTool,
+  getCategorySuggestionsTool,
+  getItemAspectsForCategoryTool,
   getUserTool,
   translateListingTextTool,
   getTrafficReportTool,

@@ -16,8 +16,6 @@ src/schemas/
 │   └── marketing.ts
 ├── metadata/             # Marketplace policies, compatibility
 │   └── metadata.ts
-├── taxonomy/             # Categories, suggestions, aspects
-│   └── taxonomy.ts
 ├── other/                # Identity, compliance, VERO, translation, eDelivery
 │   └── otherApis.ts
 └── README.md             # This file
@@ -203,23 +201,7 @@ Schemas for marketplace policies and product compatibility.
 - `getProductCompatibilitiesOutputSchema`
 - `getSalesTaxJurisdictionsOutputSchema`
 
-### 6. Taxonomy (`taxonomy/taxonomy.ts`)
-
-Schemas for category navigation, suggestions, and product aspects.
-
-**Endpoints Covered (4 total):**
-
-- Category Tree (get category hierarchy)
-- Category Suggestions (find appropriate categories for items)
-- Item Aspects (get required/recommended aspects for categories)
-
-**Key Schemas:**
-
-- `getCategoryTreeOutputSchema`
-- `getCategorySuggestionsInputSchema` / `getCategorySuggestionsOutputSchema`
-- `getItemAspectsForCategoryOutputSchema`
-
-### 7. Other APIs (`other/otherApis.ts`)
+### 6. Other APIs (`other/otherApis.ts`)
 
 Legacy schemas for compliance, VERO, and international shipping.
 
@@ -340,22 +322,6 @@ describe('Inventory Schemas', () => {
 4. **Optional by Default**: Make fields optional unless they're truly required
 5. **Passthrough**: Use `.passthrough()` to allow additional properties from eBay
 6. **Enum Support**: Use native enums from `@/types/ebayEnums.js`
-
-## ✅ Completion Status
-
-All eBay API endpoints now have comprehensive Effect-backed schemas!
-
-- [x] **Account Management** - 21 endpoints ✅
-- [x] **Inventory Management** - 30 endpoints ✅
-- [x] **Communication** - legacy message and notification schemas ✅
-- [x] **Fulfillment** - 16 endpoints ✅
-- [x] **Marketing & Promotions** - 71 endpoints ✅
-- [x] **Metadata** - 23 endpoints ✅
-- [x] **Analytics** - 4 endpoints ✅
-- [x] **Taxonomy** - 4 endpoints ✅
-- [x] **Other APIs** - 40 endpoints ✅
-
-**Total: 220 eBay API endpoints with full input/output schemas**
 
 ## 🚧 Future Enhancements
 

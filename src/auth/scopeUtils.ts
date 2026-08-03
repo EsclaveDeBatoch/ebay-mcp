@@ -408,6 +408,28 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires write access to delete notification subscription filters',
     },
 
+    // Taxonomy Tools
+    ebay_commerce_taxonomy_get_default_category_tree_id: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve a marketplace category tree',
+    },
+    ebay_commerce_taxonomy_get_category_tree: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve category trees',
+    },
+    ebay_commerce_taxonomy_get_category_suggestions: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve category suggestions',
+    },
+    ebay_commerce_taxonomy_get_item_aspects_for_category: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/metadata.insights'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/metadata.insights',
+      description: 'Requires public API access plus metadata insight access',
+    },
+
     // Identity Tools
     ebay_commerce_identity_get_user: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.identity.readonly'],

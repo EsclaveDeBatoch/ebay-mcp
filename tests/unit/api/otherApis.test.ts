@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DisputeApi } from '@/api/order-management/dispute.js';
-import { TaxonomyApi } from '@/api/listing-metadata/taxonomy.js';
 import { ComplianceApi } from '@/api/other/compliance.js';
 import { VeroApi } from '@/api/other/vero.js';
 import { EDeliveryApi } from '@/api/other/edelivery.js';
@@ -72,117 +71,6 @@ describe('Other APIs', () => {
       expect(client.post).toHaveBeenCalledWith(
         '/sell/fulfillment/v1/payment_dispute/DISPUTE123/accept',
         { returnAddress: {} },
-      );
-    });
-  });
-
-  describe('TaxonomyApi', () => {
-    let api: TaxonomyApi;
-
-    beforeEach(() => {
-      api = new TaxonomyApi(client);
-    });
-
-    it('get default category tree ID', async () => {
-      const mockResponse = { categoryTreeId: '0' };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getDefaultCategoryTreeId({ marketplaceId: 'EBAY_US' }));
-
-      expect(client.get).toHaveBeenCalledWith(
-        '/commerce/taxonomy/v1/get_default_category_tree_id',
-        { marketplace_id: 'EBAY_US' },
-      );
-    });
-
-    it('fail when marketplaceId is missing', async () => {
-      const error = await Effect.runPromise(
-        Effect.flip(api.getDefaultCategoryTreeId({ marketplaceId: '' })),
-      );
-
-      expect(error._tag).toBe('EndpointInputError');
-      expect(error.message).toContain('marketplaceId is required');
-    });
-
-    it('get category tree', async () => {
-      const mockResponse = { rootCategoryNode: {} };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getCategoryTree({ categoryTreeId: '0' }));
-
-      expect(client.get).toHaveBeenCalledWith('/commerce/taxonomy/v1/category_tree/0');
-    });
-
-    it('get category suggestions', async () => {
-      const mockResponse = { categorySuggestions: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getCategorySuggestions({ categoryTreeId: '0', query: 'iPhone' }));
-
-      expect(client.get).toHaveBeenCalledWith(
-        '/commerce/taxonomy/v1/category_tree/0/get_category_suggestions',
-        { q: 'iPhone' },
-      );
-    });
-
-    it('get item aspects for category', async () => {
-      const mockResponse = { aspects: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(
-        api.getItemAspectsForCategory({ categoryTreeId: '0', categoryId: '123' }),
-      );
-
-      expect(client.get).toHaveBeenCalledWith(
-        '/commerce/taxonomy/v1/category_tree/0/get_item_aspects_for_category',
-        { category_id: '123' },
-      );
-    });
-
-    it('get category subtree', async () => {
-      const mockResponse = { categorySubtreeNode: {} };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getCategorySubtree({ categoryTreeId: '0', categoryId: '123' }));
-
-      expect(client.get).toHaveBeenCalledWith(
-        '/commerce/taxonomy/v1/category_tree/0/get_category_subtree',
-        { category_id: '123' },
-      );
-    });
-
-    it('get compatibility properties', async () => {
-      const mockResponse = { compatibilityProperties: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(
-        api.getCompatibilityProperties({ categoryTreeId: '0', categoryId: '123' }),
-      );
-
-      expect(client.get).toHaveBeenCalledWith(
-        '/commerce/taxonomy/v1/category_tree/0/get_compatibility_properties',
-        { category_id: '123' },
-      );
-    });
-
-    it('get compatibility property values', async () => {
-      const mockResponse = { compatibilityPropertyValues: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(
-        api.getCompatibilityPropertyValues({
-          categoryTreeId: '0',
-          categoryId: '123',
-          compatibilityProperty: 'Make',
-        }),
-      );
-
-      expect(client.get).toHaveBeenCalledWith(
-        '/commerce/taxonomy/v1/category_tree/0/get_compatibility_property_values',
-        {
-          category_id: '123',
-          compatibility_property: 'Make',
-        },
       );
     });
   });
