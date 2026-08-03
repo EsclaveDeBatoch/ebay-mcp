@@ -1,6 +1,6 @@
 # 0001 — Formatter & linter: Biome
 
-**Status:** Accepted · 2026-07-02
+**Status:** Accepted · 2026-07-02 · style-contract gate refreshed 2026-08-03
 
 ## Context
 
@@ -31,8 +31,10 @@ fresh clone had no formatter config at all. Prettier/ESLint are not used.
   out-of-scope UI code to `warn` — `suspicious/noArrayIndexKey` (React list keys
   in `ui/*.tsx`) and `suspicious/useIterableCallbackReturn`. Both remain visible
   and reversible once those sites are cleaned.
-- **CI command:** `pnpm run check:ci` → `biome ci .` (walks the tree per
-  `files.includes`; not the brace-glob that matched nothing).
+- **CI command:** `pnpm run check:ci` runs `biome ci .` and then
+  `npm run style:guide`. Biome walks the tree per `files.includes`; the second
+  command proves that `CODE-STYLE.md` and `code-style.rules.json` remain
+  byte-identical in rule order, assertions, and verification commands.
 
 ## Consequences
 

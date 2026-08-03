@@ -203,6 +203,15 @@ devSyncReport.json
 # Files already committed stay tracked; new files under docs/ are ignored.
 /docs/
 
+# ...except the downloaded OpenAPI specs, which are build inputs rather than docs:
+# `pnpm run sync` regenerates src/types/ from them, so a fresh clone cannot
+# reproduce the generated types unless they are committed. They already are (42
+# files predating the /docs/ rule), and without these negations every spec added
+# by a later sync is dropped silently — the same trap the .changeset/ rule hit.
+!/docs/sell-apps/
+!/docs/sell-apps/**
+!/docs/application-settings/
+!/docs/application-settings/**
 # Bun lock file (project uses pnpm)
 bun.lock
 
@@ -223,7 +232,9 @@ Taskfile.yml
 !/.github/
 !/.github/**
 !/biome.json
+!/code-style.rules.json
 !/tsconfig.base.json
+!/tsconfig.test.json
 !/ui/tsconfig.json
 !/ARCHITECTURE.md
 !/CODE-STYLE.md
@@ -231,6 +242,18 @@ Taskfile.yml
 !/LANGUAGE.md
 !/PROJECT.md
 
+# Approved architecture records created during the repository migration.
+# Keep the rest of docs/ ignored unless it already belongs to the repository.
+!/docs/
+/docs/*
+!/docs/adr/
+/docs/adr/*
+!/docs/adr/current/
+/docs/adr/current/*
+!/docs/adr/current/0007-promise-zod-resource-architecture.md
+!/docs/adr/current/0008-cli-command-surface-v2.md
+!/docs/adr/current/0009-dependency-baseline-2026.md
+!/docs/adr/current/0010-golden-resource-test-depth.md
 # Kiro CLI agent config (local)
 .kiro
 

@@ -41,7 +41,7 @@ const vitestConfig = defineConfig({
     },
     // Unit suite only. The hermetic integration suite runs via its own config —
     // `pnpm run test:integration` (vitest.integration.config.cts) and CI's test.yml.
-    include: ['tests/unit/**/*.test.ts'],
+    include: ['tests/unit/**/*.test.ts', 'scripts/dev/**/*.test.ts'],
     exclude: ['node_modules', 'build', 'dist', 'tests/integration/**'],
     testTimeout: 10_000,
     hookTimeout: 10_000,

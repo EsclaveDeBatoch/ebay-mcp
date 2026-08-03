@@ -1,67 +1,97 @@
 # CONTEXT.md
 
-Orientation for anyone (human or agent) landing in this repo. _What it is, who
-talks to it, and the shape data moves through_ — not a glossary (that's
-[LANGUAGE.md](LANGUAGE.md)) and not the file map (that's
-[ARCHITECTURE.md](ARCHITECTURE.md)).
+Orientation for humans and agents landing in this repository. Vocabulary lives in
+[LANGUAGE.md](LANGUAGE.md), the file map lives in [ARCHITECTURE.md](ARCHITECTURE.md), and
+authored-code decisions live in [CODE-STYLE.md](CODE-STYLE.md).
 
 ## What it is
 
-A **local [MCP](https://modelcontextprotocol.io) server** that exposes eBay's
-Sell APIs — 298 tools across ~270 endpoints — to AI assistants. It runs on the
-developer's machine (or a container), speaks the Model Context Protocol over
-**STDIO** (default) or **HTTP**, holds the eBay OAuth tokens, and turns each tool
-call into an authenticated eBay API request.
+`ebay-mcp` is a local [Model Context Protocol](https://modelcontextprotocol.io) server that
+exposes eBay selling operations to AI assistants. It runs on the operator's machine or in a
+user-controlled container, owns OAuth credentials, and speaks MCP over STDIO or HTTP.
 
-It is **not** a hosted service and **not** a UI app. The product is the tool
-surface and the auth/plumbing behind it.
-
-## Actors
-
-```
-┌────────────────────┐   MCP (stdio/http)   ┌──────────────────┐   HTTPS   ┌──────────────┐
-│  MCP host           │ ───────────────────► │  ebay-mcp server │ ────────► │  eBay APIs   │
-│  Claude / Cursor /  │ ◄─────────────────── │  (this repo)     │ ◄──────── │  Sell + Trading│
-│  Cline / agent      │     tool results     │                  │           └──────────────┘
-└────────────────────┘                       └──────────────────┘
-                                                     │
-                                              OAuth token store
-                                              (refresh-token flow)
+```text
+MCP host  ── MCP call ──>  ebay-mcp  ── authenticated HTTPS/XML ──>  eBay
+          <─ completion ─             <──── eBay document/failure ─
+                                           │
+                                      OAuth token store
 ```
 
-- **MCP host** — the agent runtime that discovers and calls tools.
-- **ebay-mcp server** — validates input (Zod), routes to the right eBay area,
-  authenticates, and normalises the response.
-- **eBay APIs** — the modern **Sell** REST APIs and the legacy **Trading** XML
-  API, depending on the area.
-- **OAuth** — user/app tokens obtained via `ebay-mcp setup`, refreshed
-  automatically; JWTs verified with `jose`.
+The server is not hosted and is not a general eBay storefront application. The MCP tool
+surface and its authentication/transport behavior are the product.
 
-## Shape — a tool call, end to end
+## Actors and trust boundaries
 
+- **MCP host:** discovers and calls tools on behalf of an agent.
+- **ebay-mcp:** validates each external document once, authorizes the caller, invokes one
+  eBay operation, and translates the operation completion at the MCP boundary.
+- **eBay:** owns official wire names and generated response documents across Sell REST,
+  Finding, and Trading XML APIs.
+- **OAuth:** obtains, stores, refreshes, and verifies the tokens used by an
+  `EbaySellerSession`.
+- **HTTP transport:** treats callers as untrusted and fails closed when authentication or
+  validation is incomplete.
+- **STDIO transport:** assumes the local process boundary is trusted but still validates
+  every MCP call.
+
+## Current shape
+
+The checked-in implementation is still layer-first:
+
+```text
+host call
+  -> src/tools registry and category handler
+  -> Effect-backed schema adapter
+  -> EbaySellerApi facade and area API class
+  -> REST or Trading transport
+  -> optional UI mapping
+  -> host
 ```
-host calls "account_getKyc"
-  → registry looks up the ToolEntry
-  → defineTool handler validates args against the Zod shape
-  → EbaySellerApi facade  (api.account.getKyc)
-  → area API class        (src/api/account-management/…)
-  → EbayApiClient (REST)  or  TradingApiClient (XML, fast-xml-parser)
-      wrapped in withApiError  → eBay
-  ← normalised result  → (optional) MCP-Apps view model  → host
+
+This is migration inventory, not the destination. Existing paths do not justify new
+facades, adapters, barrels, compatibility exports, or response schemas.
+
+## Approved operation shape
+
+Each migrated operation follows one visible path:
+
+```text
+host calls ebay_sell_analytics_get_traffic_report
+  -> src/mcp/ebayToolCatalogue.ts selects the named tool
+  -> defineTool validates one strict Zod arguments object and injects EbaySellerSession
+  -> src/ebay/sell/analytics/trafficReport.ts calls the eBay resource operation
+  -> focused HTTP transport returns EbayRequestCompletion<TrafficReport>
+  -> defineTool translates the completion once for MCP
+  -> src/ui/presentation/analytics.ts projects only when a browser view needs it
 ```
 
-Two cross-cutting concerns shape the surface:
+The resource module owns its strict inbound schema, generated eBay aliases, operation
+functions, and named MCP tool definitions. Generated response documents pass through
+unchanged.
 
-- **Tool gating** (`EBAY_MCP_TOOLS`): `all` exposes everything; `dynamic` exposes
-  discovery meta-tools that reveal families on demand (to keep an agent's context
-  small); a family list exposes just those. Applied in `src/mcp/runtime.ts`.
-- **Transports**: `src/index.ts` (STDIO) and `src/serverHttp.ts` (HTTP) wrap the
-  same runtime; **stdout is reserved for the protocol**, so all logs go to stderr.
+## Cross-cutting behavior
+
+- **Tool exposure:** the target vocabulary is eBay's official namespace and API path, such
+  as `sell.analytics`. Connector and local-auth tools remain explicit local exceptions.
+- **Transports:** STDIO and HTTP compose the same catalogue and operation behavior; only
+  their trust and framing concerns differ.
+- **Failures:** fallible eBay work returns an explicit discriminated completion. Endpoint
+  code does not throw into MCP handlers or hide failures behind generic wrappers.
+- **Logging:** one structured logger writes four severity levels to STDERR under one
+  `LOG_LEVEL` policy. Runtime file logging and Winston are migration removals.
+- **Configuration:** each process entry decodes environment variables once and passes typed
+  dependencies inward.
+
+## Migration invariant
+
+Move one official resource slice at a time, write both test layers first, directly import
+its named tools into the catalogue, then delete the final old callers and files. Never add
+a compatibility path to bridge the old and new structures.
 
 ## Where to look first
 
-- Using the server → [README.md](README.md)
-- Working on the code → [AGENTS.md](AGENTS.md) + [CODE-STYLE.md](CODE-STYLE.md)
-- The file map → [ARCHITECTURE.md](ARCHITECTURE.md)
-- Vocabulary → [LANGUAGE.md](LANGUAGE.md)
-- Why a decision was made → [docs/adr/current/](docs/adr/current/)
+- Install and operate the server: [README.md](README.md)
+- Change code: [AGENTS.md](AGENTS.md) and [CODE-STYLE.md](CODE-STYLE.md)
+- Understand the target tree: [ARCHITECTURE.md](ARCHITECTURE.md)
+- Use the shared vocabulary: [LANGUAGE.md](LANGUAGE.md)
+- Understand architectural decisions: [docs/adr/current/](docs/adr/current/)

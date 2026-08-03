@@ -1,6 +1,7 @@
 # 0005 — Codify the real layout; kill the fiction
 
-**Status:** Accepted · 2026-07-02 · `test-endpoints.ts` **deleted** (not deferred) — see [0006](0006-close-style-backlog.md)
+**Status:** Historical layout baseline · 2026-07-02; target topology superseded by
+[0007](0007-promise-zod-resource-architecture.md) · 2026-08-03
 
 ## Context
 

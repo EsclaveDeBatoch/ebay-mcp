@@ -1,613 +1,932 @@
 # CODE-STYLE.md
 
-The single source of truth for **how code is written** in this repo. Rules record
-the desired end-state. Where current code differs, treat the gap as migration
-work and close it in the same ownership slice.
+This file is the prescriptive source of truth for how code is written in `ebay-mcp`.
+The current tree is migrating toward this contract; existing code is evidence, not an
+exception or a compatibility requirement. The byte-identical machine index lives in
+[`code-style.rules.json`](code-style.rules.json).
 
-> Digest lives in [AGENTS.md](AGENTS.md#conventions); the full guide is here.
-> Library and CLI decisions live in [docs/adr/current/](docs/adr/current/).
+The migration must stay green. A target rule uses `judgment` until its existing violations
+are removed and a real detector is proven with a planted violation; it then moves to a
+blocking command in both this guide and the machine mirror.
 
-## Stack & Framework Practices
+## Stack & framework practices
 
-This repo is TypeScript/Node ESM, MCP SDK, Effect, a Zod compatibility adapter,
-Biome, Vitest, and a small MCP Apps React surface.
+- MCP server registration follows the official
+  [`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk)
+  documentation.
+- Runtime validation follows the official [Zod 4 documentation](https://zod.dev/).
+- Browser components follow React's official rules; this guide owns only repository-specific
+  decisions on top of them.
+- Biome owns formatting and lint; no Prettier or ESLint layer exists.
 
-- MCP tools/transports -> [Model Context Protocol](https://modelcontextprotocol.io)
-  and `@modelcontextprotocol/sdk`.
-- Effect programs/errors -> [Effect documentation](https://effect.website/docs).
-- eBay endpoint behavior -> each generated OpenAPI file plus the matching
-  official eBay endpoint URL.
+## How to read a rule
 
-This guide covers repo-specific rules on top of those sources.
+| Slot | Meaning |
+| --- | --- |
+| `[rule:...]` | Stable identifier shared with `code-style.rules.json` |
+| `verify` | Cheapest command that honestly proves the rule, or `judgment` |
+| `// ✓` | Target form for new and migrated code |
+| `// ✗` | Concrete off-path form |
 
 ## Rules
 
-### Function Form And Exports · [lint: style/noDefaultExport]
+### Public function form
+[rule:function.public-arrow] · verify: judgment
 
-Use exported `const` arrow functions for new/migrated exported functions. Keep
-named exports only. Existing API area classes may stay classes, but new endpoint
-methods should be public arrow properties so the method shape matches the
-exported-function style. Tool-loader config files may use `module.exports` only
-when the tool cannot load a named export; do not use default exports.
+New and migrated exported functions use named arrow constants, while private top-level helpers may use declarations when hoisting improves reading.
 
 ```ts
-// chosen
-export const buildEndpointParams = (...): QueryParams | undefined => { ... };
-public getCustomPolicies = (...): Effect.Effect<Response, EbayApiError> => { ... };
-module.exports = vitestConfig; // only in CommonJS loader configs
+// ✓ src/ebay/sell/analytics/trafficReport.ts
+export const getTrafficReport = async (
+  sellerSession: EbaySellerSession,
+  trafficReportQuery: TrafficReportQuery,
+) => sellerSession.get('/sell/analytics/v1/traffic_report', trafficReportQuery);
 
-// not this
-export function buildEndpointParams(...) { ... }
-export default logger;
+// ✗ mixed public forms
+export function getTrafficReport(trafficReportQuery: TrafficReportQuery) {}
+export default getTrafficReport;
 ```
 
-_Why:_ One visible declaration style for new code, while named exports keep
-imports discoverable.
+Why: Public symbols have one searchable identity without forcing arrows onto private helpers.
 
-### Effect At Fallible Boundaries · [taste]
+### Domain action names
+[rule:function.domain-name] · verify: judgment
 
-Fallible async work returns `Effect.Effect<Success, TaggedError, Requirements>`.
-Run it with `Effect.runPromise` only at external boundaries: MCP handlers, HTTP
-adapters, and CLI entrypoints. Do not add `try/catch` in endpoint or tool code.
+Repository-authored function names state the domain action and never begin with `build`, `to`, or `resolve`.
 
 ```ts
-// chosen
-return Effect.tryPromise({
-  try: () => this.client.get<Response>(path, params),
-  catch: (cause) => new EbayApiError({ method: 'GET', path, cause }),
-});
+// ✓ src/ebay/sell/inventory/offer.ts
+export const publishOffer = async (sellerSession: EbaySellerSession, offerId: string) => {};
 
-// not this
-try {
-  return await this.client.get<Response>(path, params);
-} catch (error) {
-  throw new Error(`Failed: ${getErrorMessage(error)}`);
-}
+// ✗ generic AI-style verbs
+const buildOfferRequest = () => {};
+const toOfferDocument = () => {};
+const resolveOfferPath = () => {};
 ```
 
-_Why:_ Failures stay typed and composable until the protocol/CLI boundary
-converts them.
+Why: A caller should know the product action without opening the function.
 
-### Tagged Errors · [taste]
+### React component contracts
+[rule:react.component-contract] · verify: judgment
 
-Use Effect tagged errors such as `Data.TaggedError('EbayApiError')`. Endpoint
-methods should return typed Effects; `runApiRequest` is only for Promise-shaped
-call sites that are being migrated in the same ownership slice.
+React components are named arrow constants with named readonly prop type aliases and never use `React.FC`.
 
-```ts
-// chosen
-export class EbayApiError extends Data.TaggedError('EbayApiError')<{
-  readonly method: 'GET';
-  readonly path: string;
-  readonly cause: unknown;
-}> {}
-
-// not this
-throw new Error(`Failed to get custom policies: ${getErrorMessage(error)}`);
-```
-
-_Why:_ Tests and callers should assert error tags, not fragile message strings.
-
-### Endpoint Docs · [taste]
-
-Every endpoint-backed API method has TSDoc with `@param`, `@returns`, a small
-`@example`, and `@see` linking to the official eBay endpoint URL from the OpenAPI
-operation. Exported shared utilities also document every parameter and return
-when they cross file boundaries.
-
-````ts
-// chosen
-/**
- * Builds query params from an endpoint-owned allow-list.
- *
- * @param params - Camel-case local parameter names mapped to eBay wire names and values.
- * @returns A query object for the request adapter, or undefined when every value is omitted.
- *
- * @example
- * ```ts
- * buildEndpointParams({ policyTypes: { wireName: 'policy_types', value } });
- * ```
- */
-export const buildEndpointParams = (...): QueryParams | undefined => { ... };
-
-// not this
-/** Build params. */
-export const buildEndpointParams = (...): QueryParams | undefined => { ... };
-````
-
-_Why:_ Endpoint code is documentation-heavy by design because every method
-mirrors a public eBay contract.
-
-### Generated Response Types And `@see` · [taste]
-
-Do not invent internal domain models for every endpoint. API methods return
-generated eBay DTOs. Public aliases/interfaces built from generated responses
-get a concise comment and `@see` to the official endpoint.
-
-```ts
-// chosen
-/**
- * Response returned by eBay Account API getCustomPolicies.
- *
- * @see https://developer.ebay.com/api-docs/sell/account/resources/custom_policy/methods/getCustomPolicies
- */
-export type GetCustomPoliciesResponse = components['schemas']['CustomPolicyResponse'];
-
-// not this
-export interface CustomPoliciesModel {
-  policies: PolicyRow[];
-}
-```
-
-_Why:_ The OpenAPI types are the contract; internal models are only for
-presentation boundaries.
-
-### Effect-Backed Schema Is The Tool Input SSOT · [taste]
-
-Endpoint/tool input schemas are authored through `@/utils/effectSchema.js`; that
-schema is the single source of truth. MCP tools derive `inputSchema` from
-`.shape`; `defineTool` decodes raw args through the attached Effect Schema before
-handlers run. Zod exists only as the MCP SDK / `zod-to-json-schema`
-compatibility carrier inside the adapter boundary. Do not import `zod` directly
-from endpoint, tool, API, or shared schema files. Runtime schema factories come
-from `@/utils/effectSchema.js`; schema inference/helper types come from
-`@/utils/effectSchemaTypes.js`. Do not add compatibility re-export facades or
-imported-as aliases just to preserve older import paths.
-
-```ts
-// chosen
-import { z } from '@/utils/effectSchema.js';
-
-export const getCustomPoliciesInputSchema = z.object({ policyTypes: z.string().optional() });
-inputSchema: getCustomPoliciesInputSchema.shape,
-handler: (api, args) => Effect.runPromise(api.account.getCustomPolicies(args)),
-
-// not this
-import { z } from 'zod';
-
-inputSchema: { policyTypes: z.string().optional() },
-handler: (api, args) => api.account.getCustomPolicies(args.policyTypes as string),
-```
-
-_Why:_ One schema prevents schema/handler drift while keeping fallible runtime
-decode on Effect.
-
-### Schema File Ownership · [taste]
-
-| Surface | Owns |
-| --- | --- |
-| `src/tools/schemas.ts` | Shared primitives reused across families |
-| `src/schemas/<family>/` | Endpoint/tool input (and optional response) schemas for that family |
-| `src/types/**` | Generated eBay DTOs — regenerate with `pnpm run sync`; never hand-edit |
-
-Do not add a third schema home. Family folder names need not match MCP keys
-one-to-one; see the map in [ARCHITECTURE.md](ARCHITECTURE.md#family-map-mcp-key--folders).
-
-### Unified Params Builder · [taste]
-
-Endpoint methods own the allowed keys and wire names, then pass them to one
-shared params builder. The builder omits undefined/empty values and returns the
-endpoint-specific params object. Do not hand-roll query strings or endpoint-local
-generic builders.
-
-```ts
-// chosen
-const params = buildEndpointParams({
-  policyTypes: { wireName: 'policy_types', value: input.policyTypes },
-});
-
-// not this
-const params = input.policyTypes ? { policy_types: input.policyTypes } : undefined;
-```
-
-_Why:_ Each endpoint shows its contract while omission/normalization stays
-consistent.
-
-### Request Adapter Boundary · [taste]
-
-Endpoint methods assemble only the endpoint path, body, and allowed params, then
-call the shared request adapter/client. The adapter owns HTTP execution, auth
-headers, logging, rate-limit metadata, JSON/XML parsing, and transport-error
-conversion.
-
-```ts
-// chosen
-const path = `${this.basePath}/custom_policy/`;
-return requestGetEffect<GetCustomPoliciesResponse>(this.client, path, params);
-
-// not this
-const response = await fetch(url);
-if (!response.ok) throw new Error(...);
-```
-
-_Why:_ Endpoint files should read as endpoint contracts, not HTTP plumbing.
-
-### Collection Operations · [taste]
-
-Use `Effect.forEach`, `Effect.all`, and `Effect.reduce` when callbacks can fail,
-touch I/O, or need concurrency. Keep pure table/view projections as `map`. Use
-loops when branching accumulation is clearer. Do not extract one-use row mappers
-that only hide object construction.
-
-```ts
-// chosen
-rows: orders.map((order, index) => ({
-  id: order.orderId ?? `order-${index}`,
-  cells: { orderId: order.orderId ?? null },
-})),
-
-// not this
-rows: orders.map(toOrderRow);
-```
-
-_Why:_ Presentation field choices should stay visible at the layer that owns the
-shape.
-
-### Mapping Fallbacks · [taste]
-
-Do not use semantic display fallbacks such as `?? 'unknown'` or `?? 'N/A'` in
-mapping code. Missing display data is `null` or an empty value rendered by the
-view. Technical fallback IDs are allowed only when they are not user-visible.
-
-```ts
-// chosen
-id: order.orderId ?? `order-${index}`,
-cells: { orderId: order.orderId ?? null },
-
-// not this
-cells: { buyer: order.buyer?.username ?? 'unknown' },
-```
-
-_Why:_ Invented values are data corruption in the UI.
-
-### Control Flow · [lint: style/noNestedTernary]
-
-Use explicit assembly and small domain-named helpers when repetition is real. Ban
-nested/duplicated ternaries and generic helper names like `joinDefined`.
-
-```ts
-// chosen
-const query = buildEndpointParams({ ... });
-if (!query) return undefined;
-
-// not this
-const label = a ? b : c ? d : e;
-```
-
-_Why:_ Endpoint and CLI code should be readable under pressure.
-
-### Types And Interfaces · [taste]
-
-Use interfaces for public object contracts, type aliases for
-unions/functions/brands/error payload-style shapes, and `readonly` on stable
-contracts. Public shared interfaces/types get a concise comment when source,
-side effect, or external reference matters.
-
-```ts
-// chosen
-/** One endpoint-owned query parameter allowed by the shared params builder. */
-export interface EndpointParamSpec {
-  /** Query-string key expected by eBay, usually snake_case from the OpenAPI spec. */
-  readonly wireName: string;
-  /** Already-typed local value; undefined and empty strings are omitted. */
-  readonly value: string | number | undefined;
-}
-
-// not this
-type Params = { wireName: string; value?: string | number };
-```
-
-_Why:_ Shared object contracts should be inspectable and stable.
-
-### Imports And Filenames · [lint: style/useFilenamingConvention]
-
-Use the `@/` alias for anything outside the current folder and `./sibling.js`
-only for same-directory imports. Keep NodeNext `.js` extensions. Hand-written
-source/test/UI file basenames must be camelCase. Do not use kebab-case or
-snake_case for hand-written file basenames. Generated files, upstream specs,
-external docs, and root convention files such as `CODE-STYLE.md` and `AGENTS.md`
-keep their upstream or conventional naming.
-
-```ts
-// chosen
-import { getCustomPoliciesInputSchema } from '@/schemas/account-management/account.js';
-import { helper } from './helper.js';
-
-// not this
-import { getCustomPoliciesInputSchema } from '../../schemas/account-management/account.js';
-```
-
-_Why:_ Imports and filenames should be predictable across `src`, tests, and UI.
-
-If a hand-written source/test/UI filename is introduced or found in kebab-case or
-snake_case, rename it in the same diff. This rule is about file basenames; domain
-folder slugs and user-facing enum values such as the `token-management` tool
-family key are data contracts, not filenames.
-
-### Module Boundaries · [taste]
-
-Shared modules must be dependency-light. `utils/`, `config/`, shared schemas, and
-generated types cannot import tool categories or API area modules.
-Feature-specific helpers stay beside the feature until reused by at least two
-real call sites.
-
-_Why:_ Shared code should not know feature wiring.
-
-### Config And Environment · [lint: style/noProcessEnv]
-
-All env reads go through `src/config/*` validated modules or top-level bootstrap
-scripts. Endpoint/API/tool code receives typed config values. Missing config
-becomes a typed Effect error when code is migrated.
-
-_Why:_ Env behavior should be validated once and testable.
-
-### Logging And Stdout · [lint: suspicious/noConsole]
-
-MCP STDIO mode never writes to stdout. Runtime modules use the shared logger to
-stderr/file transports. Human-facing CLI scripts may print prompts/results to
-stdout; reusable modules under `src/utils`, `src/api`, `src/tools`, `src/mcp`,
-and `src/auth` should not call `console.*` directly.
-
-_Why:_ stdout is the MCP protocol channel.
-
-### Tool And Handler Shape · [taste]
-
-Tools stay co-located with handlers via `defineTool` by default.
-Endpoint-backed handlers validate/brand args, run exactly one endpoint Effect
-program, and do no `try/catch`, mapping, or response reshaping except
-presentation-only UI maps. Protocol/helper tools that do not mirror an eBay
-endpoint (`search`, `fetch`, OAuth token helpers, and API status feed helpers)
-own their protocol response at that boundary; keep that shaping local, explicit,
-and backed by tagged Effect failures.
-
-Do not reintroduce a separate definitions/ vs handlers/ split. Tool types live
-in `src/tools/types.ts`; each family file under `src/tools/categories/` co-locates
-definition and handler via `defineTool`.
-
-_Why:_ Registry entries should make the tool-to-endpoint link obvious.
-
-### UI Boundary · [taste]
-
-React entry files stay tiny archetype apps that render `ViewModel` shapes. eBay
-DTO projection lives in `src/tools/ui/maps.ts` as the presentation boundary, with
-inline object construction and no one-use row-builder helpers. Keep state local
-to each archetype unless two views genuinely share it.
-
-_Why:_ The UI layer owns only presentation, not API normalization.
-
-### React Component Contracts · [taste]
-
-Use function components returning `ReactNode`. Export reusable shared components
-by name. Private tiny props can be inline; exported components get a named
-interface with meaningful one-line member comments when the contract is not
-obvious.
-
-_Why:_ MCP Apps code must stay type-checkable across the server/UI boundary.
-
-### Tests · [taste]
-
-Use behavior names without `should` where practical. Keep unit tests under
-`tests/unit/<area>` and integration tests under `tests/integration`. Prefer
-focused inline fixtures for small DTOs; extract helpers only when they remove
-real duplication across tests.
-
-_Why:_ Test names should read as behavior, not implementation instructions.
-
-### Effect Tests · [taste]
-
-Run successful Effects with `Effect.runPromise(program)` at the test boundary.
-Expected failures assert typed tagged errors, not message-only `toThrow`, except
-Promise boundary adapters that intentionally convert an Effect failure into a
-thrown protocol/CLI error. HTTP/request tests assert endpoint path, method,
-params/body, and error tag.
-
-_Why:_ Tests should lock the contract, not prose.
-
-### File And Module Size · [lint: complexity/noExcessiveLinesPerFunction]
-
-Split by purpose. Keep Biome size caps as warnings, not blind split triggers.
-Split when a file has multiple jobs, not because endpoint docs, schemas, or
-generated declarations are long.
-
-_Why:_ Locality beats shallow files.
-
-### Formatting And Package Management · [lint: formatter]
-
-Biome owns formatting: 2 spaces, single quotes, semicolons, trailing commas, 100
-columns. Use `pnpm` for installs and lockfile changes. `npm run ...` remains
-acceptable for scripts because the repo documents npm-compatible scripts.
-
-_Why:_ One lockfile keeps installs reproducible.
-
-## Canonical Example
-
-The agreed style assembled on one endpoint slice. It is illustrative
-documentation, not a direct patch.
-
-````ts
-import { Data, Effect } from 'effect';
-import { zodToJsonSchema } from 'zod-to-json-schema';
-import type { EbayApiClient } from '@/api/client.js';
-import type { QueryParams } from '@/api/shared/request.js';
-import { customPolicyResponseSchema } from '@/schemas/account-management/account.js';
-import type { OutputArgs } from '@/tools/types.js';
-import { defineTool } from '@/tools/defineTool.js';
-import type { components } from '@/types/sell-apps/account-management/sellAccountV1Oas3.js';
-import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
-import { z } from '@/utils/effectSchema.js';
-
-type GetCustomPoliciesInput = InferEffectSchema<typeof getCustomPoliciesInputSchema>;
-
-/**
- * Response returned by eBay Account API getCustomPolicies.
- *
- * @see https://developer.ebay.com/api-docs/sell/account/resources/custom_policy/methods/getCustomPolicies
- */
-export type GetCustomPoliciesResponse = components['schemas']['CustomPolicyResponse'];
-
-/** Input accepted by the MCP tool and Account API method for getCustomPolicies. */
-export const getCustomPoliciesInputSchema = z.object({
-  /** Comma-delimited custom policy types, e.g. PRODUCT_COMPLIANCE,TAKE_BACK. */
-  policyTypes: z.string().optional(),
-});
-
-/** API failure returned by endpoint Effects after the request adapter catches transport errors. */
-export class EbayApiError extends Data.TaggedError('EbayApiError')<{
-  readonly method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  readonly path: string;
-  readonly cause: unknown;
-}> {}
-
-/** One endpoint-owned query parameter allowed by the shared params builder. */
-export interface EndpointParamSpec {
-  /** Query-string key expected by eBay, usually snake_case from the OpenAPI spec. */
-  readonly wireName: string;
-  /** Already-typed local value; undefined and empty strings are omitted. */
-  readonly value: string | number | undefined;
-}
-
-/**
- * Builds query params from an endpoint-owned allow-list.
- *
- * @param params - Camel-case local parameter names mapped to their eBay wire names and values.
- * @returns A query object for the request adapter, or undefined when every value is omitted.
- *
- * @example
- * ```ts
- * const params = buildEndpointParams({
- *   policyTypes: { wireName: 'policy_types', value: input.policyTypes },
- * });
- * ```
- */
-export const buildEndpointParams = (
-  params: Record<string, EndpointParamSpec>,
-): QueryParams | undefined => {
-  const query: QueryParams = {};
-
-  for (const param of Object.values(params)) {
-    if (param.value !== undefined && param.value !== '') {
-      query[param.wireName] = param.value;
-    }
-  }
-
-  return Object.keys(query).length > 0 ? query : undefined;
+```tsx
+// ✓ src/ui/browser/TrafficChart.tsx
+type TrafficChartProps = {
+  readonly trafficSeries: ReadonlyArray<TrafficSeries>;
 };
 
-export class AccountApi {
-  private readonly basePath = '/sell/account/v1';
+export const TrafficChart = ({ trafficSeries }: TrafficChartProps) => <section />;
 
-  public constructor(private readonly client: EbayApiClient) {}
+// ✗ hidden or inline contracts
+export const TrafficChart: React.FC<{ trafficSeries: TrafficSeries[] }> = () => <section />;
+```
 
-  /**
-   * Retrieves custom policies defined for the seller account.
-   *
-   * @param input - Optional filter containing comma-delimited custom policy types.
-   * @returns An Effect that succeeds with eBay's generated CustomPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const policies = await Effect.runPromise(
-   *   accountApi.getCustomPolicies({ policyTypes: 'TAKE_BACK' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/custom_policy/methods/getCustomPolicies
-   */
-  public getCustomPolicies = (
-    input: GetCustomPoliciesInput = {},
-  ): Effect.Effect<GetCustomPoliciesResponse, EbayApiError> => {
-    const path = `${this.basePath}/custom_policy/`;
-    const params = buildEndpointParams({
-      policyTypes: { wireName: 'policy_types', value: input.policyTypes },
-    });
+Why: Component ownership and writable inputs stay explicit.
 
-    return Effect.tryPromise({
-      try: () => this.client.get<GetCustomPoliciesResponse>(path, params),
-      catch: (cause) => new EbayApiError({ method: 'GET', path, cause }),
-    });
-  };
+### Stateful classes only
+[rule:class.stateful-lifecycle] · verify: judgment
+
+A class exists only when it owns a genuine stateful lifecycle with identity across calls.
+
+```ts
+// ✓ src/auth/oauthSession.ts
+export class OAuthSession {
+  readonly #tokenStore: TokenStore;
 }
 
-export const accountEntries = [
-  defineTool({
-    name: 'ebay_get_custom_policies',
-    description: 'Retrieve custom policies defined for the seller account',
-    inputSchema: getCustomPoliciesInputSchema.shape,
-    outputSchema: zodToJsonSchema(customPolicyResponseSchema, {
-      name: 'CustomPoliciesResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.account.getCustomPolicies(args)),
-  }),
-];
-````
+// ✗ stateless endpoint service
+export class AnalyticsApi {
+  getTrafficReport = async () => {};
+}
+```
 
-## Recipes
+Why: Pure behavior remains local while real lifecycle state has an owner.
 
-### Add An API Endpoint + MCP Tool
+### Domain-specific identifiers
+[rule:name.domain-specific] · verify: judgment
 
-1. Find the operation in `docs/sell-apps/**/<spec>.json` and copy the official
-   eBay docs URL for the method.
-2. Add or reuse an Effect-backed input schema from `@/utils/effectSchema.js`.
-   The tool derives `inputSchema` from `.shape`.
-3. Add generated response aliases from `src/types/**`, with `@see` when exported.
-4. Add the API method as an Effect-returning endpoint method with full TSDoc.
-5. Build query params through the shared params builder; do not hand-roll query
-   strings.
-6. Add a co-located `defineTool` entry whose handler runs the Effect at the MCP
-   boundary.
-7. Add unit tests for path/method/params/body and typed error tags; add
-   integration coverage when HTTP behavior changes.
-8. Run `npm run typecheck`, `npm run check:ci`, `npm test`, and relevant
-   integration tests.
+Authored identifiers name their domain job and never use a forbidden generic token as a standalone local, parameter, or generic type name.
 
-### Add Or Change A CLI Command
+```ts
+// ✓ src/ebay/sell/fulfillment/order.ts
+const refundedOrderIds = new Set<string>();
+const orderCompletion = await refundOrder(sellerSession, refundDocument);
 
-1. Export one `run*({ argv, stdio })` function that contains the command journey.
-2. Route the bin through the hand-written router; do not add a CLI framework
-   unless a new ADR proves the need.
-3. TTY with no flags may prompt. Flags or non-TTY must never hang.
-4. Machine-consumable commands add `--json` and stable exit codes.
-5. Human output may use stdout, color, prompts, and progress; MCP STDIO mode may
-   not.
+// ✗ forbidden standalone names
+const result = await run(input);
+const payload = data;
+const raw = response;
+```
 
-### Add A UI Projection
+Why: Precise names carry context through the call chain.
 
-1. Return generated eBay DTOs from the API layer.
-2. Map to `TableViewModel`, `CardViewModel`, `ChartViewModel`, or `StatViewModel`
-   only at `src/tools/ui/maps.ts`.
-3. Keep object construction inline in the mapper that owns the target shape.
-4. Use `null`/empty values for missing display data and let the React view render
-   the placeholder.
+Forbidden standalone tokens: `args`, `body`, `client`, `config`, `context`, `data`,
+`entry`, `error`, `final`, `info`, `input`, `item`, `key`, `manager`, `options`,
+`outcome`, `output`, `params`, `payload`, `query`, `raw`, `record`, `ref`, `request`,
+`res`, `response`, `result`, `row`, `schema`, `state`, `temp`, and `value`.
+Composite domain names such as `trafficReportQuery`, external wire fields, generated code,
+and library-owned property names are exempt.
+
+### Handwritten file names
+[rule:path.camelcase-files] · verify: `npm run check:ci`
+
+Handwritten TypeScript and TSX basenames use camelCase while generated and upstream filenames remain unchanged.
+
+```ts
+// ✓ src/ebay/sell/account/customPolicy.ts
+// ✓ src/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.ts
+
+// ✗ handwritten source
+// src/ebay/sell/account/custom-policy.ts
+// src/ebay/sell/account/custom_policy.ts
+```
+
+Why: Authored paths follow one convention without rewriting vendor artifacts.
+
+### Direct owner imports
+[rule:import.direct-owner] · verify: judgment
+
+Imports use `./` for same-folder siblings, `@/` across modules, `node:` for built-ins, and never traverse through `../` or a handwritten barrel.
+
+```ts
+// ✓ src/ebay/sell/analytics/trafficReport.ts
+import { defineTool } from '@/mcp/defineTool.js';
+import { trafficReportChart } from '@/ui/presentation/analytics.js';
+import type { TrafficReportQuery } from './trafficReportQuery.js';
+
+// ✗ path ladders and facades
+import { defineTool } from '../../../mcp/index.js';
+```
+
+Why: Every import points at the real owner and survives unrelated folder moves.
+
+### Named exports without compatibility
+[rule:module.named-exports] · verify: `npm run check:ci`
+
+Authored modules use named exports and never preserve an old path through an alias or compatibility re-export.
+
+```ts
+// ✓ src/mcp/defineTool.ts
+export const defineTool = <EbayDocument>(toolContract: ToolContract<EbayDocument>) => {};
+
+// ✗ default and compatibility surfaces
+export default defineTool;
+export { defineTool as createTool };
+export * from './legacyTools.js';
+```
+
+Why: Removing or moving code also removes its obsolete public surface.
+
+### Explicit branching
+[rule:control.explicit-branches] · verify: judgment
+
+Authored control flow uses explicit guards and contains no `??`, `||`, ternary expression, non-null assertion, or deep optional chain.
+
+```ts
+// ✓ src/ui/presentation/analytics.ts
+if (trafficReport.records === undefined) {
+  return emptyTrafficChart;
+}
+
+const trafficRecords = trafficReport.records;
+
+// ✗ hidden fallback and branch
+const trafficRecords = trafficReport.records ?? [];
+const title = trafficRecords.length ? 'Traffic' : 'No traffic';
+```
+
+Why: Missing states and product decisions stay visible.
+
+### Stable bindings
+[rule:mutation.const-bindings] · verify: judgment
+
+Authored bindings use `const`, with mutation limited to a clearly named accumulator held by a constant reference.
+
+```ts
+// ✓ src/ui/presentation/analytics.ts
+const chartPoints: ChartPoint[] = [];
+for (const trafficRecord of trafficRecords) {
+  chartPoints.push(trafficPoint);
+}
+
+// ✗ reassignment-driven flow
+let chartPoints: ChartPoint[] = [];
+chartPoints = appendTrafficPoint(chartPoints);
+```
+
+Why: Bindings stay stable without contorting straightforward loops.
+
+### Guards and closed variants
+[rule:control.guards-switches] · verify: judgment
+
+Failed prerequisites return early and genuine closed variants use an exhaustive switch.
+
+```ts
+// ✓ src/cli/commandCompletion.ts
+if (commandName === undefined) {
+  return missingCommandCompletion;
+}
+
+switch (commandCompletion.kind) {
+  case 'commandSucceeded':
+    return 0;
+  case 'commandFailed':
+    return 1;
+  case 'invalidUsage':
+    return 2;
+  case 'interrupted':
+    return 130;
+}
+
+// ✗ nested decision tree
+if (commandName !== undefined) {
+  if (commandName === 'serve') {}
+}
+```
+
+Why: The happy path stays linear and variants remain exhaustive.
+
+### Collection intent
+[rule:collection.intent] · verify: judgment
+
+Collections use one direct transformation or an explicit `for...of` loop and never use `reduce` or `forEach`.
+
+```ts
+// ✓ src/mcp/ebayToolCatalogue.ts
+const toolNames = ebayTools.map((ebayTool) => ebayTool.name);
+for (const ebayTool of ebayTools) {
+  mcpServer.registerTool(ebayTool);
+}
+
+// ✗ phase-hiding callbacks
+ebayTools.forEach(registerTool);
+const toolMap = ebayTools.reduce(indexTool, {});
+```
+
+Why: Multi-step and early-exit work reads in execution order.
+
+### Promise and Zod foundation
+[rule:async.promise-zod] · verify: judgment
+
+Fallible asynchronous work uses native promises and direct Zod 4 schemas without Effect or a repository-owned schema adapter.
+
+```ts
+// ✓ src/ebay/sell/analytics/trafficReport.ts
+export const trafficReportQuerySchema = z.object({ metric: z.string().min(1) }).strict();
+export const getTrafficReport = async () => sellerSession.get<TrafficReport>(trafficReportCall);
+
+// ✗ extra runtime and conversion layers
+const trafficReportEffect = Effect.gen(function* () {});
+const jsonSchema = zodToJsonSchema(trafficReportQuerySchema);
+```
+
+Why: The MCP SDK already accepts Zod and the language already owns promises.
+
+### Decode once
+[rule:validation.decode-once] · verify: judgment
+
+Each external boundary decodes through one strict Zod schema and downstream typed code does not validate the same fields again.
+
+```ts
+// ✓ src/mcp/defineTool.ts
+mcpServer.registerTool(toolName, { inputSchema: argumentsSchema }, decodedArgumentsHandler);
+
+// ✗ repeated internal checking
+requireObject(argumentsFromMcp);
+requireString(argumentsFromMcp.metric);
+```
+
+Why: Boundary trust is explicit and internal code stays focused on behavior.
+
+### Typed completions
+[rule:failure.ebay-completion] · verify: judgment
+
+Fallible eBay operations return `EbayRequestCompletion<EbayDocument>` and the MCP boundary translates its failure branch once.
+
+```ts
+// ✓ src/ebay/ebayRequestCompletion.ts
+export type EbayRequestCompletion<EbayDocument> =
+  | { readonly kind: 'ebayRequestSucceeded'; readonly ebayDocument: EbayDocument }
+  | { readonly kind: 'ebayRequestFailed'; readonly ebayFailure: EbayFailure };
+
+// ✗ thrown endpoint failure
+throw new Error('eBay request failed');
+```
+
+Why: Success and failure remain explicit without repeating an operation-specific union.
+
+### Authored type aliases
+[rule:type.alias-contracts] · verify: judgment
+
+Repository-authored contracts use type aliases while interfaces are reserved for third-party module augmentation.
+
+```ts
+// ✓ src/ebay/ebaySellerSession.ts
+export type EbaySellerSession = {
+  readonly get: <EbayDocument>(ebayCall: EbayGetCall) => Promise<EbayRequestCompletion<EbayDocument>>;
+};
+
+// ✗ interchangeable authored interface
+export interface EbaySellerSession {}
+```
+
+Why: Object and union contracts follow one composable form.
+
+### Exact eBay wire keys
+[rule:ebay.exact-wire-keys] · verify: judgment
+
+Inbound MCP arguments use the exact field names documented by eBay and are never renamed for local taste.
+
+```ts
+// ✓ src/ebay/sell/analytics/customerServiceMetric.ts
+const customerServiceMetricQuerySchema = z.object({
+  evaluation_marketplace_id: z.string().min(1),
+});
+
+// ✗ translation layer
+const customerServiceMetricQuerySchema = z.object({ evaluationMarketplaceId: z.string() });
+```
+
+Why: Tool callers can follow eBay documentation without learning a second request shape.
+
+### Generated eBay documents
+[rule:ebay.generated-documents] · verify: judgment
+
+Resource operations return generated eBay documents unchanged and create presentation shapes only inside the UI boundary.
+
+```ts
+// ✓ src/ebay/sell/analytics/trafficReport.ts
+export type TrafficReport = components['schemas']['Report'];
+return sellerSession.get<TrafficReport>(trafficReportCall);
+
+// ✗ copied response object
+return { records: ebayDocument.records, warnings: ebayDocument.warnings };
+```
+
+Why: The OpenAPI document remains the single response contract.
+
+### Official resource layout
+[rule:path.ebay-resource-layout] · verify: judgment
+
+An eBay resource module lives at `src/ebay/<namespace>/<api>/<resource>.ts` and owns its argument schemas, generated aliases, operations, and MCP definitions.
+
+```ts
+// ✓ official resource owner
+// src/ebay/sell/analytics/trafficReport.ts
+
+// ✗ one behavior spread across layers
+// src/api/analytics.ts
+// src/schemas/analytics.ts
+// src/tools/categories/analytics.ts
+```
+
+Why: The filesystem answers where an official eBay operation belongs.
+
+### Machine-owned roots
+[rule:path.machine-owned-roots] · verify: judgment
+
+OpenAPI inputs live under `specs/ebay` and generated TypeScript lives under `src/generated/ebay` with upstream names preserved.
+
+```ts
+// ✓ machine inputs and products
+// specs/ebay/sell-apps/analytics-and-report/sell_analytics_v1_oas3.json
+// src/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.ts
+
+// ✗ mixed human and generated ownership
+// docs/sell-apps/analytics-and-report/sell_analytics_v1_oas3.json
+// src/types/ebay.ts
+```
+
+Why: Human documentation and authored contracts cannot be mistaken for generated artifacts.
+
+### Purpose-named folders
+[rule:architecture.purpose-folders] · verify: judgment
+
+Authored folders name a concrete responsibility and never use `utils`, `helpers`, `common`, `shared`, or `misc` as a destination.
+
+```ts
+// ✓ target owners
+// src/auth/  src/cli/  src/http/  src/logging/  src/mcp/  src/ebay/  src/ui/
+
+// ✗ catch-all destination
+// src/utils/http.ts
+// src/shared/helpers.ts
+```
+
+Why: A folder should predict why its contents change together.
+
+### Earned abstractions
+[rule:architecture.earned-abstraction] · verify: judgment
+
+An abstraction exists only when it names a domain concept, owns a side-effect boundary, or serves a second real caller.
+
+```ts
+// ✓ shared by every eBay resource
+export type EbayRequestCompletion<EbayDocument> = Success<EbayDocument> | Failure;
+
+// ✗ one-use wrapper
+const getSelectDefaultIndex = () => selectDefaultIndex;
+```
+
+Why: Reuse is evidence, not a forecast.
+
+### No pass-through layers
+[rule:architecture.no-indirection] · verify: judgment
+
+Repository-owned wrappers and facades remain only when they enforce policy that callers would otherwise repeat.
+
+```ts
+// ✓ one protocol boundary
+export const defineTool = (toolContract: ToolContract) => registerTypedTool(toolContract);
+
+// ✗ compatibility and pass-through layers
+export const rawTool = (toolContract: ToolContract) => defineTool(toolContract);
+export class EbaySellerApiFacade {}
+```
+
+Why: Navigation should reveal policy rather than ceremony.
+
+### Process-entry configuration
+[rule:config.entry-ownership] · verify: judgment
+
+Each process entry parses `process.env` once with Zod and passes the typed configuration to every downstream owner.
+
+```ts
+// ✓ src/index.ts
+const stdioConfiguration = stdioConfigurationSchema.parse(process.env);
+await runStdioServer(stdioConfiguration);
+
+// ✗ hidden global read
+const logLevel = process.env.EBAY_LOG_LEVEL;
+```
+
+Why: Configuration precedence and failure happen once at startup.
+
+### Explicit seller session
+[rule:http.seller-session] · verify: judgment
+
+Resource operations receive `EbaySellerSession` explicitly while the session alone owns authentication, omission, and wire serialization.
+
+```ts
+// ✓ src/ebay/sell/inventory/offer.ts
+export const getOffer = async (sellerSession: EbaySellerSession, offerId: string) =>
+  sellerSession.get<Offer>({ endpoint: `/sell/inventory/v1/offer/${offerId}` });
+
+// ✗ global facade and endpoint transport logic
+return ebaySellerApi.inventory.getOffer(offerId);
+```
+
+Why: eBay operations declare their capability without owning transport mechanics.
+
+### Thin MCP operations
+[rule:mcp.thin-tool] · verify: judgment
+
+An endpoint-backed MCP tool validates once, invokes one resource operation, and returns its generated eBay document without reshaping.
+
+```ts
+// ✓ src/ebay/sell/analytics/trafficReport.ts
+export const getTrafficReportTool = defineTool({
+  argumentsSchema: trafficReportQuerySchema,
+  operation: getTrafficReport,
+});
+
+// ✗ endpoint workflow hidden in a handler
+handler: async () => combine(await firstCall(), await secondCall()),
+```
+
+Why: Real multi-operation work deserves an explicit workflow name.
+
+### Explicit tool catalogue
+[rule:mcp.explicit-catalogue] · verify: judgment
+
+The explicit `src/mcp/ebayToolCatalogue.ts` catalogue imports every named tool definition directly and never discovers files or consumes resource-level tool arrays.
+
+```ts
+// ✓ src/mcp/ebayToolCatalogue.ts
+import { getTrafficReportTool } from '@/ebay/sell/analytics/trafficReport.js';
+export const ebayTools = [getTrafficReportTool];
+
+// ✗ implicit or aggregated wiring
+const ebayTools = await discoverTools(import.meta.dirname);
+import { trafficReportTools } from '@/ebay/sell/analytics/trafficReport.js';
+```
+
+Why: Registration is deterministic and every public tool is grep-visible.
+
+### Hierarchical tool namespace
+[rule:mcp.hierarchical-names] · verify: judgment
+
+eBay tools and exposure gates mirror official namespaces while protocol-required connector tools keep the exact names `search` and `fetch`.
+
+```ts
+// ✓ public names
+name: 'ebay_sell_analytics_get_traffic_report';
+namespace: 'sell.analytics';
+
+// ✗ ambiguous global names
+name: 'ebay_get_traffic_report';
+namespace: 'other';
+```
+
+Why: Global MCP names remain unambiguous across eBay APIs.
+
+### Structured stderr logging
+[rule:logging.structured-stderr] · verify: judgment
+
+Runtime code emits redacted structured logs to stderr through one logger controlled only by `LOG_LEVEL`.
+
+```ts
+// ✓ src/logging/runtimeLogger.ts
+runtimeLogger.info('mcpServerStarted', { transport: 'stdio' });
+
+// ✗ protocol corruption and secret exposure
+console.log('server started');
+runtimeLogger.info('eBay response', fullEbayDocument);
+```
+
+Why: stdout belongs to MCP and operational logs must not leak credentials or documents.
+
+### Presentation-only mapping
+[rule:ui.presentation-boundary] · verify: judgment
+
+Browser-facing view models are created only in `src/ui/presentation` and browser network work calls the server through `callServerTool`.
+
+```ts
+// ✓ src/ui/presentation/analytics.ts
+export const trafficReportChart = (trafficReport: TrafficReport): ChartViewModel => {};
+
+// ✗ transport-layer presentation and direct eBay access
+export const getTrafficReport = async () => ({ chart: await fetch(ebayUrl) });
+```
+
+Why: The eBay contract and its visual projection have separate reasons to change.
+
+### React state ownership
+[rule:ui.state-ownership] · verify: judgment
+
+Props remain the source of truth, local state records user actions only, and effects synchronize only real external systems.
+
+```tsx
+// ✓ src/ui/browser/TrafficChart.tsx
+export const TrafficChart = ({ trafficSeries }: TrafficChartProps) => (
+  <Chart trafficSeries={trafficSeries} />
+);
+
+// ✗ prop mirror and synchronization effect
+const [trafficSeries, setTrafficSeries] = useState(props.trafficSeries);
+useEffect(() => setTrafficSeries(props.trafficSeries), [props.trafficSeries]);
+```
+
+Why: Each piece of writable state has one owner.
+
+### Accessible class-based UI
+[rule:ui.accessible-classnames] · verify: judgment
+
+Visual styling uses `className` with finite typed variants and interactive behavior uses semantic keyboard-accessible elements with stable domain keys.
+
+```tsx
+// ✓ src/ui/browser/OfferList.tsx
+<button className={offerButtonClasses[offerTone]} key={offer.offerId} type="button">
+  View offer
+</button>
+
+// ✗ unbounded styling and inaccessible interaction
+<tr key={offerIndex} onClick={openOffer} style={{ color: offerColor }} />
+```
+
+Why: Visual variants stay inspectable and interaction works beyond pointer input.
+
+### Full two-layer TDD
+[rule:test.both-boundaries] · verify: judgment
+
+Every eBay operation is written red-first with complete resource-contract coverage and the same validation and failure depth through the real MCP server.
+
+```ts
+// ✓ colocated plus integration proof
+// src/ebay/sell/analytics/trafficReport.test.ts
+// tests/integration/mcp/sell/analytics/trafficReport.test.ts
+
+// ✗ framework-only confidence
+it('registers all tools', () => expect(toolCount).toBe(298));
+```
+
+Why: Both public boundaries are independently proven as requested.
+
+### Test ownership and fixtures
+[rule:test.ownership-fixtures] · verify: judgment
+
+Product tests are colocated, integration tests mirror the official API tree, and shared fixtures appear only after a second use with real eBay examples.
+
+```ts
+// ✓ tests/fixtures/ebaySellerSession.ts after repeated use
+const trafficReportDocument = { records: [] } satisfies TrafficReport;
+
+// ✗ giant facade mock and generic factory
+const mockApi = createMockApiEverything();
+```
+
+Why: Tests name product behavior instead of implementation machinery.
+
+### Intent-only documentation
+[rule:docs.intent-and-sync] · verify: judgment
+
+Documentation explains public eBay contracts, official references, vendor quirks, and non-obvious decisions while changing in the same pull request as the behavior.
+
+```ts
+// ✓ src/ebay/sell/analytics/trafficReport.ts
+/** @see https://developer.ebay.com/api-docs/sell/analytics/resources/traffic_report/methods/getTrafficReport */
+
+// ✗ narration
+/** Gets the traffic report by calling getTrafficReport. */
+```
+
+Why: Documentation should carry information unavailable from names and types.
+
+### Rule-card parity
+[rule:docs.rule-card-parity] · verify: `npm run style:guide`
+
+Every rule card matches one machine-mirror rule in the same order with byte-identical assertion and verification text.
+
+```ts
+// ✓ CODE-STYLE.md + code-style.rules.json
+[rule:docs.rule-card-parity] · verify: `npm run style:guide`
+
+// ✗ prose-only or drifting rule
+// CODE-STYLE.md says one thing while the JSON index says another.
+```
+
+Why: Humans and automated reviews consume one guaranteed-accurate contract.
+
+### Biome formatting
+[rule:tooling.biome] · verify: `npm run check:ci`
+
+Biome alone formats authored files with two spaces, width 100, single quotes, semicolons, trailing commas, and LF endings.
+
+```ts
+// ✓ biome.json
+const marketplaceIds = ['EBAY_US', 'EBAY_GB'];
+
+// ✗ competing or drifting formatter output
+const marketplaceIds=["EBAY_US","EBAY_GB"]
+```
+
+Why: One mechanical authority prevents formatter disagreement.
+
+### Organized imports
+[rule:tooling.organized-imports] · verify: judgment
+
+Biome organizes imports after the existing import-order drift is cleaned and a planted violation proves the blocking rule.
+
+```jsonc
+// ✓ target biome.json
+{ "assist": { "actions": { "source": { "organizeImports": "on" } } } }
+
+// ✗ migration state mistaken for the final contract
+{ "assist": { "actions": { "source": { "organizeImports": "off" } } } }
+```
+
+Why: The approved rule remains visible without pretending the current backlog is already enforced.
+
+### Deterministic CLI
+[rule:cli.deterministic-surface] · verify: judgment
+
+The shipped CLI uses `parseArgs`, opens a menu only for a bare TTY invocation, never prompts for explicit or non-TTY commands, and returns `CommandCompletion` to the entry boundary.
+
+```ts
+// ✓ src/cli/main.ts
+// serve | setup | diagnose [--json] | skills install | help [--json] | version [--json]
+
+// ✗ command-owned process and prompt behavior
+process.exit(1);
+await prompts(promptQuestions);
+```
+
+Why: Human discovery and agent automation share one non-hanging command surface.
+
+### Machine-readable CLI output
+[rule:cli.json-output] · verify: judgment
+
+JSON mode writes exactly one document to stdout, sends logs to stderr, and uses exit codes 0, 1, 2, and 130 for success, operation failure, usage failure, and interruption.
+
+```ts
+// ✓ src/cli/main.ts
+process.stdout.write(`${JSON.stringify(commandDocument)}\n`);
+process.exitCode = commandExitCode;
+
+// ✗ mixed automation output
+console.log(chalk.green('Success'));
+console.log(JSON.stringify(commandDocument));
+```
+
+Why: Agents receive a stable parseable contract.
+
+### Tool-first scripts
+[rule:tooling.tool-first-scripts] · verify: judgment
+
+Shipped commands live in `src/cli`, repository development glue lives in `scripts/dev`, production glue lives in `scripts/production`, and installed CLIs are called directly.
+
+```ts
+// ✓ scripts/dev/syncEbaySpecs.ts
+// eBay multi-spec download plus direct openapi-typescript invocation
+
+// ✗ duplicate or dormant tooling
+// src/scripts/downloadSpecs.ts
+// src/scripts/generateTypes.sh
+```
+
+Why: The repository owns only lifecycle work an installed tool cannot perform.
+
+### Exact justified dependencies
+[rule:tooling.exact-dependencies] · verify: judgment
+
+Every direct dependency uses an exact reviewed version and remains only while it owns a named runtime, UI, generation, or test responsibility.
+
+```json
+// ✓ package.json
+{ "zod": "4.4.3", "typescript": "6.0.3" }
+
+// ✗ unreviewed drift or dead architecture
+{ "zod": "^3.25.76", "effect": "^3.21.4" }
+```
+
+Why: Fresh installs and the dependency surface change deliberately.
+
+### Cohesive size signals
+[rule:file.cohesive-size] · verify: judgment
+
+Files and functions split when they mix responsibilities, with 300 file lines and 60 function lines acting as review signals rather than hard caps.
+
+```ts
+// ✓ one declarative catalogue may exceed 300 lines
+// src/mcp/ebayToolCatalogue.ts
+
+// ✗ setup, validation, OAuth, rendering, and filesystem work in one function
+export const runSetupEverything = async () => {};
+```
+
+Why: Size prompts a cohesion review without creating microfiles.
+
+### Green delivery slices
+[rule:delivery.green-slices] · verify: judgment
+
+Repository-wide migration ships as conventional focused purpose-branch pull requests that remain independently green and add no backward-compatibility surface.
+
+```text
+// ✓ delivery sequence
+foundation -> golden slice -> namespace slices -> CLI/auth/logging -> UI -> deletion -> enforcement
+
+// ✗ delivery shape
+one giant cleanup commit with aliases keeping every old path alive
+```
+
+Why: Each stage is reviewable, recoverable, and useful on its own.
+
+## Canonical example
+
+The first target exemplar is the Sell Analytics `traffic_report` resource; this is
+illustrative until the golden-slice migration lands.
+
+```ts
+// src/ebay/sell/analytics/trafficReport.ts
+import { z } from 'zod';
+
+import type { EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
+import type { EbaySellerSession } from '@/ebay/ebaySellerSession.js';
+import type { components } from '@/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
+import { defineTool } from '@/mcp/defineTool.js';
+import { trafficReportChart } from '@/ui/presentation/analytics.js';
+
+export const trafficReportQuerySchema = z
+  .object({
+    dimension: z.enum(['DAY', 'LISTING']),
+    filter: z.string().min(1),
+    metric: z.string().min(1),
+    sort: z.string().min(1).optional(),
+  })
+  .strict();
+
+export type TrafficReportQuery = z.infer<typeof trafficReportQuerySchema>;
+export type TrafficReport = components['schemas']['Report'];
+
+export const getTrafficReport = async (
+  sellerSession: EbaySellerSession,
+  trafficReportQuery: TrafficReportQuery,
+): Promise<EbayRequestCompletion<TrafficReport>> =>
+  sellerSession.get<TrafficReport>({
+    endpoint: '/sell/analytics/v1/traffic_report',
+    searchParameters: trafficReportQuery,
+  });
+
+export const getTrafficReportTool = defineTool({
+  name: 'ebay_sell_analytics_get_traffic_report',
+  namespace: 'sell.analytics',
+  description: 'Retrieve traffic metrics for the seller\'s listings',
+  argumentsSchema: trafficReportQuerySchema,
+  operation: getTrafficReport,
+  presentation: trafficReportChart,
+});
+```
+
+The colocated suite proves strict arguments, exact method/path/wire fields, generated-document
+pass-through, and typed failures; the mirrored MCP integration suite repeats that full depth
+through the real server.
+
+## Golden path — adding an eBay operation
+
+1. Read the official specification under `specs/ebay` and the matching generated contract
+   under `src/generated/ebay`.
+2. Open the official resource owner at
+   `src/ebay/<namespace>/<api>/<resource>.ts`; create it only for a genuinely new resource.
+3. Write the failing colocated resource-contract scenarios and the mirrored failing MCP
+   integration scenarios under `tests/integration/mcp/<namespace>/<api>/`.
+4. Add one strict Zod argument schema with the exact eBay wire fields.
+5. Add the exported arrow operation with `sellerSession` and the named eBay query or document.
+6. Return `EbayRequestCompletion<GeneratedEbayDocument>` without response reshaping.
+7. Define the hierarchical tool beside the operation and pass the operation directly to
+   `defineTool`.
+8. Import the named definition directly in `src/mcp/ebayToolCatalogue.ts` without an array,
+   barrel, alias, or compatibility export.
+9. Add a presenter under `src/ui/presentation` only when the visual shape genuinely differs.
+10. Run focused tests, then the complete validation gate, and update terminology or decision
+    docs in the same pull request.
+
+### Definition of done
+
+- [ ] Both full-depth suites were red before implementation and are green afterward.
+- [ ] The MCP arguments are strict and match official eBay wire fields.
+- [ ] The resource returns the generated eBay document unchanged.
+- [ ] The tool name and gate use the official hierarchical namespace.
+- [ ] No generic identifier, fallback operator, ternary, `let`, barrel, facade, or compatibility
+      export was introduced.
+- [ ] `npm run verify` and `npm run test:integration` pass.
+- [ ] Relevant `CONTEXT.md`, `LANGUAGE.md`, `ARCHITECTURE.md`, ADR, and user docs changed with
+      the behavior.
+
+See the [canonical example](#canonical-example) for the composed target form.
 
 ## Exemplars
 
-Current files are temporary exemplars until the Effect migration creates a full
-API exemplar:
+No current production file satisfies the complete target yet; the first approved exemplar will
+be `src/ebay/sell/analytics/trafficReport.ts` after the golden-slice migration.
 
-- `src/tools/defineTool.ts` - typed `defineTool`, Effect schema SSOT, and useful
-  boundary comments.
-- `ui/host.tsx` - concise TSDoc around a real trust boundary and small reusable
-  UI primitives.
-- `tests/unit/tools/uiMaps.test.ts` - behavior-named tests and focused inline
-  fixtures.
+Closest evidence during migration:
+
+- `src/api/analytics-and-report/analytics.ts` — current traffic-report behavior and official link.
+- `src/tools/defineTool.ts` — current typed tool binding to simplify rather than preserve.
+- `tests/unit/api/analytics/trafficReport.test.ts` — current observable HTTP contract to retain.
 
 ## Never
 
-- Never use `as any`; narrow or use a documented boundary cast.
-- Never add default exports.
-- Never add or keep kebab-case or snake_case hand-written source/test/UI file
-  basenames.
-- Never use `try/catch` in endpoint/tool code when the work can be an Effect.
-- Never throw custom untagged errors from migrated API code.
-- Never use `?? 'unknown'`, `?? 'N/A'`, or invented semantic display fallbacks in
-  maps.
-- Never extract one-use `toXRow`/`buildXModel` helpers that only hide object
-  construction.
-- Never add generic micro-helpers such as `isRecord` or `ensureArray` unless they
-  guard a true trust boundary.
-- Never add nested or duplicated ternaries.
-- Never scatter raw `process.env` outside config/bootstrap.
-- Never let reusable runtime modules call `console.*` directly.
-- Never hand-edit `src/types/**`; regenerate from OpenAPI.
-- Never let a bare CLI invocation hang in non-TTY mode.
+- Generic standalone identifiers from [rule:name.domain-specific].
+- Repository function names beginning `build`, `to`, or `resolve` from
+  [rule:function.domain-name].
+- `??`, `||`, ternaries, non-null assertions, deep optional chains, `let`, `reduce`, or
+  `forEach` from [rule:control.explicit-branches], [rule:mutation.const-bindings], and
+  [rule:collection.intent].
+- `isRecord`-style micro-guards, repeated Zod decoding, swallowed catches, and speculative
+  fallback branches from [rule:validation.decode-once].
+- Effect, custom Effect/Zod adapters, manual response schemas, and repository JSON-schema
+  conversion from [rule:async.promise-zod] and [rule:ebay.generated-documents].
+- `rawTool`, global API facades, single-use wrappers, passive barrels, compatibility exports,
+  and single-implementation interfaces from [rule:architecture.no-indirection].
+- Field-copy remaps and one-use `toXRow` helpers outside `src/ui/presentation` from
+  [rule:ui.presentation-boundary].
+- Prop-derived state, prop-sync effects, clickable rows, index keys, style props, CSS-in-JS,
+  CSS variables, and arbitrary visual strings from [rule:ui.state-ownership] and
+  [rule:ui.accessible-classnames].
+- Giant facade mocks, snapshots of generated documents, private-helper tests, and assertions on
+  incidental call order from [rule:test.ownership-fixtures].
+- Dormant alternate scripts, wrappers around installed CLIs, generated status snapshots, and
+  regex/fuzzy source discovery from [rule:tooling.tool-first-scripts].
+
+## Recipes
+
+### Add or change a CLI command
+
+1. Add the command under `src/cli` with explicit dependencies and a
+   `Promise<CommandCompletion>` return.
+2. Register the command with `parseArgs`; never branch on TTY inside an explicit command.
+3. Add human output through the CLI renderer and one-document `--json` output through the entry.
+4. Test success, operation failure, usage failure, interruption, JSON purity, and non-TTY behavior.
+
+### Add or change a UI projection
+
+1. Keep the generated eBay document unchanged through the resource and MCP operation.
+2. Add the smallest genuine projection under `src/ui/presentation/<api>.ts`.
+3. Use class-name variants only and semantic interactive elements in the browser component.
+4. Test the presentation behavior, keyboard path, labels, focus behavior, and stable domain keys.
+
+## Verification
+
+```bash
+npm run style:guide
+npm run check:ci
+npm run typecheck
+npm run typecheck:ui
+npm run typecheck:tests
+npm test
+npm run test:integration
+npm run build
+```
