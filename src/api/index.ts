@@ -1,7 +1,6 @@
 import { AccountApi } from '@/api/account-management/account.js';
 import { EbayApiClient } from '@/api/client.js';
 import { InventoryApi } from '@/api/listing-management/inventory.js';
-import { MetadataApi } from '@/api/listing-metadata/metadata.js';
 import { MarketingApi } from '@/api/marketing-and-promotions/marketing.js';
 import { DisputeApi } from '@/api/order-management/dispute.js';
 import { FulfillmentApi } from '@/api/order-management/fulfillment.js';
@@ -22,7 +21,6 @@ export class EbaySellerApi {
   public fulfillment: FulfillmentApi;
   public dispute: DisputeApi;
   public marketing: MarketingApi;
-  public metadata: MetadataApi;
 
   constructor(config: EbayConfig) {
     this.config = config;
@@ -34,7 +32,6 @@ export class EbaySellerApi {
     this.fulfillment = new FulfillmentApi(this.client);
     this.dispute = new DisputeApi(this.client);
     this.marketing = new MarketingApi(this.client);
-    this.metadata = new MetadataApi(this.client);
   }
 
   /**
@@ -99,7 +96,6 @@ export class EbaySellerApi {
 export * from '@/api/account-management/account.js';
 export * from '@/api/client.js';
 export * from '@/api/listing-management/inventory.js';
-export * from '@/api/listing-metadata/metadata.js';
 export * from '@/api/marketing-and-promotions/marketing.js';
 export * from '@/api/order-management/dispute.js';
 export * from '@/api/order-management/fulfillment.js';

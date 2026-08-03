@@ -247,7 +247,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | [Marketing](src/tools/categories/marketing.ts) | Кампании продвигаемых объявлений, реклама, акции, ставки, массовые операции |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Отчёты о трафике, стандарты продавца, метрики поддержки клиентов |
 | [Communication](src/tools/categories/communication.ts) | Переписка покупатель–продавец, переговоры, уведомления, отзывы |
-| [Metadata](src/tools/categories/metadata.ts) | Политики возврата, юрисдикции налога с продаж, автомобильная совместимость |
+| [Metadata](src/ebay/sell/metadata/) | Политики возврата, юрисдикции налога с продаж, автомобильная совместимость |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Деревья категорий, характеристики товаров, состояния товаров |
 | [Commerce VeRO](src/ebay/commerce/vero/) | Жалобы о нарушении интеллектуальной собственности и коды причин VeRO |
 | [Sell eDelivery](src/ebay/sell/edelivery/) | Международная доставка через API eDelivery |

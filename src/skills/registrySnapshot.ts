@@ -37,7 +37,8 @@ const FAMILY_BLURBS: Record<string, string> = {
   'sell.negotiation': 'Listings eligible for seller offers and seller-initiated discounted offers',
   'sell.recommendation':
     'Promoted Listings recommendations for active listings from Sell Recommendation',
-  metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
+  'sell.metadata':
+    'Marketplace policies, item conditions, listing constraints, automotive compatibility, and sales-tax jurisdictions',
   trading:
     'Legacy Trading API (XML) — retrieve, create, revise, relist, and end fixed-price listings',
 };
@@ -55,6 +56,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'developer.status', title: 'Developer Status' },
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
   { namespace: 'sell.edelivery', title: 'Sell eDelivery' },
+  { namespace: 'sell.metadata', title: 'Sell Metadata' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },
   { namespace: 'trading', title: 'Trading' },

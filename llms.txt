@@ -2,7 +2,7 @@
 
 > Local MCP server that exposes 292 tools covering 100% of the eBay Sell APIs to AI coding assistants (Claude, Cursor, Windsurf, and any MCP-compatible client). Runs entirely on your machine with no cloud relay.
 
-Built with TypeScript/Node.js, the MCP SDK, Effect-backed validation with a Zod-compatible MCP adapter, and OpenAPI-generated eBay types. Supports OAuth 2.0, configurable tool exposure, MCP Apps read-only views, and the eBay Trading API (legacy XML).
+Built with TypeScript/Node.js, the MCP SDK, direct Zod 4 resource contracts, native promises, and OpenAPI-generated eBay types. Remaining legacy operations are migrating off Effect and the repository schema adapter. Supports OAuth 2.0, configurable tool exposure, MCP Apps read-only views, and the eBay Trading API (legacy XML).
 
 ## Getting Started
 
@@ -33,7 +33,7 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 - [Sell Analytics](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/analytics): Seller standards, traffic reports, customer-service metrics
 - [Sell Negotiation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/negotiation): Listings eligible for seller offers and seller-initiated discounted offers
 - [Sell Recommendation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/recommendation): Promoted Listings recommendations for active listings
-- [Metadata](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/metadata.ts): Return policies, sales-tax jurisdictions, automotive compatibility
+- [Sell Metadata](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/metadata): Marketplace policies, item conditions, sales-tax jurisdictions, and automotive compatibility under `sell.metadata`
 - [Sell eDelivery](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/edelivery): International shipment creation, management, labels, and tracking under `sell.edelivery` for Greater-China sellers with active eDIS
 - [Trading](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/trading/fixedPriceListing.ts): Legacy XML API — fixed-price listing retrieval, creation, revision, relisting, and ending under `trading`
 - [Token Management](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/tokenManagement.ts): OAuth token retrieval, refresh, and diagnostics
@@ -56,7 +56,7 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 ## Build and Contribution
 
 - [CONTRIBUTING.md](https://github.com/YosefHayim/ebay-mcp/blob/main/CONTRIBUTING.md): How to add tools, run tests, and open PRs
-- [CODE-STYLE.md](https://github.com/YosefHayim/ebay-mcp/blob/main/CODE-STYLE.md): TypeScript, Effect, schema, TSDoc, file naming, and endpoint implementation rules
+- [CODE-STYLE.md](https://github.com/YosefHayim/ebay-mcp/blob/main/CODE-STYLE.md): TypeScript, direct Zod and promise contracts, TSDoc, file naming, and resource implementation rules
 - [ARCHITECTURE.md](https://github.com/YosefHayim/ebay-mcp/blob/main/ARCHITECTURE.md): Current module map and architecture overview
 - [Current ADRs](https://github.com/YosefHayim/ebay-mcp/tree/main/docs/adr/current): Accepted decisions for formatter, CLI, dependency, CI, layout, and style backlog rules
 - [AGENTS.md](https://github.com/YosefHayim/ebay-mcp/blob/main/AGENTS.md): Shared agent contract, validation commands, module ownership, and add-an-endpoint workflow
@@ -118,7 +118,7 @@ Credentials are stored locally in your .env file and used only to call eBay dire
 
 ### How is this different from calling the eBay API directly?
 
-You interact in natural language through your AI assistant; OAuth token management, automatic retries with backoff, configurable tool exposure, generated eBay DTO types, and type-safe Effect-backed validation are built in.
+You interact in natural language through your AI assistant; OAuth token management, automatic retries with backoff, configurable tool exposure, generated eBay DTO types, and strict runtime validation are built in.
 
 ### Can I expose only some tools?
 
@@ -134,7 +134,7 @@ Complete the OAuth flow with `npm run setup` to authenticate with a user token (
 
 ### What is it built with?
 
-TypeScript and Node.js (ESM), using the official MCP SDK, Effect-backed validation with a Zod-compatible MCP adapter, and OpenAPI-generated types.
+TypeScript and Node.js (ESM), using the official MCP SDK, direct Zod 4 resource contracts, native promises, and OpenAPI-generated types. Remaining legacy operations are being migrated off Effect and the repository schema adapter.
 
 ### How do I update to the latest version?
 

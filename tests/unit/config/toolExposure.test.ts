@@ -24,6 +24,7 @@ describe('toolExposure', () => {
         'developer.status',
         'sell.analytics',
         'sell.edelivery',
+        'sell.metadata',
         'sell.negotiation',
         'sell.recommendation',
       ]);
@@ -73,6 +74,7 @@ describe('toolExposure', () => {
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'developer.status' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.analytics' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.edelivery' })).toBeUndefined();
+      expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.metadata' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.negotiation' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.recommendation' })).toBeUndefined();
     });

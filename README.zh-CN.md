@@ -247,7 +247,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | [Marketing](src/tools/categories/marketing.ts) | 推广刊登广告活动、广告、促销、出价、批量操作 |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | 流量报告、卖家标准、客户服务指标 |
 | [Communication](src/tools/categories/communication.ts) | 买卖双方消息、议价、通知、评价 |
-| [Metadata](src/tools/categories/metadata.ts) | 退货政策、销售税辖区、汽车兼容性 |
+| [Metadata](src/ebay/sell/metadata/) | 退货政策、销售税辖区、汽车兼容性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 类目树、商品属性、商品成色 |
 | [Commerce VeRO](src/ebay/commerce/vero/) | 知识产权侵权举报与 VeRO 原因代码 |
 | [Sell eDelivery](src/ebay/sell/edelivery/) | 通过 eDelivery API 进行国际配送 |

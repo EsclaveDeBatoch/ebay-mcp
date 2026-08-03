@@ -161,31 +161,6 @@ describe('Tools Layer', () => {
         cloneCampaign: vi.fn(),
         getPromotions: vi.fn(),
       },
-      // Metadata API
-      metadata: {
-        getAutomotivePartsCompatibilityPolicies: vi.fn(),
-        getCategoryPolicies: vi.fn(),
-        getExtendedProducerResponsibilityPolicies: vi.fn(),
-        getHazardousMaterialsLabels: vi.fn(),
-        getItemConditionPolicies: vi.fn(),
-        getListingStructurePolicies: vi.fn(),
-        getNegotiatedPricePolicies: vi.fn(),
-        getProductSafetyLabels: vi.fn(),
-        getRegulatoryPolicies: vi.fn(),
-        getClassifiedAdPolicies: vi.fn(),
-        getCurrencies: vi.fn(),
-        getListingTypePolicies: vi.fn(),
-        getMotorsListingPolicies: vi.fn(),
-        getShippingPolicies: vi.fn(),
-        getSiteVisibilityPolicies: vi.fn(),
-        getCompatibilitiesBySpecification: vi.fn(),
-        getCompatibilityPropertyNames: vi.fn(),
-        getCompatibilityPropertyValues: vi.fn(),
-        getMultiCompatibilityPropertyValues: vi.fn(),
-        getProductCompatibilities: vi.fn(),
-        getSalesTaxJurisdictions: vi.fn(),
-      },
-      // Token management methods
       setUserTokens: vi.fn().mockReturnValue(Effect.succeed(undefined)),
       getTokenInfo: vi.fn().mockReturnValue({
         hasUserToken: false,
@@ -232,7 +207,6 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
       expect(toolNames).toContain('ebay_get_orders'); // fulfillmentTools
       expect(toolNames).toContain('ebay_get_campaigns');
-      expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
     });
   });
 

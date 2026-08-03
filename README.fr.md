@@ -247,7 +247,7 @@ Configurés automatiquement par `npm run setup`. Nécessite Node.js ≥ 22.12 et
 | [Marketing](src/tools/categories/marketing.ts) | Campagnes d'annonces sponsorisées, annonces, promotions, enchères, opérations en masse |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Rapports de trafic, standards vendeur, métriques de service client |
 | [Communication](src/tools/categories/communication.ts) | Messagerie acheteur–vendeur, négociations, notifications, évaluations |
-| [Metadata](src/tools/categories/metadata.ts) | Politiques de retour, juridictions de taxe de vente, compatibilité automobile |
+| [Metadata](src/ebay/sell/metadata/) | Politiques de retour, juridictions de taxe de vente, compatibilité automobile |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Arbres de catégories, aspects d'articles, états d'articles |
 | [Commerce VeRO](src/ebay/commerce/vero/) | Signalements d’atteinte à la propriété intellectuelle et codes de motif VeRO |
 | [Sell eDelivery](src/ebay/sell/edelivery/) | Expédition internationale via l’API eDelivery |

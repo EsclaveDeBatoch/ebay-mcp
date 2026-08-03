@@ -104,7 +104,7 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `sell.analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
 | `sell.negotiation` | Listings eligible for seller offers and seller-initiated discounted offers | "Find listings with interested buyers." |
 | `sell.recommendation` | Promoted Listings recommendations for active listings | "Which active listings should I promote?" |
-| `metadata` | Item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Show the listing policies for this marketplace." |
+| `sell.metadata` | Item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Show the listing policies for this marketplace." |
 | `sell.edelivery` | eDelivery international shipment creation, management, labels, and tracking for Greater-China sellers with active eDIS | "Track this eDelivery package." |
 | `developer.status` / `token-management` | API status, OAuth URLs, token refresh, and diagnostics | "Check whether eBay APIs and my token are healthy." |
 | `trading` | Legacy XML fixed-price listing create, revise, relist, and end operations | "Create a fixed-price listing draft from this SKU." |
@@ -119,7 +119,7 @@ Both talk to the same eBay endpoints — the difference is everything you'd othe
 | Interface | Natural language through your AI assistant | Hand-written HTTP requests and JSON parsing |
 | OAuth & token refresh | Built in, with automatic refresh | You implement and maintain it |
 | Rate-limit handling | Automatic retry with exponential backoff | Manual `429` handling and backoff |
-| Input validation | Effect-backed schemas + TypeScript types on every tool | None — you validate your own payloads |
+| Input validation | Strict runtime schemas + generated TypeScript types on every tool | None — you validate your own payloads |
 | Setup | One wizard (`npm run setup`) | Per-call auth, headers, and marketplace wiring |
 | AI client support | 9 clients auto-configured | Not applicable |
 | API coverage | 292 tools across 100% of the Sell APIs, ready to call | Build each request from the docs |
@@ -266,7 +266,7 @@ By default all tools are advertised to the agent at once. On a long conversation
 | `dynamic`                   | Only three discovery tools are visible (`list_ebay_tools`, `enable_ebay_tools`, `disable_ebay_tools`). The agent searches the catalogue and loads only the tools it needs; they then appear natively. | hosts that honor `tools/listChanged` (e.g. Claude) |
 | `sell.analytics,inventory,…` | Registers **only** the named exposure paths (listed below), frozen for the session.                                                                    | every host (incl. ChatGPT, Cursor)      |
 
-The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.analytics`, `sell.edelivery`, `sell.negotiation`, `sell.recommendation`, and `trading`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `metadata`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.analytics`, `sell.edelivery`, `sell.negotiation`, `sell.recommendation`.
+The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.analytics`, `sell.edelivery`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`, and `trading`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.analytics`, `sell.edelivery`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`.
 
 ### Authentication & rate limits
 
@@ -323,11 +323,11 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | [Sell eDelivery](src/ebay/sell/edelivery/) | International shipment creation, management, labels, and tracking under `sell.edelivery` for Greater-China sellers with active eDIS |
 | [Sell Negotiation](src/ebay/sell/negotiation/offer.ts) | Eligible listings and seller-initiated discounted offers under `sell.negotiation` |
 | [Sell Recommendation](src/ebay/sell/recommendation/listingRecommendation.ts) | Promoted Listings recommendations under `sell.recommendation` |
-| [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
+| [Sell Metadata](src/ebay/sell/metadata/) | Marketplace policies, item conditions, sales-tax jurisdictions, and automotive compatibility under `sell.metadata` |
 | [Trading (legacy XML)](src/ebay/trading/fixedPriceListing.ts) | Fixed-price listing retrieval, create, revise, relist, and end under `trading` |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |
 
-**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_commerce_vero_get_reason_codes`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_developer_status_get_incidents`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_edelivery_create_package`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_trading_get_active_listings`, `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_commerce_vero_get_reason_codes`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_developer_status_get_incidents`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_edelivery_create_package`, `ebay_sell_metadata_get_category_policies`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_trading_get_active_listings`, `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 For the complete machine-readable index, see [llms.txt](llms.txt).
 
@@ -473,7 +473,7 @@ Credentials are stored locally in your `.env` file and used only to call eBay di
 <details>
 <summary><strong>How is this different from calling the eBay API directly?</strong></summary>
 
-You interact in natural language through your AI assistant. OAuth token management, automatic retries with backoff, and type-safe Effect-backed validation are built in. See the [comparison table](#ebay-mcp-vs-the-raw-ebay-api) above.
+You interact in natural language through your AI assistant. OAuth token management, automatic retries with backoff, and strict runtime validation are built in. See the [comparison table](#ebay-mcp-vs-the-raw-ebay-api) above.
 
 </details>
 
@@ -494,7 +494,7 @@ Complete the OAuth flow with `npm run setup` to authenticate with a user token (
 <details>
 <summary><strong>What is it built with?</strong></summary>
 
-TypeScript and Node.js (ESM), using the official MCP SDK, Effect-backed validation with a Zod-compatible MCP adapter, and OpenAPI-generated types.
+TypeScript and Node.js (ESM), using the official MCP SDK, direct Zod 4 resource contracts, and OpenAPI-generated types. Remaining legacy operations are being migrated off Effect and the repository schema adapter.
 
 </details>
 

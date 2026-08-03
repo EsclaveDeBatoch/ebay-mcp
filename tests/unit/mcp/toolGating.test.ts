@@ -92,6 +92,34 @@ describe('toolNamesInExposurePaths', () => {
     ]);
   });
 
+  it('returns the complete Sell Metadata namespace under its official path', () => {
+    const metadataToolNames = toolNamesInExposurePaths(['sell.metadata']);
+    expect([...metadataToolNames]).toEqual([
+      'ebay_sell_metadata_get_automotive_parts_compatibility_policies',
+      'ebay_sell_metadata_get_category_policies',
+      'ebay_sell_metadata_get_classified_ad_policies',
+      'ebay_sell_metadata_get_currencies',
+      'ebay_sell_metadata_get_extended_producer_responsibility_policies',
+      'ebay_sell_metadata_get_hazardous_materials_labels',
+      'ebay_sell_metadata_get_item_condition_policies',
+      'ebay_sell_metadata_get_listing_structure_policies',
+      'ebay_sell_metadata_get_listing_type_policies',
+      'ebay_sell_metadata_get_motors_listing_policies',
+      'ebay_sell_metadata_get_negotiated_price_policies',
+      'ebay_sell_metadata_get_product_safety_labels',
+      'ebay_sell_metadata_get_regulatory_policies',
+      'ebay_sell_metadata_get_return_policies',
+      'ebay_sell_metadata_get_shipping_policies',
+      'ebay_sell_metadata_get_site_visibility_policies',
+      'ebay_sell_metadata_get_compatibilities_by_specification',
+      'ebay_sell_metadata_get_compatibility_property_names',
+      'ebay_sell_metadata_get_compatibility_property_values',
+      'ebay_sell_metadata_get_multi_compatibility_property_values',
+      'ebay_sell_metadata_get_product_compatibilities',
+      'ebay_sell_metadata_get_sales_tax_jurisdictions',
+    ]);
+  });
+
   it('returns the complete Trading listing namespace under its official path', () => {
     const tradingToolNames = toolNamesInExposurePaths(['trading']);
     expect([...tradingToolNames]).toEqual([

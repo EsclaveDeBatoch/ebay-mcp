@@ -247,7 +247,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | [Marketing](src/tools/categories/marketing.ts) | 프로모션 광고 캠페인, 광고, 프로모션, 입찰, 일괄 작업 |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | 트래픽 보고서, 판매자 기준, 고객 서비스 지표 |
 | [Communication](src/tools/categories/communication.ts) | 구매자–판매자 메시지, 협상, 알림, 피드백 |
-| [Metadata](src/tools/categories/metadata.ts) | 반품 정책, 판매세 관할, 자동차 호환성 |
+| [Metadata](src/ebay/sell/metadata/) | 반품 정책, 판매세 관할, 자동차 호환성 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 카테고리 트리, 항목 속성, 항목 상태 |
 | [Commerce VeRO](src/ebay/commerce/vero/) | 지식 재산권 침해 신고 및 VeRO 사유 코드 |
 | [Sell eDelivery](src/ebay/sell/edelivery/) | eDelivery API를 통한 국제 배송 |

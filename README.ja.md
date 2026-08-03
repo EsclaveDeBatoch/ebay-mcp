@@ -247,7 +247,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Marketing](src/tools/categories/marketing.ts) | プロモーション広告キャンペーン、広告、プロモーション、入札、一括操作 |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | トラフィックレポート、出品者基準、カスタマーサービス指標 |
 | [Communication](src/tools/categories/communication.ts) | 購入者と出品者のメッセージ、交渉、通知、評価 |
-| [Metadata](src/tools/categories/metadata.ts) | 返品ポリシー、販売税の管轄、自動車適合性 |
+| [Metadata](src/ebay/sell/metadata/) | 返品ポリシー、販売税の管轄、自動車適合性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | カテゴリツリー、アイテムの特性、アイテムのコンディション |
 | [Commerce VeRO](src/ebay/commerce/vero/) | 知的財産権侵害の報告と VeRO 理由コード |
 | [Sell eDelivery](src/ebay/sell/edelivery/) | eDelivery API による国際配送 |

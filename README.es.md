@@ -247,7 +247,7 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | [Marketing](src/tools/categories/marketing.ts) | Campañas de anuncios promocionados, anuncios, promociones, pujas, operaciones masivas |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Informes de tráfico, estándares de vendedor, métricas de atención al cliente |
 | [Communication](src/tools/categories/communication.ts) | Mensajería comprador–vendedor, negociaciones, notificaciones, valoraciones |
-| [Metadata](src/tools/categories/metadata.ts) | Políticas de devolución, jurisdicciones de impuesto sobre ventas, compatibilidad de automoción |
+| [Metadata](src/ebay/sell/metadata/) | Políticas de devolución, jurisdicciones de impuesto sobre ventas, compatibilidad de automoción |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Árboles de categorías, aspectos de artículos, condiciones de artículos |
 | [Commerce VeRO](src/ebay/commerce/vero/) | Denuncias de infracción de propiedad intelectual y códigos de motivo VeRO |
 | [Sell eDelivery](src/ebay/sell/edelivery/) | Envíos internacionales mediante la API de eDelivery |
