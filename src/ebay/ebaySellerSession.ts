@@ -1,5 +1,6 @@
 import type { EbayApiClient } from '@/api/client.js';
 import { EbayClientRequestError } from '@/api/clientRequestError.js';
+import { getIdentityBaseUrl } from '@/config/environment.js';
 import type { EbayFailure, EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
 import { getErrorMessage } from '@/utils/errors.js';
 
@@ -15,6 +16,7 @@ type EbayRequestHeaders = {
 
 /** One authenticated GET call issued by an eBay resource operation. */
 type EbayGetCall = {
+  readonly apiHost?: 'identity';
   readonly endpoint: string;
   readonly searchParameters?: EbaySearchParameters;
 };
@@ -109,10 +111,24 @@ export type {
  * ```
  */
 export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySellerSession => ({
-  get: <EbayDocument>(ebayGetCall: EbayGetCall) =>
-    completeEbayCall(
+  get: <EbayDocument>(ebayGetCall: EbayGetCall) => {
+    if (ebayGetCall.apiHost === 'identity') {
+      const ebaySettings = ebayApiClient.getConfig();
+      const identityApiBaseUrl = getIdentityBaseUrl(
+        ebaySettings.environment,
+        ebaySettings.apiBaseUrl,
+      );
+      return completeEbayCall(
+        ebayApiClient.getWithFullUrl<EbayDocument>(
+          `${identityApiBaseUrl}${ebayGetCall.endpoint}`,
+          ebayGetCall.searchParameters,
+        ),
+      );
+    }
+    return completeEbayCall(
       ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters),
-    ),
+    );
+  },
   post: <EbayDocument>(ebayPostCall: EbayPostCall) =>
     completeEbayCall(
       ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint, ebayPostCall.requestDocument, {

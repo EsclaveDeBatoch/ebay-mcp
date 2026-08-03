@@ -4,7 +4,6 @@ import { TaxonomyApi } from '@/api/listing-metadata/taxonomy.js';
 import { ComplianceApi } from '@/api/other/compliance.js';
 import { VeroApi } from '@/api/other/vero.js';
 import { EDeliveryApi } from '@/api/other/edelivery.js';
-import { IdentityApi } from '@/api/other/identity.js';
 import type { EbayApiClient } from '@/api/client.js';
 import { Effect } from 'effect';
 
@@ -675,36 +674,6 @@ describe('Other APIs', () => {
         expect(error?._tag).toBe('EndpointInputError');
       }
       expect(client.get).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('IdentityApi', () => {
-    let api: IdentityApi;
-
-    beforeEach(() => {
-      api = new IdentityApi(client);
-    });
-
-    it('get user identity', async () => {
-      const mockResponse = { userId: 'USER123' };
-      vi.mocked(client.getWithFullUrl).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getUser({}));
-
-      expect(client.getWithFullUrl).toHaveBeenCalledWith(
-        'https://apiz.sandbox.ebay.com/commerce/identity/v1/user',
-      );
-    });
-
-    it('handle errors when getting user', async () => {
-      const cause = new Error('Unauthorized');
-      vi.mocked(client.getWithFullUrl).mockRejectedValue(cause);
-
-      const error = await Effect.runPromise(Effect.flip(api.getUser({})));
-
-      expect(error).toMatchObject({ _tag: 'EbayApiError', method: 'GET' });
-      expect(error.path).toBe('/commerce/identity/v1/user');
-      expect(error.cause).toBe(cause);
     });
   });
 });

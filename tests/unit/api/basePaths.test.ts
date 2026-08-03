@@ -122,11 +122,6 @@ const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
     spec: 'specs/ebay/sell-apps/other-apis/sell_edelivery_international_shipping_oas3.json',
   },
   {
-    file: 'src/api/other/identity.ts',
-    constant: 'basePath',
-    spec: 'specs/ebay/sell-apps/other-apis/commerce_identity_v1_oas3.json',
-  },
-  {
     file: 'src/api/other/vero.ts',
     constant: 'basePath',
     spec: 'specs/ebay/sell-apps/other-apis/commerce_vero_v1_oas3.json',

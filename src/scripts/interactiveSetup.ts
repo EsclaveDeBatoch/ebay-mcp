@@ -50,6 +50,8 @@ import { validateSetup, displayRecommendations } from '@/scripts/setupValidator.
 import { loadExistingConfig, readEnvironment } from './setupShared.js';
 import { EbaySellerApi } from '@/api/index.js';
 import { EbayOAuthClient } from '@/auth/oauth.js';
+import { createEbaySellerSession } from '@/ebay/ebaySellerSession.js';
+import { getUser } from '@/ebay/commerce/identity/user.js';
 import { getErrorMessage } from '@/utils/errors.js';
 import type { EbayConfig } from '@/types/ebay.js';
 import process from 'node:process';
@@ -331,13 +333,16 @@ async function validateAndGenerateTokens(config: Record<string, string>): Promis
           });
           yield* api.initialize();
 
-          const userInfo = yield* api.identity.getUser();
-          if (userInfo) {
-            console.log(chalk.green('\n✓ Successfully validated credentials!\n'));
-            console.log(chalk.bold.white('📋 Your eBay Account Information:\n'));
-            console.log(userInfo);
-            console.log('');
+          const identityLookup = yield* Effect.promise(() =>
+            getUser(createEbaySellerSession(api.getAuthClient())),
+          );
+          if (identityLookup.kind === 'ebayRequestFailed') {
+            return yield* Effect.fail(new Error(identityLookup.ebayFailure.message));
           }
+          console.log(chalk.green('\n✓ Successfully validated credentials!\n'));
+          console.log(chalk.bold.white('📋 Your eBay Account Information:\n'));
+          console.log(identityLookup.ebayDocument);
+          console.log('');
 
           // Display scope verification
           const authClient = api.getAuthClient();

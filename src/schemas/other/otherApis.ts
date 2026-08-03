@@ -5,7 +5,6 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
  * Other eBay APIs Schemas
  *
  * This file contains Effect-backed schemas for various eBay APIs including:
- * - Commerce Identity API
  * - Sell Compliance API
  * - Commerce Translation API
  * - Commerce VERO API
@@ -31,19 +30,6 @@ const errorSchema = z.object({
   outputRefIds: z.array(z.string()).optional(),
   parameters: z.array(errorParameterSchema).optional(),
   subdomain: z.string().optional(),
-});
-
-// ============================================================================
-// Commerce Identity API Schemas
-// ============================================================================
-
-const userConsentSchema = z.object({
-  consentState: z.string().optional(),
-  consentType: z.string().optional(),
-});
-
-const getUserConsentResponseSchema = z.object({
-  consents: z.array(userConsentSchema).optional(),
 });
 
 // ============================================================================
@@ -305,7 +291,6 @@ export const getTrackingInputSchema = z.object({
 // ============================================================================
 
 /** Empty input schema for Commerce Identity API getUser. */
-export const getUserInputSchema = z.object({});
 
 /** Input schema for Sell Compliance API getListingViolations. */
 export const getListingViolationsInputSchema = z.object({
@@ -366,10 +351,6 @@ export const getVeroReasonCodesInputSchema = z.object({});
  */
 export const getOtherApisJsonSchemas = () => {
   return {
-    // Commerce Identity API
-    getUserInput: zodToJsonSchema(getUserInputSchema, 'getUserInput'),
-    getUserConsentOutput: zodToJsonSchema(getUserConsentResponseSchema, 'getUserConsentOutput'),
-
     // Sell Compliance API
     getComplianceSummaryOutput: zodToJsonSchema(
       complianceSummaryInfoSchema,
@@ -547,7 +528,5 @@ export const getOtherApisJsonSchemas = () => {
     // VERO Types
     reportedItem: zodToJsonSchema(reportedItemSchema, 'reportedItem'),
     reportItemDetails: zodToJsonSchema(reportItemDetailsSchema, 'reportItemDetails'),
-
-    userConsent: zodToJsonSchema(userConsentSchema, 'userConsent'),
   };
 };

@@ -234,9 +234,6 @@ describe('Tools Layer', () => {
         respondToFeedback: vi.fn(),
       },
       // Other APIs
-      identity: {
-        getUser: vi.fn(),
-      },
       compliance: {
         getListingViolations: vi.fn(),
         getListingViolationsSummary: vi.fn(),
@@ -324,7 +321,7 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
       expect(toolNames).toContain('ebay_get_category_tree'); // taxonomyTools
       expect(toolNames).toContain('ebay_send_message'); // communicationTools
-      expect(toolNames).toContain('ebay_get_user'); // otherApiTools
+      expect(toolNames).toContain('ebay_get_vero_reason_codes'); // otherApiTools
     });
   });
 
@@ -940,18 +937,6 @@ describe('Tools Layer', () => {
         categoryTreeId: '0',
         query: 'iPhone',
       });
-      expect(result).toBe(mockResponse);
-    });
-  });
-
-  describe('executeTool - Other APIs', () => {
-    it('get user', async () => {
-      const mockResponse = { userId: 'USER123' };
-      vi.mocked(mockApi.identity.getUser).mockReturnValue(Effect.succeed(mockResponse));
-
-      const result = await executeTool(mockApi, 'ebay_get_user', {});
-
-      expect(mockApi.identity.getUser).toHaveBeenCalledWith({});
       expect(result).toBe(mockResponse);
     });
   });

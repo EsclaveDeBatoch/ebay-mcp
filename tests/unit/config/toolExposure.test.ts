@@ -11,6 +11,7 @@ describe('toolExposure', () => {
     it('contains legacy categories and migrated official exposure paths', () => {
       expect([...EBAY_TOOL_EXPOSURE_PATHS]).toEqual([
         ...toolCategories.map((category) => category.key),
+        'commerce.identity',
         'commerce.translation',
         'sell.analytics',
         'sell.recommendation',
@@ -48,6 +49,7 @@ describe('toolExposure', () => {
 
     it('accepts valid legacy and official exposure paths', () => {
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'inventory,fulfillment' })).toBeUndefined();
+      expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.identity' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.translation' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.analytics' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.recommendation' })).toBeUndefined();

@@ -13,7 +13,6 @@ import {
   getListingViolationsSummaryInputSchema,
   getPackagesByLineItemIdInputSchema,
   getTrackingInputSchema,
-  getUserInputSchema,
   getVeroReasonCodeInputSchema,
   getVeroReasonCodesInputSchema,
   getVeroReportInputSchema,
@@ -25,13 +24,6 @@ import type { ToolEntry } from '@/tools/registry.js';
 
 /** Miscellaneous eBay API tools that do not fit the primary seller API categories. */
 export const otherEntries: ToolEntry[] = [
-  // Identity API
-  defineTool({
-    name: 'ebay_get_user',
-    description: 'Get user identity information',
-    inputSchema: getUserInputSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.identity.getUser(args)),
-  }),
   // Compliance API — decommissioned by eBay on 2026-03-30 (no API replacement).
   // Tools stay registered so callers get a clear failure instead of a bare 404.
   defineTool({

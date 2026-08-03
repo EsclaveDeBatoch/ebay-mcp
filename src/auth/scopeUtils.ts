@@ -240,7 +240,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
     },
 
     // Identity Tools
-    ebay_get_user: {
+    ebay_commerce_identity_get_user: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.identity.readonly'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.identity.readonly',
       description: 'Requires read access to user identity',

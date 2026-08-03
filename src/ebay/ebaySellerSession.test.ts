@@ -73,6 +73,26 @@ describe('authenticated eBay seller session calls', () => {
       },
     );
   });
+
+  it('uses the configured Identity API host for an identity GET', async () => {
+    const authenticatedClient = ebayApiClient();
+    const ebayDocument = { userId: '007BUS2xyeBay' };
+    const identityCall = vi
+      .spyOn(authenticatedClient, 'getWithFullUrl')
+      .mockResolvedValue(ebayDocument);
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.get({
+        apiHost: 'identity',
+        endpoint: '/commerce/identity/v1/user/',
+      }),
+    ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument });
+    expect(identityCall).toHaveBeenCalledWith(
+      'https://apiz.sandbox.ebay.com/commerce/identity/v1/user/',
+      undefined,
+    );
+  });
 });
 
 describe('authenticated eBay seller session failures', () => {

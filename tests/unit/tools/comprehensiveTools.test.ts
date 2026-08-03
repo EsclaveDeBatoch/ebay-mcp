@@ -164,9 +164,6 @@ describe('Comprehensive Tools Coverage', () => {
         leaveFeedbackForBuyer: vi.fn(),
         getFeedbackRatingSummary: vi.fn(),
       },
-      identity: {
-        getUser: vi.fn(),
-      },
       compliance: {
         getListingViolations: vi.fn(),
         getListingViolationsSummary: vi.fn(),
@@ -1470,13 +1467,6 @@ describe('Comprehensive Tools Coverage', () => {
   });
 
   describe('Other API Tools', () => {
-    it('ebay_get_user', async () => {
-      const mockResponse = { userId: 'USER123' };
-      vi.mocked(mockApi.identity.getUser).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_user', {});
-      expect(mockApi.identity.getUser).toHaveBeenCalledWith({});
-    });
-
     it('ebay_get_listing_violations', async () => {
       const mockResponse = { listingViolations: [] };
       vi.mocked(mockApi.compliance.getListingViolations).mockReturnValue(

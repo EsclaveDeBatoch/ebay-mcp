@@ -63,6 +63,11 @@ describe('toolNamesInExposurePaths', () => {
     expect([...names]).toEqual(['ebay_commerce_translation_translate']);
   });
 
+  it('returns the complete migrated Commerce Identity namespace under its official path', () => {
+    const names = toolNamesInExposurePaths(['commerce.identity']);
+    expect([...names]).toEqual(['ebay_commerce_identity_get_user']);
+  });
+
   it('returns the complete migrated Sell Recommendation namespace under its official path', () => {
     const names = toolNamesInExposurePaths(['sell.recommendation']);
     expect([...names]).toEqual(['ebay_sell_recommendation_find_listing_recommendations']);
@@ -80,7 +85,7 @@ describe('ToolGatingController', () => {
       const result = controller.list({}) as {
         families: { key: string; count: number }[];
       };
-      expect(result.families).toHaveLength(toolCategories.length + 3);
+      expect(result.families).toHaveLength(toolCategories.length + 4);
       const inventoryRow = result.families.find((row) => row.key === 'inventory');
       expect(inventoryRow?.count).toBe(inventory.entries.length);
     });

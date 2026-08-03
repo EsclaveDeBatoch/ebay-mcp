@@ -1,3 +1,4 @@
+import { getUserTool } from '@/ebay/commerce/identity/user.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
@@ -10,6 +11,7 @@ import type { EbayTool } from '@/mcp/defineTool.js';
 
 /** Explicit catalogue of migrated eBay resource tools. */
 export const ebayToolCatalogue: readonly EbayTool[] = [
+  getUserTool,
   translateListingTextTool,
   getTrafficReportTool,
   findSellerStandardsProfilesTool,

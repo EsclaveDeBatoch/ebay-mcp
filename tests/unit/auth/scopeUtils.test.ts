@@ -114,6 +114,18 @@ describe('Scope Utils', () => {
       expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope');
     });
 
+    it('returns the identity scope for the hierarchical user-profile tool', () => {
+      const requirement = getRequiredScopesForTool('ebay_commerce_identity_get_user');
+
+      expect(requirement).toBeDefined();
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/commerce.identity.readonly',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/commerce.identity.readonly',
+      );
+    });
+
     it('return scopes for create/write operations', () => {
       const requirement = getRequiredScopesForTool('ebay_create_or_replace_inventory_item');
 

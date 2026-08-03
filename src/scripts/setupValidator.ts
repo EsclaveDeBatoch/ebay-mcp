@@ -381,6 +381,8 @@ export const displayRecommendations = (summary: ValidationSummary): void => {
     writeCliLine(chalk.green('  ✅ Configuration is complete and valid'));
     writeCliLine(chalk.gray('     • Restart your MCP client (Claude Desktop, Cline, etc.)'));
     writeCliLine(chalk.gray('     • The eBay MCP server should now be available'));
-    writeCliLine(chalk.gray('     • Try using tools like: ebay_get_user, ebay_get_oauth_url\n'));
+    writeCliLine(
+      chalk.gray('     • Try tools like: ebay_commerce_identity_get_user, ebay_get_oauth_url\n'),
+    );
   }
 };

@@ -241,11 +241,10 @@ Schemas for category navigation, suggestions, and product aspects.
 
 ### 8. Other APIs (`other/otherApis.ts`)
 
-Legacy schemas for identity, compliance, VERO, and international shipping.
+Legacy schemas for compliance, VERO, and international shipping.
 
 **Endpoints Covered:**
 
-- Commerce Identity API (user information)
 - Sell Compliance API (listing violations, suppression)
 - Commerce VERO API (intellectual property rights reporting)
 - Sell eDelivery International Shipping API (actual costs, services, bundles, packages, labels, tracking)
