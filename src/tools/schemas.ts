@@ -6,9 +6,6 @@ import {
   WeightUnit,
   PricingVisibility,
   FormatType,
-  LocationType,
-  MerchantLocationStatus,
-  DayOfWeek,
   ReasonForRefund,
   FundingModel,
   MessageReferenceType,
@@ -155,73 +152,6 @@ export const offerSchema = z
         vatPercentage: z.number().optional(),
       })
       .passthrough()
-      .optional(),
-  })
-  .passthrough();
-
-/** Inventory location payload for seller warehouse and pickup locations. */
-export const locationSchema = z
-  .object({
-    location: z
-      .object({
-        address: z
-          .object({
-            addressLine1: z.string().optional(),
-            addressLine2: z.string().optional(),
-            city: z.string().optional(),
-            stateOrProvince: z.string().optional(),
-            postalCode: z.string().optional(),
-            country: z.string().optional(),
-          })
-          .passthrough()
-          .optional(),
-      })
-      .passthrough()
-      .optional(),
-    locationAdditionalInformation: z.string().optional(),
-    locationInstructions: z.string().optional(),
-    locationTypes: z.array(z.nativeEnum(LocationType)).optional(),
-    locationWebUrl: z.string().optional(),
-    merchantLocationStatus: z.nativeEnum(MerchantLocationStatus).optional(),
-    name: z.string().optional(),
-    operatingHours: z
-      .array(
-        z
-          .object({
-            dayOfWeekEnum: z.nativeEnum(DayOfWeek).optional(),
-            intervals: z
-              .array(
-                z
-                  .object({
-                    open: z.string().optional(),
-                    close: z.string().optional(),
-                  })
-                  .passthrough(),
-              )
-              .optional(),
-          })
-          .passthrough(),
-      )
-      .optional(),
-    phone: z.string().optional(),
-    specialHours: z
-      .array(
-        z
-          .object({
-            date: z.string().optional(),
-            intervals: z
-              .array(
-                z
-                  .object({
-                    open: z.string().optional(),
-                    close: z.string().optional(),
-                  })
-                  .passthrough(),
-              )
-              .optional(),
-          })
-          .passthrough(),
-      )
       .optional(),
   })
   .passthrough();

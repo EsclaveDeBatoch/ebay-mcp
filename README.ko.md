@@ -242,8 +242,8 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | eBay MCP 카탈로그용 ChatGPT 커넥터 search/fetch 도구 |
 | [Sell Account](src/ebay/sell/account/) | 판매자 상태, 프로그램 등록, 판매세, 구독, 요금표, 광고 자격, 지원 중단 예정 결제 프로그램 상태, 비즈니스 정책 |
-| [Inventory](src/tools/categories/inventory.ts) | 재고 항목, 오퍼, 위치, 일괄 작업, SKU/위치 매핑 |
-| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory`의 항목 그룹, 차량 호환성 및 SKU 위치 매핑 |
+| [Inventory](src/tools/categories/inventory.ts) | 레거시 재고 항목, 오퍼 및 일괄 작업 |
+| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory`의 항목 그룹, 차량 호환성, SKU 위치 매핑 및 재고 위치 |
 | [Fulfillment](src/ebay/sell/fulfillment/) | 주문, 배송, 환불, 분쟁, 결제 분쟁 증거 |
 | [Marketing](src/tools/categories/marketing.ts) | 프로모션 광고 캠페인, 광고, 프로모션, 입찰, 일괄 작업 |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | 트래픽 보고서, 판매자 기준, 고객 서비스 지표 |
@@ -275,7 +275,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 
 | 원형 | 도구 |
 | --- | --- |
-| **테이블** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **테이블** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
 | **카드** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **차트** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 

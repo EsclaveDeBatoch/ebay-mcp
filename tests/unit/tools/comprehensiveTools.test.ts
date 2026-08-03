@@ -21,13 +21,6 @@ describe('Comprehensive Tools Coverage', () => {
         bulkCreateOrReplaceInventoryItem: vi.fn(),
         bulkGetInventoryItem: vi.fn(),
         bulkUpdatePriceQuantity: vi.fn(),
-        getInventoryLocations: vi.fn(),
-        getInventoryLocation: vi.fn(),
-        createInventoryLocation: vi.fn(),
-        deleteInventoryLocation: vi.fn(),
-        disableInventoryLocation: vi.fn(),
-        enableInventoryLocation: vi.fn(),
-        updateInventoryLocation: vi.fn(),
         getOffers: vi.fn(),
         getOffer: vi.fn(),
         createOffer: vi.fn(),
@@ -137,81 +130,6 @@ describe('Comprehensive Tools Coverage', () => {
       );
       await executeTool(mockApi, 'ebay_bulk_update_price_quantity', input);
       expect(mockApi.inventory.bulkUpdatePriceQuantity).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_inventory_locations', async () => {
-      const mockResponse = { locations: [] };
-      const input = { limit: 10, offset: 0 };
-      vi.mocked(mockApi.inventory.getInventoryLocations).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_inventory_locations', input);
-      expect(mockApi.inventory.getInventoryLocations).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_inventory_location', async () => {
-      const mockResponse = { merchantLocationKey: 'LOC123' };
-      const input = {
-        merchantLocationKey: 'LOC123',
-      };
-      vi.mocked(mockApi.inventory.getInventoryLocation).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_inventory_location', input);
-      expect(mockApi.inventory.getInventoryLocation).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_inventory_location', async () => {
-      vi.mocked(mockApi.inventory.createInventoryLocation).mockReturnValue(
-        Effect.succeed(undefined),
-      );
-      const input = {
-        merchantLocationKey: 'LOC123',
-        body: { name: 'Warehouse', locationTypes: ['WAREHOUSE'] },
-      };
-      await executeTool(mockApi, 'ebay_create_inventory_location', input);
-      expect(mockApi.inventory.createInventoryLocation).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_delete_inventory_location', async () => {
-      const input = {
-        merchantLocationKey: 'LOC123',
-      };
-      vi.mocked(mockApi.inventory.deleteInventoryLocation).mockReturnValue(
-        Effect.succeed(undefined),
-      );
-      await executeTool(mockApi, 'ebay_delete_inventory_location', input);
-      expect(mockApi.inventory.deleteInventoryLocation).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_disable_inventory_location', async () => {
-      const input = {
-        merchantLocationKey: 'LOC123',
-      };
-      vi.mocked(mockApi.inventory.disableInventoryLocation).mockReturnValue(Effect.succeed({}));
-      await executeTool(mockApi, 'ebay_disable_inventory_location', input);
-      expect(mockApi.inventory.disableInventoryLocation).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_enable_inventory_location', async () => {
-      const input = {
-        merchantLocationKey: 'LOC123',
-      };
-      vi.mocked(mockApi.inventory.enableInventoryLocation).mockReturnValue(Effect.succeed({}));
-      await executeTool(mockApi, 'ebay_enable_inventory_location', input);
-      expect(mockApi.inventory.enableInventoryLocation).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_update_inventory_location', async () => {
-      vi.mocked(mockApi.inventory.updateInventoryLocation).mockReturnValue(
-        Effect.succeed(undefined),
-      );
-      const input = {
-        merchantLocationKey: 'LOC123',
-        body: { name: 'Updated' },
-      };
-      await executeTool(mockApi, 'ebay_update_inventory_location', input);
-      expect(mockApi.inventory.updateInventoryLocation).toHaveBeenCalledWith(input);
     });
 
     it('ebay_get_offers', async () => {

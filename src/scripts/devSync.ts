@@ -454,6 +454,13 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getskulocationmapping: ['ebay_sell_inventory_get_sku_location_mapping'],
   createorreplaceskulocationmapping: ['ebay_sell_inventory_create_or_replace_sku_location_mapping'],
   deleteskulocationmapping: ['ebay_sell_inventory_delete_sku_location_mapping'],
+  getinventorylocations: ['ebay_sell_inventory_get_inventory_locations'],
+  getinventorylocation: ['ebay_sell_inventory_get_inventory_location'],
+  createinventorylocation: ['ebay_sell_inventory_create_inventory_location'],
+  deleteinventorylocation: ['ebay_sell_inventory_delete_inventory_location'],
+  disableinventorylocation: ['ebay_sell_inventory_disable_inventory_location'],
+  enableinventorylocation: ['ebay_sell_inventory_enable_inventory_location'],
+  updateinventorylocation: ['ebay_sell_inventory_update_inventory_location'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

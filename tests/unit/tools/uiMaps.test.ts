@@ -204,6 +204,11 @@ describe('table mappers', () => {
     });
     expect(view.rows[0].cells.status).toBe('Enabled');
     expect(view.rows[0].cells.types).toBe('WAREHOUSE, STORE');
+    expect(view.rows[0].drill).toEqual({
+      tool: 'ebay_sell_inventory_get_inventory_location',
+      arguments: { merchantLocationKey: 'WAREHOUSE-1' },
+      label: 'View location',
+    });
   });
 
   it('maps dispute summaries with a drill ref', () => {

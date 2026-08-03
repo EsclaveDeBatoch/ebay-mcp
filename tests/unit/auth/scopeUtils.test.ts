@@ -407,6 +407,48 @@ describe('Scope Utils', () => {
     );
 
     it.each([
+      'ebay_sell_inventory_get_inventory_locations',
+      'ebay_sell_inventory_get_inventory_location',
+    ])(
+      'returns either inventory scope for the hierarchical %s tool',
+      (inventoryLocationReadToolName) => {
+        const inventoryLocationScopeRequirement = getRequiredScopesForTool(
+          inventoryLocationReadToolName,
+        );
+
+        expect(inventoryLocationScopeRequirement).toEqual({
+          requiredScopes: [
+            'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+            'https://api.ebay.com/oauth/api_scope/sell.inventory',
+          ],
+          minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+          description: 'Requires read access to inventory locations',
+        });
+      },
+    );
+
+    it.each([
+      'ebay_sell_inventory_create_inventory_location',
+      'ebay_sell_inventory_delete_inventory_location',
+      'ebay_sell_inventory_disable_inventory_location',
+      'ebay_sell_inventory_enable_inventory_location',
+      'ebay_sell_inventory_update_inventory_location',
+    ])(
+      'returns the inventory write scope for the hierarchical %s tool',
+      (inventoryLocationWriteToolName) => {
+        const inventoryLocationScopeRequirement = getRequiredScopesForTool(
+          inventoryLocationWriteToolName,
+        );
+
+        expect(inventoryLocationScopeRequirement).toEqual({
+          requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+          minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+          description: 'Requires write access to inventory locations',
+        });
+      },
+    );
+
+    it.each([
       'ebay_sell_analytics_get_traffic_report',
       'ebay_sell_analytics_find_seller_standards_profiles',
       'ebay_sell_analytics_get_seller_standards_profile',

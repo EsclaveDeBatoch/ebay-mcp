@@ -88,8 +88,8 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | Family | What it unlocks | Good first request |
 | --- | --- | --- |
 | `sell.account` | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies | "Show my eBay sales-tax settings." |
-| `inventory` | Inventory items, offers, inventory locations, bulk offer flows, and SKU/location mapping | "List my active inventory items and their available quantity." |
-| `sell.inventory` | Item groups, vehicle compatibility, and SKU location mappings | "Show the fulfillment locations mapped to this SKU." |
+| `inventory` | Legacy inventory items, offers, and bulk offer flows | "List my active inventory items and their available quantity." |
+| `sell.inventory` | Item groups, vehicle compatibility, SKU location mappings, and inventory locations | "Show the fulfillment locations mapped to this SKU." |
 | `sell.fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
 | `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
 | `commerce.feedback` | Pending tasks, feedback history, submissions, replies, and rating metrics | "Show feedback received by my seller account." |
@@ -307,8 +307,8 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
 | [Sell Account](src/ebay/sell/account/) | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies under `sell.account` |
-| [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, bulk operations, SKU/location mapping |
-| [Sell Inventory](src/ebay/sell/inventory/) | Item groups, vehicle compatibility, and SKU location mappings under `sell.inventory` |
+| [Inventory](src/tools/categories/inventory.ts) | Legacy inventory items, offers, and bulk operations |
+| [Sell Inventory](src/ebay/sell/inventory/) | Item groups, vehicle compatibility, SKU location mappings, and inventory locations under `sell.inventory` |
 | [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
 | [Commerce Feedback](src/ebay/commerce/feedback/) | Pending tasks, feedback history, submissions, replies, and rating metrics under `commerce.feedback` |
@@ -353,7 +353,7 @@ On hosts that support [MCP Apps](https://modelcontextprotocol.io), common read t
 
 | Archetype | Tools |
 | --- | --- |
-| **Table** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Table** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
 | **Card** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Chart** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 | **Stat** | `ebay_developer_analytics_get_rate_limits`, `ebay_developer_analytics_get_user_rate_limits` |

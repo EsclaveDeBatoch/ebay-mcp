@@ -7,7 +7,6 @@ import type { ToolEntry } from '@/tools/registry.js';
 import {
   mapInventoryItemsToTable,
   mapInventoryItemToCard,
-  mapLocationsToTable,
   mapOffersToTable,
   mapOfferToCard,
 } from '@/tools/ui/maps.js';
@@ -19,12 +18,10 @@ import type {
   BulkMigrateListingRequest,
   BulkPublishOfferRequest,
   BulkUpdatePriceQuantityRequest,
-  CreateInventoryLocationRequest,
   CreateOfferRequest,
   GetListingFeesRequest,
   InventoryItem,
   PublishOfferByInventoryItemGroupRequest,
-  UpdateInventoryLocationRequest,
   UpdateOfferRequest,
   WithdrawOfferByInventoryItemGroupRequest,
 } from '@/api/listing-management/inventory.js';
@@ -33,11 +30,9 @@ import {
   bulkOfferResponseSchema,
   bulkPublishResponseSchema,
   createInventoryItemOutputSchema,
-  createInventoryLocationOutputSchema,
   createOfferOutputSchema,
   getInventoryItemOutputSchema,
   getInventoryItemsOutputSchema,
-  getInventoryLocationsOutputSchema,
   getOffersOutputSchema,
   offerResponseSchema,
   publishOfferOutputSchema,
@@ -84,22 +79,6 @@ const bulkGetInventoryItemInputSchema = z.object({
 const bulkUpdatePriceQuantityInputSchema = z.object({
   body: generatedBodySchema<BulkUpdatePriceQuantityRequest>(
     'Generated BulkPriceQuantity request body',
-  ),
-});
-
-const merchantLocationKeyInputSchema = z.object({
-  merchantLocationKey: z.string().describe('The merchant location key'),
-});
-
-const createInventoryLocationInputSchema = merchantLocationKeyInputSchema.extend({
-  body: generatedBodySchema<CreateInventoryLocationRequest>(
-    'Generated InventoryLocationFull request body',
-  ),
-});
-
-const updateInventoryLocationInputSchema = merchantLocationKeyInputSchema.extend({
-  body: generatedBodySchema<UpdateInventoryLocationRequest>(
-    'Generated InventoryLocation request body',
   ),
 });
 
@@ -160,7 +139,7 @@ const listingFeesOutputSchema = z
   })
   .passthrough();
 
-/** Inventory API tools for seller inventory items, offers, locations, and bulk operations. */
+/** Legacy Inventory API tools for seller inventory items, offers, and bulk operations. */
 export const inventoryEntries: ToolEntry[] = [
   defineTool({
     name: 'ebay_get_inventory_items',
@@ -234,68 +213,6 @@ export const inventoryEntries: ToolEntry[] = [
       $refStrategy: 'none',
     }) as OutputArgs,
     handler: (api, args) => Effect.runPromise(api.inventory.bulkUpdatePriceQuantity(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_inventory_locations',
-    description: 'Get all inventory locations',
-    inputSchema: inventoryPaginationInputSchema.shape,
-    outputSchema: zodToJsonSchema(getInventoryLocationsOutputSchema, {
-      name: 'GetInventoryLocationsResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.getInventoryLocations(args)),
-    ui: { archetype: 'table', map: mapLocationsToTable },
-  }),
-  defineTool({
-    name: 'ebay_get_inventory_location',
-    description: 'Get a specific inventory location',
-    inputSchema: merchantLocationKeyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createInventoryLocationOutputSchema, {
-      name: 'GetInventoryLocationResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.getInventoryLocation(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_inventory_location',
-    description: 'Create an inventory location',
-    inputSchema: createInventoryLocationInputSchema.shape,
-    outputSchema: zodToJsonSchema(createInventoryLocationOutputSchema, {
-      name: 'CreateInventoryLocationResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.createInventoryLocation(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_inventory_location',
-    description: 'Delete an inventory location',
-    inputSchema: merchantLocationKeyInputSchema.shape,
-    outputSchema: emptyOutputSchema,
-    handler: (api, args) => Effect.runPromise(api.inventory.deleteInventoryLocation(args)),
-  }),
-  defineTool({
-    name: 'ebay_disable_inventory_location',
-    description: 'Disable an inventory location',
-    inputSchema: merchantLocationKeyInputSchema.shape,
-    outputSchema: emptyOutputSchema,
-    handler: (api, args) => Effect.runPromise(api.inventory.disableInventoryLocation(args)),
-  }),
-  defineTool({
-    name: 'ebay_enable_inventory_location',
-    description: 'Enable an inventory location',
-    inputSchema: merchantLocationKeyInputSchema.shape,
-    outputSchema: emptyOutputSchema,
-    handler: (api, args) => Effect.runPromise(api.inventory.enableInventoryLocation(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_inventory_location',
-    description: 'Update an inventory location',
-    inputSchema: updateInventoryLocationInputSchema.shape,
-    outputSchema: zodToJsonSchema(createInventoryLocationOutputSchema, {
-      name: 'UpdateInventoryLocationResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.updateInventoryLocation(args)),
   }),
   defineTool({
     name: 'ebay_get_offers',

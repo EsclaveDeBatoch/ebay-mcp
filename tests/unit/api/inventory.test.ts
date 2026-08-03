@@ -1,6 +1,6 @@
 import { Effect } from 'effect';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { InventoryApi } from '@/api/listing-management/inventory.js';
+import { createInventoryApi, type InventoryApi } from '@/api/listing-management/inventory.js';
 import type { EbayApiClient } from '@/api/client.js';
 import type { EbayApiError, EndpointInputError } from '@/api/shared/request.js';
 import { invalidInput } from '@tests/helpers/invalidInput.js';
@@ -30,7 +30,7 @@ describe('InventoryApi', () => {
       put: vi.fn(),
       delete: vi.fn(),
     } as unknown as EbayApiClient;
-    api = new InventoryApi(client);
+    api = createInventoryApi(client);
   });
 
   describe('inventory items', () => {
@@ -240,67 +240,6 @@ describe('InventoryApi', () => {
         '/sell/inventory/v1/offer/withdraw_by_inventory_item_group',
         body,
       );
-    });
-  });
-
-  describe('inventory locations', () => {
-    it('gets inventory locations with validated pagination query params', async () => {
-      vi.mocked(client.get).mockResolvedValue({ locations: [] });
-
-      await Effect.runPromise(api.getInventoryLocations({ limit: 20, offset: 40 }));
-
-      expect(client.get).toHaveBeenCalledWith('/sell/inventory/v1/location', {
-        limit: '20',
-        offset: '40',
-      });
-    });
-
-    it('gets, creates, updates, and deletes inventory locations', async () => {
-      const body = { name: 'Warehouse', locationTypes: ['WAREHOUSE'] };
-      vi.mocked(client.get).mockResolvedValue({ merchantLocationKey: 'LOC-1' });
-      vi.mocked(client.post).mockResolvedValue(undefined);
-      vi.mocked(client.delete).mockResolvedValue(undefined);
-
-      await Effect.runPromise(api.getInventoryLocation({ merchantLocationKey: 'LOC-1' }));
-      await Effect.runPromise(api.createInventoryLocation({ merchantLocationKey: 'LOC-1', body }));
-      await Effect.runPromise(api.updateInventoryLocation({ merchantLocationKey: 'LOC-1', body }));
-      await Effect.runPromise(api.deleteInventoryLocation({ merchantLocationKey: 'LOC-1' }));
-
-      expect(client.get).toHaveBeenCalledWith('/sell/inventory/v1/location/LOC-1');
-      expect(client.post).toHaveBeenNthCalledWith(1, '/sell/inventory/v1/location/LOC-1', body);
-      expect(client.post).toHaveBeenNthCalledWith(
-        2,
-        '/sell/inventory/v1/location/LOC-1/update_location_details',
-        body,
-      );
-      expect(client.delete).toHaveBeenCalledWith('/sell/inventory/v1/location/LOC-1');
-    });
-
-    it('enables and disables inventory locations without synthetic request bodies', async () => {
-      vi.mocked(client.post).mockResolvedValue(undefined);
-
-      await Effect.runPromise(api.disableInventoryLocation({ merchantLocationKey: 'LOC-1' }));
-      await Effect.runPromise(api.enableInventoryLocation({ merchantLocationKey: 'LOC-1' }));
-
-      expect(client.post).toHaveBeenNthCalledWith(1, '/sell/inventory/v1/location/LOC-1/disable');
-      expect(client.post).toHaveBeenNthCalledWith(2, '/sell/inventory/v1/location/LOC-1/enable');
-    });
-
-    it('rejects missing inventory location fields before calling eBay', async () => {
-      await expectEndpointInputError(
-        api.getInventoryLocation({ merchantLocationKey: '' }),
-        'merchantLocationKey',
-      );
-      await expectEndpointInputError(
-        api.createInventoryLocation({
-          merchantLocationKey: 'LOC-1',
-          body: invalidInput(undefined),
-        }),
-        'body',
-      );
-
-      expect(client.get).not.toHaveBeenCalled();
-      expect(client.post).not.toHaveBeenCalled();
     });
   });
 

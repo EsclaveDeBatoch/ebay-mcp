@@ -132,6 +132,15 @@ import {
   getInventoryItemGroupTool,
 } from '@/ebay/sell/inventory/inventoryItemGroup.js';
 import {
+  createInventoryLocationTool,
+  deleteInventoryLocationTool,
+  disableInventoryLocationTool,
+  enableInventoryLocationTool,
+  getInventoryLocationsTool,
+  getInventoryLocationTool,
+  updateInventoryLocationTool,
+} from '@/ebay/sell/inventory/inventoryLocation.js';
+import {
   createOrReplaceProductCompatibilityTool,
   deleteProductCompatibilityTool,
   getProductCompatibilityTool,
@@ -312,6 +321,13 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getSkuLocationMappingTool,
   createOrReplaceSkuLocationMappingTool,
   deleteSkuLocationMappingTool,
+  getInventoryLocationsTool,
+  getInventoryLocationTool,
+  createInventoryLocationTool,
+  deleteInventoryLocationTool,
+  disableInventoryLocationTool,
+  enableInventoryLocationTool,
+  updateInventoryLocationTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

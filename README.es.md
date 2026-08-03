@@ -242,8 +242,8 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | Herramientas search/fetch del conector de ChatGPT sobre el catálogo eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Estado del vendedor, inscripción en programas, impuesto sobre ventas, suscripciones, tablas de tarifas, elegibilidad publicitaria, estado obsoleto del programa de pagos y políticas comerciales |
-| [Inventory](src/tools/categories/inventory.ts) | Artículos de inventario, ofertas, ubicaciones, operaciones masivas, mapeo SKU/ubicación |
-| [Sell Inventory](src/ebay/sell/inventory/) | Grupos de artículos, compatibilidad de vehículos y asignaciones de ubicaciones de SKU bajo `sell.inventory` |
+| [Inventory](src/tools/categories/inventory.ts) | Artículos de inventario heredados, ofertas y operaciones masivas |
+| [Sell Inventory](src/ebay/sell/inventory/) | Grupos de artículos, compatibilidad de vehículos, asignaciones de ubicaciones de SKU y ubicaciones de inventario bajo `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Pedidos, envíos, reembolsos, disputas, evidencias de disputas de pago |
 | [Marketing](src/tools/categories/marketing.ts) | Campañas de anuncios promocionados, anuncios, promociones, pujas, operaciones masivas |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Informes de tráfico, estándares de vendedor, métricas de atención al cliente |
@@ -275,7 +275,7 @@ Hoy se acogen 13 herramientas de flujos de trabajo esenciales, repartidas en tre
 
 | Arquetipo | Herramientas |
 | --- | --- |
-| **Tabla** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Tabla** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
 | **Ficha** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 

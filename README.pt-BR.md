@@ -242,8 +242,8 @@ Autoconfigurados pelo `npm run setup`. Requer Node.js ≥ 22.12 e o protocolo MC
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | Ferramentas search/fetch do conector ChatGPT sobre o catálogo eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Status do vendedor, adesão a programas, imposto sobre vendas, assinaturas, tabelas de tarifas, elegibilidade para publicidade, status obsoleto do programa de pagamentos e políticas comerciais |
-| [Inventory](src/tools/categories/inventory.ts) | Itens de estoque, ofertas, locais, operações em massa, mapeamento SKU/local |
-| [Sell Inventory](src/ebay/sell/inventory/) | Grupos de itens, compatibilidade de veículos e mapeamentos de localização de SKU em `sell.inventory` |
+| [Inventory](src/tools/categories/inventory.ts) | Itens de estoque legados, ofertas e operações em massa |
+| [Sell Inventory](src/ebay/sell/inventory/) | Grupos de itens, compatibilidade de veículos, mapeamentos de localização de SKU e locais de estoque em `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Pedidos, envio, reembolsos, disputas, evidências de disputas de pagamento |
 | [Marketing](src/tools/categories/marketing.ts) | Campanhas de anúncios patrocinados, anúncios, promoções, lances, operações em massa |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Relatórios de tráfego, padrões do vendedor, métricas de atendimento ao cliente |
@@ -275,7 +275,7 @@ Em hosts compatíveis com [MCP Apps](https://modelcontextprotocol.io), as ferram
 
 | Arquétipo | Ferramentas |
 | --- | --- |
-| **Tabela** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Tabela** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
 | **Cartão** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 

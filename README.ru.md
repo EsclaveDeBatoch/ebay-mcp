@@ -242,8 +242,8 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | Инструменты search/fetch коннектора ChatGPT по каталогу eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Статус продавца, участие в программах, налог с продаж, подписки, таблицы тарифов, право на рекламу, устаревший статус платёжной программы и бизнес-политики |
-| [Inventory](src/tools/categories/inventory.ts) | Товары инвентаря, предложения, локации, массовые операции, сопоставление SKU/локации |
-| [Sell Inventory](src/ebay/sell/inventory/) | Группы товаров, совместимость автомобилей и сопоставления местоположений SKU в `sell.inventory` |
+| [Inventory](src/tools/categories/inventory.ts) | Устаревшие товары инвентаря, предложения и массовые операции |
+| [Sell Inventory](src/ebay/sell/inventory/) | Группы товаров, совместимость автомобилей, сопоставления местоположений SKU и локации инвентаря в `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Заказы, доставка, возвраты средств, споры, доказательства по платёжным спорам |
 | [Marketing](src/tools/categories/marketing.ts) | Кампании продвигаемых объявлений, реклама, акции, ставки, массовые операции |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Отчёты о трафике, стандарты продавца, метрики поддержки клиентов |
@@ -275,7 +275,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 
 | Архетип | Инструменты |
 | --- | --- |
-| **Таблица** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Таблица** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
 | **Карточка** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **График** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 

@@ -5,7 +5,6 @@ import {
   amountSchema,
   inventoryItemSchema,
   offerSchema,
-  locationSchema as inventoryLocationSchema,
 } from '@/tools/schemas.js';
 import { decodeEffectSchema } from '@/utils/effectSchema.js';
 import type { EffectBackedSchema, InferEffectSchema } from '@/utils/effectSchemaTypes.js';
@@ -195,39 +194,6 @@ describe('Schema Validation', () => {
           const result = decodeResult(offerSchema, offer);
           expect(result.success).toBe(true);
         });
-      });
-    });
-
-    describe('inventoryLocationSchema', () => {
-      it('validate inventory location', () => {
-        const validLocation = {
-          location: {
-            address: {
-              addressLine1: '123 Main St',
-              city: 'San Jose',
-              stateOrProvince: 'CA',
-              postalCode: '95110',
-              country: 'US',
-            },
-          },
-          locationInstructions: 'Loading dock at rear',
-          name: 'Main Warehouse',
-          merchantLocationStatus: 'ENABLED',
-          locationTypes: ['WAREHOUSE'],
-        };
-
-        const result = decodeResult(inventoryLocationSchema, validLocation);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow missing location object (all fields optional)', () => {
-        const missingLocation = {
-          name: 'Test Location',
-          merchantLocationStatus: 'ENABLED',
-        };
-
-        const result = decodeResult(inventoryLocationSchema, missingLocation);
-        expect(result.success).toBe(true);
       });
     });
   });

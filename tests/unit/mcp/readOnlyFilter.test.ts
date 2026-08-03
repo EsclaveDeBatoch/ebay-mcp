@@ -70,8 +70,6 @@ describe('isReadOnlyTool', () => {
     'ebay_sell_fulfillment_contest_payment_dispute',
     'ebay_commerce_message_send_message',
     'ebay_set_user_tokens',
-    'ebay_enable_inventory_location',
-    'ebay_disable_inventory_location',
     'ebay_create_or_replace_inventory_item',
     'ebay_bulk_create_offer',
     'ebay_bulk_update_price_quantity',

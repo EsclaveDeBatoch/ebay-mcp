@@ -10,16 +10,6 @@ const skuLocationMappingToolNames = [
   'ebay_sell_inventory_delete_sku_location_mapping',
 ] as const;
 
-const sellInventoryToolNames = [
-  'ebay_sell_inventory_get_inventory_item_group',
-  'ebay_sell_inventory_create_or_replace_inventory_item_group',
-  'ebay_sell_inventory_delete_inventory_item_group',
-  'ebay_sell_inventory_get_product_compatibility',
-  'ebay_sell_inventory_create_or_replace_product_compatibility',
-  'ebay_sell_inventory_delete_product_compatibility',
-  ...skuLocationMappingToolNames,
-] as const;
-
 const legacySkuLocationMappingToolNames = [
   'ebay_get_sku_location_mapping',
   'ebay_create_or_replace_sku_location_mapping',
@@ -83,7 +73,11 @@ describe('Sell Inventory SKU-location-mapping MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(sellInventoryToolNames);
+    expect(
+      listedTools.tools
+        .map((ebayTool) => ebayTool.name)
+        .filter((listedToolName) => listedToolName.includes('sku_location_mapping')),
+    ).toEqual(skuLocationMappingToolNames);
     await mcpClient.close();
   });
 
@@ -97,11 +91,11 @@ describe('Sell Inventory SKU-location-mapping MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
-      'ebay_sell_inventory_get_inventory_item_group',
-      'ebay_sell_inventory_get_product_compatibility',
-      'ebay_sell_inventory_get_sku_location_mapping',
-    ]);
+    expect(
+      listedTools.tools
+        .map((ebayTool) => ebayTool.name)
+        .filter((listedToolName) => listedToolName.includes('sku_location_mapping')),
+    ).toEqual(['ebay_sell_inventory_get_sku_location_mapping']);
     await mcpClient.close();
   });
 });

@@ -9,7 +9,6 @@ import {
   inventoryItemSchema,
   pricingSchema,
   offerSchema,
-  locationSchema,
   refundDataSchema,
   fundingStrategySchema,
   messageDataSchema,
@@ -24,9 +23,6 @@ import {
   WeightUnit,
   PricingVisibility,
   FormatType,
-  LocationType,
-  MerchantLocationStatus,
-  DayOfWeek,
   ReasonForRefund,
   FundingModel,
   MessageReferenceType,
@@ -228,72 +224,6 @@ describe('Effect-backed schema enum validation', () => {
         },
       };
       expect(() => decode(offerSchema, data)).not.toThrow();
-    });
-  });
-
-  describe('locationSchema', () => {
-    it('accept valid LocationType and MerchantLocationStatus', () => {
-      const validData = {
-        name: 'Main Warehouse',
-        merchantLocationStatus: MerchantLocationStatus.ENABLED,
-        locationTypes: [LocationType.WAREHOUSE],
-        location: {
-          address: {
-            addressLine1: '123 Main St',
-            city: 'San Jose',
-            stateOrProvince: 'CA',
-            postalCode: '95131',
-            country: 'US',
-          },
-        },
-      };
-      expect(() => decode(locationSchema, validData)).not.toThrow();
-    });
-
-    it('accept STORE location type', () => {
-      const data = {
-        name: 'Retail Store',
-        merchantLocationStatus: MerchantLocationStatus.ENABLED,
-        locationTypes: [LocationType.STORE],
-        location: {
-          address: {
-            addressLine1: '456 Store Ave',
-            city: 'New York',
-            stateOrProvince: 'NY',
-            postalCode: '10001',
-            country: 'US',
-          },
-        },
-      };
-      expect(() => decode(locationSchema, data)).not.toThrow();
-    });
-
-    it('accept valid DayOfWeek in operating hours', () => {
-      const data = {
-        name: 'Store with Hours',
-        merchantLocationStatus: MerchantLocationStatus.ENABLED,
-        locationTypes: [LocationType.STORE],
-        location: {
-          address: {
-            addressLine1: '789 Business Blvd',
-            city: 'Chicago',
-            stateOrProvince: 'IL',
-            postalCode: '60601',
-            country: 'US',
-          },
-        },
-        operatingHours: [
-          {
-            dayOfWeekEnum: DayOfWeek.MONDAY,
-            intervals: [{ open: '09:00', close: '17:00' }],
-          },
-          {
-            dayOfWeekEnum: DayOfWeek.FRIDAY,
-            intervals: [{ open: '09:00', close: '17:00' }],
-          },
-        ],
-      };
-      expect(() => decode(locationSchema, data)).not.toThrow();
     });
   });
 

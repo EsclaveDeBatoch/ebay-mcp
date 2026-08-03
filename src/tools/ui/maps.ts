@@ -32,6 +32,28 @@ type InventoryItemWithSkuLocaleGroupid =
   InventorySchemas['schemas']['InventoryItemWithSkuLocaleGroupid'];
 type LocationResponse = InventorySchemas['schemas']['LocationResponse'];
 
+const inventoryLocationColumns = [
+  { key: 'key', label: 'Location key' },
+  { key: 'name', label: 'Name' },
+  { key: 'status', label: 'Status' },
+  { key: 'types', label: 'Types' },
+  { key: 'phone', label: 'Phone' },
+];
+
+const displayedLocationText = (locationText: string | undefined): string | null => {
+  if (locationText === undefined) {
+    return null;
+  }
+  return locationText;
+};
+
+const joinedLocationTypes = (locationTypes: string[] | undefined): string | null => {
+  if (locationTypes === undefined) {
+    return null;
+  }
+  return locationTypes.join(', ');
+};
+
 /**
  * Builds a table's contextual footnote from how many rows are shown versus the
  * server's reported total, e.g. `"Showing 25 of 240"`. Returns `undefined` when
@@ -218,7 +240,7 @@ export const mapInventoryItemsToTable = (result: InventoryItems): TableViewModel
 /**
  * Projects a seller's inventory locations into a table.
  *
- * @param result - Generated inventory location response from eBay.
+ * @param inventoryLocationCollection - Generated inventory location collection from eBay.
  * @returns A table view model with location rows.
  *
  * @example
@@ -226,29 +248,52 @@ export const mapInventoryItemsToTable = (result: InventoryItems): TableViewModel
  * const view = mapLocationsToTable({ locations: [{ merchantLocationKey: 'WAREHOUSE-1' }] });
  * ```
  */
-export const mapLocationsToTable = (result: LocationResponse): TableViewModel => {
-  const locations = result.locations ?? [];
+export const mapLocationsToTable = (
+  inventoryLocationCollection: LocationResponse,
+): TableViewModel => {
+  const inventoryLocations = inventoryLocationCollection.locations;
+  if (inventoryLocations === undefined) {
+    return {
+      archetype: 'table',
+      title: 'Inventory locations',
+      columns: inventoryLocationColumns,
+      rows: [],
+      footnote: footnoteFor(0, inventoryLocationCollection.total),
+    };
+  }
+
+  const inventoryLocationRows = inventoryLocations.map((inventoryLocation, index) => {
+    const merchantLocationKey = inventoryLocation.merchantLocationKey;
+    const inventoryLocationCells = {
+      key: displayedLocationText(merchantLocationKey),
+      name: displayedLocationText(inventoryLocation.name),
+      status: humanizeStatus(inventoryLocation.merchantLocationStatus),
+      types: joinedLocationTypes(inventoryLocation.locationTypes),
+      phone: displayedLocationText(inventoryLocation.phone),
+    };
+    if (merchantLocationKey === undefined) {
+      return {
+        id: `location-${index}`,
+        cells: inventoryLocationCells,
+      };
+    }
+    return {
+      id: merchantLocationKey,
+      cells: inventoryLocationCells,
+      drill: {
+        tool: 'ebay_sell_inventory_get_inventory_location',
+        arguments: { merchantLocationKey },
+        label: 'View location',
+      },
+    };
+  });
+
   return {
     archetype: 'table',
     title: 'Inventory locations',
-    columns: [
-      { key: 'key', label: 'Location key' },
-      { key: 'name', label: 'Name' },
-      { key: 'status', label: 'Status' },
-      { key: 'types', label: 'Types' },
-      { key: 'phone', label: 'Phone' },
-    ],
-    rows: locations.map((location, index) => ({
-      id: location.merchantLocationKey ?? `location-${index}`,
-      cells: {
-        key: location.merchantLocationKey ?? null,
-        name: location.name ?? null,
-        status: humanizeStatus(location.merchantLocationStatus),
-        types: location.locationTypes?.join(', ') ?? null,
-        phone: location.phone ?? null,
-      },
-    })),
-    footnote: footnoteFor(locations.length, result.total),
+    columns: inventoryLocationColumns,
+    rows: inventoryLocationRows,
+    footnote: footnoteFor(inventoryLocations.length, inventoryLocationCollection.total),
   };
 };
 

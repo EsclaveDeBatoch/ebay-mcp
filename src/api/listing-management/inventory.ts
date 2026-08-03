@@ -1,11 +1,9 @@
 import type { EbayApiClient } from '@/api/client.js';
 import { createInventoryItemsMethods } from './items.js';
-import { createInventoryLocationsMethods } from './locations.js';
 import { createInventoryOffersMethods } from './offers.js';
 
 type InventoryItemsMethods = ReturnType<typeof createInventoryItemsMethods>;
 type InventoryOffersMethods = ReturnType<typeof createInventoryOffersMethods>;
-type InventoryLocationsMethods = ReturnType<typeof createInventoryLocationsMethods>;
 
 export type { InventoryPaginationInput } from './shared.js';
 export type {
@@ -57,40 +55,19 @@ export type {
   WithdrawOfferByInventoryItemGroupRequest,
   WithdrawOfferByInventoryItemGroupResponse,
 } from './offers.js';
-export type {
-  MerchantLocationKeyInput,
-  CreateInventoryLocationInput,
-  UpdateInventoryLocationInput,
-  GetInventoryLocationResponse,
-  CreateInventoryLocationRequest,
-  CreateInventoryLocationResponse,
-  DeleteInventoryLocationResponse,
-  DisableInventoryLocationResponse,
-  EnableInventoryLocationResponse,
-  GetInventoryLocationsResponse,
-  UpdateInventoryLocationRequest,
-  UpdateInventoryLocationResponse,
-} from './locations.js';
+/**
+ * Inventory API surface for legacy items and offers.
+ * Implementation is split by the two remaining legacy subdomains.
+ */
+export type InventoryApi = InventoryItemsMethods & InventoryOffersMethods;
 
 /**
- * Inventory API surface: items, offers, and locations.
- * Implementation is split by subdomain; `new InventoryApi(client)` keeps stable method names.
+ * Creates the remaining legacy Inventory API method collection.
+ *
+ * @param ebayApiClient - Shared authenticated eBay API transport.
+ * @returns Inventory-item and offer operations on one typed collection.
  */
-export interface InventoryApi
-  extends InventoryItemsMethods,
-    InventoryOffersMethods,
-    InventoryLocationsMethods {}
-
-/**
- * Composes Inventory subdomain method maps onto one facade instance.
- */
-export class InventoryApi {
-  public constructor(client: EbayApiClient) {
-    Object.assign(
-      this,
-      createInventoryItemsMethods(client),
-      createInventoryOffersMethods(client),
-      createInventoryLocationsMethods(client),
-    );
-  }
-}
+export const createInventoryApi = (ebayApiClient: EbayApiClient): InventoryApi => ({
+  ...createInventoryItemsMethods(ebayApiClient),
+  ...createInventoryOffersMethods(ebayApiClient),
+});

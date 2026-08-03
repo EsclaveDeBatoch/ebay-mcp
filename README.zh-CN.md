@@ -242,8 +242,8 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | 面向 eBay MCP 目录的 ChatGPT 连接器 search/fetch 工具 |
 | [Sell Account](src/ebay/sell/account/) | 卖家状态、计划注册、销售税、订阅、费率表、广告资格、已弃用的付款计划状态和业务政策 |
-| [Inventory](src/tools/categories/inventory.ts) | 库存商品、报价、地点、批量操作、SKU/地点映射 |
-| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` 下的商品分组、车辆兼容性与 SKU 库存地点映射 |
+| [Inventory](src/tools/categories/inventory.ts) | 旧版库存商品、报价与批量操作 |
+| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` 下的商品分组、车辆兼容性、SKU 库存地点映射与库存地点 |
 | [Fulfillment](src/ebay/sell/fulfillment/) | 订单、配送、退款、纠纷、付款纠纷证据 |
 | [Marketing](src/tools/categories/marketing.ts) | 推广刊登广告活动、广告、促销、出价、批量操作 |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | 流量报告、卖家标准、客户服务指标 |
@@ -275,7 +275,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 | 类型 | 工具 |
 | --- | --- |
-| **表格** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **表格** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_sell_inventory_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
 | **卡片** | `ebay_sell_fulfillment_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_sell_fulfillment_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
 | **图表** | `ebay_sell_analytics_get_traffic_report`、`ebay_sell_analytics_get_customer_service_metric` |
 

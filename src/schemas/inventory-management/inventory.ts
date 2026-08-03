@@ -6,9 +6,6 @@ import {
   WeightUnit,
   PricingVisibility,
   FormatType,
-  LocationType,
-  MerchantLocationStatus,
-  DayOfWeek,
   MarketplaceId,
 } from '@/types/ebayEnums.js';
 
@@ -339,113 +336,6 @@ export const publishOfferOutputSchema = z.object({
 });
 
 // ============================================================================
-// Inventory Location Schemas
-// ============================================================================
-
-const operatingHoursSchema = z.object({
-  dayOfWeekEnum: z.nativeEnum(DayOfWeek).optional(),
-  intervals: z
-    .array(
-      z.object({
-        open: z.string().optional(),
-        close: z.string().optional(),
-      }),
-    )
-    .optional(),
-});
-
-const specialHoursSchema = z.object({
-  date: z.string().optional(),
-  intervals: z
-    .array(
-      z.object({
-        open: z.string().optional(),
-        close: z.string().optional(),
-      }),
-    )
-    .optional(),
-});
-
-const geoCoordinatesSchema = z.object({
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
-});
-
-const addressSchema = z.object({
-  addressLine1: z.string().optional(),
-  addressLine2: z.string().optional(),
-  city: z.string().optional(),
-  stateOrProvince: z.string().optional(),
-  postalCode: z.string().optional(),
-  country: z.string().optional(),
-});
-
-/**
- * Validates the Inventory Management API location model.
- */
-export const locationSchema = z.object({
-  location: z
-    .object({
-      address: addressSchema.optional(),
-      geoCoordinates: geoCoordinatesSchema.optional(),
-    })
-    .optional(),
-  locationAdditionalInformation: z.string().optional(),
-  locationInstructions: z.string().optional(),
-  locationTypes: z.array(z.nativeEnum(LocationType)).optional(),
-  locationWebUrl: z.string().optional(),
-  merchantLocationStatus: z.nativeEnum(MerchantLocationStatus).optional(),
-  name: z.string().optional(),
-  operatingHours: z.array(operatingHoursSchema).optional(),
-  phone: z.string().optional(),
-  specialHours: z.array(specialHoursSchema).optional(),
-});
-
-/**
- * Validates the Inventory Management API get inventory locations request payload.
- */
-export const getInventoryLocationsInputSchema = z.object({
-  limit: z.number().optional().describe('Number of locations to return'),
-  offset: z.number().optional().describe('Number of locations to skip'),
-});
-
-/**
- * Validates the Inventory Management API get inventory locations response payload.
- */
-export const getInventoryLocationsOutputSchema = z.object({
-  locations: z
-    .array(
-      locationSchema.extend({
-        merchantLocationKey: z.string().optional(),
-      }),
-    )
-    .optional(),
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional(),
-  offset: z.number().optional(),
-  prev: z.string().optional(),
-  size: z.number().optional(),
-  total: z.number().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Inventory Management API create inventory location request payload.
- */
-export const createInventoryLocationInputSchema = z.object({
-  merchantLocationKey: z.string().describe('Unique merchant-defined key for the location'),
-  body: locationSchema,
-});
-
-/**
- * Validates the Inventory Management API create inventory location response payload.
- */
-export const createInventoryLocationOutputSchema = z.object({
-  warnings: z.array(errorSchema).optional(),
-});
-
-// ============================================================================
 // Bulk Operation Schemas
 // ============================================================================
 
@@ -571,24 +461,6 @@ export const getInventoryManagementJsonSchemas = () => {
     publishOfferInput: zodToJsonSchema(publishOfferInputSchema, 'publishOfferInput'),
     publishOfferOutput: zodToJsonSchema(publishOfferOutputSchema, 'publishOfferOutput'),
     offerDetails: zodToJsonSchema(offerResponseSchema, 'offerDetails'),
-
-    // Inventory Locations
-    getInventoryLocationsInput: zodToJsonSchema(
-      getInventoryLocationsInputSchema,
-      'getInventoryLocationsInput',
-    ),
-    getInventoryLocationsOutput: zodToJsonSchema(
-      getInventoryLocationsOutputSchema,
-      'getInventoryLocationsOutput',
-    ),
-    createInventoryLocationInput: zodToJsonSchema(
-      createInventoryLocationInputSchema,
-      'createInventoryLocationInput',
-    ),
-    createInventoryLocationOutput: zodToJsonSchema(
-      createInventoryLocationOutputSchema,
-      'createInventoryLocationOutput',
-    ),
 
     // Bulk Operations
     bulkInventoryItemRequest: zodToJsonSchema(

@@ -242,8 +242,8 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | eBay MCP カタログ向け ChatGPT コネクタの search/fetch |
 | [Sell Account](src/ebay/sell/account/) | 出品者の状態、プログラム登録、販売税、サブスクリプション、料金表、広告利用資格、廃止予定の支払いプログラム状態、ビジネスポリシー |
-| [Inventory](src/tools/categories/inventory.ts) | 在庫アイテム、オファー、ロケーション、一括操作、SKU/ロケーションのマッピング |
-| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` のアイテムグループ、車両互換性、SKU ロケーションマッピング |
+| [Inventory](src/tools/categories/inventory.ts) | 従来の在庫アイテム、オファー、一括操作 |
+| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` のアイテムグループ、車両互換性、SKU ロケーションマッピング、在庫ロケーション |
 | [Fulfillment](src/ebay/sell/fulfillment/) | 注文、配送、返金、係争、支払い係争の証拠 |
 | [Marketing](src/tools/categories/marketing.ts) | プロモーション広告キャンペーン、広告、プロモーション、入札、一括操作 |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | トラフィックレポート、出品者基準、カスタマーサービス指標 |
@@ -275,7 +275,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 
 | タイプ | ツール |
 | --- | --- |
-| **テーブル** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **テーブル** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_sell_inventory_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
 | **カード** | `ebay_sell_fulfillment_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_sell_fulfillment_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
 | **チャート** | `ebay_sell_analytics_get_traffic_report`、`ebay_sell_analytics_get_customer_service_metric` |
 

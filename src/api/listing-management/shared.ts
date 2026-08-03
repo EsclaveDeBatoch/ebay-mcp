@@ -2,7 +2,7 @@ import type { EbayApiClient } from '@/api/client.js';
 
 export const INVENTORY_BASE_PATH = '/sell/inventory/v1';
 
-/** Input accepted by getInventoryItems and getInventoryLocations. */
+/** Input accepted by legacy getInventoryItems. */
 export interface InventoryPaginationInput {
   /** Number of records to return. */
   readonly limit?: number;

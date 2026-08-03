@@ -242,8 +242,8 @@ Configurés automatiquement par `npm run setup`. Nécessite Node.js ≥ 22.12 et
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | Outils search/fetch du connecteur ChatGPT sur le catalogue eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Statut du vendeur, adhésion aux programmes, taxe de vente, abonnements, grilles tarifaires, éligibilité publicitaire, statut obsolète du programme de paiement et politiques commerciales |
-| [Inventory](src/tools/categories/inventory.ts) | Articles d'inventaire, offres, emplacements, opérations en masse, mappage SKU/emplacement |
-| [Sell Inventory](src/ebay/sell/inventory/) | Groupes d'articles, compatibilité des véhicules et mappages d'emplacements SKU sous `sell.inventory` |
+| [Inventory](src/tools/categories/inventory.ts) | Articles d'inventaire hérités, offres et opérations en masse |
+| [Sell Inventory](src/ebay/sell/inventory/) | Groupes d'articles, compatibilité des véhicules, mappages d'emplacements SKU et emplacements d'inventaire sous `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Commandes, expédition, remboursements, litiges, preuves de litiges de paiement |
 | [Marketing](src/tools/categories/marketing.ts) | Campagnes d'annonces sponsorisées, annonces, promotions, enchères, opérations en masse |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Rapports de trafic, standards vendeur, métriques de service client |
@@ -275,7 +275,7 @@ Sur les hôtes qui prennent en charge [MCP Apps](https://modelcontextprotocol.io
 
 | Archétype | Outils |
 | --- | --- |
-| **Tableau** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Tableau** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
 | **Fiche** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Graphique** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
