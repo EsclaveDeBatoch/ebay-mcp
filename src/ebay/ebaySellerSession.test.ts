@@ -116,6 +116,27 @@ describe('authenticated eBay seller session standard-host calls', () => {
       },
     );
   });
+
+  it('passes the DELETE endpoint, search parameters, and headers to the client', async () => {
+    const authenticatedClient = ebayApiClient();
+    const deleteCall = vi.spyOn(authenticatedClient, 'delete').mockResolvedValue(undefined);
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.delete({
+        endpoint: '/commerce/notification/v1/destination/destination-123',
+        searchParameters: { revision: '2' },
+        requestHeaders: { 'Content-Language': 'en-US' },
+      }),
+    ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument: undefined });
+    expect(deleteCall).toHaveBeenCalledWith(
+      '/commerce/notification/v1/destination/destination-123',
+      {
+        params: { revision: '2' },
+        headers: { 'Content-Language': 'en-US' },
+      },
+    );
+  });
 });
 
 describe('authenticated eBay seller session alternate-host calls', () => {

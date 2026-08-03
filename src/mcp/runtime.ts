@@ -5,6 +5,7 @@ import { getEbayConfig, mcpConfig } from '@/config/environment.js';
 import { parseToolGatingMode } from '@/config/toolExposure.js';
 import {
   createEbaySellerSession,
+  type EbayDeleteCall,
   type EbayGetCall,
   type EbayPostCall,
   type EbayPutCall,
@@ -152,6 +153,8 @@ function sellerSessionFor(
     return runtimeDependencies.sellerSession;
   }
   return {
+    delete: <EbayDocument>(ebayDeleteCall: EbayDeleteCall) =>
+      createEbaySellerSession(ebaySellerApi.getAuthClient()).delete<EbayDocument>(ebayDeleteCall),
     get: <EbayDocument>(ebayGetCall: EbayGetCall) =>
       createEbaySellerSession(ebaySellerApi.getAuthClient()).get<EbayDocument>(ebayGetCall),
     post: <EbayDocument>(ebayPostCall: EbayPostCall) =>

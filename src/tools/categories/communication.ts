@@ -2,16 +2,12 @@ import { defineTool } from '@/tools/defineTool.js';
 import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
 import {
-  createDestinationSchema,
   createSubscriptionFilterSchema,
   createSubscriptionSchema,
-  deleteDestinationSchema,
   deleteSubscriptionFilterSchema,
   deleteSubscriptionSchema,
   disableSubscriptionSchema,
   enableSubscriptionSchema,
-  getDestinationSchema,
-  getDestinationsSchema,
   getPublicKeySchema,
   getSubscriptionFilterSchema,
   getSubscriptionSchema,
@@ -19,7 +15,6 @@ import {
   getTopicSchema,
   getTopicsSchema,
   testSubscriptionSchema,
-  updateDestinationSchema,
   updateSubscriptionSchema,
 } from '@/utils/communication/notification.js';
 
@@ -31,38 +26,6 @@ import {
  * boundary: they run one endpoint Effect and avoid response or input reshaping.
  */
 export const communicationEntries: ToolEntry[] = [
-  // Notification API
-  defineTool({
-    name: 'ebay_get_notification_destinations',
-    description: 'Get all notification destinations (paginated)',
-    inputSchema: getDestinationsSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.getDestinations(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_notification_destination',
-    description: 'Create a notification destination',
-    inputSchema: createDestinationSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.createDestination(args)),
-  }),
-  // Notification API - Destination CRUD
-  defineTool({
-    name: 'ebay_get_notification_destination',
-    description: 'Get a specific notification destination by ID',
-    inputSchema: getDestinationSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.getDestination(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_notification_destination',
-    description: 'Update a notification destination',
-    inputSchema: updateDestinationSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.updateDestination(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_notification_destination',
-    description: 'Delete a notification destination',
-    inputSchema: deleteDestinationSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.deleteDestination(args)),
-  }),
   // Notification API - Subscription CRUD
   defineTool({
     name: 'ebay_get_notification_subscriptions',

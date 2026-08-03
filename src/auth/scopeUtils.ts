@@ -300,6 +300,31 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope',
       description: 'Requires public API access to update notification alert configuration',
     },
+    ebay_commerce_notification_get_destinations: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve notification destinations',
+    },
+    ebay_commerce_notification_create_destination: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to create notification destinations',
+    },
+    ebay_commerce_notification_get_destination: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve a notification destination',
+    },
+    ebay_commerce_notification_update_destination: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to update notification destinations',
+    },
+    ebay_commerce_notification_delete_destination: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to delete notification destinations',
+    },
 
     // Identity Tools
     ebay_commerce_identity_get_user: {

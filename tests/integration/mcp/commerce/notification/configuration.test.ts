@@ -40,7 +40,7 @@ describe('Commerce Notification configuration MCP exposure', () => {
     await mcpClient.close();
   });
 
-  it('exposes only the migrated configuration resource through commerce.notification', async () => {
+  it('exposes only migrated notification resources through commerce.notification', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'commerce.notification');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning<NotificationConfiguration>({
@@ -52,11 +52,16 @@ describe('Commerce Notification configuration MCP exposure', () => {
     expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
       getConfigToolName,
       updateConfigToolName,
+      'ebay_commerce_notification_get_destinations',
+      'ebay_commerce_notification_create_destination',
+      'ebay_commerce_notification_get_destination',
+      'ebay_commerce_notification_update_destination',
+      'ebay_commerce_notification_delete_destination',
     ]);
     await mcpClient.close();
   });
 
-  it('retains only getConfig in read-only mode', async () => {
+  it('retains only notification lookups in read-only mode', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'commerce.notification');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     vi.stubEnv('EBAY_READ_ONLY', 'true');
@@ -66,7 +71,11 @@ describe('Commerce Notification configuration MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([getConfigToolName]);
+    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
+      getConfigToolName,
+      'ebay_commerce_notification_get_destinations',
+      'ebay_commerce_notification_get_destination',
+    ]);
     await mcpClient.close();
   });
 });

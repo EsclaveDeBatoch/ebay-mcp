@@ -149,7 +149,7 @@ Legacy schemas for Commerce Notification.
 
 **Endpoints Covered:**
 
-- Notification API (destinations, subscriptions, topics)
+- Notification API (subscriptions, topics)
 
 **Key Schemas:**
 

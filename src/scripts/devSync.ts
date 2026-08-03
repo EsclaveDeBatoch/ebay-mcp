@@ -347,14 +347,14 @@ function normalizeForMatching(name: string): string {
 const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   // Feedback API
 
-  // Notification API — tools use the ebay_*_notification_* naming convention
+  // Notification API
   getconfig: ['ebay_commerce_notification_get_config'],
   updateconfig: ['ebay_commerce_notification_update_config'],
-  getdestinations: ['ebay_get_notification_destinations'],
-  createdestination: ['ebay_create_notification_destination'],
-  getdestination: ['ebay_get_notification_destination'],
-  updatedestination: ['ebay_update_notification_destination'],
-  deletedestination: ['ebay_delete_notification_destination'],
+  getdestinations: ['ebay_commerce_notification_get_destinations'],
+  createdestination: ['ebay_commerce_notification_create_destination'],
+  getdestination: ['ebay_commerce_notification_get_destination'],
+  updatedestination: ['ebay_commerce_notification_update_destination'],
+  deletedestination: ['ebay_commerce_notification_delete_destination'],
   getsubscriptions: ['ebay_get_notification_subscriptions'],
   createsubscription: ['ebay_create_notification_subscription'],
   getsubscription: ['ebay_get_notification_subscription'],

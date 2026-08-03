@@ -1,5 +1,6 @@
 import type { EbayFailure, EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
 import type {
+  EbayDeleteCall,
   EbayGetCall,
   EbayPostCall,
   EbayPutCall,
@@ -17,13 +18,21 @@ export const sellerSessionReturning = <EbayDocument>(
   ebayRequestCompletion: EbayRequestCompletion<EbayDocument>,
 ): {
   readonly sellerSession: EbaySellerSession;
+  readonly deleteCalls: EbayDeleteCall[];
   readonly getCalls: EbayGetCall[];
   readonly postCalls: EbayPostCall[];
   readonly putCalls: EbayPutCall[];
 } => {
+  const deleteCalls: EbayDeleteCall[] = [];
   const getCalls: EbayGetCall[] = [];
   const postCalls: EbayPostCall[] = [];
   const putCalls: EbayPutCall[] = [];
+  const deleteEbayDocument = <RequestedEbayDocument>(
+    ebayDeleteCall: EbayDeleteCall,
+  ): Promise<EbayRequestCompletion<RequestedEbayDocument>> => {
+    deleteCalls.push(ebayDeleteCall);
+    return Promise.resolve(ebayRequestCompletion as EbayRequestCompletion<RequestedEbayDocument>);
+  };
   const get = <RequestedEbayDocument>(
     ebayGetCall: EbayGetCall,
   ): Promise<EbayRequestCompletion<RequestedEbayDocument>> => {
@@ -43,5 +52,11 @@ export const sellerSessionReturning = <EbayDocument>(
     return Promise.resolve(ebayRequestCompletion as EbayRequestCompletion<RequestedEbayDocument>);
   };
 
-  return { sellerSession: { get, post, put }, getCalls, postCalls, putCalls };
+  return {
+    sellerSession: { delete: deleteEbayDocument, get, post, put },
+    deleteCalls,
+    getCalls,
+    postCalls,
+    putCalls,
+  };
 };

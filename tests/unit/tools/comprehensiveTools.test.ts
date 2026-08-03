@@ -146,9 +146,6 @@ describe('Comprehensive Tools Coverage', () => {
         getCategorySuggestions: vi.fn(),
         getItemAspectsForCategory: vi.fn(),
       },
-      notification: {
-        createDestination: vi.fn(),
-      },
       compliance: {
         getListingViolations: vi.fn(),
         getListingViolationsSummary: vi.fn(),
@@ -1482,25 +1479,6 @@ describe('Comprehensive Tools Coverage', () => {
       vi.mocked(mockApi.edelivery.createPackage).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_create_package', args);
       expect(mockApi.edelivery.createPackage).toHaveBeenCalledWith(args);
-    });
-  });
-
-  describe('Notification Tools', () => {
-    it('ebay_create_notification_destination', async () => {
-      const mockResponse = { destinationId: 'DEST123' };
-      const args = {
-        name: 'Test Destination',
-        deliveryConfig: {
-          endpoint: 'https://example.com/webhook',
-          verificationToken: 'abcdef1234567890abcdef1234567890',
-        },
-        status: 'ENABLED',
-      };
-      vi.mocked(mockApi.notification.createDestination).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_create_notification_destination', args);
-      expect(mockApi.notification.createDestination).toHaveBeenCalledWith(args);
     });
   });
 });

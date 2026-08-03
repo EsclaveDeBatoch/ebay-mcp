@@ -38,8 +38,18 @@ type EbayPutCall = {
   readonly requestHeaders?: EbayRequestHeaders;
 };
 
+/** One authenticated DELETE call issued by an eBay resource operation. */
+type EbayDeleteCall = {
+  readonly endpoint: string;
+  readonly searchParameters?: EbaySearchParameters;
+  readonly requestHeaders?: EbayRequestHeaders;
+};
+
 /** Authenticated seller boundary used by eBay resource operations. */
 type EbaySellerSession = {
+  readonly delete: <EbayDocument>(
+    ebayDeleteCall: EbayDeleteCall,
+  ) => Promise<EbayRequestCompletion<EbayDocument>>;
   readonly get: <EbayDocument>(
     ebayGetCall: EbayGetCall,
   ) => Promise<EbayRequestCompletion<EbayDocument>>;
@@ -100,6 +110,7 @@ function completeEbayCall<EbayDocument>(
 }
 
 export type {
+  EbayDeleteCall,
   EbayGetCall,
   EbayPostCall,
   EbayPutCall,
@@ -124,6 +135,13 @@ export type {
  * ```
  */
 export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySellerSession => ({
+  delete: <EbayDocument>(ebayDeleteCall: EbayDeleteCall) =>
+    completeEbayCall(
+      ebayApiClient.delete<EbayDocument>(ebayDeleteCall.endpoint, {
+        params: ebayDeleteCall.searchParameters,
+        headers: ebayDeleteCall.requestHeaders,
+      }),
+    ),
   get: <EbayDocument>(ebayGetCall: EbayGetCall) => {
     if (ebayGetCall.apiHost === 'identity') {
       const ebaySettings = ebayApiClient.getConfig();

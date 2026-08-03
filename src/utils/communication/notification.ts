@@ -24,33 +24,6 @@ const continuationTokenSchema = z
   })
   .optional();
 
-/** Destination delivery configuration schema shared by destination write tools. */
-const deliveryConfigSchema = z
-  .object({
-    endpoint: z
-      .string({
-        invalid_type_error: 'endpoint must be a string',
-        description: 'HTTPS endpoint URL',
-      })
-      .url({
-        message: 'endpoint must be a valid URL',
-      })
-      .optional(),
-    verificationToken: z
-      .string({
-        invalid_type_error: 'verificationToken must be a string',
-        description: 'Verification token (32-80 alphanumeric, underscore, hyphen characters)',
-      })
-      .min(32, 'verificationToken must be at least 32 characters')
-      .max(80, 'verificationToken must be at most 80 characters')
-      .regex(
-        /^[a-zA-Z0-9_-]+$/,
-        'verificationToken can only contain alphanumeric, underscore, and hyphen characters',
-      )
-      .optional(),
-  })
-  .optional();
-
 /** Subscription payload detail schema shared by subscription write tools. */
 const payloadSchema = z
   .object({
@@ -78,57 +51,6 @@ const payloadSchema = z
 /** Schema for getPublicKey input. */
 export const getPublicKeySchema = z.object({
   publicKeyId: idSchema('Public key ID', 'The unique identifier for the public key'),
-});
-
-/** Schema for getDestinations input. */
-export const getDestinationsSchema = z.object({
-  continuationToken: continuationTokenSchema,
-  limit: limitSchema,
-});
-
-/** Schema for getDestination input. */
-export const getDestinationSchema = z.object({
-  destinationId: idSchema('Destination ID', 'The unique identifier for the destination'),
-});
-
-/** Schema for createDestination input. */
-export const createDestinationSchema = z.object({
-  deliveryConfig: deliveryConfigSchema,
-  name: z
-    .string({
-      invalid_type_error: 'name must be a string',
-      description: 'Seller-specified name for the destination',
-    })
-    .optional(),
-  status: z
-    .string({
-      invalid_type_error: 'status must be a string',
-      description: 'Status: ENABLED or DISABLED',
-    })
-    .optional(),
-});
-
-/** Schema for updateDestination input. */
-export const updateDestinationSchema = z.object({
-  destinationId: idSchema('Destination ID', 'The unique identifier for the destination'),
-  deliveryConfig: deliveryConfigSchema,
-  name: z
-    .string({
-      invalid_type_error: 'name must be a string',
-      description: 'Destination name',
-    })
-    .optional(),
-  status: z
-    .string({
-      invalid_type_error: 'status must be a string',
-      description: 'Status: ENABLED or DISABLED',
-    })
-    .optional(),
-});
-
-/** Schema for deleteDestination input. */
-export const deleteDestinationSchema = z.object({
-  destinationId: idSchema('Destination ID', 'The unique identifier for the destination'),
 });
 
 /** Schema for getSubscriptions input. */

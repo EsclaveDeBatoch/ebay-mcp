@@ -157,11 +157,11 @@ export const defineTool = <Shape extends EffectBackedRawShape, Result>(
  * @example
  * ```ts
  * const entry = rawTool({
- *   name: 'ebay_create_notification_destination',
- *   description: 'Create a notification destination',
- *   inputSchema: advertisedDestinationShape,
- *   handler: (api, destinationSubmission) =>
- *     api.notification.createDestination(destinationSubmission),
+ *   name: 'ebay_create_notification_subscription',
+ *   description: 'Create a notification subscription',
+ *   inputSchema: advertisedSubscriptionShape,
+ *   handler: (api, subscriptionSubmission) =>
+ *     api.notification.createSubscription(subscriptionSubmission),
  * });
  * ```
  */

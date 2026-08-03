@@ -14,16 +14,12 @@ import {
 } from '@/api/shared/request.js';
 import type { components } from '@/generated/ebay/sell-apps/communication/commerceNotificationV1Oas3.js';
 import type {
-  createDestinationSchema,
   createSubscriptionFilterSchema,
   createSubscriptionSchema,
-  deleteDestinationSchema,
   deleteSubscriptionFilterSchema,
   deleteSubscriptionSchema,
   disableSubscriptionSchema,
   enableSubscriptionSchema,
-  getDestinationSchema,
-  getDestinationsSchema,
   getPublicKeySchema,
   getSubscriptionFilterSchema,
   getSubscriptionSchema,
@@ -31,18 +27,12 @@ import type {
   getTopicSchema,
   getTopicsSchema,
   testSubscriptionSchema,
-  updateDestinationSchema,
   updateSubscriptionSchema,
 } from '@/utils/communication/notification.js';
 import { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
 type GetPublicKeyInput = InferEffectSchema<typeof getPublicKeySchema>;
-type GetDestinationsInput = InferEffectSchema<typeof getDestinationsSchema>;
-type CreateDestinationInput = InferEffectSchema<typeof createDestinationSchema>;
-type GetDestinationInput = InferEffectSchema<typeof getDestinationSchema>;
-type UpdateDestinationInput = InferEffectSchema<typeof updateDestinationSchema>;
-type DeleteDestinationInput = InferEffectSchema<typeof deleteDestinationSchema>;
 type GetSubscriptionsInput = InferEffectSchema<typeof getSubscriptionsSchema>;
 type CreateSubscriptionInput = InferEffectSchema<typeof createSubscriptionSchema>;
 type GetSubscriptionInput = InferEffectSchema<typeof getSubscriptionSchema>;
@@ -56,8 +46,6 @@ type GetTopicsInput = InferEffectSchema<typeof getTopicsSchema>;
 type CreateSubscriptionFilterInput = InferEffectSchema<typeof createSubscriptionFilterSchema>;
 type GetSubscriptionFilterInput = InferEffectSchema<typeof getSubscriptionFilterSchema>;
 type DeleteSubscriptionFilterInput = InferEffectSchema<typeof deleteSubscriptionFilterSchema>;
-/** Destination request body accepted by destination writes. */
-type DestinationRequest = components['schemas']['DestinationRequest'];
 /** Subscription creation request body. */
 type CreateSubscriptionRequest = components['schemas']['CreateSubscriptionRequest'];
 /** Subscription update request body. */
@@ -65,19 +53,6 @@ type UpdateSubscriptionRequest = components['schemas']['UpdateSubscriptionReques
 /** Subscription filter body accepted by createSubscriptionFilter. */
 type CreateSubscriptionFilterRequest = Pick<CreateSubscriptionFilterInput, 'filterSchema'>;
 
-/**
- * Destination search response returned by eBay getDestinations.
- *
- * @see https://developer.ebay.com/api-docs/commerce/notification/resources/destination/methods/getDestinations
- */
-export type GetNotificationDestinationsResponse =
-  components['schemas']['DestinationSearchResponse'];
-/**
- * Destination response returned by eBay getDestination.
- *
- * @see https://developer.ebay.com/api-docs/commerce/notification/resources/destination/methods/getDestination
- */
-export type GetNotificationDestinationResponse = components['schemas']['Destination'];
 /**
  * Public key response returned by eBay getPublicKey.
  *
@@ -154,170 +129,6 @@ export class NotificationApi {
       return yield* requestGetEffect<GetNotificationPublicKeyResponse>(
         apiClient,
         `${apiBasePath}/public_key/${validatedPublicKeyId}`,
-      );
-    });
-  };
-
-  /**
-   * Retrieves configured notification destinations.
-   *
-   * @param input - Optional page size and continuation token.
-   * @returns An Effect that succeeds with eBay's generated DestinationSearchResponse.
-   *
-   * @example
-   * ```ts
-   * const destinations = await Effect.runPromise(notificationApi.getDestinations({ limit: 20 }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/destination/methods/getDestinations
-   */
-  getDestinations = (
-    input: GetDestinationsInput = {},
-  ): Effect.Effect<GetNotificationDestinationsResponse, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const path = `${this.basePath}/destination`;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<GetDestinationsInput>(input, 'input');
-      const limit = yield* optionalPositiveNumberEffect(request.limit, 'limit');
-      const continuationToken = yield* optionalStringEffect(
-        request.continuationToken,
-        'continuationToken',
-      );
-      const params = buildEndpointParams({
-        limit: { wireName: 'limit', value: limit },
-        continuationToken: { wireName: 'continuation_token', value: continuationToken },
-      });
-
-      return yield* requestGetEffect<GetNotificationDestinationsResponse>(apiClient, path, params);
-    });
-  };
-
-  /**
-   * Retrieves one notification destination.
-   *
-   * @param input - Destination identifier.
-   * @returns An Effect that succeeds with eBay's generated Destination response.
-   *
-   * @example
-   * ```ts
-   * const destination = await Effect.runPromise(
-   *   notificationApi.getDestination({ destinationId: 'dest-1' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/destination/methods/getDestination
-   */
-  getDestination = (
-    input: GetDestinationInput,
-  ): Effect.Effect<GetNotificationDestinationResponse, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<GetDestinationInput>(input, 'input');
-      const validatedDestinationId = yield* requireStringEffect(
-        request.destinationId,
-        'destinationId',
-      );
-
-      return yield* requestGetEffect<GetNotificationDestinationResponse>(
-        apiClient,
-        `${apiBasePath}/destination/${validatedDestinationId}`,
-      );
-    });
-  };
-
-  /**
-   * Creates a notification destination.
-   *
-   * @param input - Destination request body.
-   * @returns An Effect that succeeds when eBay accepts the destination.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(notificationApi.createDestination({ name: 'webhook' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/destination/methods/createDestination
-   */
-  createDestination = (
-    input: CreateDestinationInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const path = `${this.basePath}/destination`;
-
-    return Effect.gen(function* () {
-      const body = yield* requireObjectEffect<DestinationRequest>(input, 'input');
-
-      return yield* requestPostEffect<void>(apiClient, path, body);
-    });
-  };
-
-  /**
-   * Updates a notification destination.
-   *
-   * @param input - Destination identifier plus destination update body fields.
-   * @returns An Effect that succeeds when eBay accepts the update.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   notificationApi.updateDestination({ destinationId: 'dest-1', name: 'webhook' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/destination/methods/updateDestination
-   */
-  updateDestination = (
-    input: UpdateDestinationInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<UpdateDestinationInput>(input, 'input');
-      const { destinationId, ...destination } = request;
-      const validatedDestinationId = yield* requireStringEffect(destinationId, 'destinationId');
-      const body = yield* requireObjectEffect<DestinationRequest>(destination, 'destination');
-
-      return yield* requestPutEffect<void>(
-        apiClient,
-        `${apiBasePath}/destination/${validatedDestinationId}`,
-        body,
-      );
-    });
-  };
-
-  /**
-   * Deletes a notification destination.
-   *
-   * @param input - Destination identifier.
-   * @returns An Effect that succeeds when eBay deletes the destination.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(notificationApi.deleteDestination({ destinationId: 'dest-1' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/destination/methods/deleteDestination
-   */
-  deleteDestination = (
-    input: DeleteDestinationInput,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<DeleteDestinationInput>(input, 'input');
-      const validatedDestinationId = yield* requireStringEffect(
-        request.destinationId,
-        'destinationId',
-      );
-
-      return yield* requestDeleteEffect<void>(
-        apiClient,
-        `${apiBasePath}/destination/${validatedDestinationId}`,
       );
     });
   };
