@@ -94,6 +94,18 @@ describe('Scope Utils', () => {
       );
     });
 
+    it('returns the inventory scope for listing recommendations', () => {
+      const requirement = getRequiredScopesForTool(
+        'ebay_sell_recommendation_find_listing_recommendations',
+      );
+
+      expect(requirement).toBeDefined();
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ]);
+      expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope/sell.inventory');
+    });
+
     it('return scopes for create/write operations', () => {
       const requirement = getRequiredScopesForTool('ebay_create_or_replace_inventory_item');
 

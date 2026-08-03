@@ -12,6 +12,7 @@ describe('toolExposure', () => {
       expect([...EBAY_TOOL_EXPOSURE_PATHS]).toEqual([
         ...toolCategories.map((category) => category.key),
         'sell.analytics',
+        'sell.recommendation',
       ]);
     });
   });
@@ -47,6 +48,7 @@ describe('toolExposure', () => {
     it('accepts valid legacy and official exposure paths', () => {
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'inventory,fulfillment' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.analytics' })).toBeUndefined();
+      expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.recommendation' })).toBeUndefined();
     });
 
     it('rejects an unknown exposure path and lists the valid ones', () => {

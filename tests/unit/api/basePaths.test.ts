@@ -102,11 +102,6 @@ const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
     spec: 'specs/ebay/sell-apps/marketing-and-promotions/sell_marketing_v1_oas3.json',
   },
   {
-    file: 'src/api/marketing-and-promotions/recommendation.ts',
-    constant: 'basePath',
-    spec: 'specs/ebay/sell-apps/marketing-and-promotions/sell_recommendation_v1_oas3.json',
-  },
-  {
     file: 'src/api/order-management/fulfillment.ts',
     constant: 'basePath',
     spec: 'specs/ebay/sell-apps/order-management/sell_fulfillment_v1_oas3.json',

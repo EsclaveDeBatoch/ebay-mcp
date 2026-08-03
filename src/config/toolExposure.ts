@@ -33,6 +33,7 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'developer',
   'trading',
   'sell.analytics',
+  'sell.recommendation',
 ] as const;
 
 /** A valid eBay tool exposure path. */

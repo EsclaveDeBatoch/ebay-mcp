@@ -814,15 +814,4 @@ export const marketingEntries: ToolEntry[] = [
     annotations: { readOnlyHint: true },
     handler: (api, args) => Effect.runPromise(api.marketing.getEmailReport(args)),
   }),
-  defineTool({
-    name: 'ebay_find_listing_recommendations',
-    description: 'Find listing recommendations through the eBay Recommendation API.',
-    inputSchema: marketingSchemas.findListingRecommendationsInputSchema.shape,
-    outputSchema: toOutputSchema(
-      marketingSchemas.pagedListingRecommendationCollectionSchema,
-      'FindListingRecommendationsResponse',
-    ),
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.recommendation.findListingRecommendations(args)),
-  }),
 ];

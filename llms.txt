@@ -21,6 +21,7 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 - [Fulfillment](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/fulfillment.ts): Orders, shipping, refunds, disputes, payment-dispute evidence
 - [Marketing](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/marketing.ts): Promoted-listings campaigns, ads, promotions, bidding, reports
 - [Sell Analytics](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/analytics): Seller standards, traffic reports, customer-service metrics
+- [Sell Recommendation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/recommendation): Promoted Listings recommendations for active listings
 - [Communication](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/communication.ts): Buyer–seller messaging, negotiations, notifications, feedback
 - [Taxonomy](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/taxonomy.ts): Category trees, item aspects, item conditions
 - [Metadata](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/metadata.ts): Return policies, sales-tax jurisdictions, automotive compatibility

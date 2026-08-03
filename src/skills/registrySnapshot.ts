@@ -19,14 +19,29 @@ const FAMILY_BLURBS: Record<string, string> = {
   marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
+  'sell.recommendation':
+    'Promoted Listings recommendations for active listings from Sell Recommendation',
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   taxonomy: 'Category trees, category suggestions, and required item aspects',
   communication: 'Buyer messages, member messages, and notification settings',
   browse: 'Sold/completed listing search (Finding API) for pricing comps',
-  other: 'Feedback, recommendations, and assorted Sell-API helpers',
+  other: 'Feedback and assorted Sell-API helpers',
   developer: 'API status, rate limits, client registration, and signing keys',
   trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',
 };
+
+const MIGRATED_NAMESPACE_TITLES = [
+  { namespace: 'sell.analytics', title: 'Sell Analytics' },
+  { namespace: 'sell.recommendation', title: 'Sell Recommendation' },
+] as const;
+
+function familyBlurbFor(familyPath: string, familyTitle: string): string {
+  const familyBlurb = FAMILY_BLURBS[familyPath];
+  if (familyBlurb === undefined) {
+    return familyTitle;
+  }
+  return familyBlurb;
+}
 
 /**
  * Builds a {@link RegistrySnapshot} from the live tool registry so a rendered
@@ -37,26 +52,28 @@ const FAMILY_BLURBS: Record<string, string> = {
  *
  * @example
  * ```ts
- * const snapshot = buildRegistrySnapshot();
+ * const snapshot = captureRegistrySnapshot();
  * ```
  */
-export const buildRegistrySnapshot = (): RegistrySnapshot => {
+export const captureRegistrySnapshot = (): RegistrySnapshot => {
   const families: ToolFamily[] = toolCategories.map((category) => ({
     key: category.key,
     title: category.title,
     count: category.entries.length,
-    blurb: FAMILY_BLURBS[category.key] ?? category.title,
+    blurb: familyBlurbFor(category.key, category.title),
   }));
-  const sellAnalyticsCount = ebayToolCatalogue.filter(
-    (ebayTool) => ebayTool.namespace === 'sell.analytics',
-  ).length;
-  if (sellAnalyticsCount > 0) {
-    families.push({
-      key: 'sell.analytics',
-      title: 'Sell Analytics',
-      count: sellAnalyticsCount,
-      blurb: FAMILY_BLURBS['sell.analytics'],
-    });
+  for (const migratedNamespace of MIGRATED_NAMESPACE_TITLES) {
+    const namespaceToolCount = ebayToolCatalogue.filter(
+      (ebayTool) => ebayTool.namespace === migratedNamespace.namespace,
+    ).length;
+    if (namespaceToolCount > 0) {
+      families.push({
+        key: migratedNamespace.namespace,
+        title: migratedNamespace.title,
+        count: namespaceToolCount,
+        blurb: FAMILY_BLURBS[migratedNamespace.namespace],
+      });
+    }
   }
 
   const countAccumulator = { toolCount: 0 };

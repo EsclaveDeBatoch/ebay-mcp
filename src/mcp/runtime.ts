@@ -6,6 +6,7 @@ import { parseToolGatingMode } from '@/config/toolExposure.js';
 import {
   createEbaySellerSession,
   type EbayGetCall,
+  type EbayPostCall,
   type EbaySellerSession,
 } from '@/ebay/ebaySellerSession.js';
 import type { EbayTool } from '@/mcp/defineTool.js';
@@ -152,6 +153,8 @@ function sellerSessionFor(
   return {
     get: <EbayDocument>(ebayGetCall: EbayGetCall) =>
       createEbaySellerSession(ebaySellerApi.getAuthClient()).get<EbayDocument>(ebayGetCall),
+    post: <EbayDocument>(ebayPostCall: EbayPostCall) =>
+      createEbaySellerSession(ebaySellerApi.getAuthClient()).post<EbayDocument>(ebayPostCall),
   };
 }
 

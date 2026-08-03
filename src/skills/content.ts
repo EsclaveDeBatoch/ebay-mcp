@@ -57,7 +57,7 @@ export const buildUsingDoc = (snapshot: RegistrySnapshot): SkillDoc => ({
         'Voluntary refund: `ebay_issue_refund`. Disputes: `ebay_get_payment_dispute_summaries` → `ebay_get_payment_dispute` → `ebay_accept_payment_dispute` (or contest it).',
         '',
         '**Promote listings (Promoted Listings).**',
-        '`ebay_create_campaign` → `ebay_bulk_create_ads_by_inventory_reference`. The Marketing family also covers promotions and reports.',
+        '`ebay_sell_recommendation_find_listing_recommendations` identifies active listings that can benefit from promotion. Then use `ebay_create_campaign` → `ebay_bulk_create_ads_by_inventory_reference`. The Marketing family also covers promotions and reports.',
         '',
         '**Legacy XML path (Trading API).**',
         '`ebay_create_listing` / `ebay_revise_listing` / `ebay_relist_item` / `ebay_end_listing`, list via `ebay_get_active_listings`. Use only when you specifically need the legacy flow — do not mix it with the REST Inventory model for the same SKU.',

@@ -31,7 +31,7 @@ const ebayClientFailure = (kind: EbayClientRequestErrorKind, status?: number) =>
   });
 };
 
-describe('authenticated eBay seller session', () => {
+describe('authenticated eBay seller session calls', () => {
   it('passes the endpoint and search parameters to the authenticated client', async () => {
     const authenticatedClient = ebayApiClient();
     const ebayDocument = { records: [] };
@@ -50,6 +50,32 @@ describe('authenticated eBay seller session', () => {
     });
   });
 
+  it('passes the POST endpoint, document, search parameters, and headers to the client', async () => {
+    const authenticatedClient = ebayApiClient();
+    const ebayDocument = { listingRecommendations: [] };
+    const postCall = vi.spyOn(authenticatedClient, 'post').mockResolvedValue(ebayDocument);
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.post({
+        endpoint: '/sell/recommendation/v1/find',
+        requestDocument: { listingIds: ['110000000000'] },
+        searchParameters: { limit: '25' },
+        requestHeaders: { 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' },
+      }),
+    ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument });
+    expect(postCall).toHaveBeenCalledWith(
+      '/sell/recommendation/v1/find',
+      { listingIds: ['110000000000'] },
+      {
+        params: { limit: '25' },
+        headers: { 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' },
+      },
+    );
+  });
+});
+
+describe('authenticated eBay seller session failures', () => {
   it.each([
     {
       thrownFailure: ebayClientFailure('missingCredentials'),
@@ -104,6 +130,22 @@ describe('authenticated eBay seller session', () => {
 
     await expect(
       sellerSession.get({ endpoint: '/sell/analytics/v1/traffic_report' }),
+    ).resolves.toEqual({
+      kind: 'ebayRequestFailed',
+      ebayFailure: { kind: 'ebayUnavailable', message: 'Connection closed' },
+    });
+  });
+
+  it('classifies a rejected POST through the same completion contract', async () => {
+    const authenticatedClient = ebayApiClient();
+    vi.spyOn(authenticatedClient, 'post').mockRejectedValue(new Error('Connection closed'));
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.post({
+        endpoint: '/sell/recommendation/v1/find',
+        requestDocument: {},
+      }),
     ).resolves.toEqual({
       kind: 'ebayRequestFailed',
       ebayFailure: { kind: 'ebayUnavailable', message: 'Connection closed' },

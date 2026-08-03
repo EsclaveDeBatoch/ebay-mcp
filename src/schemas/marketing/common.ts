@@ -99,62 +99,6 @@ export const inventoryReferenceSchema = z.object({
 });
 
 // ============================================================================
-// Recommendation Schemas (from sellRecommendationV1Oas3.ts)
-// ============================================================================
-
-/**
- * Validates the Marketing API bid percentages model.
- */
-export const bidPercentagesSchema = z.object({
-  basis: z.string().optional(),
-  value: z.string().optional(),
-});
-
-/**
- * Validates the Marketing API ad recommendation model.
- */
-export const adRecommendationSchema = z.object({
-  bidPercentages: z.array(bidPercentagesSchema).optional(),
-  promoteWithAd: z.string().optional(),
-});
-
-/**
- * Validates the Marketing API marketing recommendation model.
- */
-export const marketingRecommendationSchema = z.object({
-  ad: adRecommendationSchema.optional(),
-  message: z.string().optional(),
-});
-
-/**
- * Validates the Marketing API listing recommendation model.
- */
-export const listingRecommendationSchema = z.object({
-  listingId: z.string().optional(),
-  marketing: marketingRecommendationSchema.optional(),
-});
-
-/**
- * Validates the Marketing API paged listing recommendation collection model.
- */
-export const pagedListingRecommendationCollectionSchema = z.object({
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  listingRecommendations: z.array(listingRecommendationSchema).optional(),
-  next: z.string().optional(),
-  offset: z.number().optional(),
-  prev: z.string().optional(),
-  total: z.number().optional(),
-});
-
-/**
- * Validates the Marketing API find listing recommendation request model.
- */
-export const findListingRecommendationRequestSchema = z.object({
-  listingIds: z.array(z.string()).optional(),
-});
-
-// ============================================================================
 // Aspect Schema
 // ============================================================================
 
@@ -164,12 +108,4 @@ export const findListingRecommendationRequestSchema = z.object({
 export const aspectSchema = z.object({
   aspectValues: z.array(z.string()).optional(),
   localizedAspectName: z.string().optional(),
-});
-
-export const findListingRecommendationsInputSchema = z.object({
-  requestBody: findListingRecommendationRequestSchema.optional(),
-  filter: z.string().optional().describe('Recommendation filter expression'),
-  limit: z.number().optional().describe('Maximum recommendations to return'),
-  offset: z.number().optional().describe('Recommendations to skip before returning results'),
-  marketplaceId: z.string().describe('Marketplace ID sent as X-EBAY-C-MARKETPLACE-ID'),
 });

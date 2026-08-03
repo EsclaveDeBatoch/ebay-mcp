@@ -4,20 +4,36 @@ import type { EbayFailure, EbayRequestCompletion } from '@/ebay/ebayRequestCompl
 import { getErrorMessage } from '@/utils/errors.js';
 
 /** Query values accepted by the shared eBay HTTP client. */
-export type EbaySearchParameters = {
+type EbaySearchParameters = {
   readonly [wireField: string]: unknown;
 };
 
+/** Request headers accepted by the shared eBay HTTP client. */
+type EbayRequestHeaders = {
+  readonly [wireHeader: string]: string;
+};
+
 /** One authenticated GET call issued by an eBay resource operation. */
-export type EbayGetCall = {
+type EbayGetCall = {
   readonly endpoint: string;
   readonly searchParameters?: EbaySearchParameters;
 };
 
+/** One authenticated POST call issued by an eBay resource operation. */
+type EbayPostCall = {
+  readonly endpoint: string;
+  readonly requestDocument: unknown;
+  readonly searchParameters?: EbaySearchParameters;
+  readonly requestHeaders?: EbayRequestHeaders;
+};
+
 /** Authenticated seller boundary used by eBay resource operations. */
-export type EbaySellerSession = {
+type EbaySellerSession = {
   readonly get: <EbayDocument>(
     ebayGetCall: EbayGetCall,
+  ) => Promise<EbayRequestCompletion<EbayDocument>>;
+  readonly post: <EbayDocument>(
+    ebayPostCall: EbayPostCall,
   ) => Promise<EbayRequestCompletion<EbayDocument>>;
 };
 
@@ -50,8 +66,32 @@ function classifyEbayFailure(thrownFailure: unknown): EbayFailure {
     }
     case 'transport':
       return { kind: 'ebayUnavailable', message: thrownFailure.message };
+    default: {
+      const impossibleClientFailureKind: never = thrownFailure.kind;
+      return impossibleClientFailureKind;
+    }
   }
 }
+
+function completeEbayCall<EbayDocument>(
+  ebayCall: Promise<EbayDocument>,
+): Promise<EbayRequestCompletion<EbayDocument>> {
+  return ebayCall.then<EbayRequestCompletion<EbayDocument>, EbayRequestCompletion<EbayDocument>>(
+    (ebayDocument) => ({ kind: 'ebayRequestSucceeded', ebayDocument }),
+    (thrownFailure: unknown) => ({
+      kind: 'ebayRequestFailed',
+      ebayFailure: classifyEbayFailure(thrownFailure),
+    }),
+  );
+}
+
+export type {
+  EbayGetCall,
+  EbayPostCall,
+  EbayRequestHeaders,
+  EbaySearchParameters,
+  EbaySellerSession,
+};
 
 /**
  * Gives resource operations an authenticated promise boundary over the current eBay client.
@@ -69,14 +109,15 @@ function classifyEbayFailure(thrownFailure: unknown): EbayFailure {
  * ```
  */
 export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySellerSession => ({
-  get: async <EbayDocument>(ebayGetCall: EbayGetCall) =>
-    ebayApiClient
-      .get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters)
-      .then<EbayRequestCompletion<EbayDocument>, EbayRequestCompletion<EbayDocument>>(
-        (ebayDocument) => ({ kind: 'ebayRequestSucceeded', ebayDocument }),
-        (thrownFailure: unknown) => ({
-          kind: 'ebayRequestFailed',
-          ebayFailure: classifyEbayFailure(thrownFailure),
-        }),
-      ),
+  get: <EbayDocument>(ebayGetCall: EbayGetCall) =>
+    completeEbayCall(
+      ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters),
+    ),
+  post: <EbayDocument>(ebayPostCall: EbayPostCall) =>
+    completeEbayCall(
+      ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint, ebayPostCall.requestDocument, {
+        params: ebayPostCall.searchParameters,
+        headers: ebayPostCall.requestHeaders,
+      }),
+    ),
 });

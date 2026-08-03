@@ -4,13 +4,7 @@
 
 import { z } from '@/utils/effectSchema.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import {
-  amountSchema,
-  errorSchema,
-  findListingRecommendationsInputSchema,
-  listingRecommendationSchema,
-  pagedListingRecommendationCollectionSchema,
-} from './common.js';
+import { amountSchema, errorSchema } from './common.js';
 import {
   campaignPagedCollectionResponseSchema,
   campaignSchema,
@@ -270,20 +264,6 @@ export const getMarketingJsonSchemas = () => {
     ),
     getEmailPreviewOutput: zodToJsonSchema(getEmailPreviewResponseSchema, 'getEmailPreviewOutput'),
     getEmailReportOutput: zodToJsonSchema(getEmailReportResponseSchema, 'getEmailReportOutput'),
-
-    // Recommendations
-    findListingRecommendationsInput: zodToJsonSchema(
-      findListingRecommendationsInputSchema,
-      'findListingRecommendationsInput',
-    ),
-    findListingRecommendationsOutput: zodToJsonSchema(
-      pagedListingRecommendationCollectionSchema,
-      'findListingRecommendationsOutput',
-    ),
-    listingRecommendationDetails: zodToJsonSchema(
-      listingRecommendationSchema,
-      'listingRecommendationDetails',
-    ),
 
     // Quick Setup
     quickSetupInput: zodToJsonSchema(quickSetupRequestSchema, 'quickSetupInput'),

@@ -6,7 +6,7 @@ import prompts from 'prompts';
 import {
   ALL_PROVIDERS,
   applyWrite,
-  buildRegistrySnapshot,
+  captureRegistrySnapshot,
   detectProvider,
   planWrite,
   providerLabel,
@@ -173,7 +173,7 @@ export const runSkillsWizard = async (options: RunSkillsWizardOptions = {}): Pro
 
   const cwd = process.cwd();
   const home = process.env.HOME ?? process.env.USERPROFILE ?? cwd;
-  const snapshot = buildRegistrySnapshot();
+  const snapshot = captureRegistrySnapshot();
   const nonInteractive = flags.yes || !process.stdin.isTTY;
 
   if (!options.fromSetup) {

@@ -117,9 +117,6 @@ describe('Comprehensive Tools Coverage', () => {
         cloneCampaign: vi.fn(),
         getPromotions: vi.fn(),
       },
-      recommendation: {
-        findListingRecommendations: vi.fn(),
-      },
       metadata: {
         getAutomotivePartsCompatibilityPolicies: vi.fn(),
         getCategoryPolicies: vi.fn(),
@@ -1136,21 +1133,6 @@ describe('Comprehensive Tools Coverage', () => {
       };
       await executeTool(mockApi, 'ebay_send_message', messageData);
       expect(mockApi.message.sendMessage).toHaveBeenCalledWith(messageData);
-    });
-  });
-
-  describe('Recommendation Tools', () => {
-    it('ebay_find_listing_recommendations', async () => {
-      const mockResponse = { listingRecommendations: [] };
-      vi.mocked(mockApi.recommendation.findListingRecommendations).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      const input = {
-        requestBody: { listingIds: ['LISTING123'] },
-        marketplaceId: 'EBAY_US',
-      };
-      await executeTool(mockApi, 'ebay_find_listing_recommendations', input);
-      expect(mockApi.recommendation.findListingRecommendations).toHaveBeenCalledWith(input);
     });
   });
 

@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DisputeApi } from '@/api/order-management/dispute.js';
 import { TaxonomyApi } from '@/api/listing-metadata/taxonomy.js';
-import { RecommendationApi } from '@/api/marketing-and-promotions/recommendation.js';
 import { ComplianceApi } from '@/api/other/compliance.js';
 import { VeroApi } from '@/api/other/vero.js';
 import { TranslationApi } from '@/api/other/translation.js';
@@ -187,51 +186,6 @@ describe('Other APIs', () => {
           compatibility_property: 'Make',
         },
       );
-    });
-  });
-
-  describe('RecommendationApi', () => {
-    let api: RecommendationApi;
-
-    beforeEach(() => {
-      api = new RecommendationApi(client);
-    });
-
-    it('find listing recommendations', async () => {
-      const mockResponse = { listingRecommendations: [] };
-      vi.mocked(client.post).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(
-        api.findListingRecommendations({
-          requestBody: { listingIds: ['LISTING123'] },
-          filter: 'filter:test',
-          limit: 10,
-          marketplaceId: 'EBAY_US',
-        }),
-      );
-
-      expect(client.post).toHaveBeenCalledWith(
-        '/sell/recommendation/v1/find',
-        { listingIds: ['LISTING123'] },
-        {
-          params: {
-            filter: 'filter:test',
-            limit: '10',
-          },
-          headers: {
-            'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US',
-          },
-        },
-      );
-    });
-
-    it('reject missing marketplace before requesting recommendations', async () => {
-      const error = await Effect.runPromise(
-        Effect.flip(api.findListingRecommendations({ marketplaceId: '' })),
-      );
-
-      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'marketplaceId' });
-      expect(client.post).not.toHaveBeenCalled();
     });
   });
 

@@ -161,10 +161,6 @@ describe('Tools Layer', () => {
         cloneCampaign: vi.fn(),
         getPromotions: vi.fn(),
       },
-      // Recommendation API
-      recommendation: {
-        findListingRecommendations: vi.fn(),
-      },
       // Metadata API
       metadata: {
         getAutomotivePartsCompatibilityPolicies: vi.fn(),
