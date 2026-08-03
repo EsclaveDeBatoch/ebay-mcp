@@ -5,8 +5,6 @@ import type { EbayApiClient } from '@/api/client.js';
 import { MarketplaceId } from '@/types/ebayEnums.js';
 import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
 
-type PaymentPolicy = components['schemas']['PaymentPolicy'];
-type PaymentPolicyResponse = components['schemas']['PaymentPolicyResponse'];
 type ReturnPolicy = components['schemas']['ReturnPolicy'];
 type ReturnPolicyResponse = components['schemas']['ReturnPolicyResponse'];
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
@@ -38,103 +36,6 @@ describe('AccountApi', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('Payment Policies', () => {
-    it('gets payment policies for a marketplace', async () => {
-      const mockResponse: PaymentPolicyResponse = {
-        paymentPolicies: [
-          {
-            paymentPolicyId: '1234567890',
-            name: 'Immediate Payment',
-            marketplaceId: 'EBAY_US',
-          },
-        ],
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(
-        accountApi.getPaymentPolicies({ marketplaceId: MarketplaceId.EBAY_US }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/payment_policy', {
-        marketplace_id: 'EBAY_US',
-      });
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('gets a payment policy by ID', async () => {
-      const mockPolicy: PaymentPolicy = {
-        paymentPolicyId: '1234567890',
-        name: 'Test Policy',
-        marketplaceId: 'EBAY_US',
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPolicy);
-
-      const result = await Effect.runPromise(
-        accountApi.getPaymentPolicy({ paymentPolicyId: '1234567890' }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/payment_policy/1234567890');
-      expect(result).toEqual(mockPolicy);
-    });
-
-    it('gets a payment policy by name', async () => {
-      const mockPolicy: PaymentPolicy = {
-        paymentPolicyId: '1234567890',
-        name: 'Immediate Payment',
-        marketplaceId: 'EBAY_US',
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPolicy);
-
-      const result = await Effect.runPromise(
-        accountApi.getPaymentPolicyByName({
-          marketplaceId: MarketplaceId.EBAY_US,
-          name: 'Immediate Payment',
-        }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        '/sell/account/v1/payment_policy/get_by_policy_name',
-        {
-          marketplace_id: 'EBAY_US',
-          name: 'Immediate Payment',
-        },
-      );
-      expect(result).toEqual(mockPolicy);
-    });
-
-    it('creates, updates, and deletes a payment policy', async () => {
-      const policy = {
-        name: 'New Payment Policy',
-        marketplaceId: MarketplaceId.EBAY_US,
-      };
-      const mockResponse = {
-        paymentPolicyId: '9876543210',
-      };
-
-      vi.spyOn(mockClient, 'post').mockResolvedValue(mockResponse);
-      vi.spyOn(mockClient, 'put').mockResolvedValue(mockResponse);
-      vi.spyOn(mockClient, 'delete').mockResolvedValue(undefined);
-
-      const created = await Effect.runPromise(accountApi.createPaymentPolicy({ policy }));
-      const updated = await Effect.runPromise(
-        accountApi.updatePaymentPolicy({ paymentPolicyId: '9876543210', policy }),
-      );
-      await Effect.runPromise(accountApi.deletePaymentPolicy({ paymentPolicyId: '9876543210' }));
-
-      expect(mockClient.post).toHaveBeenCalledWith('/sell/account/v1/payment_policy', policy);
-      expect(mockClient.put).toHaveBeenCalledWith(
-        '/sell/account/v1/payment_policy/9876543210',
-        policy,
-      );
-      expect(mockClient.delete).toHaveBeenCalledWith('/sell/account/v1/payment_policy/9876543210');
-      expect(created).toEqual(mockResponse);
-      expect(updated).toEqual(mockResponse);
-    });
   });
 
   describe('Return Policies', () => {

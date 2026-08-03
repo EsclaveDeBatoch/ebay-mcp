@@ -292,6 +292,47 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires write access to seller fulfillment policies',
     },
 
+    // Sell Account payment-policy tools
+    ebay_sell_account_get_payment_policies: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller payment policies',
+    },
+    ebay_sell_account_create_payment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller payment policies',
+    },
+    ebay_sell_account_get_payment_policy: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller payment policies',
+    },
+    ebay_sell_account_get_payment_policy_by_name: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller payment policies',
+    },
+    ebay_sell_account_update_payment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller payment policies',
+    },
+    ebay_sell_account_delete_payment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller payment policies',
+    },
+
     // Marketing Tools
     ebay_get_campaigns: {
       requiredScopes: [

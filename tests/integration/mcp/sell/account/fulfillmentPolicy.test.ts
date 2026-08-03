@@ -8,13 +8,6 @@ import type {
 import { ebayFailures, sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 import { callEbayTool, listEbayTools } from '@tests/fixtures/mcp.js';
 
-const customPolicyToolNames = [
-  'ebay_sell_account_get_custom_policies',
-  'ebay_sell_account_create_custom_policy',
-  'ebay_sell_account_get_custom_policy',
-  'ebay_sell_account_update_custom_policy',
-] as const;
-
 const fulfillmentPolicyToolNames = [
   'ebay_sell_account_get_fulfillment_policies',
   'ebay_sell_account_create_fulfillment_policy',
@@ -24,14 +17,16 @@ const fulfillmentPolicyToolNames = [
   'ebay_sell_account_delete_fulfillment_policy',
 ] as const;
 
-const sellAccountToolNames = [...customPolicyToolNames, ...fulfillmentPolicyToolNames] as const;
-
-const readOnlySellAccountToolNames = [
-  'ebay_sell_account_get_custom_policies',
-  'ebay_sell_account_get_custom_policy',
+const readOnlyFulfillmentPolicyToolNames = [
   'ebay_sell_account_get_fulfillment_policies',
   'ebay_sell_account_get_fulfillment_policy',
   'ebay_sell_account_get_fulfillment_policy_by_name',
+] as const;
+
+const writeFulfillmentPolicyToolNames = [
+  'ebay_sell_account_create_fulfillment_policy',
+  'ebay_sell_account_update_fulfillment_policy',
+  'ebay_sell_account_delete_fulfillment_policy',
 ] as const;
 
 const legacyFulfillmentPolicyToolNames = [
@@ -123,7 +118,7 @@ describe('Sell Account fulfillment-policy MCP exposure', () => {
     await mcpClient.close();
   });
 
-  it('gates both migrated Account resources through sell.account', async () => {
+  it('gates the resource through sell.account', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'sell.account');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning<FulfillmentPolicyCollection>({
@@ -132,7 +127,10 @@ describe('Sell Account fulfillment-policy MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(sellAccountToolNames);
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
+    for (const fulfillmentPolicyToolName of fulfillmentPolicyToolNames) {
+      expect(listedToolNames).toContain(fulfillmentPolicyToolName);
+    }
     await mcpClient.close();
   });
 
@@ -146,9 +144,13 @@ describe('Sell Account fulfillment-policy MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(
-      readOnlySellAccountToolNames,
-    );
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
+    for (const readOnlyFulfillmentPolicyToolName of readOnlyFulfillmentPolicyToolNames) {
+      expect(listedToolNames).toContain(readOnlyFulfillmentPolicyToolName);
+    }
+    for (const writeFulfillmentPolicyToolName of writeFulfillmentPolicyToolNames) {
+      expect(listedToolNames).not.toContain(writeFulfillmentPolicyToolName);
+    }
     await mcpClient.close();
   });
 });

@@ -10,15 +10,10 @@ import {
 import type {
   bulkCreateOrReplaceSalesTaxInputSchema,
   createOrReplaceSalesTaxInputSchema,
-  createPaymentPolicyInputSchema,
   createReturnPolicyInputSchema,
-  deletePaymentPolicyInputSchema,
   deleteReturnPolicyInputSchema,
   deleteSalesTaxInputSchema,
   getAdvertisingEligibilityInputSchema,
-  getPaymentPoliciesInputSchema,
-  getPaymentPolicyByNameInputSchema,
-  getPaymentPolicyInputSchema,
   getPaymentsProgramInputSchema,
   getPaymentsProgramOnboardingInputSchema,
   getReturnPoliciesInputSchema,
@@ -29,7 +24,6 @@ import type {
   getSubscriptionInputSchema,
   optInToProgramInputSchema,
   optOutOfProgramInputSchema,
-  updatePaymentPolicyInputSchema,
   updateReturnPolicyInputSchema,
 } from '@/schemas/account-management/account.js';
 import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
@@ -39,12 +33,6 @@ import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 const ACCOUNT_BASE_PATH = '/sell/account/v1';
 
 type EmptyAccountInput = Record<string, never>;
-type GetPaymentPoliciesInput = InferEffectSchema<typeof getPaymentPoliciesInputSchema>;
-type GetPaymentPolicyInput = InferEffectSchema<typeof getPaymentPolicyInputSchema>;
-type GetPaymentPolicyByNameInput = InferEffectSchema<typeof getPaymentPolicyByNameInputSchema>;
-type CreatePaymentPolicyInput = InferEffectSchema<typeof createPaymentPolicyInputSchema>;
-type UpdatePaymentPolicyInput = InferEffectSchema<typeof updatePaymentPolicyInputSchema>;
-type DeletePaymentPolicyInput = InferEffectSchema<typeof deletePaymentPolicyInputSchema>;
 type GetReturnPoliciesInput = InferEffectSchema<typeof getReturnPoliciesInputSchema>;
 type GetReturnPolicyInput = InferEffectSchema<typeof getReturnPolicyInputSchema>;
 type GetReturnPolicyByNameInput = InferEffectSchema<typeof getReturnPolicyByNameInputSchema>;
@@ -70,9 +58,6 @@ type GetAdvertisingEligibilityInput = InferEffectSchema<
 >;
 
 type KycResponse = components['schemas']['KycResponse'];
-type SetPaymentPolicyResponse = components['schemas']['SetPaymentPolicyResponse'];
-type GetPaymentPoliciesResponse = components['schemas']['PaymentPolicyResponse'];
-type PaymentPolicy = components['schemas']['PaymentPolicy'];
 type PaymentsProgramResponse = components['schemas']['PaymentsProgramResponse'];
 type PaymentsProgramOnboardingResponse = components['schemas']['PaymentsProgramOnboardingResponse'];
 type SellerEligibilityMultiProgramResponse =
@@ -94,151 +79,6 @@ export class AccountApi {
   constructor(client: EbayApiClient) {
     this.client = client;
   }
-
-  /**
-   * Retrieves payment policies for one marketplace.
-   *
-   * @param input - Marketplace ID used as the `marketplace_id` query parameter.
-   * @returns An Effect that succeeds with eBay's generated PaymentPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const policies = await Effect.runPromise(
-   *   accountApi.getPaymentPolicies({ marketplaceId: 'EBAY_US' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/payment_policy/methods/getPaymentPolicies
-   */
-  getPaymentPolicies = (
-    input: GetPaymentPoliciesInput,
-  ): Effect.Effect<GetPaymentPoliciesResponse, EbayApiError> => {
-    const params = buildEndpointParams({
-      marketplaceId: { wireName: 'marketplace_id', value: input.marketplaceId },
-    });
-
-    return requestGetEffect<GetPaymentPoliciesResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/payment_policy`,
-      params,
-    );
-  };
-
-  /**
-   * Creates a payment policy.
-   *
-   * @param input - Payment policy request body.
-   * @returns An Effect that succeeds with eBay's generated SetPaymentPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const created = await Effect.runPromise(accountApi.createPaymentPolicy({ policy }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/payment_policy/methods/createPaymentPolicy
-   */
-  createPaymentPolicy = (
-    input: CreatePaymentPolicyInput,
-  ): Effect.Effect<SetPaymentPolicyResponse, EbayApiError> =>
-    requestPostEffect<SetPaymentPolicyResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/payment_policy`,
-      input.policy,
-    );
-
-  /**
-   * Retrieves one payment policy by ID.
-   *
-   * @param input - Payment policy identifier.
-   * @returns An Effect that succeeds with eBay's generated PaymentPolicy.
-   *
-   * @example
-   * ```ts
-   * const policy = await Effect.runPromise(
-   *   accountApi.getPaymentPolicy({ paymentPolicyId: 'PP123' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/payment_policy/methods/getPaymentPolicy
-   */
-  getPaymentPolicy = (input: GetPaymentPolicyInput): Effect.Effect<PaymentPolicy, EbayApiError> =>
-    requestGetEffect<PaymentPolicy>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/payment_policy/${input.paymentPolicyId}`,
-    );
-
-  /**
-   * Retrieves one payment policy by marketplace and policy name.
-   *
-   * @param input - Marketplace ID and seller-defined policy name.
-   * @returns An Effect that succeeds with eBay's generated PaymentPolicy.
-   *
-   * @example
-   * ```ts
-   * const policy = await Effect.runPromise(
-   *   accountApi.getPaymentPolicyByName({ marketplaceId: 'EBAY_US', name: 'Immediate Payment' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/payment_policy/methods/getPaymentPolicyByName
-   */
-  getPaymentPolicyByName = (
-    input: GetPaymentPolicyByNameInput,
-  ): Effect.Effect<PaymentPolicy, EbayApiError> => {
-    const params = buildEndpointParams({
-      marketplaceId: { wireName: 'marketplace_id', value: input.marketplaceId },
-      name: { wireName: 'name', value: input.name },
-    });
-
-    return requestGetEffect<PaymentPolicy>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/payment_policy/get_by_policy_name`,
-      params,
-    );
-  };
-
-  /**
-   * Updates a payment policy by ID.
-   *
-   * @param input - Payment policy ID and full replacement policy payload.
-   * @returns An Effect that succeeds with eBay's generated SetPaymentPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const updated = await Effect.runPromise(
-   *   accountApi.updatePaymentPolicy({ paymentPolicyId: 'PP123', policy }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/payment_policy/methods/updatePaymentPolicy
-   */
-  updatePaymentPolicy = (
-    input: UpdatePaymentPolicyInput,
-  ): Effect.Effect<SetPaymentPolicyResponse, EbayApiError> =>
-    requestPutEffect<SetPaymentPolicyResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/payment_policy/${input.paymentPolicyId}`,
-      input.policy,
-    );
-
-  /**
-   * Deletes a payment policy by ID.
-   *
-   * @param input - Payment policy identifier.
-   * @returns An Effect that succeeds when eBay deletes the policy.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(accountApi.deletePaymentPolicy({ paymentPolicyId: 'PP123' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/payment_policy/methods/deletePaymentPolicy
-   */
-  deletePaymentPolicy = (input: DeletePaymentPolicyInput): Effect.Effect<void, EbayApiError> =>
-    requestDeleteEffect<void>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/payment_policy/${input.paymentPolicyId}`,
-    );
 
   /**
    * Retrieves return policies for one marketplace.

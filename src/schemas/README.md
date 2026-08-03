@@ -50,8 +50,8 @@ import { getAccountManagementJsonSchemas } from '@/schemas/account-management/ac
 const accountSchemas = getAccountManagementJsonSchemas();
 
 // Access specific schemas
-const inputSchema = accountSchemas.getPaymentPoliciesInput;
-const outputSchema = accountSchemas.getPaymentPoliciesOutput;
+const inputSchema = accountSchemas.getReturnPoliciesInput;
+const outputSchema = accountSchemas.getReturnPoliciesOutput;
 ```
 
 ### Using Effect-Backed Schemas for Validation
@@ -102,7 +102,6 @@ Schemas for managing seller account settings, business policies, and programs.
 
 **Endpoints Covered:**
 
-- Payment Policies (payment methods, immediate pay)
 - Return Policies (return period, refund method)
 - Sales Tax (jurisdiction-based tax rules)
 - Programs (opt-in/opt-out programs)
@@ -111,8 +110,6 @@ Schemas for managing seller account settings, business policies, and programs.
 
 **Key Schemas:**
 
-- `getPaymentPoliciesInputSchema` / `getPaymentPoliciesOutputSchema`
-- `createPaymentPolicyInputSchema` / `createPaymentPolicyOutputSchema`
 - `getReturnPoliciesInputSchema` / `getReturnPoliciesOutputSchema`
 
 ### 2. Inventory Management (`inventory-management/inventory.ts`)

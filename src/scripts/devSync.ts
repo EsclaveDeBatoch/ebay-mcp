@@ -412,6 +412,12 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getfulfillmentpolicybyname: ['ebay_sell_account_get_fulfillment_policy_by_name'],
   updatefulfillmentpolicy: ['ebay_sell_account_update_fulfillment_policy'],
   deletefulfillmentpolicy: ['ebay_sell_account_delete_fulfillment_policy'],
+  getpaymentpolicies: ['ebay_sell_account_get_payment_policies'],
+  createpaymentpolicy: ['ebay_sell_account_create_payment_policy'],
+  getpaymentpolicy: ['ebay_sell_account_get_payment_policy'],
+  getpaymentpolicybyname: ['ebay_sell_account_get_payment_policy_by_name'],
+  updatepaymentpolicy: ['ebay_sell_account_update_payment_policy'],
+  deletepaymentpolicy: ['ebay_sell_account_delete_payment_policy'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

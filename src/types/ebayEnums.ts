@@ -434,60 +434,6 @@ export enum CategoryType {
 }
 
 /**
- * Payment Method Types
- *
- * Specifies available payment methods.
- *
- * Reference: https://developer.ebay.com/api-docs/sell/account/types/api:PaymentMethodTypeEnum
- */
-export enum PaymentMethodType {
-  /** Credit card payment */
-  CREDIT_CARD = 'CREDIT_CARD', // This payment method is no longer valid.
-
-  /** PayPal payment */
-  PAYPAL = 'PAYPAL', // This payment method is no longer valid.
-
-  /** Personal check */
-  PERSONAL_CHECK = 'PERSONAL_CHECK', // This enumeration value indicates that the payment method will be a Personal check.
-
-  /** Money order or cashier's check */
-  MONEY_ORDER_CASHIERS_CHECK = 'MONEY_ORDER_CASHIERS_CHECK', // This enumeration value indicates that the payment method will be a Cashier Check.
-
-  /** Cash on delivery */
-  CASH_ON_DELIVERY = 'CASH_ON_DELIVERY', // This enumeration value indicates that the payment method will be cash, and the transaction will occur after the item is delivered to the buyer.
-
-  /** Cash on pickup */
-  CASH_ON_PICKUP = 'CASH_ON_PICKUP', // This enumeration value indicates that the payment method will be cash, and the transaction will occur when the buyer picks up the item.
-
-  /** This enumeration value indicates that the payment method will be cash, and the transaction will occur in-person. */
-  CASH_IN_PERSON = 'CASH_IN_PERSON',
-
-  /** This enumeration value indicates that escrow was used as the payment method to pay for the order. This form of payment is used for high-value orders. */
-  ESCROW = 'ESCROW',
-
-  /** This payment method is no longer valid. */
-  INTEGRATED_MERCHANT_CREDIT_CARD = 'INTEGRATED_MERCHANT_CREDIT_CARD',
-
-  /** This payment method is no longer valid. */
-  LOAN_CHECK = 'LOAN_CHECK',
-
-  /** This enumeration value indicates that the payment method will be by a Money Order. */
-  MONEY_ORDER = 'MONEY_ORDER',
-
-  /** This payment method is no longer valid. */
-  PAISA_PAY = 'PAISA_PAY',
-
-  /** This payment method is no longer valid. */
-  PAISA_PAY_ESCROW = 'PAISA_PAY_ESCROW',
-
-  /** This payment method is no longer valid. */
-  PAISA_PAY_ESCROW_EMI = 'PAISA_PAY_ESCROW_EMI',
-
-  /** This enumeration value indicates that the seller is offering an offline payment method not otherwise covered. */
-  OTHER = 'OTHER',
-}
-
-/**
  * Line Item Fulfillment Status
  *
  * Status of individual line items in an order.
@@ -1094,21 +1040,6 @@ export enum RegionType {
 }
 
 /**
- * Deposit Type Enum
- *
- * Type of deposit for a payment policy.
- *
- * Reference: https://developer.ebay.com/api-docs/sell/account/types/api:DepositTypeEnum
- */
-export enum DepositType {
-  /** Percentage of total price */
-  PERCENTAGE = 'PERCENTAGE',
-
-  /** Fixed amount */
-  FIXED_AMOUNT = 'FIXED_AMOUNT',
-}
-
-/**
  * Pricing Visibility Enum
  *
  * When pricing information is displayed to buyers.
@@ -1374,13 +1305,6 @@ export const EbayEnums = {
   },
 
   /**
-   * Check if a payment method type is valid
-   */
-  isValidPaymentMethodType(type: string): type is PaymentMethodType {
-    return Object.values(PaymentMethodType).includes(type as PaymentMethodType);
-  },
-
-  /**
    * Check if a line item fulfillment status is valid
    */
   isValidLineItemFulfillmentStatus(status: string): status is LineItemFulfillmentStatus {
@@ -1441,13 +1365,6 @@ export const EbayEnums = {
    */
   isValidRegionType(type: string): type is RegionType {
     return Object.values(RegionType).includes(type as RegionType);
-  },
-
-  /**
-   * Check if a deposit type is valid
-   */
-  isValidDepositType(type: string): type is DepositType {
-    return Object.values(DepositType).includes(type as DepositType);
   },
 
   /**

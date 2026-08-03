@@ -1,7 +1,6 @@
 import { z } from '@/utils/effectSchema.js';
 import {
   TimeDurationUnit,
-  DepositType,
   RefundMethod,
   ReturnMethod,
   ReturnShippingCostPayer,
@@ -56,45 +55,6 @@ export const categoryTypeSchema = z
   .object({
     name: z.string().optional(),
     default: z.boolean().optional(),
-  })
-  .passthrough();
-
-/** Payment method payload used by payment policy tools. */
-export const paymentMethodSchema = z
-  .object({
-    paymentMethodType: z.string(),
-    brands: z.array(z.string()).optional(),
-    recipientAccountReference: z
-      .object({
-        referenceId: z.string().optional(),
-        referenceType: z.string().optional(),
-      })
-      .passthrough()
-      .optional(),
-  })
-  .passthrough();
-
-/** Deposit requirement payload used by motor-vehicle payment policies. */
-export const depositSchema = z
-  .object({
-    depositAmount: amountSchema.optional(),
-    depositType: z.nativeEnum(DepositType).optional(),
-    dueIn: timeDurationSchema.optional(),
-  })
-  .passthrough();
-
-/** Payment policy payload accepted by account management tools. */
-export const paymentPolicySchema = z
-  .object({
-    name: z.string(),
-    marketplaceId: z.string(),
-    categoryTypes: z.array(categoryTypeSchema).optional(),
-    description: z.string().optional(),
-    deposit: depositSchema.optional(),
-    fullPaymentDueIn: timeDurationSchema.optional(),
-    immediatePay: z.boolean().optional(),
-    paymentInstructions: z.string().optional(),
-    paymentMethods: z.array(paymentMethodSchema).optional(),
   })
   .passthrough();
 

@@ -56,13 +56,7 @@ describe('Tools Layer', () => {
     mockApi = {
       // Account API
       account: {
-        getPaymentPolicies: vi.fn(),
         getReturnPolicies: vi.fn(),
-        createPaymentPolicy: vi.fn(),
-        getPaymentPolicy: vi.fn(),
-        getPaymentPolicyByName: vi.fn(),
-        updatePaymentPolicy: vi.fn(),
-        deletePaymentPolicy: vi.fn(),
         createReturnPolicy: vi.fn(),
         getReturnPolicy: vi.fn(),
         getReturnPolicyByName: vi.fn(),
@@ -175,7 +169,7 @@ describe('Tools Layer', () => {
 
       // Check for tools from each category
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-      expect(toolNames).toContain('ebay_get_payment_policies'); // accountTools
+      expect(toolNames).toContain('ebay_get_return_policies'); // accountTools
       expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
       expect(toolNames).toContain('ebay_get_campaigns');
     });

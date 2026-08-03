@@ -3,18 +3,11 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
   bulkCreateOrReplaceSalesTaxInputSchema,
   createOrReplaceSalesTaxInputSchema,
-  createPaymentPolicyInputSchema,
-  createPaymentPolicyOutputSchema,
   createReturnPolicyInputSchema,
   createReturnPolicyOutputSchema,
-  deletePaymentPolicyInputSchema,
   deleteReturnPolicyInputSchema,
   deleteSalesTaxInputSchema,
   getAdvertisingEligibilityInputSchema,
-  getPaymentPoliciesInputSchema,
-  getPaymentPoliciesOutputSchema,
-  getPaymentPolicyByNameInputSchema,
-  getPaymentPolicyInputSchema,
   getKycInputSchema,
   getOptedInProgramsInputSchema,
   getPaymentsProgramInputSchema,
@@ -32,12 +25,10 @@ import {
   kycOutputSchema,
   optInToProgramInputSchema,
   optOutOfProgramInputSchema,
-  paymentPolicyResponseSchema,
   privilegesOutputSchema,
   programsOutputSchema,
   returnPolicyResponseSchema,
   salesTaxSchema,
-  updatePaymentPolicyInputSchema,
   updateReturnPolicyInputSchema,
 } from '@/schemas/account-management/account.js';
 import { defineTool } from '@/tools/defineTool.js';
@@ -52,69 +43,6 @@ const emptyResponseSchema: OutputArgs = {
 
 /** Account Management API tools for seller policies, tax, KYC, privileges, and programs. */
 export const accountEntries: ToolEntry[] = [
-  defineTool({
-    name: 'ebay_get_payment_policies',
-    description: 'Get payment policies for the seller',
-    inputSchema: getPaymentPoliciesInputSchema.shape,
-    outputSchema: zodToJsonSchema(getPaymentPoliciesOutputSchema, {
-      name: 'PaymentPoliciesResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getPaymentPolicies(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_payment_policy',
-    description: 'Create a new payment policy',
-    inputSchema: createPaymentPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createPaymentPolicyOutputSchema, {
-      name: 'CreatePaymentPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: false },
-    handler: (api, args) => Effect.runPromise(api.account.createPaymentPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_payment_policy',
-    description: 'Get a specific payment policy by ID',
-    inputSchema: getPaymentPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(paymentPolicyResponseSchema, {
-      name: 'PaymentPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getPaymentPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_payment_policy_by_name',
-    description: 'Get a payment policy by name',
-    inputSchema: getPaymentPolicyByNameInputSchema.shape,
-    outputSchema: zodToJsonSchema(paymentPolicyResponseSchema, {
-      name: 'PaymentPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getPaymentPolicyByName(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_payment_policy',
-    description: 'Update an existing payment policy',
-    inputSchema: updatePaymentPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createPaymentPolicyOutputSchema, {
-      name: 'UpdatePaymentPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: false, idempotentHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.updatePaymentPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_payment_policy',
-    description: 'Delete a payment policy',
-    inputSchema: deletePaymentPolicyInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false, destructiveHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.deletePaymentPolicy(args)),
-  }),
   defineTool({
     name: 'ebay_get_return_policies',
     description: 'Get return policies for the seller',

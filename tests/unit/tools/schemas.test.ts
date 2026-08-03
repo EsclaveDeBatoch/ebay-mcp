@@ -3,7 +3,6 @@ import { Effect, Either } from 'effect';
 import {
   timeDurationSchema,
   amountSchema,
-  paymentPolicySchema,
   returnPolicySchema,
   inventoryItemSchema,
   offerSchema,
@@ -103,26 +102,6 @@ describe('Schema Validation', () => {
   });
 
   describe('Account Management Schemas', () => {
-    describe('paymentPolicySchema', () => {
-      it('validate basic payment policy', () => {
-        const validPolicy = {
-          name: 'Immediate Payment Required',
-          marketplaceId: 'EBAY_US',
-          categoryTypes: [{ name: 'ALL_EXCLUDING_MOTORS_VEHICLES', default: true }],
-          paymentMethods: [{ paymentMethodType: 'PAYPAL' }],
-        };
-
-        const result = decodeResult(paymentPolicySchema, validPolicy);
-        expect(result.success).toBe(true);
-      });
-
-      it('require name and marketplaceId', () => {
-        const missingName = { marketplaceId: 'EBAY_US' };
-
-        expect(decodeResult(paymentPolicySchema, missingName).success).toBe(false);
-      });
-    });
-
     describe('returnPolicySchema', () => {
       it('validate return policy', () => {
         const validPolicy = {

@@ -6,7 +6,6 @@ import { describe, it, expect } from 'vitest';
 import { Effect, Either } from 'effect';
 import {
   timeDurationSchema,
-  depositSchema,
   returnPolicySchema,
   inventoryItemSchema,
   pricingSchema,
@@ -21,7 +20,6 @@ import {
 } from '@/tools/schemas.js';
 import {
   TimeDurationUnit,
-  DepositType,
   RefundMethod,
   ReturnMethod,
   ReturnShippingCostPayer,
@@ -94,26 +92,6 @@ describe('Effect-backed schema enum validation', () => {
         value: 30,
       };
       expect(() => decode(timeDurationSchema, invalidData)).toThrow();
-    });
-  });
-
-  describe('depositSchema', () => {
-    it('accept valid DepositType enum values', () => {
-      const validData = {
-        depositType: DepositType.PERCENTAGE,
-        depositAmount: { currency: 'USD', value: '10' },
-        dueIn: { unit: TimeDurationUnit.DAY, value: 7 },
-      };
-      expect(() => decode(depositSchema, validData)).not.toThrow();
-    });
-
-    it('accept FIXED_AMOUNT deposit type', () => {
-      const data = {
-        depositType: DepositType.FIXED_AMOUNT,
-        depositAmount: { currency: 'USD', value: '100' },
-        dueIn: { unit: TimeDurationUnit.DAY, value: 7 },
-      };
-      expect(() => decode(depositSchema, data)).not.toThrow();
     });
   });
 
@@ -488,21 +466,13 @@ describe('Effect-backed schema enum validation', () => {
   });
 
   describe('Cross-Schema Enum Consistency', () => {
-    it('use the same TimeDurationUnit across schemas', () => {
+    it('accept the shared TimeDurationUnit schema', () => {
       const durationData = {
         unit: TimeDurationUnit.BUSINESS_DAY,
         value: 3,
       };
 
-      // Used in both timeDurationSchema and depositSchema
       expect(() => decode(timeDurationSchema, durationData)).not.toThrow();
-
-      const depositData = {
-        depositType: DepositType.PERCENTAGE,
-        depositAmount: { currency: 'USD', value: '10' },
-        dueIn: durationData,
-      };
-      expect(() => decode(depositSchema, depositData)).not.toThrow();
     });
 
     it('use the same FormatType across offer and listing fees schemas', () => {
@@ -553,16 +523,6 @@ describe('Effect-backed schema enum validation', () => {
       if (!parsed.success) {
         expect(String(parsed.error)).toContain('unit');
       }
-    });
-
-    it('validate nested enum values', () => {
-      const invalidData = {
-        depositType: 'INVALID_TYPE',
-        depositAmount: { currency: 'USD', value: '10' },
-        dueIn: { unit: TimeDurationUnit.DAY, value: 7 },
-      };
-
-      expect(() => decode(depositSchema, invalidData)).toThrow();
     });
   });
 });
