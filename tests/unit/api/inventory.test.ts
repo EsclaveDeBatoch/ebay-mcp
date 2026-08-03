@@ -137,28 +137,6 @@ describe('InventoryApi', () => {
         body,
       );
     });
-
-    it('gets, writes, and deletes product compatibility', async () => {
-      const body = { compatibleProducts: [] };
-      vi.mocked(client.get).mockResolvedValue(body);
-      vi.mocked(client.put).mockResolvedValue({ warnings: [] });
-      vi.mocked(client.delete).mockResolvedValue(undefined);
-
-      await Effect.runPromise(api.getProductCompatibility({ sku: 'SKU-1' }));
-      await Effect.runPromise(api.createOrReplaceProductCompatibility({ sku: 'SKU-1', body }));
-      await Effect.runPromise(api.deleteProductCompatibility({ sku: 'SKU-1' }));
-
-      expect(client.get).toHaveBeenCalledWith(
-        '/sell/inventory/v1/inventory_item/SKU-1/product_compatibility',
-      );
-      expect(client.put).toHaveBeenCalledWith(
-        '/sell/inventory/v1/inventory_item/SKU-1/product_compatibility',
-        body,
-      );
-      expect(client.delete).toHaveBeenCalledWith(
-        '/sell/inventory/v1/inventory_item/SKU-1/product_compatibility',
-      );
-    });
   });
 
   describe('SKU location mappings', () => {

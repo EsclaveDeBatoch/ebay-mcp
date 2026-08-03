@@ -159,37 +159,6 @@ export const offerSchema = z
   })
   .passthrough();
 
-/** Product compatibility payload for parts-compatibility inventory tools. */
-export const productCompatibilitySchema = z
-  .object({
-    compatibleProducts: z
-      .array(
-        z
-          .object({
-            productIdentifier: z
-              .object({
-                epid: z.string().optional(),
-              })
-              .passthrough()
-              .optional(),
-            productFamilyProperties: z
-              .object({
-                make: z.string().optional(),
-                model: z.string().optional(),
-                year: z.string().optional(),
-                trim: z.string().optional(),
-                engine: z.string().optional(),
-              })
-              .passthrough()
-              .optional(),
-            notes: z.string().optional(),
-          })
-          .passthrough(),
-      )
-      .optional(),
-  })
-  .passthrough();
-
 /** Inventory location payload for seller warehouse and pickup locations. */
 export const locationSchema = z
   .object({

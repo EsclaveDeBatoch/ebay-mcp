@@ -446,45 +446,6 @@ export const createInventoryLocationOutputSchema = z.object({
 });
 
 // ============================================================================
-// Product Compatibility Schemas
-// ============================================================================
-
-const productFamilyPropertiesSchema = z.object({
-  make: z.string().optional(),
-  model: z.string().optional(),
-  year: z.string().optional(),
-  trim: z.string().optional(),
-  engine: z.string().optional(),
-});
-
-const compatibleProductSchema = z.object({
-  productIdentifier: productIdentifierSchema.optional(),
-  productFamilyProperties: productFamilyPropertiesSchema.optional(),
-  notes: z.string().optional(),
-});
-
-/**
- * Validates the Inventory Management API product compatibility model.
- */
-export const productCompatibilitySchema = z.object({
-  compatibleProducts: z.array(compatibleProductSchema).optional(),
-});
-
-/**
- * Validates the Inventory Management API get product compatibility request payload.
- */
-export const getProductCompatibilityInputSchema = z.object({
-  sku: z.string().describe('The SKU of the inventory item'),
-});
-
-/**
- * Validates the Inventory Management API get product compatibility response payload.
- */
-export const getProductCompatibilityOutputSchema = productCompatibilitySchema.extend({
-  warnings: z.array(errorSchema).optional(),
-});
-
-// ============================================================================
 // Bulk Operation Schemas
 // ============================================================================
 
@@ -627,16 +588,6 @@ export const getInventoryManagementJsonSchemas = () => {
     createInventoryLocationOutput: zodToJsonSchema(
       createInventoryLocationOutputSchema,
       'createInventoryLocationOutput',
-    ),
-
-    // Product Compatibility
-    getProductCompatibilityInput: zodToJsonSchema(
-      getProductCompatibilityInputSchema,
-      'getProductCompatibilityInput',
-    ),
-    getProductCompatibilityOutput: zodToJsonSchema(
-      getProductCompatibilityOutputSchema,
-      'getProductCompatibilityOutput',
     ),
 
     // Bulk Operations

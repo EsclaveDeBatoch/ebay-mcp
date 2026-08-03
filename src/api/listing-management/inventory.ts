@@ -11,7 +11,6 @@ export type { InventoryPaginationInput } from './shared.js';
 export type {
   SkuInput,
   CreateOrReplaceInventoryItemInput,
-  CreateOrReplaceProductCompatibilityInput,
   BulkInventoryItemInput,
   BulkGetInventoryItemInput,
   BulkUpdatePriceQuantityInput,
@@ -29,8 +28,6 @@ export type {
   BaseResponse,
   DeleteInventoryItemResponse,
   GetInventoryItemsResponse,
-  ProductCompatibility,
-  DeleteProductCompatibilityResponse,
   BulkMigrateListingRequest,
   BulkMigrateListingResponse,
   LocationMapping,

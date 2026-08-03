@@ -1,50 +1,57 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import type { InventoryItemGroup } from '@/ebay/sell/inventory/inventoryItemGroup.js';
+import type { ProductCompatibility } from '@/ebay/sell/inventory/productCompatibility.js';
 import { ebayFailures, sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 import { callEbayTool, listEbayTools } from '@tests/fixtures/mcp.js';
 
-const inventoryItemGroupToolNames = [
+const productCompatibilityToolNames = [
+  'ebay_sell_inventory_get_product_compatibility',
+  'ebay_sell_inventory_create_or_replace_product_compatibility',
+  'ebay_sell_inventory_delete_product_compatibility',
+] as const;
+
+const sellInventoryToolNames = [
   'ebay_sell_inventory_get_inventory_item_group',
   'ebay_sell_inventory_create_or_replace_inventory_item_group',
   'ebay_sell_inventory_delete_inventory_item_group',
+  ...productCompatibilityToolNames,
 ] as const;
 
-const legacyInventoryItemGroupToolNames = [
-  'ebay_get_inventory_item_group',
-  'ebay_create_or_replace_inventory_item_group',
-  'ebay_delete_inventory_item_group',
+const legacyProductCompatibilityToolNames = [
+  'ebay_get_product_compatibility',
+  'ebay_create_or_replace_product_compatibility',
+  'ebay_delete_product_compatibility',
 ] as const;
 
-const inventoryItemGroupFailureCalls = [
+const productCompatibilityFailureCalls = [
   {
-    ebayArguments: { inventoryItemGroupKey: 'GROUP-1' },
-    toolName: 'ebay_sell_inventory_get_inventory_item_group',
+    ebayArguments: { sku: 'BRAKE-PAD-1' },
+    toolName: 'ebay_sell_inventory_get_product_compatibility',
   },
   {
     ebayArguments: {
-      inventoryItemGroupKey: 'GROUP-1',
+      sku: 'BRAKE-PAD-1',
       'Content-Language': 'en-US',
-      variantSKUs: ['SKU-1'],
+      compatibleProducts: [],
     },
-    toolName: 'ebay_sell_inventory_create_or_replace_inventory_item_group',
+    toolName: 'ebay_sell_inventory_create_or_replace_product_compatibility',
   },
   {
-    ebayArguments: { inventoryItemGroupKey: 'GROUP-1' },
-    toolName: 'ebay_sell_inventory_delete_inventory_item_group',
+    ebayArguments: { sku: 'BRAKE-PAD-1' },
+    toolName: 'ebay_sell_inventory_delete_product_compatibility',
   },
 ] as const;
 
-const inventoryItemGroupFailureScenarios = inventoryItemGroupFailureCalls.flatMap(
-  (inventoryItemGroupCall) =>
-    ebayFailures.map((ebayFailure) => ({ ebayFailure, ...inventoryItemGroupCall })),
+const productCompatibilityFailureScenarios = productCompatibilityFailureCalls.flatMap(
+  (productCompatibilityCall) =>
+    ebayFailures.map((ebayFailure) => ({ ebayFailure, ...productCompatibilityCall })),
 );
 
 afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-describe('Sell Inventory item-group MCP exposure', () => {
+describe('Sell Inventory product-compatibility MCP exposure', () => {
   it('exposes all three operations once without compatibility names', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning<unknown>({
@@ -54,18 +61,18 @@ describe('Sell Inventory item-group MCP exposure', () => {
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
     const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
 
-    for (const inventoryItemGroupToolName of inventoryItemGroupToolNames) {
+    for (const productCompatibilityToolName of productCompatibilityToolNames) {
       expect(
-        listedToolNames.filter((listedToolName) => listedToolName === inventoryItemGroupToolName),
-      ).toEqual([inventoryItemGroupToolName]);
+        listedToolNames.filter((listedToolName) => listedToolName === productCompatibilityToolName),
+      ).toEqual([productCompatibilityToolName]);
     }
-    for (const legacyInventoryItemGroupToolName of legacyInventoryItemGroupToolNames) {
-      expect(listedToolNames).not.toContain(legacyInventoryItemGroupToolName);
+    for (const legacyProductCompatibilityToolName of legacyProductCompatibilityToolNames) {
+      expect(listedToolNames).not.toContain(legacyProductCompatibilityToolName);
     }
     await mcpClient.close();
   });
 
-  it('gates the resource through sell.inventory', async () => {
+  it('gates the current namespace through sell.inventory', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'sell.inventory');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning<unknown>({
@@ -74,15 +81,11 @@ describe('Sell Inventory item-group MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(
-      listedTools.tools
-        .map((ebayTool) => ebayTool.name)
-        .filter((listedToolName) => listedToolName.includes('inventory_item_group')),
-    ).toEqual(inventoryItemGroupToolNames);
+    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(sellInventoryToolNames);
     await mcpClient.close();
   });
 
-  it('keeps only the item-group read in read-only mode', async () => {
+  it('keeps only the resource reads in read-only mode', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'sell.inventory');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     vi.stubEnv('EBAY_READ_ONLY', 'true');
@@ -92,37 +95,44 @@ describe('Sell Inventory item-group MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(
-      listedTools.tools
-        .map((ebayTool) => ebayTool.name)
-        .filter((listedToolName) => listedToolName.includes('inventory_item_group')),
-    ).toEqual(['ebay_sell_inventory_get_inventory_item_group']);
+    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
+      'ebay_sell_inventory_get_inventory_item_group',
+      'ebay_sell_inventory_get_product_compatibility',
+    ]);
     await mcpClient.close();
   });
 });
 
-describe('Sell Inventory item-group MCP calls', () => {
-  it('returns one unchanged item group', async () => {
+describe('Sell Inventory product-compatibility MCP calls', () => {
+  it('returns one unchanged compatibility list', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
-    const inventoryItemGroup: InventoryItemGroup = {
-      inventoryItemGroupKey: 'GROUP-1',
-      title: 'Cotton shirts',
-      variantSKUs: ['SHIRT-BLUE-M', 'SHIRT-BLUE-L'],
+    const productCompatibility: ProductCompatibility = {
+      sku: 'BRAKE-PAD-1',
+      compatibleProducts: [
+        {
+          compatibilityProperties: [
+            { name: 'make', value: 'Toyota' },
+            { name: 'model', value: 'Camry' },
+          ],
+        },
+      ],
     };
-    const { sellerSession, getCalls } = sellerSessionReturning<InventoryItemGroup>({
+    const { sellerSession, getCalls } = sellerSessionReturning<ProductCompatibility>({
       kind: 'ebayRequestSucceeded',
-      ebayDocument: inventoryItemGroup,
+      ebayDocument: productCompatibility,
     });
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
-      'ebay_sell_inventory_get_inventory_item_group',
-      { inventoryItemGroupKey: 'GROUP-1' },
+      'ebay_sell_inventory_get_product_compatibility',
+      { sku: 'BRAKE-PAD-1' },
     );
 
-    expect(getCalls).toEqual([{ endpoint: '/sell/inventory/v1/inventory_item_group/GROUP-1' }]);
+    expect(getCalls).toEqual([
+      { endpoint: '/sell/inventory/v1/inventory_item/BRAKE-PAD-1/product_compatibility' },
+    ]);
     expect(toolCompletion).toEqual({
-      content: [{ type: 'text', text: JSON.stringify(inventoryItemGroup, null, 2) }],
+      content: [{ type: 'text', text: JSON.stringify(productCompatibility, null, 2) }],
     });
     await mcpClient.close();
   });
@@ -133,27 +143,23 @@ describe('Sell Inventory item-group MCP calls', () => {
       kind: 'ebayRequestSucceeded',
       ebayDocument: undefined,
     });
-    const inventoryItemGroupReplacement = {
-      inventoryItemGroupKey: 'GROUP-1',
+    const compatibilityReplacement = {
+      sku: 'BRAKE-PAD-1',
       'Content-Language': 'en-US',
-      aspects: { Pattern: ['Solid'] },
-      title: 'Cotton shirts',
-      variantSKUs: ['SHIRT-BLUE-M', 'SHIRT-BLUE-L'],
+      compatibleProducts: [{ productIdentifier: { epid: '123456789' } }],
     };
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
-      'ebay_sell_inventory_create_or_replace_inventory_item_group',
-      inventoryItemGroupReplacement,
+      'ebay_sell_inventory_create_or_replace_product_compatibility',
+      compatibilityReplacement,
     );
 
     expect(putCalls).toEqual([
       {
-        endpoint: '/sell/inventory/v1/inventory_item_group/GROUP-1',
+        endpoint: '/sell/inventory/v1/inventory_item/BRAKE-PAD-1/product_compatibility',
         requestDocument: {
-          aspects: { Pattern: ['Solid'] },
-          title: 'Cotton shirts',
-          variantSKUs: ['SHIRT-BLUE-M', 'SHIRT-BLUE-L'],
+          compatibleProducts: [{ productIdentifier: { epid: '123456789' } }],
         },
         requestHeaders: { 'Content-Language': 'en-US' },
       },
@@ -162,7 +168,7 @@ describe('Sell Inventory item-group MCP calls', () => {
     await mcpClient.close();
   });
 
-  it('deletes the encoded item-group path', async () => {
+  it('deletes the encoded SKU path', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession, deleteCalls } = sellerSessionReturning<undefined>({
       kind: 'ebayRequestSucceeded',
@@ -171,19 +177,19 @@ describe('Sell Inventory item-group MCP calls', () => {
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
-      'ebay_sell_inventory_delete_inventory_item_group',
-      { inventoryItemGroupKey: 'GROUP/1' },
+      'ebay_sell_inventory_delete_product_compatibility',
+      { sku: 'BRAKE/PAD' },
     );
 
     expect(deleteCalls).toEqual([
-      { endpoint: '/sell/inventory/v1/inventory_item_group/GROUP%2F1' },
+      { endpoint: '/sell/inventory/v1/inventory_item/BRAKE%2FPAD/product_compatibility' },
     ]);
     expect(toolCompletion).toEqual({ content: [] });
     await mcpClient.close();
   });
 });
 
-describe('Sell Inventory item-group MCP validation', () => {
+describe('Sell Inventory product-compatibility MCP validation', () => {
   it('rejects the legacy body wrapper before the seller session', async () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession, putCalls } = sellerSessionReturning<never>({
@@ -193,11 +199,11 @@ describe('Sell Inventory item-group MCP validation', () => {
 
     const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
-      'ebay_sell_inventory_create_or_replace_inventory_item_group',
+      'ebay_sell_inventory_create_or_replace_product_compatibility',
       {
-        inventoryItemGroupKey: 'GROUP-1',
+        sku: 'BRAKE-PAD-1',
         'Content-Language': 'en-US',
-        body: { variantSKUs: ['SKU-1'] },
+        body: { compatibleProducts: [] },
       },
     );
 
@@ -207,8 +213,8 @@ describe('Sell Inventory item-group MCP validation', () => {
   });
 });
 
-describe('Sell Inventory item-group MCP failures', () => {
-  it.each(inventoryItemGroupFailureScenarios)(
+describe('Sell Inventory product-compatibility MCP failures', () => {
+  it.each(productCompatibilityFailureScenarios)(
     'translates every $ebayFailure.kind failure once for $toolName',
     async ({ ebayArguments, ebayFailure, toolName }) => {
       vi.stubEnv('EBAY_MCP_UI', 'off');

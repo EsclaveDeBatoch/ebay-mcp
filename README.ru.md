@@ -243,7 +243,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | [Connector](src/tools/categories/connector.ts) | Инструменты search/fetch коннектора ChatGPT по каталогу eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Статус продавца, участие в программах, налог с продаж, подписки, таблицы тарифов, право на рекламу, устаревший статус платёжной программы и бизнес-политики |
 | [Inventory](src/tools/categories/inventory.ts) | Товары инвентаря, предложения, локации, массовые операции, сопоставление SKU/локации |
-| [Sell Inventory](src/ebay/sell/inventory/) | Группы товаров продавца в `sell.inventory` |
+| [Sell Inventory](src/ebay/sell/inventory/) | Группы товаров и совместимость автомобилей в `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Заказы, доставка, возвраты средств, споры, доказательства по платёжным спорам |
 | [Marketing](src/tools/categories/marketing.ts) | Кампании продвигаемых объявлений, реклама, акции, ставки, массовые операции |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Отчёты о трафике, стандарты продавца, метрики поддержки клиентов |

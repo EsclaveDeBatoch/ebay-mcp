@@ -132,6 +132,11 @@ import {
   getInventoryItemGroupTool,
 } from '@/ebay/sell/inventory/inventoryItemGroup.js';
 import {
+  createOrReplaceProductCompatibilityTool,
+  deleteProductCompatibilityTool,
+  getProductCompatibilityTool,
+} from '@/ebay/sell/inventory/productCompatibility.js';
+import {
   getCompatibilitiesBySpecificationTool,
   getCompatibilityPropertyNamesTool,
   getCompatibilityPropertyValuesTool,
@@ -296,6 +301,9 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getInventoryItemGroupTool,
   createOrReplaceInventoryItemGroupTool,
   deleteInventoryItemGroupTool,
+  getProductCompatibilityTool,
+  createOrReplaceProductCompatibilityTool,
+  deleteProductCompatibilityTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

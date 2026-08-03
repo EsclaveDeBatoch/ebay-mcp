@@ -243,7 +243,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Connector](src/tools/categories/connector.ts) | eBay MCP カタログ向け ChatGPT コネクタの search/fetch |
 | [Sell Account](src/ebay/sell/account/) | 出品者の状態、プログラム登録、販売税、サブスクリプション、料金表、広告利用資格、廃止予定の支払いプログラム状態、ビジネスポリシー |
 | [Inventory](src/tools/categories/inventory.ts) | 在庫アイテム、オファー、ロケーション、一括操作、SKU/ロケーションのマッピング |
-| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` の出品者定義アイテムグループ |
+| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` の出品者定義アイテムグループと車両互換性 |
 | [Fulfillment](src/ebay/sell/fulfillment/) | 注文、配送、返金、係争、支払い係争の証拠 |
 | [Marketing](src/tools/categories/marketing.ts) | プロモーション広告キャンペーン、広告、プロモーション、入札、一括操作 |
 | [Analytics](src/ebay/sell/analytics/trafficReport.ts) | トラフィックレポート、出品者基準、カスタマーサービス指標 |

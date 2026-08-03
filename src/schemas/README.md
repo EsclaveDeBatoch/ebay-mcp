@@ -91,15 +91,13 @@ const tool = {
 
 ### 1. Inventory Management (`inventory-management/inventory.ts`)
 
-Schemas for inventory items, offers, locations, and product compatibility.
+Schemas for the remaining legacy inventory items, offers, locations, and bulk operations.
 
 **Endpoints Covered:**
 
 - Inventory Items (create, read, update, delete)
 - Offers (pricing, availability, publishing)
 - Inventory Locations (warehouses, stores)
-- Product Compatibility (vehicle parts)
-- Inventory Item Groups (variations)
 - Bulk Operations (batch processing)
 
 **Key Schemas:**

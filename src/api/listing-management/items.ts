@@ -33,14 +33,6 @@ export interface CreateOrReplaceInventoryItemInput {
   readonly body: InventoryItem;
 }
 
-/** Input accepted by product compatibility write endpoints. */
-export interface CreateOrReplaceProductCompatibilityInput {
-  /** Seller-defined SKU value. */
-  readonly sku: string;
-  /** Generated Compatibility body. */
-  readonly body: ProductCompatibility;
-}
-
 /** Input accepted by bulk inventory item endpoints. */
 export interface BulkInventoryItemInput {
   /** Generated bulk inventory item body. */
@@ -156,20 +148,6 @@ export type DeleteInventoryItemResponse = void;
  * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/methods/getInventoryItems
  */
 export type GetInventoryItemsResponse = components['schemas']['InventoryItems'];
-
-/**
- * Generated compatibility body and response used by product compatibility endpoints.
- *
- * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/product_compatibility/methods/getProductCompatibility
- */
-export type ProductCompatibility = components['schemas']['Compatibility'];
-
-/**
- * No-content response returned by deleteProductCompatibility.
- *
- * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/product_compatibility/methods/deleteProductCompatibility
- */
-export type DeleteProductCompatibilityResponse = void;
 
 /**
  * Request body accepted by bulkMigrateListing.
@@ -426,102 +404,6 @@ export const createInventoryItemsMethods = (client: EbayApiClient) => ({
       );
 
       return yield* requestPostEffect<BulkUpdatePriceQuantityResponse>(client, path, body);
-    });
-  },
-
-  /**
-   * Retrieves product compatibility for one SKU.
-   *
-   * @param input - Seller-defined SKU value.
-   * @returns An Effect that succeeds with eBay's Compatibility response.
-   *
-   * @example
-   * ```ts
-   * const compatibility = await Effect.runPromise(
-   *   inventoryApi.getProductCompatibility({ sku: 'SKU-1' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/product_compatibility/methods/getProductCompatibility
-   */
-  getProductCompatibility: (
-    input: SkuInput,
-  ): Effect.Effect<ProductCompatibility, EbayApiError | EndpointInputError> => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<SkuInput>(input, 'input');
-      const sku = yield* requireStringEffect(validatedInput.sku, 'sku');
-
-      return yield* requestGetEffect<ProductCompatibility>(
-        client,
-        `${basePath}/inventory_item/${sku}/product_compatibility`,
-      );
-    });
-  },
-
-  /**
-   * Creates or replaces product compatibility for one SKU.
-   *
-   * @param input - Seller-defined SKU and generated Compatibility body.
-   * @returns An Effect that succeeds with eBay's BaseResponse.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   inventoryApi.createOrReplaceProductCompatibility({ sku: 'SKU-1', body: {} }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/product_compatibility/methods/createOrReplaceProductCompatibility
-   */
-  createOrReplaceProductCompatibility: (
-    input: CreateOrReplaceProductCompatibilityInput,
-  ): Effect.Effect<BaseResponse, EbayApiError | EndpointInputError> => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<CreateOrReplaceProductCompatibilityInput>(
-        input,
-        'input',
-      );
-      const sku = yield* requireStringEffect(validatedInput.sku, 'sku');
-      const body = yield* requireObjectEffect<ProductCompatibility>(validatedInput.body, 'body');
-
-      return yield* requestPutEffect<BaseResponse>(
-        client,
-        `${basePath}/inventory_item/${sku}/product_compatibility`,
-        body,
-      );
-    });
-  },
-
-  /**
-   * Deletes product compatibility for one SKU.
-   *
-   * @param input - Seller-defined SKU value.
-   * @returns An Effect that succeeds when eBay returns no content.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(inventoryApi.deleteProductCompatibility({ sku: 'SKU-1' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/inventory/resources/inventory_item/product_compatibility/methods/deleteProductCompatibility
-   */
-  deleteProductCompatibility: (
-    input: SkuInput,
-  ): Effect.Effect<DeleteProductCompatibilityResponse, EbayApiError | EndpointInputError> => {
-    const basePath = INVENTORY_BASE_PATH;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<SkuInput>(input, 'input');
-      const sku = yield* requireStringEffect(validatedInput.sku, 'sku');
-
-      return yield* requestDeleteEffect<DeleteProductCompatibilityResponse>(
-        client,
-        `${basePath}/inventory_item/${sku}/product_compatibility`,
-      );
     });
   },
 

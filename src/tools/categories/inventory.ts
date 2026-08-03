@@ -24,7 +24,6 @@ import type {
   GetListingFeesRequest,
   InventoryItem,
   LocationMapping,
-  ProductCompatibility,
   PublishOfferByInventoryItemGroupRequest,
   UpdateInventoryLocationRequest,
   UpdateOfferRequest,
@@ -41,7 +40,6 @@ import {
   getInventoryItemsOutputSchema,
   getInventoryLocationsOutputSchema,
   getOffersOutputSchema,
-  getProductCompatibilityOutputSchema,
   offerResponseSchema,
   publishOfferOutputSchema,
 } from '@/schemas/inventory-management/inventory.js';
@@ -88,10 +86,6 @@ const bulkUpdatePriceQuantityInputSchema = z.object({
   body: generatedBodySchema<BulkUpdatePriceQuantityRequest>(
     'Generated BulkPriceQuantity request body',
   ),
-});
-
-const createOrReplaceProductCompatibilityInputSchema = skuInputSchema.extend({
-  body: generatedBodySchema<ProductCompatibility>('Generated Compatibility request body'),
 });
 
 const merchantLocationKeyInputSchema = z.object({
@@ -268,34 +262,6 @@ export const inventoryEntries: ToolEntry[] = [
       $refStrategy: 'none',
     }) as OutputArgs,
     handler: (api, args) => Effect.runPromise(api.inventory.bulkUpdatePriceQuantity(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_product_compatibility',
-    description: 'Get product compatibility information for an inventory item',
-    inputSchema: skuInputSchema.shape,
-    outputSchema: zodToJsonSchema(getProductCompatibilityOutputSchema, {
-      name: 'GetProductCompatibilityResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.getProductCompatibility(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_or_replace_product_compatibility',
-    description: 'Create or replace product compatibility for an inventory item',
-    inputSchema: createOrReplaceProductCompatibilityInputSchema.shape,
-    outputSchema: zodToJsonSchema(createInventoryItemOutputSchema, {
-      name: 'CreateProductCompatibilityResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) =>
-      Effect.runPromise(api.inventory.createOrReplaceProductCompatibility(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_product_compatibility',
-    description: 'Delete product compatibility for an inventory item',
-    inputSchema: skuInputSchema.shape,
-    outputSchema: emptyOutputSchema,
-    handler: (api, args) => Effect.runPromise(api.inventory.deleteProductCompatibility(args)),
   }),
   defineTool({
     name: 'ebay_get_inventory_locations',

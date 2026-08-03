@@ -487,7 +487,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires read access to deprecated payments-program status',
     },
 
-    // Sell Inventory item-group tools
+    // Sell Inventory tools
     ebay_sell_inventory_get_inventory_item_group: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
@@ -505,6 +505,24 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
       description: 'Requires write access to inventory item groups',
+    },
+    ebay_sell_inventory_get_product_compatibility: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory product compatibility',
+    },
+    ebay_sell_inventory_create_or_replace_product_compatibility: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory product compatibility',
+    },
+    ebay_sell_inventory_delete_product_compatibility: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory product compatibility',
     },
 
     // Marketing Tools

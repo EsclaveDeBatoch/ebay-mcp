@@ -21,9 +21,6 @@ describe('Comprehensive Tools Coverage', () => {
         bulkCreateOrReplaceInventoryItem: vi.fn(),
         bulkGetInventoryItem: vi.fn(),
         bulkUpdatePriceQuantity: vi.fn(),
-        getProductCompatibility: vi.fn(),
-        createOrReplaceProductCompatibility: vi.fn(),
-        deleteProductCompatibility: vi.fn(),
         getInventoryLocations: vi.fn(),
         getInventoryLocation: vi.fn(),
         createInventoryLocation: vi.fn(),
@@ -143,37 +140,6 @@ describe('Comprehensive Tools Coverage', () => {
       );
       await executeTool(mockApi, 'ebay_bulk_update_price_quantity', input);
       expect(mockApi.inventory.bulkUpdatePriceQuantity).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_product_compatibility', async () => {
-      const mockResponse = { compatibleProducts: [] };
-      const input = { sku: 'SKU123' };
-      vi.mocked(mockApi.inventory.getProductCompatibility).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_product_compatibility', input);
-      expect(mockApi.inventory.getProductCompatibility).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_or_replace_product_compatibility', async () => {
-      vi.mocked(mockApi.inventory.createOrReplaceProductCompatibility).mockReturnValue(
-        Effect.succeed({}),
-      );
-      const input = {
-        sku: 'SKU123',
-        body: { compatibleProducts: [] },
-      };
-      await executeTool(mockApi, 'ebay_create_or_replace_product_compatibility', input);
-      expect(mockApi.inventory.createOrReplaceProductCompatibility).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_delete_product_compatibility', async () => {
-      const input = { sku: 'SKU123' };
-      vi.mocked(mockApi.inventory.deleteProductCompatibility).mockReturnValue(
-        Effect.succeed(undefined),
-      );
-      await executeTool(mockApi, 'ebay_delete_product_compatibility', input);
-      expect(mockApi.inventory.deleteProductCompatibility).toHaveBeenCalledWith(input);
     });
 
     it('ebay_get_inventory_locations', async () => {
