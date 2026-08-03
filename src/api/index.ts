@@ -6,7 +6,6 @@ import { MarketingApi } from '@/api/marketing-and-promotions/marketing.js';
 import { DisputeApi } from '@/api/order-management/dispute.js';
 import { FulfillmentApi } from '@/api/order-management/fulfillment.js';
 import { EDeliveryApi } from '@/api/other/edelivery.js';
-import { VeroApi } from '@/api/other/vero.js';
 import { TradingApiClient } from '@/api/clientTrading.js';
 import { TradingApi } from '@/api/trading/trading.js';
 import type { EbayOAuthError } from '@/auth/oauth.js';
@@ -27,7 +26,6 @@ export class EbaySellerApi {
   public dispute: DisputeApi;
   public marketing: MarketingApi;
   public metadata: MetadataApi;
-  public vero: VeroApi;
   public edelivery: EDeliveryApi;
   public trading: TradingApi;
 
@@ -42,7 +40,6 @@ export class EbaySellerApi {
     this.dispute = new DisputeApi(this.client);
     this.marketing = new MarketingApi(this.client);
     this.metadata = new MetadataApi(this.client);
-    this.vero = new VeroApi(this.client);
     this.edelivery = new EDeliveryApi(this.client);
     const tradingClient = new TradingApiClient(this.client);
     this.trading = new TradingApi(tradingClient);
@@ -115,6 +112,5 @@ export * from '@/api/marketing-and-promotions/marketing.js';
 export * from '@/api/order-management/dispute.js';
 export * from '@/api/order-management/fulfillment.js';
 export * from '@/api/other/edelivery.js';
-export * from '@/api/other/vero.js';
 export * from '@/api/trading/trading.js';
 export * from '@/api/clientTrading.js';

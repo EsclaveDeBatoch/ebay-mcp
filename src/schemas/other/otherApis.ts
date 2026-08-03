@@ -4,7 +4,7 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 /**
  * Other eBay APIs Schemas
  *
- * This file contains Effect-backed schemas for Commerce VeRO and Sell eDelivery.
+ * This file contains Effect-backed schemas for Sell eDelivery.
  */
 
 // ============================================================================
@@ -35,83 +35,6 @@ const pageMetadataSchema = z.object({
   offset: z.number().int().optional(),
   prev: z.string().optional(),
   total: z.number().int().optional(),
-});
-
-// ============================================================================
-// Commerce VERO API Schemas
-// ============================================================================
-
-const amountSchema = z.object({
-  currency: z.string().optional(),
-  value: z.string().optional(),
-});
-
-const reportItemDetailsSchema = z.object({
-  brand: z.string().optional(),
-  copyEmailToRightsOwner: z.boolean().optional(),
-  countries: z.array(z.string()).optional(),
-  detailedMessage: z.string().optional(),
-  itemId: z.string().optional(),
-  messageToSeller: z.string().optional(),
-  patent: z.string().optional(),
-  regions: z.array(z.string()).optional(),
-  veroReasonCodeId: z.string().optional(),
-});
-
-/** Request schema for Commerce VeRO API createVeroReport report items. */
-export const veroReportItemsRequestSchema = z.object({
-  reportItems: z.array(reportItemDetailsSchema).optional(),
-});
-
-/** Response schema for Commerce VeRO API createVeroReport. */
-export const veroReportItemsResponseSchema = z.object({
-  veroReportId: z.string().optional(),
-  veroReportStatus: z.string().optional(),
-});
-
-const reportedItemSchema = z.object({
-  itemId: z.string().optional(),
-  reasonForFailure: z.string().optional(),
-  status: z.string().optional(),
-});
-
-const veroReportStatusResponseSchema = z.object({
-  reportedItemDetails: z.array(reportedItemSchema).optional(),
-  veroReportId: z.string().optional(),
-  veroReportStatus: z.string().optional(),
-});
-
-/** Paginated response schema for Commerce VeRO API getVeroReportItems. */
-export const veroReportItemsStatusResponseSchema = z.object({
-  href: z.string().optional(),
-  limit: z.number().int().optional(),
-  next: z.string().optional(),
-  offset: z.number().int().optional(),
-  prev: z.string().optional(),
-  reportedItemDetails: z.array(reportedItemSchema).optional(),
-  total: z.number().int().optional(),
-});
-
-const reasonCodeDetailTypeSchema = z.object({
-  description: z.string().optional(),
-  detailedDescription: z.string().optional(),
-  veroReasonCodeId: z.string().optional(),
-});
-
-const veroReasonCodeSchema = z.object({
-  marketplaceId: z.string().optional(),
-  reasonCodeDetails: z.array(reasonCodeDetailTypeSchema).optional(),
-});
-
-/** Response schema for Commerce VeRO API getVeroReasonCode. */
-export const veroReasonCodeResponseSchema = z.object({
-  marketplaceId: z.string().optional(),
-  reasonCodeDetails: reasonCodeDetailTypeSchema.optional(),
-});
-
-/** Response schema for Commerce VeRO API getVeroReasonCodes. */
-export const veroReasonCodesResponseSchema = z.object({
-  veroReasonCodes: z.array(veroReasonCodeSchema).optional(),
 });
 
 // ============================================================================
@@ -219,31 +142,6 @@ export const getAddressPreferencesInputSchema = z.object({});
 /** Empty input schema for eDelivery getConsignPreferences. */
 export const getConsignPreferencesInputSchema = z.object({});
 
-/** Input schema for Commerce VeRO API createVeroReport. */
-export const createVeroReportInputSchema = z.object({
-  reportData: veroReportItemsRequestSchema.describe('Generated VeroReportItemsRequest body'),
-});
-
-/** Input schema for Commerce VeRO API getVeroReport. */
-export const getVeroReportInputSchema = z.object({
-  veroReportId: z.string().min(1).describe('VeRO report identifier returned by createVeroReport'),
-});
-
-/** Input schema for Commerce VeRO API getVeroReportItems. */
-export const getVeroReportItemsInputSchema = z.object({
-  filter: z.string().optional(),
-  limit: z.number().int().optional(),
-  offset: z.number().int().optional(),
-});
-
-/** Input schema for Commerce VeRO API getVeroReasonCode. */
-export const getVeroReasonCodeInputSchema = z.object({
-  veroReasonCodeId: z.string().min(1).describe('VeRO reason-code identifier'),
-});
-
-/** Empty input schema for Commerce VeRO API getVeroReasonCodes. */
-export const getVeroReasonCodesInputSchema = z.object({});
-
 // ============================================================================
 // JSON Schema Conversion Functions
 // ============================================================================
@@ -259,36 +157,6 @@ export const getVeroReasonCodesInputSchema = z.object({});
  */
 export const getOtherApisJsonSchemas = () => {
   return {
-    // Commerce VERO API
-    createVeroReportInput: zodToJsonSchema(createVeroReportInputSchema, 'createVeroReportInput'),
-    createVeroReportOutput: zodToJsonSchema(
-      veroReportItemsResponseSchema,
-      'createVeroReportOutput',
-    ),
-    getVeroReportInput: zodToJsonSchema(getVeroReportInputSchema, 'getVeroReportInput'),
-    getVeroReportOutput: zodToJsonSchema(veroReportStatusResponseSchema, 'getVeroReportOutput'),
-    getVeroReportItemsInput: zodToJsonSchema(
-      getVeroReportItemsInputSchema,
-      'getVeroReportItemsInput',
-    ),
-    getVeroReportItemsOutput: zodToJsonSchema(
-      veroReportItemsStatusResponseSchema,
-      'getVeroReportItemsOutput',
-    ),
-    getVeroReasonCodeInput: zodToJsonSchema(getVeroReasonCodeInputSchema, 'getVeroReasonCodeInput'),
-    getVeroReasonCodeOutput: zodToJsonSchema(
-      veroReasonCodeResponseSchema,
-      'getVeroReasonCodeOutput',
-    ),
-    getVeroReasonCodesInput: zodToJsonSchema(
-      getVeroReasonCodesInputSchema,
-      'getVeroReasonCodesInput',
-    ),
-    getVeroReasonCodesOutput: zodToJsonSchema(
-      veroReasonCodesResponseSchema,
-      'getVeroReasonCodesOutput',
-    ),
-
     // Sell eDelivery International Shipping API
     getActualCostsInput: zodToJsonSchema(getActualCostsInputSchema, 'getActualCostsInput'),
     getActualCostsOutput: zodToJsonSchema(generatedEDeliveryResponseSchema, 'getActualCostsOutput'),
@@ -399,15 +267,10 @@ export const getOtherApisJsonSchemas = () => {
     // Common Types
     error: zodToJsonSchema(errorSchema, 'error'),
     errorParameter: zodToJsonSchema(errorParameterSchema, 'errorParameter'),
-    amount: zodToJsonSchema(amountSchema, 'amount'),
     address: zodToJsonSchema(addressSchema, 'address'),
     contact: zodToJsonSchema(contactSchema, 'contact'),
     dimensions: zodToJsonSchema(dimensionsSchema, 'dimensions'),
     weight: zodToJsonSchema(weightSchema, 'weight'),
     pageMetadata: zodToJsonSchema(pageMetadataSchema, 'pageMetadata'),
-
-    // VERO Types
-    reportedItem: zodToJsonSchema(reportedItemSchema, 'reportedItem'),
-    reportItemDetails: zodToJsonSchema(reportItemDetailsSchema, 'reportItemDetails'),
   };
 };

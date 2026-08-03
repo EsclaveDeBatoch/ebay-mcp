@@ -17,6 +17,7 @@ describe('toolExposure', () => {
         'commerce.notification',
         'commerce.taxonomy',
         'commerce.translation',
+        'commerce.vero',
         'developer.analytics',
         'developer.key-management',
         'developer.status',
@@ -62,6 +63,7 @@ describe('toolExposure', () => {
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.message' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.notification' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.translation' })).toBeUndefined();
+      expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.vero' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'developer.analytics' })).toBeUndefined();
       expect(
         getToolGatingConfigError({ EBAY_MCP_TOOLS: 'developer.key-management' }),

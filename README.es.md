@@ -249,7 +249,8 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | [Communication](src/tools/categories/communication.ts) | Mensajería comprador–vendedor, negociaciones, notificaciones, valoraciones |
 | [Metadata](src/tools/categories/metadata.ts) | Políticas de devolución, jurisdicciones de impuesto sobre ventas, compatibilidad de automoción |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Árboles de categorías, aspectos de artículos, condiciones de artículos |
-| [Other](src/tools/categories/other.ts) | Identity, VeRO, traducción y APIs de envío internacional (las herramientas de Compliance informan la desactivación de eBay del 2026-03-30) |
+| [Commerce VeRO](src/ebay/commerce/vero/) | Denuncias de infracción de propiedad intelectual y códigos de motivo VeRO |
+| [Other](src/tools/categories/other.ts) | Envíos internacionales mediante la API de eDelivery |
 | [Trading (XML heredado)](src/tools/categories/trading.ts) | Crear, revisar, volver a publicar y finalizar anuncios de precio fijo |
 | [Developer](src/ebay/developer) | Límites de tasa, claves de firma y estado de la API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Generación de URL de OAuth y gestión de tokens |

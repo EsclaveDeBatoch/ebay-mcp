@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { DisputeApi } from '@/api/order-management/dispute.js';
-import { VeroApi } from '@/api/other/vero.js';
 import { EDeliveryApi } from '@/api/other/edelivery.js';
 import type { EbayApiClient } from '@/api/client.js';
 import { Effect } from 'effect';
@@ -72,100 +71,6 @@ describe('Other APIs', () => {
         '/sell/fulfillment/v1/payment_dispute/DISPUTE123/accept',
         { returnAddress: {} },
       );
-    });
-  });
-
-  describe('VeroApi', () => {
-    let api: VeroApi;
-
-    beforeEach(() => {
-      api = new VeroApi(client);
-    });
-
-    it('create VERO report', async () => {
-      const mockResponse = { veroReportId: 'REPORT123' };
-      const reportData = {
-        reportItems: [
-          {
-            itemId: 'ITEM123',
-            veroReasonCodeId: 'TRADEMARK',
-          },
-        ],
-      };
-      vi.mocked(client.post).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.createVeroReport({ reportData }));
-
-      expect(client.post).toHaveBeenCalledWith('/commerce/vero/v1/vero_report', reportData);
-    });
-
-    it('get VERO report by ID', async () => {
-      const mockResponse = { veroReportId: 'REPORT123', status: 'OPEN' };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getVeroReport({ veroReportId: 'REPORT123' }));
-
-      expect(client.get).toHaveBeenCalledWith('/commerce/vero/v1/vero_report/REPORT123');
-    });
-
-    it('get VERO report items', async () => {
-      const mockResponse = { items: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(
-        api.getVeroReportItems({ filter: 'filter:test', limit: 10, offset: 5 }),
-      );
-
-      expect(client.get).toHaveBeenCalledWith('/commerce/vero/v1/vero_report_items', {
-        filter: 'filter:test',
-        limit: 10,
-        offset: 5,
-      });
-    });
-
-    it('get VERO report items without optional params', async () => {
-      const mockResponse = { items: [] };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getVeroReportItems({}));
-
-      expect(client.get).toHaveBeenCalledWith('/commerce/vero/v1/vero_report_items');
-    });
-
-    it('get VERO reason code by ID', async () => {
-      const mockResponse = {
-        veroReasonCodeId: 'CODE123',
-        name: 'Trademark Infringement',
-        description: 'Unauthorized use of trademark',
-      };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getVeroReasonCode({ veroReasonCodeId: 'CODE123' }));
-
-      expect(client.get).toHaveBeenCalledWith('/commerce/vero/v1/vero_reason_code/CODE123');
-    });
-
-    it('get all VERO reason codes', async () => {
-      const mockResponse = {
-        veroReasonCodes: [
-          { veroReasonCodeId: 'CODE1', name: 'Trademark' },
-          { veroReasonCodeId: 'CODE2', name: 'Copyright' },
-        ],
-      };
-      vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(api.getVeroReasonCodes({}));
-
-      expect(client.get).toHaveBeenCalledWith('/commerce/vero/v1/vero_reason_code');
-    });
-
-    it('reject missing VERO reason code ID before requesting eBay', async () => {
-      const error = await Effect.runPromise(
-        Effect.flip(api.getVeroReasonCode({ veroReasonCodeId: '' })),
-      );
-
-      expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'veroReasonCodeId' });
-      expect(client.get).not.toHaveBeenCalled();
     });
   });
 

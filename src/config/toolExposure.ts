@@ -34,6 +34,7 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'commerce.notification',
   'commerce.taxonomy',
   'commerce.translation',
+  'commerce.vero',
   'developer.analytics',
   'developer.key-management',
   'developer.status',

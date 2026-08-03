@@ -25,6 +25,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Alert configuration, delivery destinations, topics, subscriptions, filters, and validation keys from Commerce Notification',
   'commerce.taxonomy': 'Category trees, category suggestions, and required listing aspects',
   'commerce.translation': 'Listing-title and description translation between supported languages',
+  'commerce.vero': 'Intellectual-property infringement reports and reason codes from Commerce VeRO',
   'developer.analytics': 'Application and user API quota utilization from Developer Analytics',
   'developer.key-management':
     'Application signing-key creation and public-key retrieval from Developer Key Management',
@@ -35,7 +36,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   'sell.recommendation':
     'Promoted Listings recommendations for active listings from Sell Recommendation',
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
-  other: 'Feedback and assorted Sell-API helpers',
+  other: 'International shipping through the eDelivery API',
   trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',
 };
 
@@ -46,6 +47,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'commerce.notification', title: 'Commerce Notification' },
   { namespace: 'commerce.taxonomy', title: 'Commerce Taxonomy' },
   { namespace: 'commerce.translation', title: 'Commerce Translation' },
+  { namespace: 'commerce.vero', title: 'Commerce VeRO' },
   { namespace: 'developer.analytics', title: 'Developer Analytics' },
   { namespace: 'developer.key-management', title: 'Developer Key Management' },
   { namespace: 'developer.status', title: 'Developer Status' },

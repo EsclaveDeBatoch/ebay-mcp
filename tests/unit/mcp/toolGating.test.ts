@@ -86,6 +86,17 @@ describe('toolNamesInExposurePaths', () => {
     expect([...names]).toEqual(['ebay_commerce_translation_translate']);
   });
 
+  it('returns the complete migrated Commerce VeRO namespace under its official path', () => {
+    const veroToolNames = toolNamesInExposurePaths(['commerce.vero']);
+    expect([...veroToolNames]).toEqual([
+      'ebay_commerce_vero_create_report',
+      'ebay_commerce_vero_get_report',
+      'ebay_commerce_vero_get_report_items',
+      'ebay_commerce_vero_get_reason_code',
+      'ebay_commerce_vero_get_reason_codes',
+    ]);
+  });
+
   it('returns the complete migrated Commerce Identity namespace under its official path', () => {
     const names = toolNamesInExposurePaths(['commerce.identity']);
     expect([...names]).toEqual(['ebay_commerce_identity_get_user']);

@@ -39,6 +39,12 @@ import {
   getItemAspectsForCategoryTool,
 } from '@/ebay/commerce/taxonomy/categoryTree.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
+import {
+  createVeroReportTool,
+  getVeroReportItemsTool,
+  getVeroReportTool,
+} from '@/ebay/commerce/vero/report.js';
+import { getVeroReasonCodesTool, getVeroReasonCodeTool } from '@/ebay/commerce/vero/reasonCode.js';
 import { getRateLimitsTool, getUserRateLimitsTool } from '@/ebay/developer/analytics/rateLimit.js';
 import {
   createSigningKeyTool,
@@ -98,6 +104,11 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getItemAspectsForCategoryTool,
   getUserTool,
   translateListingTextTool,
+  createVeroReportTool,
+  getVeroReportTool,
+  getVeroReportItemsTool,
+  getVeroReasonCodeTool,
+  getVeroReasonCodesTool,
   getRateLimitsTool,
   getUserRateLimitsTool,
   getSigningKeysTool,

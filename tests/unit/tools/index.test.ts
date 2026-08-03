@@ -186,10 +186,6 @@ describe('Tools Layer', () => {
         getSalesTaxJurisdictions: vi.fn(),
       },
       // Other APIs
-      vero: {
-        reportInfringement: vi.fn(),
-        getReportedItems: vi.fn(),
-      },
       edelivery: {
         getActualCosts: vi.fn(),
         getAddressPreferences: vi.fn(),
@@ -267,7 +263,7 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_orders'); // fulfillmentTools
       expect(toolNames).toContain('ebay_get_campaigns');
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
-      expect(toolNames).toContain('ebay_get_vero_reason_codes'); // otherApiTools
+      expect(toolNames).toContain('ebay_get_services'); // otherApiTools
     });
   });
 

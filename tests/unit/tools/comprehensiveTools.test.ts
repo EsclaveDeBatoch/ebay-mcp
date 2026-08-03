@@ -140,13 +140,6 @@ describe('Comprehensive Tools Coverage', () => {
         getProductCompatibilities: vi.fn(),
         getSalesTaxJurisdictions: vi.fn(),
       },
-      vero: {
-        createVeroReport: vi.fn(),
-        getVeroReport: vi.fn(),
-        getVeroReportItems: vi.fn(),
-        getVeroReasonCode: vi.fn(),
-        getVeroReasonCodes: vi.fn(),
-      },
       edelivery: {
         getActualCosts: vi.fn(),
         getAddressPreferences: vi.fn(),
@@ -1334,48 +1327,6 @@ describe('Comprehensive Tools Coverage', () => {
   });
 
   describe('Other API Tools', () => {
-    it('ebay_create_vero_report', async () => {
-      const mockResponse = { veroReportId: 'REPORT123' };
-      const reportData = { reportItems: [{ itemId: 'ITEM123', veroReasonCodeId: 'TRADEMARK' }] };
-      vi.mocked(mockApi.vero.createVeroReport).mockReturnValue(Effect.succeed(mockResponse));
-      const input = { reportData };
-      await executeTool(mockApi, 'ebay_create_vero_report', input);
-      expect(mockApi.vero.createVeroReport).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_vero_report', async () => {
-      const mockResponse = { veroReportId: 'REPORT123', status: 'OPEN' };
-      vi.mocked(mockApi.vero.getVeroReport).mockReturnValue(Effect.succeed(mockResponse));
-      const input = { veroReportId: 'REPORT123' };
-      await executeTool(mockApi, 'ebay_get_vero_report', input);
-      expect(mockApi.vero.getVeroReport).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_vero_report_items', async () => {
-      const mockResponse = { reportedItemDetails: [] };
-      vi.mocked(mockApi.vero.getVeroReportItems).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_vero_report_items', { filter: 'test' });
-      expect(mockApi.vero.getVeroReportItems).toHaveBeenCalledWith({ filter: 'test' });
-    });
-
-    it('ebay_get_vero_reason_code', async () => {
-      const mockResponse = {
-        reasonCodeDetails: { veroReasonCodeId: 'CODE123', briefText: 'Trademark' },
-      };
-      vi.mocked(mockApi.vero.getVeroReasonCode).mockReturnValue(Effect.succeed(mockResponse));
-      const input = { veroReasonCodeId: 'CODE123' };
-      await executeTool(mockApi, 'ebay_get_vero_reason_code', input);
-      expect(mockApi.vero.getVeroReasonCode).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_vero_reason_codes', async () => {
-      const mockResponse = { veroReasonCodes: [] };
-      vi.mocked(mockApi.vero.getVeroReasonCodes).mockReturnValue(Effect.succeed(mockResponse));
-      const input = {};
-      await executeTool(mockApi, 'ebay_get_vero_reason_codes', input);
-      expect(mockApi.vero.getVeroReasonCodes).toHaveBeenCalledWith(input);
-    });
-
     it('ebay_get_services', async () => {
       const mockResponse = { serviceList: { services: [] } };
       vi.mocked(mockApi.edelivery.getServices).mockReturnValue(Effect.succeed(mockResponse));

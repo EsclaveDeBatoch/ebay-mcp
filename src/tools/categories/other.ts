@@ -1,7 +1,6 @@
 import { Effect } from 'effect';
 import {
   bundleIdInputSchema,
-  createVeroReportInputSchema,
   edeliveryBodyInputSchema,
   edeliveryPaginationInputSchema,
   getActualCostsInputSchema,
@@ -11,10 +10,6 @@ import {
   getLabelsInputSchema,
   getPackagesByLineItemIdInputSchema,
   getTrackingInputSchema,
-  getVeroReasonCodeInputSchema,
-  getVeroReasonCodesInputSchema,
-  getVeroReportInputSchema,
-  getVeroReportItemsInputSchema,
   packageIdInputSchema,
 } from '@/schemas/other/otherApis.js';
 import { defineTool } from '@/tools/defineTool.js';
@@ -22,41 +17,6 @@ import type { ToolEntry } from '@/tools/registry.js';
 
 /** Miscellaneous eBay API tools that do not fit the primary seller API categories. */
 export const otherEntries: ToolEntry[] = [
-  // VERO API
-  defineTool({
-    name: 'ebay_create_vero_report',
-    description:
-      'Create a VERO report to report intellectual property infringement. This endpoint is part of the Verified Rights Owner (VeRO) Program and allows rights owners to report listings that infringe on their intellectual property.',
-    inputSchema: createVeroReportInputSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.vero.createVeroReport(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_vero_report',
-    description: 'Get a specific VERO report by ID',
-    inputSchema: getVeroReportInputSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.vero.getVeroReport(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_vero_report_items',
-    description:
-      'Get VERO report items (listings reported for intellectual property infringement). Supports filtering, pagination via limit and offset parameters.',
-    inputSchema: getVeroReportItemsInputSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.vero.getVeroReportItems(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_vero_reason_code',
-    description:
-      'Get a specific VERO reason code by ID. Reason codes categorize the types of intellectual property violations.',
-    inputSchema: getVeroReasonCodeInputSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.vero.getVeroReasonCode(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_vero_reason_codes',
-    description:
-      'Get all available VERO reason codes. These codes are used when creating VERO reports to specify the type of intellectual property violation.',
-    inputSchema: getVeroReasonCodesInputSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.vero.getVeroReasonCodes(args)),
-  }),
   // eDelivery API - Cost & Preferences
   defineTool({
     name: 'ebay_get_actual_costs',

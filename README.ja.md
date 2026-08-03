@@ -249,7 +249,8 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Communication](src/tools/categories/communication.ts) | 購入者と出品者のメッセージ、交渉、通知、評価 |
 | [Metadata](src/tools/categories/metadata.ts) | 返品ポリシー、販売税の管轄、自動車適合性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | カテゴリツリー、アイテムの特性、アイテムのコンディション |
-| [Other](src/tools/categories/other.ts) | Identity、VeRO、翻訳、国際配送サポート API（Compliance ツールは eBay の 2026-03-30 廃止を報告） |
+| [Commerce VeRO](src/ebay/commerce/vero/) | 知的財産権侵害の報告と VeRO 理由コード |
+| [Other](src/tools/categories/other.ts) | eDelivery API による国際配送 |
 | [Trading（レガシー XML）](src/tools/categories/trading.ts) | 固定価格出品の作成・修正・再出品・終了 |
 | [Developer](src/ebay/developer) | レート制限、署名キー、API ステータス |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL の生成とトークン管理 |
