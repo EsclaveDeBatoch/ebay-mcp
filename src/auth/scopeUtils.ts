@@ -219,6 +219,11 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
       description: 'Requires inventory access for listing recommendations',
     },
+    ebay_commerce_translation_translate: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires eBay public-data access for listing translation',
+    },
 
     // Messaging Tools
     ebay_send_message: {

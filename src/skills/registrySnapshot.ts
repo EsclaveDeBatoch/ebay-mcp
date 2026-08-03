@@ -17,6 +17,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Inventory items, offers, locations, inventory groups, bulk publish — the REST listing model',
   fulfillment: 'Orders, shipping fulfillments, refunds, and payment disputes',
   marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
+  'commerce.translation': 'Listing-title and description translation between supported languages',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
   'sell.recommendation':
@@ -31,6 +32,7 @@ const FAMILY_BLURBS: Record<string, string> = {
 };
 
 const MIGRATED_NAMESPACE_TITLES = [
+  { namespace: 'commerce.translation', title: 'Commerce Translation' },
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },
 ] as const;

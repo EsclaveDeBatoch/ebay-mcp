@@ -106,6 +106,14 @@ describe('Scope Utils', () => {
       expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope/sell.inventory');
     });
 
+    it('returns the public-data scope for listing translation', () => {
+      const requirement = getRequiredScopesForTool('ebay_commerce_translation_translate');
+
+      expect(requirement).toBeDefined();
+      expect(requirement?.requiredScopes).toEqual(['https://api.ebay.com/oauth/api_scope']);
+      expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope');
+    });
+
     it('return scopes for create/write operations', () => {
       const requirement = getRequiredScopesForTool('ebay_create_or_replace_inventory_item');
 

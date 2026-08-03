@@ -91,7 +91,6 @@ describe('isReadOnlyTool', () => {
 
   it('defaults unknown names to not read-only (safer)', () => {
     expect(isReadOnlyTool(def('ebay_suggest_bids'))).toBe(false);
-    expect(isReadOnlyTool(def('ebay_translate'))).toBe(false);
     expect(isReadOnlyTool(def('ebay_clear_tokens'))).toBe(false);
     expect(isReadOnlyTool(def('ebay_refresh_access_token'))).toBe(false);
     expect(isReadOnlyTool(def('ebay_setup_quick_campaign'))).toBe(false);

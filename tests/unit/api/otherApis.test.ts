@@ -3,7 +3,6 @@ import { DisputeApi } from '@/api/order-management/dispute.js';
 import { TaxonomyApi } from '@/api/listing-metadata/taxonomy.js';
 import { ComplianceApi } from '@/api/other/compliance.js';
 import { VeroApi } from '@/api/other/vero.js';
-import { TranslationApi } from '@/api/other/translation.js';
 import { EDeliveryApi } from '@/api/other/edelivery.js';
 import { IdentityApi } from '@/api/other/identity.js';
 import type { EbayApiClient } from '@/api/client.js';
@@ -316,35 +315,6 @@ describe('Other APIs', () => {
 
       expect(error).toMatchObject({ _tag: 'EndpointInputError', parameter: 'veroReasonCodeId' });
       expect(client.get).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('TranslationApi', () => {
-    let api: TranslationApi;
-
-    beforeEach(() => {
-      api = new TranslationApi(client);
-    });
-
-    it('translate text', async () => {
-      const mockResponse = { translations: [] };
-      vi.mocked(client.post).mockResolvedValue(mockResponse);
-
-      await Effect.runPromise(
-        api.translate({
-          from: 'en',
-          to: 'es',
-          translationContext: 'ITEM_TITLE',
-          text: ['Hello'],
-        }),
-      );
-
-      expect(client.post).toHaveBeenCalledWith('/commerce/translation/v1_beta/translate', {
-        from: 'en',
-        to: 'es',
-        translationContext: 'ITEM_TITLE',
-        text: ['Hello'],
-      });
     });
   });
 

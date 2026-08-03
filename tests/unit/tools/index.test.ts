@@ -245,9 +245,6 @@ describe('Tools Layer', () => {
         reportInfringement: vi.fn(),
         getReportedItems: vi.fn(),
       },
-      translation: {
-        translate: vi.fn(),
-      },
       edelivery: {
         getActualCosts: vi.fn(),
         getAddressPreferences: vi.fn(),
@@ -955,26 +952,6 @@ describe('Tools Layer', () => {
       const result = await executeTool(mockApi, 'ebay_get_user', {});
 
       expect(mockApi.identity.getUser).toHaveBeenCalledWith({});
-      expect(result).toBe(mockResponse);
-    });
-
-    it('translate text', async () => {
-      const mockResponse = { translations: [] };
-      vi.mocked(mockApi.translation.translate).mockReturnValue(Effect.succeed(mockResponse));
-
-      const result = await executeTool(mockApi, 'ebay_translate', {
-        from: 'en',
-        to: 'es',
-        translationContext: 'ITEM_TITLE',
-        text: ['Hello'],
-      });
-
-      expect(mockApi.translation.translate).toHaveBeenCalledWith({
-        from: 'en',
-        to: 'es',
-        translationContext: 'ITEM_TITLE',
-        text: ['Hello'],
-      });
       expect(result).toBe(mockResponse);
     });
   });

@@ -178,9 +178,6 @@ describe('Comprehensive Tools Coverage', () => {
         getVeroReasonCode: vi.fn(),
         getVeroReasonCodes: vi.fn(),
       },
-      translation: {
-        translate: vi.fn(),
-      },
       edelivery: {
         getActualCosts: vi.fn(),
         getAddressPreferences: vi.fn(),
@@ -1546,23 +1543,6 @@ describe('Comprehensive Tools Coverage', () => {
       const input = {};
       await executeTool(mockApi, 'ebay_get_vero_reason_codes', input);
       expect(mockApi.vero.getVeroReasonCodes).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_translate', async () => {
-      const mockResponse = { translations: [] };
-      vi.mocked(mockApi.translation.translate).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_translate', {
-        from: 'en',
-        to: 'es',
-        translationContext: 'ITEM_TITLE',
-        text: ['Hello'],
-      });
-      expect(mockApi.translation.translate).toHaveBeenCalledWith({
-        from: 'en',
-        to: 'es',
-        translationContext: 'ITEM_TITLE',
-        text: ['Hello'],
-      });
     });
 
     it('ebay_get_services', async () => {

@@ -19,7 +19,6 @@ import {
   getVeroReportInputSchema,
   getVeroReportItemsInputSchema,
   packageIdInputSchema,
-  translateInputSchema,
 } from '@/schemas/other/otherApis.js';
 import { defineTool } from '@/tools/defineTool.js';
 import type { ToolEntry } from '@/tools/registry.js';
@@ -83,13 +82,6 @@ export const otherEntries: ToolEntry[] = [
       'Get all available VERO reason codes. These codes are used when creating VERO reports to specify the type of intellectual property violation.',
     inputSchema: getVeroReasonCodesInputSchema.shape,
     handler: (api, args) => Effect.runPromise(api.vero.getVeroReasonCodes(args)),
-  }),
-  // Translation API
-  defineTool({
-    name: 'ebay_translate',
-    description: 'Translate listing text',
-    inputSchema: translateInputSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.translation.translate(args)),
   }),
   // eDelivery API - Cost & Preferences
   defineTool({

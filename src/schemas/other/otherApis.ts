@@ -131,28 +131,6 @@ const listingViolationSummaryResponseSchema = z.object({
 });
 
 // ============================================================================
-// Commerce Translation API Schemas
-// ============================================================================
-
-const translationSchema = z.object({
-  from: z.string().optional(),
-  to: z.string().optional(),
-  translatedText: z.string().optional(),
-});
-
-/** Input schema for Commerce Translation API translate. */
-export const translateInputSchema = z.object({
-  from: z.string().optional(),
-  to: z.string(),
-  text: z.array(z.string()),
-  translationContext: z.string().optional(),
-});
-
-const translateResponseSchema = z.object({
-  translations: z.array(translationSchema).optional(),
-});
-
-// ============================================================================
 // Commerce VERO API Schemas
 // ============================================================================
 
@@ -409,10 +387,6 @@ export const getOtherApisJsonSchemas = () => {
       getListingViolationsSummaryInputSchema,
       'getListingViolationsSummaryInput',
     ),
-    // Commerce Translation API
-    translateInput: zodToJsonSchema(translateInputSchema, 'translateInput'),
-    translateOutput: zodToJsonSchema(translateResponseSchema, 'translateOutput'),
-
     // Commerce VERO API
     createVeroReportInput: zodToJsonSchema(createVeroReportInputSchema, 'createVeroReportInput'),
     createVeroReportOutput: zodToJsonSchema(
@@ -569,9 +543,6 @@ export const getOtherApisJsonSchemas = () => {
     ),
     variationDetails: zodToJsonSchema(variationDetailsSchema, 'variationDetails'),
     nameValueList: zodToJsonSchema(nameValueListSchema, 'nameValueList'),
-
-    // Translation Types
-    translation: zodToJsonSchema(translationSchema, 'translation'),
 
     // VERO Types
     reportedItem: zodToJsonSchema(reportedItemSchema, 'reportedItem'),
