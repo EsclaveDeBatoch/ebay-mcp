@@ -59,6 +59,9 @@ export const buildUsingDoc = (snapshot: RegistrySnapshot): SkillDoc => ({
         '**Promote listings (Promoted Listings).**',
         '`ebay_sell_recommendation_find_listing_recommendations` identifies active listings that can benefit from promotion. Then use `ebay_create_campaign` → `ebay_bulk_create_ads_by_inventory_reference`. The Marketing family also covers promotions and reports.',
         '',
+        '**Send an offer to interested buyers.**',
+        '`ebay_sell_negotiation_find_eligible_items` identifies eligible listings → confirm the exact discount with the seller → `ebay_sell_negotiation_send_offer_to_interested_buyers` sends one offer for one listing.',
+        '',
         '**Translate listing copy.**',
         "`ebay_commerce_translation_translate` translates one supported listing title or description while preserving eBay's response fields.",
         '',
@@ -78,7 +81,7 @@ export const buildUsingDoc = (snapshot: RegistrySnapshot): SkillDoc => ({
         '- **Two listing models.** REST Inventory (`inventory_item` → `offer` → `publish`) vs legacy Trading (XML). Pick one per SKU and stay in it.',
         '- **Offers need policies + a location first.** A "policy not found" error usually means the one-time account setup was skipped.',
         '- **`search` and `fetch` are ChatGPT-connector only** — ignore them when driving the Sell API directly.',
-        '- **Write actions are real.** `publish`, `issue_refund`, `end_listing`, and any `bulk_*` change live seller data — confirm intent before calling.',
+        '- **Write actions are real.** `publish`, `issue_refund`, `end_listing`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, and any `bulk_*` change live seller data — confirm intent before calling.',
       ].join('\n'),
     },
     {

@@ -146,9 +146,6 @@ describe('Comprehensive Tools Coverage', () => {
         getCategorySuggestions: vi.fn(),
         getItemAspectsForCategory: vi.fn(),
       },
-      negotiation: {
-        sendOfferToInterestedBuyers: vi.fn(),
-      },
       message: {
         sendMessage: vi.fn(),
         getConversations: vi.fn(),
@@ -1080,16 +1077,6 @@ describe('Comprehensive Tools Coverage', () => {
   });
 
   describe('Communication Tools', () => {
-    it('ebay_send_offer_to_interested_buyers', async () => {
-      const mockResponse = { offers: [] };
-      vi.mocked(mockApi.negotiation.sendOfferToInterestedBuyers).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      const offerRequest = { message: 'Test', marketplaceId: 'EBAY_US' };
-      await executeTool(mockApi, 'ebay_send_offer_to_interested_buyers', offerRequest);
-      expect(mockApi.negotiation.sendOfferToInterestedBuyers).toHaveBeenCalledWith(offerRequest);
-    });
-
     it('ebay_get_conversations', async () => {
       const mockResponse = { conversations: [] };
       vi.mocked(mockApi.message.getConversations).mockReturnValue(Effect.succeed(mockResponse));

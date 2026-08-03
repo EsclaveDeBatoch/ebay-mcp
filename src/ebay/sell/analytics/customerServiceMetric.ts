@@ -60,6 +60,7 @@ export const getCustomerServiceMetricTool = defineTool({
   namespace: 'sell.analytics',
   description: 'Get seller customer service metrics',
   argumentsSchema: customerServiceMetricArgumentsSchema,
+  operationKind: 'read',
   operation: getCustomerServiceMetric,
   presentation: {
     archetype: 'chart',

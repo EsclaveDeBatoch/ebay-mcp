@@ -31,7 +31,7 @@ const ebayClientFailure = (kind: EbayClientRequestErrorKind, status?: number) =>
   });
 };
 
-describe('authenticated eBay seller session calls', () => {
+describe('authenticated eBay seller session standard-host calls', () => {
   it('passes the endpoint and search parameters to the authenticated client', async () => {
     const authenticatedClient = ebayApiClient();
     const ebayDocument = { records: [] };
@@ -48,6 +48,26 @@ describe('authenticated eBay seller session calls', () => {
       dimension: 'DAY',
       metric: 'LISTING_VIEWS_TOTAL',
     });
+  });
+
+  it('passes GET headers separately from exact wire query fields', async () => {
+    const authenticatedClient = ebayApiClient();
+    const ebayDocument = { eligibleItems: [] };
+    const getCall = vi.spyOn(authenticatedClient, 'get').mockResolvedValue(ebayDocument);
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.get({
+        endpoint: '/sell/negotiation/v1/find_eligible_items',
+        searchParameters: { limit: '10', offset: '0' },
+        requestHeaders: { 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' },
+      }),
+    ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument });
+    expect(getCall).toHaveBeenCalledWith(
+      '/sell/negotiation/v1/find_eligible_items',
+      { limit: '10', offset: '0' },
+      { headers: { 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' } },
+    );
   });
 
   it('passes the POST endpoint, document, search parameters, and headers to the client', async () => {
@@ -73,7 +93,9 @@ describe('authenticated eBay seller session calls', () => {
       },
     );
   });
+});
 
+describe('authenticated eBay seller session alternate-host calls', () => {
   it('uses the configured Identity API host for an identity GET', async () => {
     const authenticatedClient = ebayApiClient();
     const ebayDocument = { userId: '007BUS2xyeBay' };

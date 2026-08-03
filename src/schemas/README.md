@@ -145,21 +145,19 @@ Schemas for inventory items, offers, locations, and product compatibility.
 
 ### 3. Communication (`communication/messages.ts`)
 
-Schemas for messages, feedback, notifications, and negotiations.
+Legacy schemas for messages, feedback, and notifications.
 
 **Endpoints Covered:**
 
 - Message API (conversations, messages)
 - Feedback API (leave feedback, respond to feedback)
 - Notification API (destinations, subscriptions, topics)
-- Negotiation API (offers to buyers)
 
 **Key Schemas:**
 
 - `sendMessageInputSchema` / `sendMessageOutputSchema`
 - `leaveFeedbackInputSchema` / `leaveFeedbackOutputSchema`
 - `createNotificationSubscriptionInputSchema` / `createNotificationSubscriptionOutputSchema`
-- `sendOfferToInterestedBuyersInputSchema` / `sendOfferToInterestedBuyersOutputSchema`
 
 ### 4. Fulfillment (`fulfillment/orders.ts`)
 

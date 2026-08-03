@@ -21,6 +21,7 @@ type EbayToolSpec<ArgumentsSchema extends z.ZodObject, EbayDocument> = {
   readonly namespace: string;
   readonly description: string;
   readonly argumentsSchema: ArgumentsSchema;
+  readonly operationKind: 'read' | 'write';
   readonly operation: (
     sellerSession: EbaySellerSession,
     ebayArguments: z.infer<ArgumentsSchema>,
@@ -35,9 +36,9 @@ type EbayTool = {
   readonly description: string;
   readonly argumentsSchema: z.ZodObject;
   readonly annotations: {
-    readonly readOnlyHint: true;
+    readonly readOnlyHint: boolean;
     readonly destructiveHint: false;
-    readonly idempotentHint: true;
+    readonly idempotentHint: boolean;
     readonly openWorldHint: true;
   };
   readonly ui?: McpUiBinding;
@@ -49,8 +50,28 @@ type EbayTool = {
 };
 
 function successfulMcpCall(ebayDocument: unknown): CallToolResult {
+  if (ebayDocument === undefined) {
+    return { content: [] };
+  }
   return {
     content: [{ type: 'text', text: JSON.stringify(ebayDocument, null, 2) }],
+  };
+}
+
+function mcpAnnotationsFor(operationKind: 'read' | 'write'): EbayTool['annotations'] {
+  if (operationKind === 'read') {
+    return {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: true,
+    };
+  }
+  return {
+    readOnlyHint: false,
+    destructiveHint: false,
+    idempotentHint: false,
+    openWorldHint: true,
   };
 }
 
@@ -104,12 +125,7 @@ export const defineTool = <ArgumentsSchema extends z.ZodObject, EbayDocument>(
     namespace: ebayToolSpec.namespace,
     description: ebayToolSpec.description,
     argumentsSchema: ebayToolSpec.argumentsSchema,
-    annotations: {
-      readOnlyHint: true,
-      destructiveHint: false,
-      idempotentHint: true,
-      openWorldHint: true,
-    },
+    annotations: mcpAnnotationsFor(ebayToolSpec.operationKind),
     ui: uiBinding,
     async completeMcpCall(sellerSession, validatedArguments, browserPresentationEnabled) {
       const ebayArguments = validatedArguments as z.infer<ArgumentsSchema>;

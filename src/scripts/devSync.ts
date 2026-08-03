@@ -1,15 +1,24 @@
 #!/usr/bin/env node
 
+import { execSync } from 'node:child_process';
+import {
+  type Dirent,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from 'node:fs';
+import { basename, dirname, join } from 'node:path';
+import process from 'node:process';
+import { fileURLToPath } from 'node:url';
+
 import chalk from 'chalk';
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs';
-import { join, dirname, basename } from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
 import { Effect, Either } from 'effect';
+
+import { getSpecFolder } from '@/scripts/specFolderMap.js';
 import { getErrorMessage } from '@/utils/errors.js';
 import { httpRequest } from '@/utils/http.js';
-import { getSpecFolder } from '@/scripts/specFolderMap.js';
-import process from 'node:process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,7 +26,7 @@ const PROJECT_ROOT = join(__dirname, '../..');
 const DOCS_DIR = join(PROJECT_ROOT, 'docs');
 const SPEC_DIR = join(PROJECT_ROOT, 'specs/ebay');
 const GENERATED_TYPES_DIR = join(PROJECT_ROOT, 'src/generated/ebay');
-const TOOLS_DIRS = [join(PROJECT_ROOT, 'src/tools/categories')];
+const TOOLS_DIRS = [join(PROJECT_ROOT, 'src/tools/categories'), join(PROJECT_ROOT, 'src/ebay')];
 const SPEC_GENERATION_BLOCKERS: Readonly<Record<string, string>> = {
   'sell_account_v2_oas3.json':
     'eBay references components.schemas.SetUserPreferencesRequest without defining it',
@@ -274,21 +283,41 @@ function extractEndpointsFromSpecs(): EndpointInfo[] {
   return endpoints;
 }
 
-function collectToolNames(dir: string, tools: Set<string>): void {
-  if (!existsSync(dir)) return;
+function collectToolNamesFromDirectoryMember(
+  sourceDirectory: string,
+  directoryMember: Dirent,
+  toolNames: Set<string>,
+): void {
+  const sourcePath = join(sourceDirectory, directoryMember.name);
 
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const fullPath = join(dir, entry.name);
+  if (directoryMember.isDirectory()) {
+    collectToolNames(sourcePath, toolNames);
+    return;
+  }
+  if (!directoryMember.isFile()) {
+    return;
+  }
+  if (!directoryMember.name.endsWith('.ts')) {
+    return;
+  }
+  if (directoryMember.name.endsWith('.test.ts')) {
+    return;
+  }
 
-    if (entry.isDirectory()) {
-      collectToolNames(fullPath, tools);
-    } else if (entry.isFile() && entry.name.endsWith('.ts')) {
-      const content = readFileSync(fullPath, 'utf-8');
-      const nameMatches = content.matchAll(/name:\s*['"`]([^'"`]+)['"`]/g);
-      for (const match of nameMatches) {
-        tools.add(match[1]);
-      }
-    }
+  const sourceText = readFileSync(sourcePath, 'utf-8');
+  const toolNameMatches = sourceText.matchAll(/name:\s*['"`]([^'"`]+)['"`]/g);
+  for (const toolNameMatch of toolNameMatches) {
+    toolNames.add(toolNameMatch[1]);
+  }
+}
+
+function collectToolNames(sourceDirectory: string, toolNames: Set<string>): void {
+  if (!existsSync(sourceDirectory)) {
+    return;
+  }
+
+  for (const directoryMember of readdirSync(sourceDirectory, { withFileTypes: true })) {
+    collectToolNamesFromDirectoryMember(sourceDirectory, directoryMember, toolNames);
   }
 }
 
@@ -343,9 +372,6 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   gettopics: ['ebay_get_notification_topics'],
   getpublickey: ['ebay_get_notification_public_key'],
 
-  // Negotiation API
-  findeligibleitems: ['ebay_find_eligible_items'],
-
   // Marketing API
   createadbylistingid: ['ebay_create_ad_by_listing_id'],
   updatebid: ['ebay_update_bid'],
@@ -373,49 +399,63 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
 /**
  * Get all implemented API methods from source files
  */
-function getImplementedApiMethods(): Set<string> {
-  const methods = new Set<string>();
-  const apiDir = join(PROJECT_ROOT, 'src/api');
+function collectOperationNamesFromDirectoryMember(
+  sourceDirectory: string,
+  directoryMember: Dirent,
+  operationNames: Set<string>,
+): void {
+  const sourcePath = join(sourceDirectory, directoryMember.name);
 
-  function processDirectory(dir: string): void {
-    if (!existsSync(dir)) return;
-
-    const entries = readdirSync(dir, { withFileTypes: true });
-
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
-
-      if (entry.isDirectory()) {
-        processDirectory(fullPath);
-      } else if (entry.name.endsWith('.ts')) {
-        const source = Effect.runSync(
-          Effect.either(
-            Effect.try({
-              try: () => readFileSync(fullPath, 'utf-8'),
-              catch: (error) => error,
-            }),
-          ),
-        );
-
-        if (Either.isRight(source)) {
-          // Match async methods and class-field arrow endpoints (`name = (` / `public name = (`).
-          // Many area classes omit the `public` keyword (notification, trading, feedback, …).
-          const methodMatches = source.right.matchAll(
-            /(?:async\s+(\w+)\s*\(|(?:public\s+)?(\w+)\s*=\s*(?:async\s*)?\()/g,
-          );
-          for (const match of methodMatches) {
-            const name = match[1] ?? match[2];
-            // Skip common non-method bindings that the broader regex can catch.
-            if (!name || name === 'const' || name === 'let' || name === 'var') continue;
-            methods.add(normalizeForMatching(name));
-          }
-        }
-      }
-    }
+  if (directoryMember.isDirectory()) {
+    collectOperationNames(sourcePath, operationNames);
+    return;
+  }
+  if (!directoryMember.isFile()) {
+    return;
+  }
+  if (!directoryMember.name.endsWith('.ts')) {
+    return;
+  }
+  if (directoryMember.name.endsWith('.test.ts')) {
+    return;
   }
 
-  processDirectory(apiDir);
-  return methods;
+  const sourceText = readFileSync(sourcePath, 'utf-8');
+  const operationMatches = sourceText.matchAll(
+    /(?:async\s+(\w+)\s*\(|(?:public\s+)?(\w+)\s*=\s*(?:async\s*)?\()/g,
+  );
+  for (const [, asyncMethodName, arrowMethodName] of operationMatches) {
+    if (asyncMethodName !== undefined) {
+      operationNames.add(normalizeForMatching(asyncMethodName));
+    }
+    if (arrowMethodName !== undefined) {
+      operationNames.add(normalizeForMatching(arrowMethodName));
+    }
+  }
+}
+
+function collectOperationNames(sourceDirectory: string, operationNames: Set<string>): void {
+  if (!existsSync(sourceDirectory)) {
+    return;
+  }
+
+  const directoryMembers = readdirSync(sourceDirectory, { withFileTypes: true });
+  for (const directoryMember of directoryMembers) {
+    collectOperationNamesFromDirectoryMember(sourceDirectory, directoryMember, operationNames);
+  }
+}
+
+function getImplementedApiMethods(): Set<string> {
+  const operationNames = new Set<string>();
+  const operationSourceDirectories = [
+    join(PROJECT_ROOT, 'src/api'),
+    join(PROJECT_ROOT, 'src/ebay'),
+  ];
+
+  for (const operationSourceDirectory of operationSourceDirectories) {
+    collectOperationNames(operationSourceDirectory, operationNames);
+  }
+  return operationNames;
 }
 
 /**

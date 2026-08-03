@@ -42,5 +42,6 @@ export const getUserTool = defineTool({
   namespace: 'commerce.identity',
   description: 'Retrieve profile information for the authenticated eBay user',
   argumentsSchema: getUserArgumentsSchema,
+  operationKind: 'read',
   operation: getUser,
 });

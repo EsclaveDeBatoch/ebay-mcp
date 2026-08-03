@@ -87,5 +87,6 @@ export const findListingRecommendationsTool = defineTool({
   namespace: 'sell.recommendation',
   description: 'Find Promoted Listings recommendations for active eBay listings',
   argumentsSchema: findListingRecommendationsArgumentsSchema,
+  operationKind: 'read',
   operation: findListingRecommendations,
 });

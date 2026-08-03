@@ -73,6 +73,14 @@ describe('toolNamesInExposurePaths', () => {
     expect([...names]).toEqual(['ebay_sell_recommendation_find_listing_recommendations']);
   });
 
+  it('returns the complete migrated Sell Negotiation namespace under its official path', () => {
+    const names = toolNamesInExposurePaths(['sell.negotiation']);
+    expect([...names]).toEqual([
+      'ebay_sell_negotiation_find_eligible_items',
+      'ebay_sell_negotiation_send_offer_to_interested_buyers',
+    ]);
+  });
+
   it('ignores unknown families', () => {
     expect(toolNamesInExposurePaths(['nope']).size).toBe(0);
   });
@@ -85,7 +93,7 @@ describe('ToolGatingController', () => {
       const result = controller.list({}) as {
         families: { key: string; count: number }[];
       };
-      expect(result.families).toHaveLength(toolCategories.length + 4);
+      expect(result.families).toHaveLength(toolCategories.length + 5);
       const inventoryRow = result.families.find((row) => row.key === 'inventory');
       expect(inventoryRow?.count).toBe(inventory.entries.length);
     });

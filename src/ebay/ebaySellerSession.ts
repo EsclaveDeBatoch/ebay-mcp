@@ -19,6 +19,7 @@ type EbayGetCall = {
   readonly apiHost?: 'identity';
   readonly endpoint: string;
   readonly searchParameters?: EbaySearchParameters;
+  readonly requestHeaders?: EbayRequestHeaders;
 };
 
 /** One authenticated POST call issued by an eBay resource operation. */
@@ -123,6 +124,13 @@ export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySelle
           `${identityApiBaseUrl}${ebayGetCall.endpoint}`,
           ebayGetCall.searchParameters,
         ),
+      );
+    }
+    if (ebayGetCall.requestHeaders !== undefined) {
+      return completeEbayCall(
+        ebayApiClient.get<EbayDocument>(ebayGetCall.endpoint, ebayGetCall.searchParameters, {
+          headers: ebayGetCall.requestHeaders,
+        }),
       );
     }
     return completeEbayCall(

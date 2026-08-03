@@ -489,6 +489,7 @@ An endpoint-backed MCP tool validates once, invokes one resource operation, and 
 // ✓ src/ebay/sell/analytics/trafficReport.ts
 export const getTrafficReportTool = defineTool({
   argumentsSchema: trafficReportQuerySchema,
+  operationKind: 'read',
   operation: getTrafficReport,
 });
 
@@ -497,6 +498,10 @@ handler: async () => combine(await firstCall(), await secondCall()),
 ```
 
 Why: Real multi-operation work deserves an explicit workflow name.
+
+Every migrated definition states `operationKind: 'read' | 'write'`. The MCP annotations and
+`EBAY_READ_ONLY` behavior derive from that explicit business effect; a write is never inferred
+from its name.
 
 ### Explicit tool catalogue
 [rule:mcp.explicit-catalogue] · verify: judgment
@@ -823,8 +828,12 @@ export const getTrafficReportTool = defineTool({
   namespace: 'sell.analytics',
   description: 'Retrieve traffic metrics for the seller\'s listings',
   argumentsSchema: trafficReportQuerySchema,
+  operationKind: 'read',
   operation: getTrafficReport,
-  presentation: trafficReportChart,
+  presentation: {
+    archetype: 'chart',
+    project: trafficReportChart,
+  },
 });
 ```
 

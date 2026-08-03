@@ -32,6 +32,8 @@ model than the repository's parallel area, family, schema, and tool taxonomies.
   `src/generated/ebay/`. Neither root accepts handwritten code.
 - Explicitly import every named tool definition in `src/mcp/ebayToolCatalogue.ts`. Do not
   discover files or export resource-level tool arrays.
+- Require every migrated tool definition to declare `operationKind: 'read' | 'write'` and
+  derive its MCP annotations and read-only exposure from that declared business effect.
 - Name tools hierarchically, for example
   `ebay_sell_analytics_get_traffic_report`, and expose them by official namespace/API path,
   for example `sell.analytics`. Connector `search` and `fetch` are exact local exceptions.

@@ -14,6 +14,7 @@ describe('toolExposure', () => {
         'commerce.identity',
         'commerce.translation',
         'sell.analytics',
+        'sell.negotiation',
         'sell.recommendation',
       ]);
     });
@@ -52,6 +53,7 @@ describe('toolExposure', () => {
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.identity' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.translation' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.analytics' })).toBeUndefined();
+      expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.negotiation' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.recommendation' })).toBeUndefined();
     });
 

@@ -16,10 +16,6 @@ import {
   updateConversationSchema,
 } from '@/utils/communication/message.js';
 import {
-  findEligibleItemsSchema,
-  sendOfferToInterestedBuyersSchema,
-} from '@/utils/communication/negotiation.js';
-import {
   createDestinationSchema,
   createSubscriptionFilterSchema,
   createSubscriptionSchema,
@@ -51,19 +47,6 @@ import {
  * boundary: they run one endpoint Effect and avoid response or input reshaping.
  */
 export const communicationEntries: ToolEntry[] = [
-  // Negotiation API
-  defineTool({
-    name: 'ebay_find_eligible_items',
-    description: 'Find items eligible for Send Offer to Buyers',
-    inputSchema: findEligibleItemsSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.negotiation.findEligibleItems(args)),
-  }),
-  defineTool({
-    name: 'ebay_send_offer_to_interested_buyers',
-    description: 'Send offer to interested buyers',
-    inputSchema: sendOfferToInterestedBuyersSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.negotiation.sendOfferToInterestedBuyers(args)),
-  }),
   // Notification API
   defineTool({
     name: 'ebay_get_notification_config',

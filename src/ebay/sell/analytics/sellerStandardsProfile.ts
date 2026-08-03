@@ -85,6 +85,7 @@ export const findSellerStandardsProfilesTool = defineTool({
   namespace: 'sell.analytics',
   description: 'Find every seller standards profile',
   argumentsSchema: findSellerStandardsProfilesArgumentsSchema,
+  operationKind: 'read',
   operation: findSellerStandardsProfiles,
 });
 
@@ -94,6 +95,7 @@ export const getSellerStandardsProfileTool = defineTool({
   namespace: 'sell.analytics',
   description: 'Get one seller standards profile',
   argumentsSchema: sellerStandardsProfilePathSchema,
+  operationKind: 'read',
   operation: getSellerStandardsProfile,
   presentation: {
     archetype: 'card',

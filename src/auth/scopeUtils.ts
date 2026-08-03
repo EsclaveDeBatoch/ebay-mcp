@@ -219,6 +219,19 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
       description: 'Requires inventory access for listing recommendations',
     },
+    ebay_sell_negotiation_find_eligible_items: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires inventory access to find listings eligible for seller offers',
+    },
+    ebay_sell_negotiation_send_offer_to_interested_buyers: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires inventory write access to send seller offers',
+    },
     ebay_commerce_translation_translate: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope',

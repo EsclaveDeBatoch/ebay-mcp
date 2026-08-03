@@ -376,36 +376,6 @@ export const getNotificationTopicsOutputSchema = z.object({
 });
 
 // ============================================================================
-// Negotiation API Schemas
-// ============================================================================
-
-/**
- * Validates the Communication API send offer to interested buyers request payload.
- */
-export const sendOfferToInterestedBuyersInputSchema = z.object({
-  allowCounterOffer: z.boolean().optional().describe('Whether to allow counter offers'),
-  message: z.string().optional().describe('Message to send with the offer'),
-  offeredItems: z
-    .array(
-      z.object({
-        offerId: z.string().optional(),
-        availableQuantity: z.number().optional(),
-        price: amountSchema.optional(),
-      }),
-    )
-    .optional()
-    .describe('Items to include in the offer'),
-});
-
-/**
- * Validates the Communication API send offer to interested buyers response payload.
- */
-export const sendOfferToInterestedBuyersOutputSchema = z.object({
-  offerToInterestedBuyersId: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-// ============================================================================
 // JSON Schema Conversion Functions
 // ============================================================================
 
@@ -487,16 +457,6 @@ export const getCommunicationJsonSchemas = () => {
     getNotificationTopicsOutput: zodToJsonSchema(
       getNotificationTopicsOutputSchema,
       'getNotificationTopicsOutput',
-    ),
-
-    // Negotiation API
-    sendOfferToInterestedBuyersInput: zodToJsonSchema(
-      sendOfferToInterestedBuyersInputSchema,
-      'sendOfferToInterestedBuyersInput',
-    ),
-    sendOfferToInterestedBuyersOutput: zodToJsonSchema(
-      sendOfferToInterestedBuyersOutputSchema,
-      'sendOfferToInterestedBuyersOutput',
     ),
   };
 };

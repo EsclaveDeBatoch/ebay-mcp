@@ -59,6 +59,7 @@ export const getTrafficReportTool = defineTool({
   namespace: 'sell.analytics',
   description: "Retrieve traffic metrics for the seller's listings",
   argumentsSchema: trafficReportQuerySchema,
+  operationKind: 'read',
   operation: getTrafficReport,
   presentation: {
     archetype: 'chart',

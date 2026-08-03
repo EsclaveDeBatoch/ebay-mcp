@@ -6,6 +6,10 @@ import {
   getSellerStandardsProfileTool,
 } from '@/ebay/sell/analytics/sellerStandardsProfile.js';
 import { getTrafficReportTool } from '@/ebay/sell/analytics/trafficReport.js';
+import {
+  findEligibleItemsTool,
+  sendOfferToInterestedBuyersTool,
+} from '@/ebay/sell/negotiation/offer.js';
 import { findListingRecommendationsTool } from '@/ebay/sell/recommendation/listingRecommendation.js';
 import type { EbayTool } from '@/mcp/defineTool.js';
 
@@ -17,5 +21,7 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   findSellerStandardsProfilesTool,
   getSellerStandardsProfileTool,
   getCustomerServiceMetricTool,
+  findEligibleItemsTool,
+  sendOfferToInterestedBuyersTool,
   findListingRecommendationsTool,
 ];

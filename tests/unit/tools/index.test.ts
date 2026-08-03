@@ -193,10 +193,6 @@ describe('Tools Layer', () => {
         getItemAspectsForCategory: vi.fn(),
       },
       // Communication APIs
-      negotiation: {
-        sendOfferToInterestedBuyers: vi.fn(),
-        findEligibleItems: vi.fn(),
-      },
       message: {
         sendMessage: vi.fn(),
         getConversations: vi.fn(),

@@ -116,5 +116,6 @@ export const translateListingTextTool = defineTool({
   namespace: 'commerce.translation',
   description: 'Translate one eBay listing title or description between supported languages',
   argumentsSchema: translateListingTextArgumentsSchema,
+  operationKind: 'read',
   operation: translateListingText,
 });

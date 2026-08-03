@@ -126,6 +126,29 @@ describe('Scope Utils', () => {
       );
     });
 
+    it('returns the readonly inventory scope for eligible seller-offer listings', () => {
+      const requirement = getRequiredScopesForTool('ebay_sell_negotiation_find_eligible_items');
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      );
+    });
+
+    it('returns the inventory write scope for sending a seller offer', () => {
+      const requirement = getRequiredScopesForTool(
+        'ebay_sell_negotiation_send_offer_to_interested_buyers',
+      );
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ]);
+      expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope/sell.inventory');
+    });
+
     it('return scopes for create/write operations', () => {
       const requirement = getRequiredScopesForTool('ebay_create_or_replace_inventory_item');
 
