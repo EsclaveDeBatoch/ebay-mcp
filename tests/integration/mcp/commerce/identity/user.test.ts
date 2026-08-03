@@ -40,7 +40,7 @@ describe('Commerce Identity successful MCP calls', () => {
 
     expect(getCalls).toEqual([
       {
-        apiHost: 'identity',
+        apiHost: 'apiz',
         endpoint: '/commerce/identity/v1/user/',
       },
     ]);

@@ -67,6 +67,15 @@ describe('toolNamesInExposurePaths', () => {
     ]);
   });
 
+  it('returns the complete Developer Key Management namespace under its official path', () => {
+    const signingKeyToolNames = toolNamesInExposurePaths(['developer.key-management']);
+    expect([...signingKeyToolNames]).toEqual([
+      'ebay_developer_key_management_get_signing_keys',
+      'ebay_developer_key_management_create_signing_key',
+      'ebay_developer_key_management_get_signing_key',
+    ]);
+  });
+
   it('returns the complete migrated Commerce Translation namespace under its official path', () => {
     const names = toolNamesInExposurePaths(['commerce.translation']);
     expect([...names]).toEqual(['ebay_commerce_translation_translate']);

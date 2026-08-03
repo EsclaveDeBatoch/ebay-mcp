@@ -1,6 +1,6 @@
 import type { EbayApiClient } from '@/api/client.js';
 import { EbayClientRequestError } from '@/api/clientRequestError.js';
-import { getIdentityBaseUrl } from '@/config/environment.js';
+import { getApizBaseUrl } from '@/config/environment.js';
 import type { EbayFailure, EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
 import { getErrorMessage } from '@/utils/errors.js';
 
@@ -16,7 +16,7 @@ type EbayRequestHeaders = {
 
 /** One authenticated GET call issued by an eBay resource operation. */
 type EbayGetCall = {
-  readonly apiHost?: 'identity';
+  readonly apiHost?: 'apiz';
   readonly endpoint: string;
   readonly searchParameters?: EbaySearchParameters;
   readonly requestHeaders?: EbayRequestHeaders;
@@ -24,6 +24,7 @@ type EbayGetCall = {
 
 /** One authenticated POST call issued by an eBay resource operation. */
 type EbayPostCall = {
+  readonly apiHost?: 'apiz';
   readonly endpoint: string;
   readonly requestDocument?: unknown;
   readonly searchParameters?: EbaySearchParameters;
@@ -138,20 +139,17 @@ export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySelle
   delete: <EbayDocument>(ebayDeleteCall: EbayDeleteCall) =>
     completeEbayCall(
       ebayApiClient.delete<EbayDocument>(ebayDeleteCall.endpoint, {
-        params: ebayDeleteCall.searchParameters,
+        searchParameters: ebayDeleteCall.searchParameters,
         headers: ebayDeleteCall.requestHeaders,
       }),
     ),
   get: <EbayDocument>(ebayGetCall: EbayGetCall) => {
-    if (ebayGetCall.apiHost === 'identity') {
+    if (ebayGetCall.apiHost === 'apiz') {
       const ebaySettings = ebayApiClient.getConfig();
-      const identityApiBaseUrl = getIdentityBaseUrl(
-        ebaySettings.environment,
-        ebaySettings.apiBaseUrl,
-      );
+      const apizBaseUrl = getApizBaseUrl(ebaySettings.environment, ebaySettings.apiBaseUrl);
       return completeEbayCall(
-        ebayApiClient.getWithFullUrl<EbayDocument>(
-          `${identityApiBaseUrl}${ebayGetCall.endpoint}`,
+        ebayApiClient.getFromUrl<EbayDocument>(
+          `${apizBaseUrl}${ebayGetCall.endpoint}`,
           ebayGetCall.searchParameters,
         ),
       );
@@ -168,6 +166,25 @@ export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySelle
     );
   },
   post: <EbayDocument>(ebayPostCall: EbayPostCall) => {
+    if (ebayPostCall.apiHost === 'apiz') {
+      const ebaySettings = ebayApiClient.getConfig();
+      const apizBaseUrl = getApizBaseUrl(ebaySettings.environment, ebaySettings.apiBaseUrl);
+      const absoluteEndpoint = `${apizBaseUrl}${ebayPostCall.endpoint}`;
+      if (
+        ebayPostCall.searchParameters === undefined &&
+        ebayPostCall.requestHeaders === undefined
+      ) {
+        return completeEbayCall(
+          ebayApiClient.postToUrl<EbayDocument>(absoluteEndpoint, ebayPostCall.requestDocument),
+        );
+      }
+      return completeEbayCall(
+        ebayApiClient.postToUrl<EbayDocument>(absoluteEndpoint, ebayPostCall.requestDocument, {
+          searchParameters: ebayPostCall.searchParameters,
+          headers: ebayPostCall.requestHeaders,
+        }),
+      );
+    }
     if (
       ebayPostCall.requestDocument === undefined &&
       ebayPostCall.searchParameters === undefined &&
@@ -178,7 +195,7 @@ export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySelle
 
     return completeEbayCall(
       ebayApiClient.post<EbayDocument>(ebayPostCall.endpoint, ebayPostCall.requestDocument, {
-        params: ebayPostCall.searchParameters,
+        searchParameters: ebayPostCall.searchParameters,
         headers: ebayPostCall.requestHeaders,
       }),
     );
@@ -186,7 +203,7 @@ export const createEbaySellerSession = (ebayApiClient: EbayApiClient): EbaySelle
   put: <EbayDocument>(ebayPutCall: EbayPutCall) =>
     completeEbayCall(
       ebayApiClient.put<EbayDocument>(ebayPutCall.endpoint, ebayPutCall.requestDocument, {
-        params: ebayPutCall.searchParameters,
+        searchParameters: ebayPutCall.searchParameters,
         headers: ebayPutCall.requestHeaders,
       }),
     ),

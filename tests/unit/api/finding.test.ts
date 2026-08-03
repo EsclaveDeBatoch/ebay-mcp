@@ -151,7 +151,8 @@ describe('FindingApi', () => {
 
   beforeEach(() => {
     mockClient = {
-      getWithFullUrl: vi.fn(),
+      getFromUrl: vi.fn(),
+      postToUrl: vi.fn(),
       getConfig: vi.fn(() => ({
         clientId: 'test-client-id',
         environment: 'sandbox' as const,
@@ -177,13 +178,13 @@ describe('FindingApi', () => {
         },
       ],
     };
-    vi.mocked(mockClient.getWithFullUrl).mockResolvedValue(raw);
+    vi.mocked(mockClient.getFromUrl).mockResolvedValue(raw);
 
     const result = await Effect.runPromise(
       api.findCompletedItems({ keywords: 'camera', maxResults: 5 }),
     );
 
-    expect(mockClient.getWithFullUrl).toHaveBeenCalledWith(
+    expect(mockClient.getFromUrl).toHaveBeenCalledWith(
       'https://svcs.sandbox.ebay.com/services/search/FindingService/v1',
       expect.objectContaining({
         'OPERATION-NAME': 'findCompletedItems',
@@ -198,11 +199,11 @@ describe('FindingApi', () => {
   });
 
   it('defaults maxResults to 20', async () => {
-    vi.mocked(mockClient.getWithFullUrl).mockResolvedValue({});
+    vi.mocked(mockClient.getFromUrl).mockResolvedValue({});
 
     await Effect.runPromise(api.findCompletedItems({ keywords: 'lens' }));
 
-    expect(mockClient.getWithFullUrl).toHaveBeenCalledWith(
+    expect(mockClient.getFromUrl).toHaveBeenCalledWith(
       expect.any(String),
       expect.objectContaining({
         'paginationInput.entriesPerPage': 20,

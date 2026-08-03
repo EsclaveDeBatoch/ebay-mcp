@@ -37,6 +37,7 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'commerce.taxonomy',
   'commerce.translation',
   'developer.analytics',
+  'developer.key-management',
   'sell.analytics',
   'sell.negotiation',
   'sell.recommendation',

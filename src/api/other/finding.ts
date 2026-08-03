@@ -385,7 +385,7 @@ export class FindingApi {
       });
 
       const raw = yield* Effect.tryPromise({
-        try: () => client.getWithFullUrl<unknown>(baseUrl, params),
+        try: () => client.getFromUrl<unknown>(baseUrl, params),
         catch: (cause) =>
           new EbayApiError({
             method: 'GET',

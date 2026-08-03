@@ -40,6 +40,11 @@ import {
 } from '@/ebay/commerce/taxonomy/categoryTree.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
 import { getRateLimitsTool, getUserRateLimitsTool } from '@/ebay/developer/analytics/rateLimit.js';
+import {
+  createSigningKeyTool,
+  getSigningKeysTool,
+  getSigningKeyTool,
+} from '@/ebay/developer/keyManagement/signingKey.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
   findSellerStandardsProfilesTool,
@@ -94,6 +99,9 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   translateListingTextTool,
   getRateLimitsTool,
   getUserRateLimitsTool,
+  getSigningKeysTool,
+  createSigningKeyTool,
+  getSigningKeyTool,
   getTrafficReportTool,
   findSellerStandardsProfilesTool,
   getSellerStandardsProfileTool,

@@ -47,11 +47,6 @@ const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
     spec: 'specs/ebay/sell-apps/account-management/sell_account_v1_oas3.json',
   },
   {
-    file: 'src/api/developer/developer.ts',
-    constant: 'keyBasePath',
-    spec: 'specs/ebay/application-settings/developer_key_management_v1_oas3.json',
-  },
-  {
     file: 'src/api/listing-management/shared.ts',
     constant: 'INVENTORY_BASE_PATH',
     spec: 'specs/ebay/sell-apps/listing-management/sell_inventory_v1_oas3.json',

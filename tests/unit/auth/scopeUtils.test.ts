@@ -117,6 +117,17 @@ describe('Scope Utils', () => {
       );
     });
 
+    it.each([
+      'ebay_developer_key_management_get_signing_keys',
+      'ebay_developer_key_management_create_signing_key',
+      'ebay_developer_key_management_get_signing_key',
+    ])('returns the public-data scope for hierarchical %s', (signingKeyToolName) => {
+      const requirement = getRequiredScopesForTool(signingKeyToolName);
+
+      expect(requirement?.requiredScopes).toEqual(['https://api.ebay.com/oauth/api_scope']);
+      expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope');
+    });
+
     it('returns the inventory scope for listing recommendations', () => {
       const requirement = getRequiredScopesForTool(
         'ebay_sell_recommendation_find_listing_recommendations',

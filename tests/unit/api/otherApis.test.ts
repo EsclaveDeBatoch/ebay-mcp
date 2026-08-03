@@ -16,7 +16,8 @@ describe('Other APIs', () => {
       put: vi.fn(),
       delete: vi.fn(),
       getConfig: vi.fn(() => ({ environment: 'sandbox' })),
-      getWithFullUrl: vi.fn(),
+      getFromUrl: vi.fn(),
+      postToUrl: vi.fn(),
     } as unknown as EbayApiClient;
   });
 

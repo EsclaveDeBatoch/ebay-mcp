@@ -99,12 +99,13 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `commerce.taxonomy` | Category trees, category suggestions, and required listing aspects | "Find required item aspects for this category." |
 | `commerce.translation` | Listing-title and description translation between supported languages | "Translate this listing title from English to Spanish." |
 | `developer.analytics` | Application and user API quota utilization | "Check my eBay API rate limits." |
+| `developer.key-management` | Application signing-key creation and public-key retrieval | "Create an ED25519 signing keypair." |
 | `sell.analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
 | `sell.negotiation` | Listings eligible for seller offers and seller-initiated discounted offers | "Find listings with interested buyers." |
 | `sell.recommendation` | Promoted Listings recommendations for active listings | "Which active listings should I promote?" |
 | `metadata` | Item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Show the listing policies for this marketplace." |
 | `other` | VeRO and international shipping support APIs (Compliance tools remain but report eBay's 2026-03-30 decommission) | "Show the available VeRO reason codes." |
-| `developer` / `token-management` | API status, signing keys, OAuth URLs, token refresh, and diagnostics | "Check whether eBay APIs and my token are healthy." |
+| `developer` / `token-management` | API status, OAuth URLs, token refresh, and diagnostics | "Check whether eBay APIs and my token are healthy." |
 | `trading` | Legacy XML fixed-price listing create, revise, relist, and end operations | "Create a fixed-price listing draft from this SKU." |
 | `connector` | ChatGPT connector search/fetch tools over the eBay MCP catalogue | "Search the eBay tool catalogue for order tools." |
 
@@ -264,7 +265,7 @@ By default all tools are advertised to the agent at once. On a long conversation
 | `dynamic`                   | Only three discovery tools are visible (`list_ebay_tools`, `enable_ebay_tools`, `disable_ebay_tools`). The agent searches the catalogue and loads only the tools it needs; they then appear natively. | hosts that honor `tools/listChanged` (e.g. Claude) |
 | `sell.analytics,inventory,…` | Registers **only** the named exposure paths (listed below), frozen for the session.                                                                    | every host (incl. ChatGPT, Cursor)      |
 
-The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `developer.analytics`, `sell.analytics`, `sell.negotiation`, and `sell.recommendation`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `metadata`, `browse`, `other`, `developer`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `developer.analytics`, `sell.analytics`, `sell.negotiation`, `sell.recommendation`.
+The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `developer.analytics`, `developer.key-management`, `sell.analytics`, `sell.negotiation`, and `sell.recommendation`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `metadata`, `browse`, `other`, `developer`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `developer.analytics`, `developer.key-management`, `sell.analytics`, `sell.negotiation`, `sell.recommendation`.
 
 ### Authentication & rate limits
 
@@ -314,16 +315,17 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | [Commerce Taxonomy](src/ebay/commerce/taxonomy/categoryTree.ts) | Category trees, suggestions, and required listing aspects under `commerce.taxonomy` |
 | [Commerce Translation](src/ebay/commerce/translation/language.ts) | Listing-title and description translation under `commerce.translation` |
 | [Developer Analytics](src/ebay/developer/analytics/rateLimit.ts) | Application and user API quota utilization under `developer.analytics` |
+| [Developer Key Management](src/ebay/developer/keyManagement/signingKey.ts) | Application signing keys under `developer.key-management` |
 | [Sell Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic reports, seller standards, and customer-service metrics under `sell.analytics` |
 | [Sell Negotiation](src/ebay/sell/negotiation/offer.ts) | Eligible listings and seller-initiated discounted offers under `sell.negotiation` |
 | [Sell Recommendation](src/ebay/sell/recommendation/listingRecommendation.ts) | Promoted Listings recommendations under `sell.recommendation` |
 | [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
 | [Other](src/tools/categories/other.ts) | VeRO and international shipping support APIs (Compliance tools report eBay decommission) |
 | [Trading (legacy XML)](src/tools/categories/trading.ts) | Fixed-price listing create, revise, relist, end |
-| [Developer](src/tools/categories/developer.ts) | API status and signing keys |
+| [Developer](src/tools/categories/developer.ts) | Public eBay API status feed |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |
 
-**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_developer_analytics_get_rate_limits`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 For the complete machine-readable index, see [llms.txt](llms.txt).
 

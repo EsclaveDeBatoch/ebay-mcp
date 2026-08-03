@@ -1,6 +1,5 @@
 import { AccountApi } from '@/api/account-management/account.js';
 import { EbayApiClient } from '@/api/client.js';
-import { DeveloperApi } from '@/api/developer/developer.js';
 import { InventoryApi } from '@/api/listing-management/inventory.js';
 import { MetadataApi } from '@/api/listing-metadata/metadata.js';
 import { MarketingApi } from '@/api/marketing-and-promotions/marketing.js';
@@ -34,7 +33,6 @@ export class EbaySellerApi {
   public vero: VeroApi;
   public edelivery: EDeliveryApi;
   public finding: FindingApi;
-  public developer: DeveloperApi;
   public trading: TradingApi;
 
   constructor(config: EbayConfig) {
@@ -52,7 +50,6 @@ export class EbaySellerApi {
     this.vero = new VeroApi(this.client);
     this.edelivery = new EDeliveryApi(this.client);
     this.finding = new FindingApi(this.client);
-    this.developer = new DeveloperApi(this.client);
     const tradingClient = new TradingApiClient(this.client);
     this.trading = new TradingApi(tradingClient);
   }
@@ -127,6 +124,5 @@ export * from '@/api/other/compliance.js';
 export * from '@/api/other/edelivery.js';
 export * from '@/api/other/finding.js';
 export * from '@/api/other/vero.js';
-export * from '@/api/developer/developer.js';
 export * from '@/api/trading/trading.js';
 export * from '@/api/clientTrading.js';

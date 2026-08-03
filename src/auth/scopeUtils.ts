@@ -231,6 +231,21 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
       description: 'Requires one supported user scope to retrieve user rate limits',
     },
+    ebay_developer_key_management_get_signing_keys: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve application signing keys',
+    },
+    ebay_developer_key_management_create_signing_key: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to create an application signing key',
+    },
+    ebay_developer_key_management_get_signing_key: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve an application signing key',
+    },
     ebay_sell_recommendation_find_listing_recommendations: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',

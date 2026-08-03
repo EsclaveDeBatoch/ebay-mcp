@@ -1,19 +1,10 @@
-import { zodToJsonSchema } from 'zod-to-json-schema';
 import { Effect } from 'effect';
 import { defineTool } from '@/tools/defineTool.js';
-import {
-  createSigningKeyInputSchema,
-  getApiStatusInputSchema,
-  getSigningKeyInputSchema,
-  getSigningKeysInputSchema,
-  querySigningKeysResponseSchema,
-  signingKeySchema,
-} from '@/schemas/developer/developer.js';
-import type { OutputArgs } from '@/tools/types.js';
+import { getApiStatusInputSchema } from '@/schemas/developer/apiStatus.js';
 import { getApiStatusFeed } from '@/utils/apiStatusFeed.js';
 import type { ToolEntry } from '@/tools/registry.js';
 
-/** eBay API status and Developer Key Management tools. */
+/** Public eBay API status feed tool. */
 export const developerEntries: ToolEntry[] = [
   defineTool({
     name: 'ebay_get_api_status',
@@ -48,38 +39,5 @@ export const developerEntries: ToolEntry[] = [
           Effect.map((feed) => ({ items: feed.items, ...(feed.error && { error: feed.error }) })),
         ),
       ),
-  }),
-  defineTool({
-    name: 'ebay_get_signing_keys',
-    description:
-      'Get all signing keys for the application. Returns public keys and metadata (private keys are not stored by eBay).',
-    inputSchema: getSigningKeysInputSchema.shape,
-    outputSchema: zodToJsonSchema(querySigningKeysResponseSchema, {
-      name: 'GetSigningKeysOutput',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.developer.getSigningKeys(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_signing_key',
-    description:
-      'Create a new signing keypair for API digital signatures. Supports ED25519 (recommended) or RSA ciphers. IMPORTANT: Save the private key immediately as eBay does not store it.',
-    inputSchema: createSigningKeyInputSchema.shape,
-    outputSchema: zodToJsonSchema(signingKeySchema, {
-      name: 'CreateSigningKeyOutput',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.developer.createSigningKey(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_signing_key',
-    description:
-      'Get a specific signing key by ID. Returns public key and metadata (private key is not stored by eBay).',
-    inputSchema: getSigningKeyInputSchema.shape,
-    outputSchema: zodToJsonSchema(signingKeySchema, {
-      name: 'GetSigningKeyOutput',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.developer.getSigningKey(args)),
   }),
 ];

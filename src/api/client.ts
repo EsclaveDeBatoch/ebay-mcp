@@ -19,7 +19,7 @@ export interface EbayRequestConfig {
   /** Headers merged over the client defaults before auth is applied. */
   headers?: Record<string, string>;
   /** Query parameters appended to the request URL. */
-  params?: Record<string, unknown>;
+  searchParameters?: Record<string, unknown>;
   /** Successful response decoder for non-JSON endpoints such as binary evidence files. */
   responseType?: ResponseType;
 }
@@ -27,9 +27,9 @@ export interface EbayRequestConfig {
 /** Normalized request options used by the client transport Effect. */
 interface EbayRequestOptions {
   /** Query-string parameters appended to the request URL. */
-  readonly params?: Record<string, unknown>;
+  readonly searchParameters?: Record<string, unknown>;
   /** JSON/XML/form body passed to the HTTP adapter. */
-  readonly data?: unknown;
+  readonly requestDocument?: unknown;
   /** Headers merged over the client defaults before auth is applied. */
   readonly headers?: Record<string, string>;
   /** Successful response decoder for non-JSON endpoints. */
@@ -250,14 +250,14 @@ export class EbayApiClient {
       }
 
       this.rateLimitTracker.recordRequest();
-      logRequest(method, url, options.params, options.data);
+      logRequest(method, url, options.searchParameters, options.requestDocument);
 
       return yield* httpRequestEffect<T>({
         method,
         url,
-        params: options.params,
+        params: options.searchParameters,
         headers,
-        body: options.data,
+        body: options.requestDocument,
         timeoutMs: this.timeoutMs,
         responseType: options.responseType,
       }).pipe(
@@ -424,13 +424,16 @@ export class EbayApiClient {
    */
   async get<T = unknown>(
     endpoint: string,
-    params?: Record<string, unknown>,
-    config?: EbayRequestConfig,
+    searchParameters?: Record<string, unknown>,
+    requestSettings?: EbayRequestConfig,
   ): Promise<T> {
     return await this.request<T>('GET', endpoint, {
-      params: { ...params, ...config?.params },
-      headers: config?.headers,
-      responseType: config?.responseType,
+      searchParameters: {
+        ...searchParameters,
+        ...requestSettings?.searchParameters,
+      },
+      headers: requestSettings?.headers,
+      responseType: requestSettings?.responseType,
     });
   }
 
@@ -439,37 +442,41 @@ export class EbayApiClient {
    */
   async post<T = unknown>(
     endpoint: string,
-    data?: unknown,
-    config?: EbayRequestConfig,
+    requestDocument?: unknown,
+    requestSettings?: EbayRequestConfig,
   ): Promise<T> {
     return await this.request<T>('POST', endpoint, {
-      data,
-      params: config?.params,
-      headers: config?.headers,
-      responseType: config?.responseType,
+      requestDocument,
+      searchParameters: requestSettings?.searchParameters,
+      headers: requestSettings?.headers,
+      responseType: requestSettings?.responseType,
     });
   }
 
   /**
    * Make a PUT request to eBay API
    */
-  async put<T = unknown>(endpoint: string, data?: unknown, config?: EbayRequestConfig): Promise<T> {
+  async put<T = unknown>(
+    endpoint: string,
+    requestDocument?: unknown,
+    requestSettings?: EbayRequestConfig,
+  ): Promise<T> {
     return await this.request<T>('PUT', endpoint, {
-      data,
-      params: config?.params,
-      headers: config?.headers,
-      responseType: config?.responseType,
+      requestDocument,
+      searchParameters: requestSettings?.searchParameters,
+      headers: requestSettings?.headers,
+      responseType: requestSettings?.responseType,
     });
   }
 
   /**
    * Make a DELETE request to eBay API
    */
-  async delete<T = unknown>(endpoint: string, config?: EbayRequestConfig): Promise<T> {
+  async delete<T = unknown>(endpoint: string, requestSettings?: EbayRequestConfig): Promise<T> {
     return await this.request<T>('DELETE', endpoint, {
-      params: config?.params,
-      headers: config?.headers,
-      responseType: config?.responseType,
+      searchParameters: requestSettings?.searchParameters,
+      headers: requestSettings?.headers,
+      responseType: requestSettings?.responseType,
     });
   }
 
@@ -539,10 +546,28 @@ export class EbayApiClient {
   refreshUserToken = (): Effect.Effect<void, EbayOAuthError> => this.authClient.refreshUserToken();
 
   /**
-   * Make a GET request with a full URL (for APIs that use different base URLs)
-   * Used by Identity API which uses the apiz subdomain
+   * Makes an authenticated GET request to an absolute eBay API URL.
    */
-  async getWithFullUrl<T = unknown>(fullUrl: string, params?: Record<string, unknown>): Promise<T> {
-    return await this.request<T>('GET', fullUrl, { params, absolute: true });
-  }
+  getFromUrl = async <EbayDocument = unknown>(
+    absoluteUrl: string,
+    searchParameters?: Record<string, unknown>,
+  ): Promise<EbayDocument> =>
+    await this.request<EbayDocument>('GET', absoluteUrl, {
+      searchParameters,
+      absolute: true,
+    });
+
+  /** Makes an authenticated POST request to an absolute eBay API URL. */
+  postToUrl = async <EbayDocument = unknown>(
+    absoluteUrl: string,
+    requestDocument?: unknown,
+    requestSettings?: EbayRequestConfig,
+  ): Promise<EbayDocument> =>
+    await this.request<EbayDocument>('POST', absoluteUrl, {
+      requestDocument,
+      searchParameters: requestSettings?.searchParameters,
+      headers: requestSettings?.headers,
+      responseType: requestSettings?.responseType,
+      absolute: true,
+    });
 }

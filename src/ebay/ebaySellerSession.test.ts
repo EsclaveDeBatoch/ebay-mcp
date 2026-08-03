@@ -88,7 +88,7 @@ describe('authenticated eBay seller session standard-host calls', () => {
       '/sell/recommendation/v1/find',
       { listingIds: ['110000000000'] },
       {
-        params: { limit: '25' },
+        searchParameters: { limit: '25' },
         headers: { 'X-EBAY-C-MARKETPLACE-ID': 'EBAY_US' },
       },
     );
@@ -126,7 +126,7 @@ describe('authenticated eBay seller session standard-host calls', () => {
       '/commerce/notification/v1/config',
       { alertEmail: 'alerts@example.com' },
       {
-        params: { revision: '2' },
+        searchParameters: { revision: '2' },
         headers: { 'Content-Language': 'en-US' },
       },
     );
@@ -147,7 +147,7 @@ describe('authenticated eBay seller session standard-host calls', () => {
     expect(deleteCall).toHaveBeenCalledWith(
       '/commerce/notification/v1/destination/destination-123',
       {
-        params: { revision: '2' },
+        searchParameters: { revision: '2' },
         headers: { 'Content-Language': 'en-US' },
       },
     );
@@ -155,23 +155,40 @@ describe('authenticated eBay seller session standard-host calls', () => {
 });
 
 describe('authenticated eBay seller session alternate-host calls', () => {
-  it('uses the configured Identity API host for an identity GET', async () => {
+  it('uses the configured apiz host for an alternate-host GET', async () => {
     const authenticatedClient = ebayApiClient();
     const ebayDocument = { userId: '007BUS2xyeBay' };
-    const identityCall = vi
-      .spyOn(authenticatedClient, 'getWithFullUrl')
-      .mockResolvedValue(ebayDocument);
+    const apizGetCall = vi.spyOn(authenticatedClient, 'getFromUrl').mockResolvedValue(ebayDocument);
     const sellerSession = createEbaySellerSession(authenticatedClient);
 
     await expect(
       sellerSession.get({
-        apiHost: 'identity',
+        apiHost: 'apiz',
         endpoint: '/commerce/identity/v1/user/',
       }),
     ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument });
-    expect(identityCall).toHaveBeenCalledWith(
+    expect(apizGetCall).toHaveBeenCalledWith(
       'https://apiz.sandbox.ebay.com/commerce/identity/v1/user/',
       undefined,
+    );
+  });
+
+  it('uses the configured apiz host for an alternate-host POST', async () => {
+    const authenticatedClient = ebayApiClient();
+    const ebayDocument = { signingKeyId: 'signing-key-123' };
+    const apizPostCall = vi.spyOn(authenticatedClient, 'postToUrl').mockResolvedValue(ebayDocument);
+    const sellerSession = createEbaySellerSession(authenticatedClient);
+
+    await expect(
+      sellerSession.post({
+        apiHost: 'apiz',
+        endpoint: '/developer/key_management/v1/signing_key',
+        requestDocument: { signingKeyCipher: 'ED25519' },
+      }),
+    ).resolves.toEqual({ kind: 'ebayRequestSucceeded', ebayDocument });
+    expect(apizPostCall).toHaveBeenCalledWith(
+      'https://apiz.sandbox.ebay.com/developer/key_management/v1/signing_key',
+      { signingKeyCipher: 'ED25519' },
     );
   });
 });

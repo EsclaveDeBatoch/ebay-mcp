@@ -25,7 +25,7 @@ describe('Commerce Identity user operation', () => {
 
     expect(getCalls).toEqual([
       {
-        apiHost: 'identity',
+        apiHost: 'apiz',
         endpoint: '/commerce/identity/v1/user/',
       },
     ]);

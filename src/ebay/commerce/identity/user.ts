@@ -32,7 +32,7 @@ export const getUser = async (
   sellerSession: EbaySellerSession,
 ): Promise<EbayRequestCompletion<EbayUser>> =>
   sellerSession.get<EbayUser>({
-    apiHost: 'identity',
+    apiHost: 'apiz',
     endpoint: '/commerce/identity/v1/user/',
   });
 

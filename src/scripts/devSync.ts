@@ -351,6 +351,11 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getratelimits: ['ebay_developer_analytics_get_rate_limits'],
   getuserratelimits: ['ebay_developer_analytics_get_user_rate_limits'],
 
+  // Developer Key Management API
+  getsigningkeys: ['ebay_developer_key_management_get_signing_keys'],
+  createsigningkey: ['ebay_developer_key_management_create_signing_key'],
+  getsigningkey: ['ebay_developer_key_management_get_signing_key'],
+
   // Taxonomy API
   getdefaultcategorytreeid: ['ebay_commerce_taxonomy_get_default_category_tree_id'],
   getcategorytree: ['ebay_commerce_taxonomy_get_category_tree'],
