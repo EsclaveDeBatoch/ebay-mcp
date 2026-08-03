@@ -81,8 +81,8 @@ describe('isReadOnlyTool', () => {
     'ebay_end_listing',
     'ebay_relist_item',
     'ebay_revise_listing',
-    'ebay_cancel_package',
-    'ebay_confirm_package',
+    'ebay_sell_edelivery_cancel_package',
+    'ebay_sell_edelivery_confirm_package',
     'ebay_upload_payment_dispute_evidence_file',
   ])('classifies write-oriented name %s as not read-only', (name) => {
     expect(isReadOnlyTool(def(name))).toBe(false);

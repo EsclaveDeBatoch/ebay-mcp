@@ -250,7 +250,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | [Metadata](src/tools/categories/metadata.ts) | Политики возврата, юрисдикции налога с продаж, автомобильная совместимость |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Деревья категорий, характеристики товаров, состояния товаров |
 | [Commerce VeRO](src/ebay/commerce/vero/) | Жалобы о нарушении интеллектуальной собственности и коды причин VeRO |
-| [Other](src/tools/categories/other.ts) | Международная доставка через API eDelivery |
+| [Sell eDelivery](src/ebay/sell/edelivery/) | Международная доставка через API eDelivery |
 | [Trading (устаревший XML)](src/tools/categories/trading.ts) | Создание, изменение, повторное размещение и завершение объявлений с фиксированной ценой |
 | [Developer](src/ebay/developer) | Лимиты запросов, ключи подписи и статус API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Генерация URL OAuth и управление токенами |

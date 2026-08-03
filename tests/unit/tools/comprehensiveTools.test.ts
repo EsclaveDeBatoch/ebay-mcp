@@ -140,35 +140,6 @@ describe('Comprehensive Tools Coverage', () => {
         getProductCompatibilities: vi.fn(),
         getSalesTaxJurisdictions: vi.fn(),
       },
-      edelivery: {
-        getActualCosts: vi.fn(),
-        getAddressPreferences: vi.fn(),
-        createAddressPreference: vi.fn(),
-        getConsignPreferences: vi.fn(),
-        createConsignPreference: vi.fn(),
-        getAgents: vi.fn(),
-        getBatteryQualifications: vi.fn(),
-        getDropoffSites: vi.fn(),
-        getServices: vi.fn(),
-        createBundle: vi.fn(),
-        getBundle: vi.fn(),
-        cancelBundle: vi.fn(),
-        getBundleLabel: vi.fn(),
-        createPackage: vi.fn(),
-        getPackage: vi.fn(),
-        deletePackage: vi.fn(),
-        getPackagesByLineItemId: vi.fn(),
-        cancelPackage: vi.fn(),
-        clonePackage: vi.fn(),
-        confirmPackage: vi.fn(),
-        bulkCancelPackages: vi.fn(),
-        bulkConfirmPackages: vi.fn(),
-        bulkDeletePackages: vi.fn(),
-        getLabels: vi.fn(),
-        getHandoverSheet: vi.fn(),
-        getTracking: vi.fn(),
-        createComplaint: vi.fn(),
-      },
       setUserTokens: vi.fn(),
       getTokenInfo: vi.fn().mockReturnValue({
         hasUserToken: false,
@@ -1323,23 +1294,6 @@ describe('Comprehensive Tools Coverage', () => {
       expect(mockApi.metadata.getSalesTaxJurisdictions).toHaveBeenCalledWith({
         countryCode: 'US',
       });
-    });
-  });
-
-  describe('Other API Tools', () => {
-    it('ebay_get_services', async () => {
-      const mockResponse = { serviceList: { services: [] } };
-      vi.mocked(mockApi.edelivery.getServices).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_services', { limit: 10 });
-      expect(mockApi.edelivery.getServices).toHaveBeenCalledWith({ limit: 10 });
-    });
-
-    it('ebay_create_package', async () => {
-      const mockResponse = { createPackageResult: { packageId: 'PKG123' } };
-      const args = { body: { packageInfo: { packageWeight: 1000 } } };
-      vi.mocked(mockApi.edelivery.createPackage).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_create_package', args);
-      expect(mockApi.edelivery.createPackage).toHaveBeenCalledWith(args);
     });
   });
 });

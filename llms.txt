@@ -34,7 +34,7 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 - [Sell Negotiation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/negotiation): Listings eligible for seller offers and seller-initiated discounted offers
 - [Sell Recommendation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/recommendation): Promoted Listings recommendations for active listings
 - [Metadata](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/metadata.ts): Return policies, sales-tax jurisdictions, automotive compatibility
-- [Other](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/other.ts): International shipping through the eDelivery API
+- [Sell eDelivery](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/edelivery): International shipment creation, management, labels, and tracking under `sell.edelivery` for Greater-China sellers with active eDIS
 - [Trading](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/trading.ts): Legacy XML API — fixed-price listing management (create, revise, relist, end)
 - [Token Management](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/tokenManagement.ts): OAuth token retrieval, refresh, and diagnostics
 - [Connector](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/connector.ts): ChatGPT connector search/fetch tools over the eBay MCP catalogue

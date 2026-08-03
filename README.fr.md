@@ -250,7 +250,7 @@ Configurés automatiquement par `npm run setup`. Nécessite Node.js ≥ 22.12 et
 | [Metadata](src/tools/categories/metadata.ts) | Politiques de retour, juridictions de taxe de vente, compatibilité automobile |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Arbres de catégories, aspects d'articles, états d'articles |
 | [Commerce VeRO](src/ebay/commerce/vero/) | Signalements d’atteinte à la propriété intellectuelle et codes de motif VeRO |
-| [Other](src/tools/categories/other.ts) | Expédition internationale via l’API eDelivery |
+| [Sell eDelivery](src/ebay/sell/edelivery/) | Expédition internationale via l’API eDelivery |
 | [Trading (XML hérité)](src/tools/categories/trading.ts) | Créer, réviser, remettre en vente et clôturer des annonces à prix fixe |
 | [Developer](src/ebay/developer) | Limites de débit, clés de signature et statut des API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Génération d'URL OAuth et gestion des jetons |

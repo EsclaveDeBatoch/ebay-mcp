@@ -250,7 +250,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | [Metadata](src/tools/categories/metadata.ts) | 반품 정책, 판매세 관할, 자동차 호환성 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 카테고리 트리, 항목 속성, 항목 상태 |
 | [Commerce VeRO](src/ebay/commerce/vero/) | 지식 재산권 침해 신고 및 VeRO 사유 코드 |
-| [Other](src/tools/categories/other.ts) | eDelivery API를 통한 국제 배송 |
+| [Sell eDelivery](src/ebay/sell/edelivery/) | eDelivery API를 통한 국제 배송 |
 | [Trading(레거시 XML)](src/tools/categories/trading.ts) | 고정 가격 리스팅 생성, 수정, 재등록, 종료 |
 | [Developer](src/ebay/developer) | 속도 제한, 서명 키, API 상태 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 생성 및 토큰 관리 |

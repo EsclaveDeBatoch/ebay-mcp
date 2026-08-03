@@ -250,7 +250,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Metadata](src/tools/categories/metadata.ts) | 返品ポリシー、販売税の管轄、自動車適合性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | カテゴリツリー、アイテムの特性、アイテムのコンディション |
 | [Commerce VeRO](src/ebay/commerce/vero/) | 知的財産権侵害の報告と VeRO 理由コード |
-| [Other](src/tools/categories/other.ts) | eDelivery API による国際配送 |
+| [Sell eDelivery](src/ebay/sell/edelivery/) | eDelivery API による国際配送 |
 | [Trading（レガシー XML）](src/tools/categories/trading.ts) | 固定価格出品の作成・修正・再出品・終了 |
 | [Developer](src/ebay/developer) | レート制限、署名キー、API ステータス |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL の生成とトークン管理 |

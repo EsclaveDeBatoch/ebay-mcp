@@ -12,8 +12,6 @@ import { describe, expect, it } from 'vitest';
  * two together, so three literals had drifted onto paths that belong to a different
  * API — or to no API at all:
  *
- * - eDelivery pointed at `/sell/logistics/v1`, a real but unrelated eBay API, so all
- *   27 eDelivery tools could only 404.
  * - Translation dropped the `_beta` suffix the still-beta API requires.
  * - Client Registration used the SDK's folder name (`client_registration`) rather
  *   than eBay's route (`registration`).
@@ -70,11 +68,6 @@ const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
     file: 'src/api/order-management/dispute.ts',
     constant: 'basePath',
     spec: 'specs/ebay/sell-apps/order-management/sell_fulfillment_v1_oas3.json',
-  },
-  {
-    file: 'src/api/other/edelivery.ts',
-    constant: 'basePath',
-    spec: 'specs/ebay/sell-apps/other-apis/sell_edelivery_international_shipping_oas3.json',
   },
 ];
 

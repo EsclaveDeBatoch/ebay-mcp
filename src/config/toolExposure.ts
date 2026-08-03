@@ -26,7 +26,6 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'fulfillment',
   'marketing',
   'metadata',
-  'other',
   'trading',
   'commerce.feedback',
   'commerce.identity',
@@ -39,6 +38,7 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'developer.key-management',
   'developer.status',
   'sell.analytics',
+  'sell.edelivery',
   'sell.negotiation',
   'sell.recommendation',
 ] as const;

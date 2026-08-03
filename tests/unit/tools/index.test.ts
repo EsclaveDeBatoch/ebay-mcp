@@ -185,36 +185,6 @@ describe('Tools Layer', () => {
         getProductCompatibilities: vi.fn(),
         getSalesTaxJurisdictions: vi.fn(),
       },
-      // Other APIs
-      edelivery: {
-        getActualCosts: vi.fn(),
-        getAddressPreferences: vi.fn(),
-        createAddressPreference: vi.fn(),
-        getConsignPreferences: vi.fn(),
-        createConsignPreference: vi.fn(),
-        getAgents: vi.fn(),
-        getBatteryQualifications: vi.fn(),
-        getDropoffSites: vi.fn(),
-        getServices: vi.fn(),
-        createBundle: vi.fn(),
-        getBundle: vi.fn(),
-        cancelBundle: vi.fn(),
-        getBundleLabel: vi.fn(),
-        createPackage: vi.fn(),
-        getPackage: vi.fn(),
-        deletePackage: vi.fn(),
-        getPackagesByLineItemId: vi.fn(),
-        cancelPackage: vi.fn(),
-        clonePackage: vi.fn(),
-        confirmPackage: vi.fn(),
-        bulkCancelPackages: vi.fn(),
-        bulkConfirmPackages: vi.fn(),
-        bulkDeletePackages: vi.fn(),
-        getLabels: vi.fn(),
-        getHandoverSheet: vi.fn(),
-        getTracking: vi.fn(),
-        createComplaint: vi.fn(),
-      },
       // Token management methods
       setUserTokens: vi.fn().mockReturnValue(Effect.succeed(undefined)),
       getTokenInfo: vi.fn().mockReturnValue({
@@ -263,7 +233,6 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_orders'); // fulfillmentTools
       expect(toolNames).toContain('ebay_get_campaigns');
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
-      expect(toolNames).toContain('ebay_get_services'); // otherApiTools
     });
   });
 

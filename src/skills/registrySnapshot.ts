@@ -32,11 +32,12 @@ const FAMILY_BLURBS: Record<string, string> = {
   'developer.status': 'Current incidents from the public eBay developer status feed',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
+  'sell.edelivery':
+    'International package creation, consolidation, shipping documents, and tracking for Greater-China sellers',
   'sell.negotiation': 'Listings eligible for seller offers and seller-initiated discounted offers',
   'sell.recommendation':
     'Promoted Listings recommendations for active listings from Sell Recommendation',
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
-  other: 'International shipping through the eDelivery API',
   trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',
 };
 
@@ -52,6 +53,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'developer.key-management', title: 'Developer Key Management' },
   { namespace: 'developer.status', title: 'Developer Status' },
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
+  { namespace: 'sell.edelivery', title: 'Sell eDelivery' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },
 ] as const;

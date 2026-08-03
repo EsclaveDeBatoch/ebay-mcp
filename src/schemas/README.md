@@ -16,8 +16,6 @@ src/schemas/
 │   └── marketing.ts
 ├── metadata/             # Marketplace policies, compatibility
 │   └── metadata.ts
-├── other/                # Identity, compliance, VERO, translation, eDelivery
-│   └── otherApis.ts
 └── README.md             # This file
 ```
 
@@ -200,20 +198,6 @@ Schemas for marketplace policies and product compatibility.
 - `getCompatibilityPropertyNamesOutputSchema`
 - `getProductCompatibilitiesOutputSchema`
 - `getSalesTaxJurisdictionsOutputSchema`
-
-### 6. Other APIs (`other/otherApis.ts`)
-
-Legacy schemas for international shipping.
-
-**Endpoints Covered:**
-
-- Sell eDelivery International Shipping API (actual costs, services, bundles, packages, labels, tracking)
-
-**Key Schemas:**
-
-- `getActualCostsInputSchema` / `getActualCostsOutputSchema`
-- `createPackageInputSchema` / `createPackageOutputSchema`
-- `getTrackingInputSchema` / `getTrackingOutputSchema`
 
 ## 🔧 Schema Naming Convention
 

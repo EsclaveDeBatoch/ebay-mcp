@@ -59,6 +59,39 @@ describe('toolNamesInExposurePaths', () => {
     ]);
   });
 
+  it('returns the complete migrated Sell eDelivery namespace under its official path', () => {
+    const edeliveryToolNames = toolNamesInExposurePaths(['sell.edelivery']);
+    expect([...edeliveryToolNames]).toEqual([
+      'ebay_sell_edelivery_get_actual_costs',
+      'ebay_sell_edelivery_get_address_preferences',
+      'ebay_sell_edelivery_create_address_preference',
+      'ebay_sell_edelivery_get_consign_preferences',
+      'ebay_sell_edelivery_create_consign_preference',
+      'ebay_sell_edelivery_get_agents',
+      'ebay_sell_edelivery_get_battery_qualifications',
+      'ebay_sell_edelivery_get_dropoff_sites',
+      'ebay_sell_edelivery_get_services',
+      'ebay_sell_edelivery_create_bundle',
+      'ebay_sell_edelivery_get_bundle',
+      'ebay_sell_edelivery_cancel_bundle',
+      'ebay_sell_edelivery_get_bundle_label',
+      'ebay_sell_edelivery_create_package',
+      'ebay_sell_edelivery_get_package',
+      'ebay_sell_edelivery_delete_package',
+      'ebay_sell_edelivery_get_packages_by_line_item_id',
+      'ebay_sell_edelivery_cancel_package',
+      'ebay_sell_edelivery_clone_package',
+      'ebay_sell_edelivery_confirm_package',
+      'ebay_sell_edelivery_bulk_cancel_packages',
+      'ebay_sell_edelivery_bulk_confirm_packages',
+      'ebay_sell_edelivery_bulk_delete_packages',
+      'ebay_sell_edelivery_get_labels',
+      'ebay_sell_edelivery_get_handover_sheet',
+      'ebay_sell_edelivery_get_tracking',
+      'ebay_sell_edelivery_create_complaint',
+    ]);
+  });
+
   it('returns the complete Developer Analytics namespace under its official path', () => {
     const developerAnalyticsToolNames = toolNamesInExposurePaths(['developer.analytics']);
     expect([...developerAnalyticsToolNames]).toEqual([

@@ -58,6 +58,40 @@ import {
   getSellerStandardsProfileTool,
 } from '@/ebay/sell/analytics/sellerStandardsProfile.js';
 import { getTrafficReportTool } from '@/ebay/sell/analytics/trafficReport.js';
+import { getActualCostsTool } from '@/ebay/sell/edelivery/actualCost.js';
+import {
+  cancelBundleTool,
+  createBundleTool,
+  getBundleLabelTool,
+  getBundleTool,
+} from '@/ebay/sell/edelivery/bundle.js';
+import { createComplaintTool } from '@/ebay/sell/edelivery/complaint.js';
+import { getHandoverSheetTool, getLabelsTool } from '@/ebay/sell/edelivery/shippingDocument.js';
+import {
+  getAgentsTool,
+  getBatteryQualificationsTool,
+  getDropoffSitesTool,
+  getServicesTool,
+} from '@/ebay/sell/edelivery/shippingOption.js';
+import {
+  createAddressPreferenceTool,
+  createConsignPreferenceTool,
+  getAddressPreferencesTool,
+  getConsignPreferencesTool,
+} from '@/ebay/sell/edelivery/shippingPreference.js';
+import {
+  bulkCancelPackagesTool,
+  bulkConfirmPackagesTool,
+  bulkDeletePackagesTool,
+  cancelPackageTool,
+  clonePackageTool,
+  confirmPackageTool,
+  createPackageTool,
+  deletePackageTool,
+  getPackageTool,
+  getPackagesByLineItemIdTool,
+} from '@/ebay/sell/edelivery/shipmentPackage.js';
+import { getTrackingTool } from '@/ebay/sell/edelivery/tracking.js';
 import {
   findEligibleItemsTool,
   sendOfferToInterestedBuyersTool,
@@ -115,6 +149,33 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   createSigningKeyTool,
   getSigningKeyTool,
   getDeveloperStatusFeedTool,
+  getActualCostsTool,
+  getAddressPreferencesTool,
+  createAddressPreferenceTool,
+  getConsignPreferencesTool,
+  createConsignPreferenceTool,
+  getAgentsTool,
+  getBatteryQualificationsTool,
+  getDropoffSitesTool,
+  getServicesTool,
+  createBundleTool,
+  getBundleTool,
+  cancelBundleTool,
+  getBundleLabelTool,
+  createPackageTool,
+  getPackageTool,
+  deletePackageTool,
+  getPackagesByLineItemIdTool,
+  cancelPackageTool,
+  clonePackageTool,
+  confirmPackageTool,
+  bulkCancelPackagesTool,
+  bulkConfirmPackagesTool,
+  bulkDeletePackagesTool,
+  getLabelsTool,
+  getHandoverSheetTool,
+  getTrackingTool,
+  createComplaintTool,
   getTrafficReportTool,
   findSellerStandardsProfilesTool,
   getSellerStandardsProfileTool,
