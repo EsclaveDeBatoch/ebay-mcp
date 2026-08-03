@@ -241,8 +241,8 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | Категория | Что вы можете делать |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | Инструменты search/fetch коннектора ChatGPT по каталогу eBay MCP |
-| [Account](src/tools/categories/account.ts) | Бизнес-, отгрузочные, платёжные и возвратные политики; программы; подписки; налог с продаж |
-| [Sell Account](src/ebay/sell/account/customPolicy.ts) | Определяемые продавцом политики соответствия товаров и обратного приёма |
+| [Account](src/tools/categories/account.ts) | Платёжные и возвратные политики; программы; подписки; налог с продаж |
+| [Sell Account](src/ebay/sell/account/) | Определяемые продавцом политики доставки, соответствия товаров и обратного приёма |
 | [Inventory](src/tools/categories/inventory.ts) | Товары инвентаря, предложения, локации, группы товаров, массовые операции, сопоставление SKU/локации |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Заказы, доставка, возвраты средств, споры, доказательства по платёжным спорам |
 | [Marketing](src/tools/categories/marketing.ts) | Кампании продвигаемых объявлений, реклама, акции, ставки, массовые операции |

@@ -14,14 +14,8 @@ describe('Comprehensive Tools Coverage', () => {
     // Create comprehensive mock API
     mockApi = {
       account: {
-        getFulfillmentPolicies: vi.fn(),
         getPaymentPolicies: vi.fn(),
         getReturnPolicies: vi.fn(),
-        createFulfillmentPolicy: vi.fn(),
-        getFulfillmentPolicy: vi.fn(),
-        getFulfillmentPolicyByName: vi.fn(),
-        updateFulfillmentPolicy: vi.fn(),
-        deleteFulfillmentPolicy: vi.fn(),
         createPaymentPolicy: vi.fn(),
         getPaymentPolicy: vi.fn(),
         getPaymentPolicyByName: vi.fn(),
@@ -119,16 +113,6 @@ describe('Comprehensive Tools Coverage', () => {
 
   // ===== ACCOUNT TOOLS =====
   describe('Account Management Tools', () => {
-    it('ebay_get_fulfillment_policies', async () => {
-      const mockResponse = { fulfillmentPolicies: [] };
-      const input = { marketplaceId: 'EBAY_US' };
-      vi.mocked(mockApi.account.getFulfillmentPolicies).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_fulfillment_policies', input);
-      expect(mockApi.account.getFulfillmentPolicies).toHaveBeenCalledWith(input);
-    });
-
     it('ebay_get_payment_policies', async () => {
       const mockResponse = { paymentPolicies: [] };
       const input = { marketplaceId: 'EBAY_US' };
@@ -143,59 +127,6 @@ describe('Comprehensive Tools Coverage', () => {
       vi.mocked(mockApi.account.getReturnPolicies).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_return_policies', input);
       expect(mockApi.account.getReturnPolicies).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_fulfillment_policy', async () => {
-      const mockResponse = { fulfillmentPolicyId: 'FP123' };
-      const policy = { name: 'Test', marketplaceId: 'EBAY_US' };
-      const input = { policy };
-      vi.mocked(mockApi.account.createFulfillmentPolicy).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_create_fulfillment_policy', input);
-      expect(mockApi.account.createFulfillmentPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_fulfillment_policy', async () => {
-      const mockResponse = { fulfillmentPolicyId: 'FP123' };
-      const input = { fulfillmentPolicyId: 'FP123' };
-      vi.mocked(mockApi.account.getFulfillmentPolicy).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_fulfillment_policy', input);
-      expect(mockApi.account.getFulfillmentPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_fulfillment_policy_by_name', async () => {
-      const mockResponse = { fulfillmentPolicyId: 'FP123' };
-      const input = {
-        marketplaceId: 'EBAY_US',
-        name: 'Test',
-      };
-      vi.mocked(mockApi.account.getFulfillmentPolicyByName).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_fulfillment_policy_by_name', input);
-      expect(mockApi.account.getFulfillmentPolicyByName).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_update_fulfillment_policy', async () => {
-      const mockResponse = { fulfillmentPolicyId: 'FP123' };
-      const policy = { name: 'Updated', marketplaceId: 'EBAY_US' };
-      const input = {
-        fulfillmentPolicyId: 'FP123',
-        policy,
-      };
-      vi.mocked(mockApi.account.updateFulfillmentPolicy).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_update_fulfillment_policy', input);
-      expect(mockApi.account.updateFulfillmentPolicy).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_delete_fulfillment_policy', async () => {
-      const input = { fulfillmentPolicyId: 'FP123' };
-      vi.mocked(mockApi.account.deleteFulfillmentPolicy).mockReturnValue(Effect.succeed(undefined));
-      await executeTool(mockApi, 'ebay_delete_fulfillment_policy', input);
-      expect(mockApi.account.deleteFulfillmentPolicy).toHaveBeenCalledWith(input);
     });
 
     it('ebay_create_payment_policy', async () => {

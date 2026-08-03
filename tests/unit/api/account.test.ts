@@ -5,8 +5,6 @@ import type { EbayApiClient } from '@/api/client.js';
 import { MarketplaceId } from '@/types/ebayEnums.js';
 import type { components } from '@/generated/ebay/sell-apps/account-management/sellAccountV1Oas3.js';
 
-type FulfillmentPolicy = components['schemas']['FulfillmentPolicy'];
-type FulfillmentPolicyResponse = components['schemas']['FulfillmentPolicyResponse'];
 type PaymentPolicy = components['schemas']['PaymentPolicy'];
 type PaymentPolicyResponse = components['schemas']['PaymentPolicyResponse'];
 type ReturnPolicy = components['schemas']['ReturnPolicy'];
@@ -40,107 +38,6 @@ describe('AccountApi', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('Fulfillment Policies', () => {
-    it('gets fulfillment policies for a marketplace', async () => {
-      const mockResponse: FulfillmentPolicyResponse = {
-        fulfillmentPolicies: [
-          {
-            fulfillmentPolicyId: '1234567890',
-            name: 'Standard Shipping',
-            marketplaceId: 'EBAY_US',
-          },
-        ],
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(
-        accountApi.getFulfillmentPolicies({ marketplaceId: MarketplaceId.EBAY_US }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/fulfillment_policy', {
-        marketplace_id: 'EBAY_US',
-      });
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('gets a fulfillment policy by ID', async () => {
-      const mockPolicy: FulfillmentPolicy = {
-        fulfillmentPolicyId: '1234567890',
-        name: 'Test Policy',
-        marketplaceId: 'EBAY_US',
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPolicy);
-
-      const result = await Effect.runPromise(
-        accountApi.getFulfillmentPolicy({ fulfillmentPolicyId: '1234567890' }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith('/sell/account/v1/fulfillment_policy/1234567890');
-      expect(result).toEqual(mockPolicy);
-    });
-
-    it('gets a fulfillment policy by name', async () => {
-      const mockPolicy: FulfillmentPolicy = {
-        fulfillmentPolicyId: '1234567890',
-        name: 'Standard Shipping',
-        marketplaceId: 'EBAY_US',
-      };
-
-      vi.spyOn(mockClient, 'get').mockResolvedValue(mockPolicy);
-
-      const result = await Effect.runPromise(
-        accountApi.getFulfillmentPolicyByName({
-          marketplaceId: MarketplaceId.EBAY_US,
-          name: 'Standard Shipping',
-        }),
-      );
-
-      expect(mockClient.get).toHaveBeenCalledWith(
-        '/sell/account/v1/fulfillment_policy/get_by_policy_name',
-        {
-          marketplace_id: 'EBAY_US',
-          name: 'Standard Shipping',
-        },
-      );
-      expect(result).toEqual(mockPolicy);
-    });
-
-    it('creates, updates, and deletes a fulfillment policy', async () => {
-      const policy = {
-        name: 'New Shipping Policy',
-        marketplaceId: MarketplaceId.EBAY_US,
-      };
-      const mockResponse = {
-        fulfillmentPolicyId: '9876543210',
-      };
-
-      vi.spyOn(mockClient, 'post').mockResolvedValue(mockResponse);
-      vi.spyOn(mockClient, 'put').mockResolvedValue(mockResponse);
-      vi.spyOn(mockClient, 'delete').mockResolvedValue(undefined);
-
-      const created = await Effect.runPromise(accountApi.createFulfillmentPolicy({ policy }));
-      const updated = await Effect.runPromise(
-        accountApi.updateFulfillmentPolicy({ fulfillmentPolicyId: '9876543210', policy }),
-      );
-      await Effect.runPromise(
-        accountApi.deleteFulfillmentPolicy({ fulfillmentPolicyId: '9876543210' }),
-      );
-
-      expect(mockClient.post).toHaveBeenCalledWith('/sell/account/v1/fulfillment_policy/', policy);
-      expect(mockClient.put).toHaveBeenCalledWith(
-        '/sell/account/v1/fulfillment_policy/9876543210',
-        policy,
-      );
-      expect(mockClient.delete).toHaveBeenCalledWith(
-        '/sell/account/v1/fulfillment_policy/9876543210',
-      );
-      expect(created).toEqual(mockResponse);
-      expect(updated).toEqual(mockResponse);
-    });
   });
 
   describe('Payment Policies', () => {

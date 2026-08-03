@@ -2,9 +2,6 @@ import { z } from '@/utils/effectSchema.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
   TimeDurationUnit,
-  RegionType,
-  ShippingCostType,
-  ShippingOptionType,
   RefundMethod,
   ReturnMethod,
   ReturnShippingCostPayer,
@@ -48,150 +45,10 @@ const amountSchema = z.object({
   value: z.string().optional(),
 });
 
-const regionSchema = z.object({
-  regionName: z.string().optional(),
-  regionType: z.nativeEnum(RegionType).optional(),
-});
-
-const regionSetSchema = z.object({
-  regionIncluded: z.array(regionSchema).optional(),
-  regionExcluded: z.array(regionSchema).optional(),
-});
-
-// ============================================================================
-// Custom Policy Schemas
-// ============================================================================
-
-// Input
-/**
- * Validates the Account Management API get custom policies request payload.
- */
-// ============================================================================
-// Fulfillment Policy Schemas
-// ============================================================================
-
+/** Shared category group used by payment and return policies. */
 const categoryTypeSchema = z.object({
   name: z.string().optional(),
   default: z.boolean().optional(),
-});
-
-const shippingServiceSchema = z.object({
-  additionalShippingCost: amountSchema.optional(),
-  buyerResponsibleForPickup: z.boolean().optional(),
-  buyerResponsibleForShipping: z.boolean().optional(),
-  freeShipping: z.boolean().optional(),
-  shippingCarrierCode: z.string().optional(),
-  shippingCost: amountSchema.optional(),
-  shippingServiceCode: z.string().optional(),
-  shipToLocations: regionSetSchema.optional(),
-  sortOrder: z.number().optional(),
-  surcharge: amountSchema.optional(), // DEPRECATED but still in API
-});
-
-const shippingOptionSchema = z.object({
-  costType: z.nativeEnum(ShippingCostType).optional(),
-  optionType: z.nativeEnum(ShippingOptionType).optional(),
-  insuranceFee: amountSchema.optional(), // DEPRECATED but in API
-  insuranceOffered: z.boolean().optional(), // DEPRECATED but in API
-  packageHandlingCost: amountSchema.optional(),
-  rateTableId: z.string().optional(),
-  shippingDiscountProfileId: z.string().optional(),
-  shippingPromotionOffered: z.boolean().optional(),
-  shippingServices: z.array(shippingServiceSchema).optional(),
-});
-
-/**
- * Validates the Account Management API fulfillment policy model.
- */
-export const fulfillmentPolicySchema = z.object({
-  name: z.string(),
-  marketplaceId: z.nativeEnum(MarketplaceId),
-  categoryTypes: z.array(categoryTypeSchema).optional(),
-  description: z.string().optional(),
-  freightShipping: z.boolean().optional(),
-  globalShipping: z.boolean().optional(),
-  handlingTime: timeDurationSchema.optional(),
-  localPickup: z.boolean().optional(),
-  pickupDropOff: z.boolean().optional(),
-  shippingOptions: z.array(shippingOptionSchema).optional(),
-  shipToLocations: regionSetSchema.optional(),
-});
-
-/**
- * Validates the Account Management API fulfillment policy response payload.
- */
-export const fulfillmentPolicyResponseSchema = z.object({
-  fulfillmentPolicyId: z.string().optional(),
-  categoryTypes: z.array(categoryTypeSchema).optional(),
-  description: z.string().optional(),
-  freightShipping: z.boolean().optional(),
-  globalShipping: z.boolean().optional(),
-  handlingTime: timeDurationSchema.optional(),
-  localPickup: z.boolean().optional(),
-  marketplaceId: z.string().optional(),
-  name: z.string().optional(),
-  pickupDropOff: z.boolean().optional(),
-  shippingOptions: z.array(shippingOptionSchema).optional(),
-  shipToLocations: regionSetSchema.optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Account Management API get fulfillment policies request payload.
- */
-export const getFulfillmentPoliciesInputSchema = z.object({
-  marketplaceId: z.nativeEnum(MarketplaceId).describe('eBay marketplace ID (e.g., EBAY_US)'),
-});
-
-/**
- * Validates the Account Management API get fulfillment policies response payload.
- */
-export const getFulfillmentPoliciesOutputSchema = z.object({
-  fulfillmentPolicies: z.array(fulfillmentPolicyResponseSchema).optional(),
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional(),
-  offset: z.number().optional(),
-  prev: z.string().optional(),
-  total: z.number().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Account Management API create fulfillment policy request payload.
- */
-export const createFulfillmentPolicyInputSchema = z.object({
-  policy: fulfillmentPolicySchema,
-});
-
-/** Validates the Account Management API get fulfillment policy request payload. */
-export const getFulfillmentPolicyInputSchema = z.object({
-  fulfillmentPolicyId: z.string().describe('The fulfillment policy ID'),
-});
-
-/** Validates the Account Management API get fulfillment policy by name request payload. */
-export const getFulfillmentPolicyByNameInputSchema = z.object({
-  marketplaceId: z.nativeEnum(MarketplaceId).describe('eBay marketplace ID'),
-  name: z.string().describe('Policy name'),
-});
-
-/** Validates the Account Management API update fulfillment policy request payload. */
-export const updateFulfillmentPolicyInputSchema = z.object({
-  fulfillmentPolicyId: z.string().describe('The fulfillment policy ID'),
-  policy: fulfillmentPolicySchema.describe('Updated fulfillment policy details'),
-});
-
-/** Validates the Account Management API delete fulfillment policy request payload. */
-export const deleteFulfillmentPolicyInputSchema = z.object({
-  fulfillmentPolicyId: z.string().describe('The fulfillment policy ID'),
-});
-
-/**
- * Validates the Account Management API create fulfillment policy response payload.
- */
-export const createFulfillmentPolicyOutputSchema = z.object({
-  fulfillmentPolicyId: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
 });
 
 // ============================================================================
@@ -597,28 +454,6 @@ export const getPrivilegesInputSchema = z.object({});
  */
 export const getAccountManagementJsonSchemas = () => {
   return {
-    // Fulfillment Policies
-    getFulfillmentPoliciesInput: zodToJsonSchema(
-      getFulfillmentPoliciesInputSchema,
-      'getFulfillmentPoliciesInput',
-    ),
-    getFulfillmentPoliciesOutput: zodToJsonSchema(
-      getFulfillmentPoliciesOutputSchema,
-      'getFulfillmentPoliciesOutput',
-    ),
-    createFulfillmentPolicyInput: zodToJsonSchema(
-      createFulfillmentPolicyInputSchema,
-      'createFulfillmentPolicyInput',
-    ),
-    createFulfillmentPolicyOutput: zodToJsonSchema(
-      createFulfillmentPolicyOutputSchema,
-      'createFulfillmentPolicyOutput',
-    ),
-    fulfillmentPolicyDetails: zodToJsonSchema(
-      fulfillmentPolicyResponseSchema,
-      'fulfillmentPolicyDetails',
-    ),
-
     // Payment Policies
     getPaymentPoliciesInput: zodToJsonSchema(
       getPaymentPoliciesInputSchema,

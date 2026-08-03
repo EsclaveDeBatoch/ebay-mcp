@@ -1,9 +1,6 @@
 import { z } from '@/utils/effectSchema.js';
 import {
   TimeDurationUnit,
-  RegionType,
-  ShippingCostType,
-  ShippingOptionType,
   DepositType,
   RefundMethod,
   ReturnMethod,
@@ -50,22 +47,6 @@ export const amountSchema = z
   })
   .passthrough();
 
-/** Shared marketplace region descriptor for policy and shipping inputs. */
-export const regionSchema = z
-  .object({
-    regionName: z.string().optional(),
-    regionType: z.nativeEnum(RegionType).optional(),
-  })
-  .passthrough();
-
-/** Shared include/exclude region set used by fulfillment and shipping policies. */
-export const regionSetSchema = z
-  .object({
-    regionIncluded: z.array(regionSchema).optional(),
-    regionExcluded: z.array(regionSchema).optional(),
-  })
-  .passthrough();
-
 // ============================================================================
 // Account Management Schemas
 // ============================================================================
@@ -75,50 +56,6 @@ export const categoryTypeSchema = z
   .object({
     name: z.string().optional(),
     default: z.boolean().optional(),
-  })
-  .passthrough();
-
-/** Shipping service option used inside fulfillment policy shipping choices. */
-export const shippingServiceSchema = z
-  .object({
-    additionalShippingCost: amountSchema.optional(),
-    buyerResponsibleForPickup: z.boolean().optional(),
-    buyerResponsibleForShipping: z.boolean().optional(),
-    cashOnDeliveryFee: amountSchema.optional(),
-    freeShipping: z.boolean().optional(),
-    shipToLocations: regionSetSchema.optional(),
-    shippingCarrierCode: z.string().optional(),
-    shippingCost: amountSchema.optional(),
-    shippingServiceCode: z.string().optional(),
-    sortOrder: z.number().optional(),
-  })
-  .passthrough();
-
-/** Shipping option group used by fulfillment policy creation and updates. */
-export const shippingOptionSchema = z
-  .object({
-    costType: z.nativeEnum(ShippingCostType),
-    optionType: z.nativeEnum(ShippingOptionType),
-    packageHandlingCost: amountSchema.optional(),
-    rateTableId: z.string().optional(),
-    shippingServices: z.array(shippingServiceSchema).optional(),
-  })
-  .passthrough();
-
-/** Fulfillment policy payload accepted by account management tools. */
-export const fulfillmentPolicySchema = z
-  .object({
-    name: z.string(),
-    marketplaceId: z.string(),
-    categoryTypes: z.array(categoryTypeSchema).optional(),
-    description: z.string().optional(),
-    freightShipping: z.boolean().optional(),
-    globalShipping: z.boolean().optional(),
-    handlingTime: timeDurationSchema.optional(),
-    localPickup: z.boolean().optional(),
-    pickupDropOff: z.boolean().optional(),
-    shippingOptions: z.array(shippingOptionSchema).optional(),
-    shipToLocations: regionSetSchema.optional(),
   })
   .passthrough();
 

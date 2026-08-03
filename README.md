@@ -75,7 +75,7 @@
 - **9 AI clients, auto-configured** — Claude Desktop, Cursor, Zed, Cline, Continue.dev, Windsurf, Roo Code, Claude Code CLI, and Amazon Q Developer.
 - **OAuth 2.0 built in** — full user-token management with automatic refresh, and smart fallback from user tokens (10k–50k req/day) to client credentials (1k req/day).
 - **Resilient by default** — automatic retry with exponential backoff on `429` rate limits, and consistent, loud error surfacing.
-- **Type-safe** — [TypeScript](https://www.typescriptlang.org/) end to end, [Effect](https://effect.website/docs)-backed tool input validation, and [OpenAPI](https://www.openapis.org/)-generated types.
+- **Type-safe** — [TypeScript](https://www.typescriptlang.org/) end to end, [Zod](https://zod.dev/)-validated tool inputs, and [OpenAPI](https://www.openapis.org/)-generated eBay types.
 - **Local-first & private** — runs over STDIO or local HTTP; your credentials and data never leave your machine.
 - **Sandbox and production** — switch environments with a single variable.
 - **One-command setup** — `npm run setup` configures credentials, OAuth, and your MCP client, with a browser auto-opened for the OAuth flow.
@@ -87,8 +87,8 @@ Use this map when deciding which tool family to expose, or when asking an assist
 
 | Family | What it unlocks | Good first request |
 | --- | --- | --- |
-| `account` | Business policies, fulfillment policies, payment policies, return policies, sales tax, subscriptions, and programs | "Show my eBay fulfillment policies." |
-| `sell.account` | Seller-defined product-compliance and take-back policies | "Show my take-back policies." |
+| `account` | Payment policies, return policies, sales tax, subscriptions, and programs | "Show my eBay payment policies." |
+| `sell.account` | Fulfillment, product-compliance, and take-back policies | "Show my eBay fulfillment policies." |
 | `inventory` | Inventory items, offers, inventory locations, item groups, bulk offer flows, and SKU/location mapping | "List my active inventory items and their available quantity." |
 | `sell.fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
 | `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
@@ -306,8 +306,8 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | Category | What you can do |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
-| [Account](src/tools/categories/account.ts) | Business, fulfillment, payment, and return policies; programs; subscriptions; sales tax |
-| [Sell Account](src/ebay/sell/account/customPolicy.ts) | Seller-defined product-compliance and take-back policies under `sell.account` |
+| [Account](src/tools/categories/account.ts) | Payment and return policies; programs; subscriptions; sales tax |
+| [Sell Account](src/ebay/sell/account/) | Seller fulfillment, product-compliance, and take-back policies under `sell.account` |
 | [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping |
 | [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |

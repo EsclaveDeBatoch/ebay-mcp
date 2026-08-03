@@ -16,6 +16,11 @@ const readOnlyCustomPolicyToolNames = [
   'ebay_sell_account_get_custom_policy',
 ] as const;
 
+const writeCustomPolicyToolNames = [
+  'ebay_sell_account_create_custom_policy',
+  'ebay_sell_account_update_custom_policy',
+] as const;
+
 const legacyCustomPolicyToolNames = [
   'ebay_get_custom_policies',
   'ebay_create_custom_policy',
@@ -90,7 +95,10 @@ describe('Sell Account custom-policy MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(customPolicyToolNames);
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
+    for (const customPolicyToolName of customPolicyToolNames) {
+      expect(listedToolNames).toContain(customPolicyToolName);
+    }
     await mcpClient.close();
   });
 
@@ -104,9 +112,13 @@ describe('Sell Account custom-policy MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual(
-      readOnlyCustomPolicyToolNames,
-    );
+    const listedToolNames = listedTools.tools.map((ebayTool) => ebayTool.name);
+    for (const readOnlyCustomPolicyToolName of readOnlyCustomPolicyToolNames) {
+      expect(listedToolNames).toContain(readOnlyCustomPolicyToolName);
+    }
+    for (const writeCustomPolicyToolName of writeCustomPolicyToolNames) {
+      expect(listedToolNames).not.toContain(writeCustomPolicyToolName);
+    }
     await mcpClient.close();
   });
 });

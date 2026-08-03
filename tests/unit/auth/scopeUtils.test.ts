@@ -123,6 +123,40 @@ describe('Scope Utils', () => {
     );
 
     it.each([
+      'ebay_sell_account_get_fulfillment_policies',
+      'ebay_sell_account_get_fulfillment_policy',
+      'ebay_sell_account_get_fulfillment_policy_by_name',
+    ])('returns either account scope for the hierarchical %s tool', (fulfillmentPolicyToolName) => {
+      const requirement = getRequiredScopesForTool(fulfillmentPolicyToolName);
+
+      expect(requirement).toEqual({
+        requiredScopes: [
+          'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+          'https://api.ebay.com/oauth/api_scope/sell.account',
+        ],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        description: 'Requires read access to seller fulfillment policies',
+      });
+    });
+
+    it.each([
+      'ebay_sell_account_create_fulfillment_policy',
+      'ebay_sell_account_update_fulfillment_policy',
+      'ebay_sell_account_delete_fulfillment_policy',
+    ])(
+      'returns the account write scope for the hierarchical %s tool',
+      (fulfillmentPolicyToolName) => {
+        const requirement = getRequiredScopesForTool(fulfillmentPolicyToolName);
+
+        expect(requirement).toEqual({
+          requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+          minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+          description: 'Requires write access to seller fulfillment policies',
+        });
+      },
+    );
+
+    it.each([
       'ebay_sell_analytics_get_traffic_report',
       'ebay_sell_analytics_find_seller_standards_profiles',
       'ebay_sell_analytics_get_seller_standards_profile',

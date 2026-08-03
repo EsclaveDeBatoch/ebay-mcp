@@ -6,8 +6,6 @@ import { describe, it, expect } from 'vitest';
 import { Effect, Either } from 'effect';
 import {
   timeDurationSchema,
-  regionSchema,
-  shippingOptionSchema,
   depositSchema,
   returnPolicySchema,
   inventoryItemSchema,
@@ -23,9 +21,6 @@ import {
 } from '@/tools/schemas.js';
 import {
   TimeDurationUnit,
-  RegionType,
-  ShippingCostType,
-  ShippingOptionType,
   DepositType,
   RefundMethod,
   ReturnMethod,
@@ -99,51 +94,6 @@ describe('Effect-backed schema enum validation', () => {
         value: 30,
       };
       expect(() => decode(timeDurationSchema, invalidData)).toThrow();
-    });
-  });
-
-  describe('regionSchema', () => {
-    it('accept valid RegionType enum values', () => {
-      const validData = {
-        regionName: 'United States',
-        regionType: RegionType.COUNTRY,
-      };
-      expect(() => decode(regionSchema, validData)).not.toThrow();
-    });
-
-    it('accept all RegionType values', () => {
-      const types = [
-        RegionType.COUNTRY,
-        RegionType.COUNTRY_REGION,
-        RegionType.STATE_OR_PROVINCE,
-        RegionType.WORLD_REGION,
-        RegionType.WORLDWIDE,
-      ];
-
-      types.forEach((regionType) => {
-        const data = { regionName: 'Test Region', regionType };
-        expect(() => decode(regionSchema, data)).not.toThrow();
-      });
-    });
-  });
-
-  describe('shippingOptionSchema', () => {
-    it('accept valid ShippingCostType and ShippingOptionType', () => {
-      const validData = {
-        costType: ShippingCostType.FLAT_RATE,
-        optionType: ShippingOptionType.DOMESTIC,
-        shippingServices: [],
-      };
-      expect(() => decode(shippingOptionSchema, validData)).not.toThrow();
-    });
-
-    it('accept CALCULATED cost type', () => {
-      const data = {
-        costType: ShippingCostType.CALCULATED,
-        optionType: ShippingOptionType.INTERNATIONAL,
-        shippingServices: [],
-      };
-      expect(() => decode(shippingOptionSchema, data)).not.toThrow();
     });
   });
 

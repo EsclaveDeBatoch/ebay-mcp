@@ -136,7 +136,7 @@ export const getToolDefinitions = (): ToolDefinition[] =>
  *
  * @example
  * ```ts
- * const handler = getToolHandler('ebay_get_fulfillment_policies');
+ * const handler = getToolHandler('ebay_get_payment_policies');
  * ```
  */
 export const getToolHandler = (toolName: string): ToolHandler | undefined =>
@@ -152,7 +152,7 @@ export const getToolHandler = (toolName: string): ToolHandler | undefined =>
  *
  * @example
  * ```ts
- * const result = await executeTool(api, 'ebay_get_fulfillment_policies', {
+ * const result = await executeTool(api, 'ebay_get_payment_policies', {
  *   marketplaceId: 'EBAY_US',
  * });
  * ```

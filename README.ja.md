@@ -241,8 +241,8 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | カテゴリ | できること |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | eBay MCP カタログ向け ChatGPT コネクタの search/fetch |
-| [Account](src/tools/categories/account.ts) | ビジネス・配送・支払い・返品ポリシー、プログラム、サブスクリプション、販売税 |
-| [Sell Account](src/ebay/sell/account/customPolicy.ts) | 出品者定義の商品コンプライアンスおよび引き取りポリシー |
+| [Account](src/tools/categories/account.ts) | 支払い・返品ポリシー、プログラム、サブスクリプション、販売税 |
+| [Sell Account](src/ebay/sell/account/) | 出品者定義の配送・商品コンプライアンス・引き取りポリシー |
 | [Inventory](src/tools/categories/inventory.ts) | 在庫アイテム、オファー、ロケーション、アイテムグループ、一括操作、SKU/ロケーションのマッピング |
 | [Fulfillment](src/ebay/sell/fulfillment/) | 注文、配送、返金、係争、支払い係争の証拠 |
 | [Marketing](src/tools/categories/marketing.ts) | プロモーション広告キャンペーン、広告、プロモーション、入札、一括操作 |

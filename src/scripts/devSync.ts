@@ -406,6 +406,12 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   createcustompolicy: ['ebay_sell_account_create_custom_policy'],
   getcustompolicy: ['ebay_sell_account_get_custom_policy'],
   updatecustompolicy: ['ebay_sell_account_update_custom_policy'],
+  getfulfillmentpolicies: ['ebay_sell_account_get_fulfillment_policies'],
+  createfulfillmentpolicy: ['ebay_sell_account_create_fulfillment_policy'],
+  getfulfillmentpolicy: ['ebay_sell_account_get_fulfillment_policy'],
+  getfulfillmentpolicybyname: ['ebay_sell_account_get_fulfillment_policy_by_name'],
+  updatefulfillmentpolicy: ['ebay_sell_account_update_fulfillment_policy'],
+  deletefulfillmentpolicy: ['ebay_sell_account_delete_fulfillment_policy'],
 
   // Dispute/Fulfillment API
   getorders: ['ebay_sell_fulfillment_get_orders'],

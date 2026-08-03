@@ -58,6 +58,14 @@ import {
   getCustomPolicyTool,
   updateCustomPolicyTool,
 } from '@/ebay/sell/account/customPolicy.js';
+import {
+  createFulfillmentPolicyTool,
+  deleteFulfillmentPolicyTool,
+  getFulfillmentPoliciesTool,
+  getFulfillmentPolicyByNameTool,
+  getFulfillmentPolicyTool,
+  updateFulfillmentPolicyTool,
+} from '@/ebay/sell/account/fulfillmentPolicy.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
   findSellerStandardsProfilesTool,
@@ -210,6 +218,12 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   createCustomPolicyTool,
   getCustomPolicyTool,
   updateCustomPolicyTool,
+  getFulfillmentPoliciesTool,
+  createFulfillmentPolicyTool,
+  getFulfillmentPolicyTool,
+  getFulfillmentPolicyByNameTool,
+  updateFulfillmentPolicyTool,
+  deleteFulfillmentPolicyTool,
   getActualCostsTool,
   getAddressPreferencesTool,
   createAddressPreferenceTool,

@@ -2,23 +2,15 @@ import { Effect } from 'effect';
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
   bulkCreateOrReplaceSalesTaxInputSchema,
-  createFulfillmentPolicyInputSchema,
-  createFulfillmentPolicyOutputSchema,
   createOrReplaceSalesTaxInputSchema,
   createPaymentPolicyInputSchema,
   createPaymentPolicyOutputSchema,
   createReturnPolicyInputSchema,
   createReturnPolicyOutputSchema,
-  deleteFulfillmentPolicyInputSchema,
   deletePaymentPolicyInputSchema,
   deleteReturnPolicyInputSchema,
   deleteSalesTaxInputSchema,
-  fulfillmentPolicyResponseSchema,
   getAdvertisingEligibilityInputSchema,
-  getFulfillmentPoliciesInputSchema,
-  getFulfillmentPoliciesOutputSchema,
-  getFulfillmentPolicyByNameInputSchema,
-  getFulfillmentPolicyInputSchema,
   getPaymentPoliciesInputSchema,
   getPaymentPoliciesOutputSchema,
   getPaymentPolicyByNameInputSchema,
@@ -45,7 +37,6 @@ import {
   programsOutputSchema,
   returnPolicyResponseSchema,
   salesTaxSchema,
-  updateFulfillmentPolicyInputSchema,
   updatePaymentPolicyInputSchema,
   updateReturnPolicyInputSchema,
 } from '@/schemas/account-management/account.js';
@@ -61,71 +52,6 @@ const emptyResponseSchema: OutputArgs = {
 
 /** Account Management API tools for seller policies, tax, KYC, privileges, and programs. */
 export const accountEntries: ToolEntry[] = [
-  defineTool({
-    name: 'ebay_get_fulfillment_policies',
-    description:
-      'Get fulfillment policies for the seller.\n\nRequired OAuth Scope: sell.account.readonly or sell.account\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.account.readonly',
-    inputSchema: getFulfillmentPoliciesInputSchema.shape,
-    outputSchema: zodToJsonSchema(getFulfillmentPoliciesOutputSchema, {
-      name: 'FulfillmentPoliciesResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getFulfillmentPolicies(args)),
-  }),
-  defineTool({
-    name: 'ebay_create_fulfillment_policy',
-    description:
-      'Create a new fulfillment policy.\n\nRequired OAuth Scope: sell.account\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.account',
-    inputSchema: createFulfillmentPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createFulfillmentPolicyOutputSchema, {
-      name: 'CreateFulfillmentPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: false },
-    handler: (api, args) => Effect.runPromise(api.account.createFulfillmentPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_fulfillment_policy',
-    description: 'Get a specific fulfillment policy by ID',
-    inputSchema: getFulfillmentPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(fulfillmentPolicyResponseSchema, {
-      name: 'FulfillmentPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getFulfillmentPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_get_fulfillment_policy_by_name',
-    description: 'Get a fulfillment policy by name',
-    inputSchema: getFulfillmentPolicyByNameInputSchema.shape,
-    outputSchema: zodToJsonSchema(fulfillmentPolicyResponseSchema, {
-      name: 'FulfillmentPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.getFulfillmentPolicyByName(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_fulfillment_policy',
-    description: 'Update an existing fulfillment policy',
-    inputSchema: updateFulfillmentPolicyInputSchema.shape,
-    outputSchema: zodToJsonSchema(createFulfillmentPolicyOutputSchema, {
-      name: 'UpdateFulfillmentPolicyResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    annotations: { readOnlyHint: false, idempotentHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.updateFulfillmentPolicy(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_fulfillment_policy',
-    description: 'Delete a fulfillment policy',
-    inputSchema: deleteFulfillmentPolicyInputSchema.shape,
-    outputSchema: emptyResponseSchema,
-    annotations: { readOnlyHint: false, destructiveHint: true },
-    handler: (api, args) => Effect.runPromise(api.account.deleteFulfillmentPolicy(args)),
-  }),
   defineTool({
     name: 'ebay_get_payment_policies',
     description: 'Get payment policies for the seller',

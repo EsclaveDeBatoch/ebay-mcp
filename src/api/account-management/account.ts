@@ -9,18 +9,13 @@ import {
 } from '@/api/shared/request.js';
 import type {
   bulkCreateOrReplaceSalesTaxInputSchema,
-  createFulfillmentPolicyInputSchema,
   createOrReplaceSalesTaxInputSchema,
   createPaymentPolicyInputSchema,
   createReturnPolicyInputSchema,
-  deleteFulfillmentPolicyInputSchema,
   deletePaymentPolicyInputSchema,
   deleteReturnPolicyInputSchema,
   deleteSalesTaxInputSchema,
   getAdvertisingEligibilityInputSchema,
-  getFulfillmentPoliciesInputSchema,
-  getFulfillmentPolicyByNameInputSchema,
-  getFulfillmentPolicyInputSchema,
   getPaymentPoliciesInputSchema,
   getPaymentPolicyByNameInputSchema,
   getPaymentPolicyInputSchema,
@@ -34,7 +29,6 @@ import type {
   getSubscriptionInputSchema,
   optInToProgramInputSchema,
   optOutOfProgramInputSchema,
-  updateFulfillmentPolicyInputSchema,
   updatePaymentPolicyInputSchema,
   updateReturnPolicyInputSchema,
 } from '@/schemas/account-management/account.js';
@@ -45,14 +39,6 @@ import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 const ACCOUNT_BASE_PATH = '/sell/account/v1';
 
 type EmptyAccountInput = Record<string, never>;
-type GetFulfillmentPoliciesInput = InferEffectSchema<typeof getFulfillmentPoliciesInputSchema>;
-type GetFulfillmentPolicyInput = InferEffectSchema<typeof getFulfillmentPolicyInputSchema>;
-type GetFulfillmentPolicyByNameInput = InferEffectSchema<
-  typeof getFulfillmentPolicyByNameInputSchema
->;
-type CreateFulfillmentPolicyInput = InferEffectSchema<typeof createFulfillmentPolicyInputSchema>;
-type UpdateFulfillmentPolicyInput = InferEffectSchema<typeof updateFulfillmentPolicyInputSchema>;
-type DeleteFulfillmentPolicyInput = InferEffectSchema<typeof deleteFulfillmentPolicyInputSchema>;
 type GetPaymentPoliciesInput = InferEffectSchema<typeof getPaymentPoliciesInputSchema>;
 type GetPaymentPolicyInput = InferEffectSchema<typeof getPaymentPolicyInputSchema>;
 type GetPaymentPolicyByNameInput = InferEffectSchema<typeof getPaymentPolicyByNameInputSchema>;
@@ -83,9 +69,6 @@ type GetAdvertisingEligibilityInput = InferEffectSchema<
   typeof getAdvertisingEligibilityInputSchema
 >;
 
-type SetFulfillmentPolicyResponse = components['schemas']['SetFulfillmentPolicyResponse'];
-type FulfillmentPolicyResponse = components['schemas']['FulfillmentPolicyResponse'];
-type FulfillmentPolicy = components['schemas']['FulfillmentPolicy'];
 type KycResponse = components['schemas']['KycResponse'];
 type SetPaymentPolicyResponse = components['schemas']['SetPaymentPolicyResponse'];
 type GetPaymentPoliciesResponse = components['schemas']['PaymentPolicyResponse'];
@@ -111,159 +94,6 @@ export class AccountApi {
   constructor(client: EbayApiClient) {
     this.client = client;
   }
-
-  /**
-   * Retrieves fulfillment policies for one marketplace.
-   *
-   * @param input - Marketplace ID used as the `marketplace_id` query parameter.
-   * @returns An Effect that succeeds with eBay's generated FulfillmentPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const policies = await Effect.runPromise(
-   *   accountApi.getFulfillmentPolicies({ marketplaceId: 'EBAY_US' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/fulfillment_policy/methods/getFulfillmentPolicies
-   */
-  getFulfillmentPolicies = (
-    input: GetFulfillmentPoliciesInput,
-  ): Effect.Effect<FulfillmentPolicyResponse, EbayApiError> => {
-    const params = buildEndpointParams({
-      marketplaceId: { wireName: 'marketplace_id', value: input.marketplaceId },
-    });
-
-    return requestGetEffect<FulfillmentPolicyResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/fulfillment_policy`,
-      params,
-    );
-  };
-
-  /**
-   * Creates a fulfillment policy.
-   *
-   * @param input - Fulfillment policy request body.
-   * @returns An Effect that succeeds with eBay's generated SetFulfillmentPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const created = await Effect.runPromise(
-   *   accountApi.createFulfillmentPolicy({ policy }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/fulfillment_policy/methods/createFulfillmentPolicy
-   */
-  createFulfillmentPolicy = (
-    input: CreateFulfillmentPolicyInput,
-  ): Effect.Effect<SetFulfillmentPolicyResponse, EbayApiError> =>
-    requestPostEffect<SetFulfillmentPolicyResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/fulfillment_policy/`,
-      input.policy,
-    );
-
-  /**
-   * Retrieves one fulfillment policy by ID.
-   *
-   * @param input - Fulfillment policy identifier.
-   * @returns An Effect that succeeds with eBay's generated FulfillmentPolicy.
-   *
-   * @example
-   * ```ts
-   * const policy = await Effect.runPromise(
-   *   accountApi.getFulfillmentPolicy({ fulfillmentPolicyId: 'FP123' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/fulfillment_policy/methods/getFulfillmentPolicy
-   */
-  getFulfillmentPolicy = (
-    input: GetFulfillmentPolicyInput,
-  ): Effect.Effect<FulfillmentPolicy, EbayApiError> =>
-    requestGetEffect<FulfillmentPolicy>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/fulfillment_policy/${input.fulfillmentPolicyId}`,
-    );
-
-  /**
-   * Retrieves one fulfillment policy by marketplace and policy name.
-   *
-   * @param input - Marketplace ID and seller-defined policy name.
-   * @returns An Effect that succeeds with eBay's generated FulfillmentPolicy.
-   *
-   * @example
-   * ```ts
-   * const policy = await Effect.runPromise(
-   *   accountApi.getFulfillmentPolicyByName({ marketplaceId: 'EBAY_US', name: 'Standard Shipping' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/fulfillment_policy/methods/getFulfillmentPolicyByName
-   */
-  getFulfillmentPolicyByName = (
-    input: GetFulfillmentPolicyByNameInput,
-  ): Effect.Effect<FulfillmentPolicy, EbayApiError> => {
-    const params = buildEndpointParams({
-      marketplaceId: { wireName: 'marketplace_id', value: input.marketplaceId },
-      name: { wireName: 'name', value: input.name },
-    });
-
-    return requestGetEffect<FulfillmentPolicy>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/fulfillment_policy/get_by_policy_name`,
-      params,
-    );
-  };
-
-  /**
-   * Updates a fulfillment policy by ID.
-   *
-   * @param input - Fulfillment policy ID and full replacement policy payload.
-   * @returns An Effect that succeeds with eBay's generated SetFulfillmentPolicyResponse.
-   *
-   * @example
-   * ```ts
-   * const updated = await Effect.runPromise(
-   *   accountApi.updateFulfillmentPolicy({ fulfillmentPolicyId: 'FP123', policy }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/fulfillment_policy/methods/updateFulfillmentPolicy
-   */
-  updateFulfillmentPolicy = (
-    input: UpdateFulfillmentPolicyInput,
-  ): Effect.Effect<SetFulfillmentPolicyResponse, EbayApiError> =>
-    requestPutEffect<SetFulfillmentPolicyResponse>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/fulfillment_policy/${input.fulfillmentPolicyId}`,
-      input.policy,
-    );
-
-  /**
-   * Deletes a fulfillment policy by ID.
-   *
-   * @param input - Fulfillment policy identifier.
-   * @returns An Effect that succeeds when eBay deletes the policy.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   accountApi.deleteFulfillmentPolicy({ fulfillmentPolicyId: 'FP123' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/account/resources/fulfillment_policy/methods/deleteFulfillmentPolicy
-   */
-  deleteFulfillmentPolicy = (
-    input: DeleteFulfillmentPolicyInput,
-  ): Effect.Effect<void, EbayApiError> =>
-    requestDeleteEffect<void>(
-      this.client,
-      `${ACCOUNT_BASE_PATH}/fulfillment_policy/${input.fulfillmentPolicyId}`,
-    );
 
   /**
    * Retrieves payment policies for one marketplace.

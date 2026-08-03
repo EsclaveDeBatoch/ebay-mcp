@@ -3,9 +3,6 @@ import { Effect, Either } from 'effect';
 import {
   timeDurationSchema,
   amountSchema,
-  regionSchema,
-  regionSetSchema,
-  fulfillmentPolicySchema,
   paymentPolicySchema,
   returnPolicySchema,
   inventoryItemSchema,
@@ -103,99 +100,9 @@ describe('Schema Validation', () => {
         expect(decodeResult(amountSchema, missingCurrency).success).toBe(false);
       });
     });
-
-    describe('regionSchema', () => {
-      it('validate region with name and type', () => {
-        const validRegion = {
-          regionName: 'United States',
-          regionType: 'COUNTRY',
-        };
-
-        const result = decodeResult(regionSchema, validRegion);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow optional fields', () => {
-        const minimalRegion = {};
-
-        const result = decodeResult(regionSchema, minimalRegion);
-        expect(result.success).toBe(true);
-      });
-
-      it('validate all region types', () => {
-        const regionTypes = [
-          'COUNTRY',
-          'COUNTRY_REGION',
-          'STATE_OR_PROVINCE',
-          'WORLD_REGION',
-          'WORLDWIDE',
-        ];
-
-        regionTypes.forEach((regionType) => {
-          const region = { regionName: 'Test', regionType };
-          const result = decodeResult(regionSchema, region);
-          expect(result.success).toBe(true);
-        });
-      });
-    });
-
-    describe('regionSetSchema', () => {
-      it('validate region set with included and excluded regions', () => {
-        const validRegionSet = {
-          regionIncluded: [
-            { regionName: 'United States', regionType: 'COUNTRY' },
-            { regionName: 'Canada', regionType: 'COUNTRY' },
-          ],
-          regionExcluded: [{ regionName: 'Alaska', regionType: 'STATE_OR_PROVINCE' }],
-        };
-
-        const result = decodeResult(regionSetSchema, validRegionSet);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow empty region set', () => {
-        const result = decodeResult(regionSetSchema, {});
-        expect(result.success).toBe(true);
-      });
-    });
   });
 
   describe('Account Management Schemas', () => {
-    describe('fulfillmentPolicySchema', () => {
-      it('validate basic fulfillment policy', () => {
-        const validPolicy = {
-          name: 'Standard Shipping',
-          marketplaceId: 'EBAY_US',
-          categoryTypes: [{ name: 'ALL_EXCLUDING_MOTORS_VEHICLES', default: true }],
-          handlingTime: { unit: 'DAY', value: 1 },
-          shippingOptions: [
-            {
-              costType: 'FLAT_RATE',
-              optionType: 'DOMESTIC',
-              shippingServices: [
-                {
-                  shippingCost: { currency: 'USD', value: '5.99' },
-                  shippingCarrierCode: 'USPS',
-                  shippingServiceCode: 'USPSPriority',
-                },
-              ],
-            },
-          ],
-        };
-
-        const result = decodeResult(fulfillmentPolicySchema, validPolicy);
-        expect(result.success).toBe(true);
-      });
-
-      it('require name and marketplaceId', () => {
-        const missingName = { marketplaceId: 'EBAY_US' };
-        const missingMarketplace = { name: 'Test Policy' };
-
-        expect(decodeResult(fulfillmentPolicySchema, missingName).success).toBe(false);
-        expect(decodeResult(fulfillmentPolicySchema, missingMarketplace).success).toBe(false);
-      });
-    });
-
     describe('paymentPolicySchema', () => {
       it('validate basic payment policy', () => {
         const validPolicy = {
@@ -376,17 +283,8 @@ describe('Schema Validation', () => {
   });
 
   describe('Schema Edge Cases', () => {
-    it('handle empty objects gracefully', () => {
-      const schemas = [regionSchema, regionSetSchema];
-
-      schemas.forEach((schema) => {
-        const result = decodeResult(schema, {});
-        expect(result.success).toBe(true);
-      });
-    });
-
     it('reject non-object values', () => {
-      const schemas = [amountSchema, timeDurationSchema, regionSchema];
+      const schemas = [amountSchema, timeDurationSchema];
 
       const invalidValues = [null, undefined, 'string', 123, [], true];
 

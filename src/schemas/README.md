@@ -50,8 +50,8 @@ import { getAccountManagementJsonSchemas } from '@/schemas/account-management/ac
 const accountSchemas = getAccountManagementJsonSchemas();
 
 // Access specific schemas
-const inputSchema = accountSchemas.getFulfillmentPoliciesInput;
-const outputSchema = accountSchemas.getFulfillmentPoliciesOutput;
+const inputSchema = accountSchemas.getPaymentPoliciesInput;
+const outputSchema = accountSchemas.getPaymentPoliciesOutput;
 ```
 
 ### Using Effect-Backed Schemas for Validation
@@ -102,8 +102,6 @@ Schemas for managing seller account settings, business policies, and programs.
 
 **Endpoints Covered:**
 
-- Custom Policies (PRODUCT_COMPLIANCE, TAKE_BACK)
-- Fulfillment Policies (shipping rules, handling time)
 - Payment Policies (payment methods, immediate pay)
 - Return Policies (return period, refund method)
 - Sales Tax (jurisdiction-based tax rules)
@@ -113,7 +111,7 @@ Schemas for managing seller account settings, business policies, and programs.
 
 **Key Schemas:**
 
-- `getFulfillmentPoliciesInputSchema` / `getFulfillmentPoliciesOutputSchema`
+- `getPaymentPoliciesInputSchema` / `getPaymentPoliciesOutputSchema`
 - `createPaymentPolicyInputSchema` / `createPaymentPolicyOutputSchema`
 - `getReturnPoliciesInputSchema` / `getReturnPoliciesOutputSchema`
 

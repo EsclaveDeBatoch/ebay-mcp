@@ -56,14 +56,8 @@ describe('Tools Layer', () => {
     mockApi = {
       // Account API
       account: {
-        getFulfillmentPolicies: vi.fn(),
         getPaymentPolicies: vi.fn(),
         getReturnPolicies: vi.fn(),
-        createFulfillmentPolicy: vi.fn(),
-        getFulfillmentPolicy: vi.fn(),
-        getFulfillmentPolicyByName: vi.fn(),
-        updateFulfillmentPolicy: vi.fn(),
-        deleteFulfillmentPolicy: vi.fn(),
         createPaymentPolicy: vi.fn(),
         getPaymentPolicy: vi.fn(),
         getPaymentPolicyByName: vi.fn(),
@@ -181,7 +175,7 @@ describe('Tools Layer', () => {
 
       // Check for tools from each category
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-      expect(toolNames).toContain('ebay_get_fulfillment_policies'); // accountTools
+      expect(toolNames).toContain('ebay_get_payment_policies'); // accountTools
       expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
       expect(toolNames).toContain('ebay_get_campaigns');
     });
@@ -543,50 +537,6 @@ describe('Tools Layer', () => {
           code: 'some-code',
         }),
       ).rejects.toThrow('Failed to exchange authorization code: String error message');
-    });
-  });
-
-  describe('executeTool - Account Management', () => {
-    it('get fulfillment policies', async () => {
-      const mockResponse = { fulfillmentPolicies: [] };
-      const input = {
-        marketplaceId: 'EBAY_US',
-      };
-      vi.mocked(mockApi.account.getFulfillmentPolicies).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-
-      const result = await executeTool(mockApi, 'ebay_get_fulfillment_policies', input);
-
-      expect(mockApi.account.getFulfillmentPolicies).toHaveBeenCalledWith(input);
-      expect(result).toBe(mockResponse);
-    });
-
-    it('create fulfillment policy', async () => {
-      const mockPolicy = { name: 'Test Policy', marketplaceId: 'EBAY_US' };
-      const mockResponse = { fulfillmentPolicyId: 'POL123' };
-      const input = {
-        policy: mockPolicy,
-      };
-      vi.mocked(mockApi.account.createFulfillmentPolicy).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-
-      const result = await executeTool(mockApi, 'ebay_create_fulfillment_policy', input);
-
-      expect(mockApi.account.createFulfillmentPolicy).toHaveBeenCalledWith(input);
-      expect(result).toBe(mockResponse);
-    });
-
-    it('delete fulfillment policy', async () => {
-      const input = {
-        fulfillmentPolicyId: 'POL123',
-      };
-      vi.mocked(mockApi.account.deleteFulfillmentPolicy).mockReturnValue(Effect.succeed(undefined));
-
-      await executeTool(mockApi, 'ebay_delete_fulfillment_policy', input);
-
-      expect(mockApi.account.deleteFulfillmentPolicy).toHaveBeenCalledWith(input);
     });
   });
 
