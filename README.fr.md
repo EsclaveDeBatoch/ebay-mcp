@@ -276,7 +276,7 @@ Sur les hôtes qui prennent en charge [MCP Apps](https://modelcontextprotocol.io
 | --- | --- |
 | **Tableau** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
 | **Fiche** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Graphique** | `ebay_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Graphique** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
 
 Les vues se compilent en HTML autonome avec `npm run build` (ou `npm run build:ui`) ; elles sont incluses dans le paquet publié et se chargent sans aucun accès réseau propre.
 

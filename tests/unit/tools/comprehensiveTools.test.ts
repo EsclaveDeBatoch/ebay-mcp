@@ -124,7 +124,6 @@ describe('Comprehensive Tools Coverage', () => {
         findSellerStandardsProfiles: vi.fn(),
         getSellerStandardsProfile: vi.fn(),
         getCustomerServiceMetric: vi.fn(),
-        getTrafficReport: vi.fn(),
       },
       metadata: {
         getAutomotivePartsCompatibilityPolicies: vi.fn(),
@@ -1161,21 +1160,6 @@ describe('Comprehensive Tools Coverage', () => {
   });
 
   describe('Analytics Tools', () => {
-    it('ebay_get_traffic_report', async () => {
-      const mockResponse = { records: [] };
-      vi.mocked(mockApi.analytics.getTrafficReport).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_traffic_report', {
-        dimension: 'LISTING',
-        filter: 'test',
-        metric: 'CLICK_THROUGH_RATE',
-      });
-      expect(mockApi.analytics.getTrafficReport).toHaveBeenCalledWith({
-        dimension: 'LISTING',
-        filter: 'test',
-        metric: 'CLICK_THROUGH_RATE',
-      });
-    });
-
     it('ebay_find_seller_standards_profiles', async () => {
       const mockResponse = { standardsProfiles: [] };
       vi.mocked(mockApi.analytics.findSellerStandardsProfiles).mockReturnValue(

@@ -12,28 +12,6 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 // Common Schemas
 // ============================================================================
 
-const errorParameterSchema = z.object({
-  name: z.string().optional(),
-  value: z.string().optional(),
-});
-
-const errorSchema = z.object({
-  category: z.string().optional(),
-  domain: z.string().optional(),
-  errorId: z.number().int().optional(),
-  inputRefIds: z.array(z.string()).optional(),
-  longMessage: z.string().optional(),
-  message: z.string().optional(),
-  outputRefIds: z.array(z.string()).optional(),
-  parameters: z.array(errorParameterSchema).optional(),
-  subdomain: z.string().optional(),
-});
-
-const valueSchema = z.object({
-  applicable: z.boolean().optional(),
-  value: z.record(z.never()).optional(),
-});
-
 // ============================================================================
 // Customer Service Metric Schemas
 // ============================================================================
@@ -114,51 +92,6 @@ const findSellerStandardsProfilesResponseSchema = z.object({
 });
 
 // ============================================================================
-// Traffic Report Schemas
-// ============================================================================
-
-const definitionSchema = z.object({
-  dataType: z.string().optional(),
-  key: z.string().optional(),
-  localizedName: z.string().optional(),
-});
-
-const headerSchema = z.object({
-  dimensionKeys: z.array(definitionSchema).optional(),
-  metrics: z.array(definitionSchema).optional(),
-});
-
-const recordSchema = z.object({
-  dimensionValues: z.array(valueSchema).optional(),
-  metricValues: z.array(valueSchema).optional(),
-});
-
-const metadataHeaderSchema = z.object({
-  key: z.string().optional(),
-  metadataKeys: z.array(definitionSchema).optional(),
-});
-
-const metadataRecordSchema = z.object({
-  metadataValues: z.array(valueSchema).optional(),
-  value: valueSchema.optional(),
-});
-
-const metadataSchema = z.object({
-  metadataHeader: metadataHeaderSchema.optional(),
-  metadataRecords: z.array(metadataRecordSchema).optional(),
-});
-
-const reportSchema = z.object({
-  dimensionMetadata: z.array(metadataSchema).optional(),
-  endDate: z.string().optional(),
-  header: headerSchema.optional(),
-  lastUpdatedDate: z.string().optional(),
-  records: z.array(recordSchema).optional(),
-  startDate: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-// ============================================================================
 // Input Schemas for Operations
 // ============================================================================
 
@@ -178,14 +111,6 @@ export const getCustomerServiceMetricInputSchema = z.object({
 export const getSellerStandardsProfileInputSchema = z.object({
   program: z.string().describe('Seller standards program identifier'),
   cycle: z.string().describe('Seller standards cycle, e.g., CURRENT or PROJECTED'),
-});
-
-/** Input accepted by Analytics API getTrafficReport. */
-export const getTrafficReportInputSchema = z.object({
-  dimension: z.string().describe('Report dimension, e.g., LISTING or DAY'),
-  filter: z.string().describe('eBay traffic report filter expression'),
-  metric: z.string().describe('Comma-delimited report metrics to retrieve'),
-  sort: z.string().optional().describe('Optional metric sort expression'),
 });
 
 // ============================================================================
@@ -231,30 +156,16 @@ export const getAnalyticsJsonSchemas = () => {
       'getSellerStandardsProfileOutput',
     ),
 
-    // Traffic Reports
-    getTrafficReportInput: zodToJsonSchema(getTrafficReportInputSchema, 'getTrafficReportInput'),
-    getTrafficReportOutput: zodToJsonSchema(reportSchema, 'getTrafficReportOutput'),
-
     // Common Types
     benchmarkMetadata: zodToJsonSchema(benchmarkMetadataSchema, 'benchmarkMetadata'),
     cycle: zodToJsonSchema(cycleSchema, 'cycle'),
-    definition: zodToJsonSchema(definitionSchema, 'definition'),
     dimension: zodToJsonSchema(dimensionSchema, 'dimension'),
     dimensionMetric: zodToJsonSchema(dimensionMetricSchema, 'dimensionMetric'),
     distribution: zodToJsonSchema(distributionSchema, 'distribution'),
-    error: zodToJsonSchema(errorSchema, 'error'),
-    errorParameter: zodToJsonSchema(errorParameterSchema, 'errorParameter'),
     evaluationCycle: zodToJsonSchema(evaluationCycleSchema, 'evaluationCycle'),
-    header: zodToJsonSchema(headerSchema, 'header'),
-    metadata: zodToJsonSchema(metadataSchema, 'metadata'),
-    metadataHeader: zodToJsonSchema(metadataHeaderSchema, 'metadataHeader'),
-    metadataRecord: zodToJsonSchema(metadataRecordSchema, 'metadataRecord'),
     metric: zodToJsonSchema(metricSchema, 'metric'),
     metricBenchmark: zodToJsonSchema(metricBenchmarkSchema, 'metricBenchmark'),
     metricDistribution: zodToJsonSchema(metricDistributionSchema, 'metricDistribution'),
-    record: zodToJsonSchema(recordSchema, 'record'),
-    report: zodToJsonSchema(reportSchema, 'report'),
     standardsProfile: zodToJsonSchema(standardsProfileSchema, 'standardsProfile'),
-    value: zodToJsonSchema(valueSchema, 'value'),
   };
 };

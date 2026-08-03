@@ -12,5 +12,5 @@
     "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "build", "docs", "tests", "vitest.config.cts"]
+  "exclude": ["node_modules", "build", "docs", "tests", "src/**/*.test.ts", "vitest.config.cts"]
 }

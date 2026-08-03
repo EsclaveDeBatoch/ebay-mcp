@@ -1,4 +1,5 @@
 import { toolCategories } from '@/tools/categories/index.js';
+import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import type { RegistrySnapshot, ToolFamily } from '@/skills/types.js';
 
 /**
@@ -16,7 +17,8 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Inventory items, offers, locations, inventory groups, bulk publish — the REST listing model',
   fulfillment: 'Orders, shipping fulfillments, refunds, and payment disputes',
   marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
-  analytics: 'Seller standards, traffic reports, and customer-service metrics',
+  analytics: 'Seller standards and customer-service metrics awaiting resource migration',
+  'sell.analytics': 'Traffic reports from the official Sell Analytics resource tree',
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   taxonomy: 'Category trees, category suggestions, and required item aspects',
   communication: 'Buyer messages, member messages, and notification settings',
@@ -45,8 +47,22 @@ export const buildRegistrySnapshot = (): RegistrySnapshot => {
     count: category.entries.length,
     blurb: FAMILY_BLURBS[category.key] ?? category.title,
   }));
+  const sellAnalyticsCount = ebayToolCatalogue.filter(
+    (ebayTool) => ebayTool.namespace === 'sell.analytics',
+  ).length;
+  if (sellAnalyticsCount > 0) {
+    families.push({
+      key: 'sell.analytics',
+      title: 'Sell Analytics',
+      count: sellAnalyticsCount,
+      blurb: FAMILY_BLURBS['sell.analytics'],
+    });
+  }
 
-  const toolCount = families.reduce((sum, family) => sum + family.count, 0);
+  const countAccumulator = { toolCount: 0 };
+  for (const family of families) {
+    countAccumulator.toolCount += family.count;
+  }
 
-  return { toolCount, families };
+  return { toolCount: countAccumulator.toolCount, families };
 };

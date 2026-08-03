@@ -276,7 +276,7 @@ Hoy se acogen 13 herramientas de flujos de trabajo esenciales, repartidas en tre
 | --- | --- |
 | **Tabla** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
 | **Ficha** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Gráfico** | `ebay_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
 
 Las vistas se compilan en HTML autónomo con `npm run build` (o `npm run build:ui`); se incluyen en el paquete publicado y se cargan sin acceso de red propio.
 

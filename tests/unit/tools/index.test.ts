@@ -167,7 +167,6 @@ describe('Tools Layer', () => {
       },
       // Analytics API
       analytics: {
-        getTrafficReport: vi.fn(),
         findSellerStandardsProfiles: vi.fn(),
         getSellerStandardsProfile: vi.fn(),
         getCustomerServiceMetric: vi.fn(),
@@ -335,7 +334,7 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
       expect(toolNames).toContain('ebay_get_orders'); // fulfillmentTools
       expect(toolNames).toContain('ebay_get_campaigns');
-      expect(toolNames).toContain('ebay_get_traffic_report'); // analyticsTools
+      expect(toolNames).toContain('ebay_get_seller_standards_profile'); // analyticsTools
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
       expect(toolNames).toContain('ebay_get_category_tree'); // taxonomyTools
       expect(toolNames).toContain('ebay_send_message'); // communicationTools
@@ -924,26 +923,6 @@ describe('Tools Layer', () => {
   });
 
   describe('executeTool - Analytics', () => {
-    it('get traffic report', async () => {
-      const mockResponse = { records: [] };
-      vi.mocked(mockApi.analytics.getTrafficReport).mockReturnValue(Effect.succeed(mockResponse));
-
-      const result = await executeTool(mockApi, 'ebay_get_traffic_report', {
-        dimension: 'LISTING',
-        filter: 'listingIds:{123}',
-        metric: 'CLICK_THROUGH_RATE',
-        sort: '-date',
-      });
-
-      expect(mockApi.analytics.getTrafficReport).toHaveBeenCalledWith({
-        dimension: 'LISTING',
-        filter: 'listingIds:{123}',
-        metric: 'CLICK_THROUGH_RATE',
-        sort: '-date',
-      });
-      expect(result).toBe(mockResponse);
-    });
-
     it('get seller standards profile', async () => {
       const mockResponse = { program: 'CUSTOMER_SERVICE', standardsLevel: 'TOP_RATED' };
       vi.mocked(mockApi.analytics.getSellerStandardsProfile).mockReturnValue(

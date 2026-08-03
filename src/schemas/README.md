@@ -248,7 +248,6 @@ Schemas for reports, metrics, and seller performance tracking.
 
 **Key Schemas:**
 
-- `getTrafficReportInputSchema` / `getTrafficReportOutputSchema`
 - `getSellerStandardsProfileOutputSchema`
 - `getCustomerServiceMetricOutputSchema`
 

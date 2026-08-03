@@ -276,7 +276,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | --- | --- |
 | **Таблица** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
 | **Карточка** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **График** | `ebay_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **График** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
 
 Представления собираются в самодостаточный HTML командой `npm run build` (или `npm run build:ui`); они входят в опубликованный пакет и загружаются без собственного доступа к сети.
 

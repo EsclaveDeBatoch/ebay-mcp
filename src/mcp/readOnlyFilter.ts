@@ -12,6 +12,7 @@
  * Intentionally structural so callers can pass full {@link ToolDefinition}s
  * without this module importing the tools tree.
  */
+import process from 'node:process';
 export interface ReadOnlyToolDefinition {
   name: string;
   annotations?: {

@@ -70,9 +70,8 @@ parallel architectures do not.
 
 ## Golden path — add or migrate an eBay operation
 
-The golden slice is Sell Analytics `traffic_report`. It becomes the linked code exemplar
-after the approved migration lands; until then, [CODE-STYLE.md](CODE-STYLE.md) is the exact
-target example.
+The golden slice is the production Sell Analytics `traffic_report` resource linked from
+[CODE-STYLE.md](CODE-STYLE.md).
 
 1. Run the sync command and locate the official namespace, API, resource, operation ID,
    specification, and generated response type.
@@ -120,8 +119,10 @@ load-bearing constraints:
   a hard line cap; introduce an abstraction only for a second caller or a genuine domain
   concept.
 - **MCP:** resource modules own schemas, aliases, operations, and named tool definitions.
-  The explicit catalogue imports every tool individually. Tool handlers perform one eBay
-  operation; multi-operation behavior receives a named workflow.
+  The explicit catalogue imports every tool individually. Migrated exposure gates use
+  official paths such as `sell.analytics`; legacy categories retain short keys only until
+  migration. Tool handlers perform one eBay operation; multi-operation behavior receives a
+  named workflow.
 - **UI:** projection happens only in `src/ui/presentation`. Props remain the source of
   truth; do not initialize state from a prop or synchronize props with effects. Use
   `className` only for visual styling, finite typed variants, semantic controls, accessible

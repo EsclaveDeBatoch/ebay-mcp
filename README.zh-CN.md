@@ -276,7 +276,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | --- | --- |
 | **表格** | `ebay_get_orders`、`ebay_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_get_inventory_locations`、`ebay_get_payment_dispute_summaries` |
 | **卡片** | `ebay_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_get_payment_dispute`、`ebay_get_seller_standards_profile` |
-| **图表** | `ebay_get_traffic_report`、`ebay_get_customer_service_metric` |
+| **图表** | `ebay_sell_analytics_get_traffic_report`、`ebay_get_customer_service_metric` |
 
 这些视图通过 `npm run build`（或 `npm run build:ui`）构建为自包含的 HTML；它们随发布的包一同分发，加载时无需自身的任何网络访问。
 

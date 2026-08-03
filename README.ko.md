@@ -276,7 +276,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | --- | --- |
 | **테이블** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
 | **카드** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **차트** | `ebay_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **차트** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
 
 보기는 `npm run build`(또는 `npm run build:ui`)로 자체 완결형 HTML로 빌드되며, 게시된 패키지에 포함되어 자체적인 네트워크 접근 없이 로드됩니다.
 

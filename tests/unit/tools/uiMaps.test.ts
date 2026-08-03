@@ -21,22 +21,8 @@ import {
   mapOrderToCard,
   mapRateLimitsToStat,
   mapStandardsProfileToCard,
-  mapTrafficReportToChart,
   mapUserRateLimitsToStat,
 } from '@/tools/ui/maps.js';
-
-/**
- * Builds a traffic-report `Value` leaf. The OpenAPI generator types the leaf as
- * `Record<string, never>`, but at runtime eBay returns a number or numeric
- * string — the gotcha `toNumber`/`toLabel` exist to absorb. The documented
- * `unknown` hop keeps the fixture honest about the real wire shape.
- */
-function reportValue(value: string | number): {
-  value: Record<string, never>;
-  applicable: boolean;
-} {
-  return { value: value as unknown as Record<string, never>, applicable: true };
-}
 
 describe('mapHelpers', () => {
   describe('formatAmount', () => {
@@ -325,30 +311,6 @@ describe('card mappers', () => {
 });
 
 describe('chart mappers', () => {
-  it('maps a traffic report to a line series per header metric', () => {
-    const view = mapTrafficReportToChart({
-      header: { metrics: [{ key: 'LISTING_VIEWS' }, { key: 'SALES' }] },
-      records: [
-        {
-          dimensionValues: [reportValue('2026-06-01')],
-          metricValues: [reportValue(100), reportValue('5')],
-        },
-        {
-          dimensionValues: [reportValue('2026-06-02')],
-          metricValues: [reportValue(150), reportValue('8')],
-        },
-      ],
-    });
-    expect(view.archetype).toBe('chart');
-    expect(view.kind).toBe('line');
-    expect(view.series.map((series) => series.name)).toEqual(['LISTING_VIEWS', 'SALES']);
-    expect(view.series[0].points).toEqual([
-      { x: '2026-06-01', y: 100 },
-      { x: '2026-06-02', y: 150 },
-    ]);
-    expect(view.series[1].points[1]).toEqual({ x: '2026-06-02', y: 8 });
-  });
-
   it('groups customer-service metrics into a bar series per metric key', () => {
     const view = mapCustomerServiceMetricToChart({
       dimensionMetrics: [

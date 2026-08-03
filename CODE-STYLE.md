@@ -785,8 +785,7 @@ Why: Each stage is reviewable, recoverable, and useful on its own.
 
 ## Canonical example
 
-The first target exemplar is the Sell Analytics `traffic_report` resource; this is
-illustrative until the golden-slice migration lands.
+The first production exemplar is the Sell Analytics `traffic_report` resource.
 
 ```ts
 // src/ebay/sell/analytics/trafficReport.ts
@@ -868,14 +867,14 @@ See the [canonical example](#canonical-example) for the composed target form.
 
 ## Exemplars
 
-No current production file satisfies the complete target yet; the first approved exemplar will
-be `src/ebay/sell/analytics/trafficReport.ts` after the golden-slice migration.
+Production evidence:
 
-Closest evidence during migration:
-
-- `src/api/analytics-and-report/analytics.ts` — current traffic-report behavior and official link.
-- `src/tools/defineTool.ts` — current typed tool binding to simplify rather than preserve.
-- `tests/unit/api/analytics/trafficReport.test.ts` — current observable HTTP contract to retain.
+- `src/ebay/sell/analytics/trafficReport.ts` — strict arguments, generated document alias,
+  promise operation, and named hierarchical MCP definition.
+- `src/ebay/sell/analytics/trafficReport.test.ts` — complete local resource contract.
+- `tests/integration/mcp/sell/analytics/trafficReport.test.ts` — the same product depth through
+  the real MCP SDK transport and runtime catalogue.
+- `src/ui/presentation/analytics.ts` — the only traffic-report projection boundary.
 
 ## Never
 

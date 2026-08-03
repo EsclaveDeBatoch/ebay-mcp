@@ -4,7 +4,6 @@ import {
   buildEndpointParams,
   type EbayApiError,
   type EndpointInputError,
-  optionalStringEffect,
   requestGetEffect,
   requireObjectEffect,
   requireStringEffect,
@@ -13,12 +12,10 @@ import type {
   findSellerStandardsProfilesInputSchema,
   getCustomerServiceMetricInputSchema,
   getSellerStandardsProfileInputSchema,
-  getTrafficReportInputSchema,
 } from '@/schemas/analytics/analytics.js';
 import { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
-type GetTrafficReportInput = InferEffectSchema<typeof getTrafficReportInputSchema>;
 type FindSellerStandardsProfilesInput = InferEffectSchema<
   typeof findSellerStandardsProfilesInputSchema
 >;
@@ -26,13 +23,6 @@ type GetSellerStandardsProfileInput = InferEffectSchema<
   typeof getSellerStandardsProfileInputSchema
 >;
 type GetCustomerServiceMetricInput = InferEffectSchema<typeof getCustomerServiceMetricInputSchema>;
-
-/**
- * Traffic report response returned by eBay Analytics getTrafficReport.
- *
- * @see https://developer.ebay.com/api-docs/sell/analytics/resources/traffic_report/methods/getTrafficReport
- */
-export type GetTrafficReportResponse = components['schemas']['Report'];
 
 /**
  * Seller standards profile response returned by eBay Analytics getSellerStandardsProfile.
@@ -68,48 +58,6 @@ export class AnalyticsApi {
   constructor(client: EbayApiClient) {
     this.client = client;
   }
-
-  /**
-   * Retrieves listing traffic report metrics.
-   *
-   * @param input - Traffic report dimension, filter, metric, and optional sort expression.
-   * @returns An Effect that succeeds with eBay's generated traffic report response.
-   *
-   * @example
-   * ```ts
-   * const report = await Effect.runPromise(
-   *   analyticsApi.getTrafficReport({
-   *     dimension: 'LISTING',
-   *     filter: 'listing_ids:{123}',
-   *     metric: 'IMPRESSION',
-   *   }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/sell/analytics/resources/traffic_report/methods/getTrafficReport
-   */
-  getTrafficReport = (
-    input: GetTrafficReportInput,
-  ): Effect.Effect<GetTrafficReportResponse, EbayApiError | EndpointInputError> => {
-    const { basePath, client } = this;
-    const path = `${basePath}/traffic_report`;
-
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<GetTrafficReportInput>(input, 'input');
-      const validatedDimension = yield* requireStringEffect(validatedInput.dimension, 'dimension');
-      const validatedFilter = yield* requireStringEffect(validatedInput.filter, 'filter');
-      const validatedMetric = yield* requireStringEffect(validatedInput.metric, 'metric');
-      const validatedSort = yield* optionalStringEffect(validatedInput.sort, 'sort');
-      const params = buildEndpointParams({
-        dimension: { wireName: 'dimension', value: validatedDimension },
-        filter: { wireName: 'filter', value: validatedFilter },
-        metric: { wireName: 'metric', value: validatedMetric },
-        sort: { wireName: 'sort', value: validatedSort },
-      });
-
-      return yield* requestGetEffect<GetTrafficReportResponse>(client, path, params);
-    });
-  };
 
   /**
    * Retrieves every seller standards profile available for the seller.

@@ -38,7 +38,6 @@ query validation, authenticated HTTP behavior, MCP exposure, and browser present
   framework or compatibility layer.
 - Integration suites are intentionally deeper than smoke tests because the MCP surface is
   the product contract.
-- The code exemplar link in `CODE-STYLE.md` remains marked pending until this real slice is
-  merged and green.
+- `CODE-STYLE.md` points at the green production slice as the exemplar for later resources.
 - A migrated resource cannot claim completion while either test boundary omits validation
   or failure branches.

@@ -31,7 +31,7 @@ import type {
   StatViewModel,
   TableViewModel,
   Tone,
-} from '@/tools/ui/viewModels.js';
+} from '@/ui/viewModels.js';
 import type { components as DeveloperAnalyticsComponents } from '@/generated/ebay/application-settings/developerAnalyticsV1BetaOas3.js';
 import type { components as AnalyticsSchemas } from '@/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
 import type { components as InventorySchemas } from '@/generated/ebay/sell-apps/listing-management/sellInventoryV1Oas3.js';
@@ -51,7 +51,6 @@ type InventoryItemWithSkuLocaleGroupid =
   InventorySchemas['schemas']['InventoryItemWithSkuLocaleGroupid'];
 type LocationResponse = InventorySchemas['schemas']['LocationResponse'];
 
-type Report = AnalyticsSchemas['schemas']['Report'];
 type StandardsProfile = AnalyticsSchemas['schemas']['StandardsProfile'];
 type GetCustomerServiceMetricResponse =
   AnalyticsSchemas['schemas']['GetCustomerServiceMetricResponse'];
@@ -545,39 +544,6 @@ export const mapStandardsProfileToCard = (result: StandardsProfile): CardViewMod
     subtitle: humanizeStatus(result.cycle?.cycleType) ?? undefined,
     badges: standardsBadge ? [standardsBadge] : undefined,
     sections,
-  };
-};
-
-/**
- * Projects a traffic report into a line chart: one series per metric column in
- * the report header, plotted across each record's first dimension value (day or
- * listing). Falls back to the first record's metric count when the header omits
- * metric definitions.
- *
- * @param result - Generated analytics report response from eBay.
- * @returns A line chart view model with one series per metric.
- *
- * @example
- * ```ts
- * const view = mapTrafficReportToChart({ records: [] });
- * ```
- */
-export const mapTrafficReportToChart = (result: Report): ChartViewModel => {
-  const records = result.records ?? [];
-  const metricDefs = result.header?.metrics ?? [];
-  const seriesCount = metricDefs.length || records[0]?.metricValues?.length || 0;
-  const series: ChartSeries[] = Array.from({ length: seriesCount }, (_unused, metricIndex) => ({
-    name: metricDefs[metricIndex]?.key ?? '',
-    points: records.flatMap((record) => {
-      const y = toNumber(record.metricValues?.[metricIndex]?.value);
-      return y === null ? [] : [{ x: toLabel(record.dimensionValues?.[0]?.value), y }];
-    }),
-  }));
-  return {
-    archetype: 'chart',
-    title: 'Traffic report',
-    kind: 'line',
-    series,
   };
 };
 

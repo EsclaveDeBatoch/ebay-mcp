@@ -1,15 +1,16 @@
 import type { EbaySellerApi } from '@/api/index.js';
+import type { McpUiBinding } from '@/mcp/uiBridge.js';
 import type { OutputArgs, ToolAnnotations } from '@/tools/types.js';
-import type { ResolvedToolUi, ToolEntry } from '@/tools/registry.js';
+import type { ToolEntry } from '@/tools/registry.js';
 import type { ToolHandler } from '@/tools/types.js';
-import { uiArchetypes } from '@/tools/ui/archetypes.js';
+import { uiArchetypes } from '@/ui/archetypes.js';
 import type {
   CardViewModel,
   ChartViewModel,
   StatViewModel,
   TableViewModel,
   ViewModel,
-} from '@/tools/ui/viewModels.js';
+} from '@/ui/viewModels.js';
 import { decodeEffectSchemaSync, z } from '@/utils/effectSchema.js';
 import type { EffectBackedRawShape, InferEffectRawShape } from '@/utils/effectSchemaTypes.js';
 
@@ -72,7 +73,7 @@ export interface ToolSpec<Shape extends EffectBackedRawShape, Result = unknown> 
  * ever receives the very value its own handler returned, so the cast restores the
  * type the mapper was written and type-checked against.
  */
-function resolveToolUi<Result>(ui: ToolUiSpec<Result>): ResolvedToolUi {
+function mcpUiBinding<Result>(ui: ToolUiSpec<Result>): McpUiBinding {
   return {
     archetype: ui.archetype,
     resourceUri: uiArchetypes[ui.archetype].uri,
@@ -81,7 +82,7 @@ function resolveToolUi<Result>(ui: ToolUiSpec<Result>): ResolvedToolUi {
 }
 
 /** Builds the public MCP definition from the richer tool spec. */
-function toDefinition<Shape extends EffectBackedRawShape, Result>(
+function publicToolDefinition<Shape extends EffectBackedRawShape, Result>(
   spec: ToolSpec<Shape, Result>,
 ): ToolEntry['definition'] {
   return {
@@ -129,9 +130,9 @@ export const defineTool = <Shape extends EffectBackedRawShape, Result>(
     spec.handler(api, decodeEffectSchemaSync(schema, args));
 
   return {
-    definition: toDefinition(spec),
+    definition: publicToolDefinition(spec),
     handler,
-    ui: spec.ui ? resolveToolUi(spec.ui) : undefined,
+    ui: spec.ui ? mcpUiBinding(spec.ui) : undefined,
   };
 };
 
@@ -169,8 +170,8 @@ export const rawTool = <Shape extends EffectBackedRawShape, Result>(
   const handler: ToolHandler = (api, args) => spec.handler(api, args as InferEffectRawShape<Shape>);
 
   return {
-    definition: toDefinition(spec),
+    definition: publicToolDefinition(spec),
     handler,
-    ui: spec.ui ? resolveToolUi(spec.ui) : undefined,
+    ui: spec.ui ? mcpUiBinding(spec.ui) : undefined,
   };
 };

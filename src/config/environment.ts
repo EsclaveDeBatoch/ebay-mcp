@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import type { EbayConfig } from '@/types/ebay.js';
 import type { Implementation } from '@modelcontextprotocol/sdk/types.js';
-import { getToolGatingConfigError } from '@/config/toolFamilies.js';
+import { getToolGatingConfigError } from '@/config/toolExposure.js';
 import { getErrorMessage } from '@/utils/errors.js';
 import { getVersion } from '@/utils/version.js';
 import { Effect, Either } from 'effect';

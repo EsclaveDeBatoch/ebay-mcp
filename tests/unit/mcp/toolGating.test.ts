@@ -3,9 +3,10 @@ import type { RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import {
   createToolGatingController,
   registerMetaTools,
-  toolNamesInFamilies,
+  toolNamesInExposurePaths,
 } from '@/mcp/toolGating.js';
 import { toolCategories } from '@/tools/categories/index.js';
+import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 
 /** Minimal RegisteredTool stand-in exposing just the enabled flag the controller toggles. */
 function fakeHandle(enabled = false): RegisteredTool {
@@ -24,12 +25,15 @@ function fakeHandle(enabled = false): RegisteredTool {
 }
 
 /** Builds a handle map for every registered tool, as dynamic mode does (all disabled). */
-function buildHandles(): Map<string, RegisteredTool> {
+function fakeToolHandles(): Map<string, RegisteredTool> {
   const handles = new Map<string, RegisteredTool>();
   for (const category of toolCategories) {
     for (const entry of category.entries) {
       handles.set(entry.definition.name, fakeHandle(false));
     }
+  }
+  for (const ebayTool of ebayToolCatalogue) {
+    handles.set(ebayTool.name, fakeHandle(false));
   }
   return handles;
 }
@@ -37,32 +41,37 @@ function buildHandles(): Map<string, RegisteredTool> {
 const inventory = toolCategories.find((category) => category.key === 'inventory')!;
 const sampleTool = inventory.entries[0].definition.name;
 
-describe('toolNamesInFamilies', () => {
+describe('toolNamesInExposurePaths', () => {
   it('returns exactly the tools of the named families', () => {
-    const names = toolNamesInFamilies(['inventory']);
+    const names = toolNamesInExposurePaths(['inventory']);
     expect(names.size).toBe(inventory.entries.length);
     expect(names.has(sampleTool)).toBe(true);
   });
 
+  it('returns the migrated traffic report under its official exposure path', () => {
+    const names = toolNamesInExposurePaths(['sell.analytics']);
+    expect([...names]).toEqual(['ebay_sell_analytics_get_traffic_report']);
+  });
+
   it('ignores unknown families', () => {
-    expect(toolNamesInFamilies(['nope']).size).toBe(0);
+    expect(toolNamesInExposurePaths(['nope']).size).toBe(0);
   });
 });
 
 describe('ToolGatingController', () => {
   describe('list', () => {
     it('returns the family overview with no arguments', () => {
-      const controller = createToolGatingController(buildHandles());
+      const controller = createToolGatingController(fakeToolHandles());
       const result = controller.list({}) as {
         families: { key: string; count: number }[];
       };
-      expect(result.families).toHaveLength(toolCategories.length);
+      expect(result.families).toHaveLength(toolCategories.length + 1);
       const inventoryRow = result.families.find((row) => row.key === 'inventory');
       expect(inventoryRow?.count).toBe(inventory.entries.length);
     });
 
     it('lists the tools of a family', () => {
-      const controller = createToolGatingController(buildHandles());
+      const controller = createToolGatingController(fakeToolHandles());
       const result = controller.list({ family: 'inventory' }) as {
         tools: { name: string; family: string }[];
         total: number;
@@ -72,7 +81,7 @@ describe('ToolGatingController', () => {
     });
 
     it('rejects an unknown family with the valid list', () => {
-      const controller = createToolGatingController(buildHandles());
+      const controller = createToolGatingController(fakeToolHandles());
       const result = controller.list({ family: 'nope' }) as {
         error: string;
         validFamilies: readonly string[];
@@ -82,7 +91,7 @@ describe('ToolGatingController', () => {
     });
 
     it('keyword-searches across all tools by name', () => {
-      const controller = createToolGatingController(buildHandles());
+      const controller = createToolGatingController(fakeToolHandles());
       const result = controller.list({ query: sampleTool.toLowerCase() }) as {
         tools: { name: string }[];
       };
@@ -90,7 +99,7 @@ describe('ToolGatingController', () => {
     });
 
     it('paginates with an opaque cursor', () => {
-      const controller = createToolGatingController(buildHandles());
+      const controller = createToolGatingController(fakeToolHandles());
       const first = controller.list({ family: 'inventory', limit: 2 }) as {
         tools: { name: string }[];
         nextCursor?: string;
@@ -111,7 +120,7 @@ describe('ToolGatingController', () => {
 
   describe('enable / disable', () => {
     it('enables a known tool and reports the active count', () => {
-      const handles = buildHandles();
+      const handles = fakeToolHandles();
       const controller = createToolGatingController(handles);
       const result = controller.enable([sampleTool]);
       expect(result.enabled).toEqual([sampleTool]);
@@ -121,14 +130,14 @@ describe('ToolGatingController', () => {
     });
 
     it('soft-fails unknown names instead of throwing', () => {
-      const controller = createToolGatingController(buildHandles());
+      const controller = createToolGatingController(fakeToolHandles());
       const result = controller.enable([sampleTool, 'made-up-tool']);
       expect(result.enabled).toEqual([sampleTool]);
       expect(result.unknown).toEqual(['made-up-tool']);
     });
 
     it('disables a previously enabled tool', () => {
-      const handles = buildHandles();
+      const handles = fakeToolHandles();
       const controller = createToolGatingController(handles);
       controller.enable([sampleTool]);
       const result = controller.disable([sampleTool]);
@@ -143,7 +152,7 @@ describe('registerMetaTools', () => {
   it('registers exactly the three discovery tools', () => {
     const registerTool = vi.fn<(name: string, config: unknown, handler: unknown) => void>();
     const server = { registerTool } as never;
-    registerMetaTools(server, createToolGatingController(buildHandles()));
+    registerMetaTools(server, createToolGatingController(fakeToolHandles()));
 
     const names = registerTool.mock.calls.map((call) => call[0]);
     expect(names).toEqual(['list_ebay_tools', 'enable_ebay_tools', 'disable_ebay_tools']);
@@ -152,7 +161,7 @@ describe('registerMetaTools', () => {
   it('wires each meta-tool handler to the controller', () => {
     const registerTool = vi.fn<(name: string, config: unknown, handler: unknown) => void>();
     const server = { registerTool } as never;
-    const handles = buildHandles();
+    const handles = fakeToolHandles();
     registerMetaTools(server, createToolGatingController(handles));
 
     const enableCall = registerTool.mock.calls.find((call) => call[0] === 'enable_ebay_tools')!;

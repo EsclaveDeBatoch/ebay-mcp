@@ -17,8 +17,8 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build, type InlineConfig } from 'vite';
 import { viteSingleFile } from 'vite-plugin-singlefile';
-import { uiArchetypes } from '@/tools/ui/archetypes.js';
-import type { ViewArchetype } from '@/tools/ui/viewModels.js';
+import { uiArchetypes } from '@/ui/archetypes.js';
+import type { ViewArchetype } from '@/ui/viewModels.js';
 import { serverLogger } from '@/utils/logger.js';
 
 const scriptsDir = dirname(fileURLToPath(import.meta.url));

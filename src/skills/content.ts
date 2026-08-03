@@ -27,7 +27,7 @@ export const buildUsingDoc = (snapshot: RegistrySnapshot): SkillDoc => ({
   slug: 'ebay-mcp-using',
   title: 'Using the eBay MCP tools',
   description: `Drive eBay's Sell APIs through the ebay-mcp server: ${snapshot.toolCount} tools for listings, orders, marketing, and analytics. Use when creating or revising listings, fulfilling orders, issuing refunds, running Promoted Listings campaigns, or debugging eBay auth/rate-limit errors.`,
-  intro: `The \`ebay-mcp\` server exposes **${snapshot.toolCount} tools across 100% of eBay's Sell APIs**, running locally over MCP. Every tool is named \`ebay_<verb>_<noun>\` (plus two ChatGPT-connector tools, \`search\`/\`fetch\`). You already see each tool's input schema via \`tools/list\` — this skill covers what discovery can't: which tools to chain, what eBay requires first, and how to read its errors.`,
+  intro: `The \`ebay-mcp\` server exposes **${snapshot.toolCount} tools across 100% of eBay's Sell APIs**, running locally over MCP. Migrated resources use hierarchical names such as \`ebay_sell_analytics_get_traffic_report\`; resources awaiting migration retain their earlier shorter names. The two ChatGPT-connector tools are \`search\` and \`fetch\`. You already see each tool's input schema via \`tools/list\` — this skill covers what discovery can't: which tools to chain, what eBay requires first, and how to read its errors.`,
   sections: [
     {
       heading: 'Authentication & environment',

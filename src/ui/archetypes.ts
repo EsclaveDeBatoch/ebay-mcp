@@ -1,4 +1,4 @@
-import type { ViewArchetype } from '@/tools/ui/viewModels.js';
+import type { ViewArchetype } from '@/ui/viewModels.js';
 
 /**
  * Static description of one reusable UI archetype: the `ui://` resource it is
@@ -9,7 +9,7 @@ import type { ViewArchetype } from '@/tools/ui/viewModels.js';
  * add the literal to {@link ViewArchetype}, add its view-model shape, and add one
  * entry here — `tsc` then forces a matching React app and `ui.map` everywhere.
  */
-export interface UiArchetypeManifestEntry {
+export type UiArchetypeManifestEntry = {
   /**
    * Stable resource identifier. A tool advertises this via `_meta.ui.resourceUri`
    * and the runtime registers the HTML under the same URI, so the host can fetch
@@ -20,7 +20,7 @@ export interface UiArchetypeManifestEntry {
   name: string;
   /** File under `build/ui/` (produced by the Vite build) that holds the inlined app. */
   htmlFile: string;
-}
+};
 
 /**
  * The archetype manifest — the authoritative map from {@link ViewArchetype} to its

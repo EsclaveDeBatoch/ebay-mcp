@@ -9,7 +9,7 @@
  * unit tests one obvious place to pin formatting behaviour.
  */
 
-import type { CardBadge } from '@/tools/ui/viewModels.js';
+import type { CardBadge } from '@/ui/viewModels.js';
 
 /**
  * Minimal monetary shape common to eBay's `Amount` and `SimpleAmount` schemas.

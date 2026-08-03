@@ -238,7 +238,7 @@ EBAY_MARKETPLACE_ID=EBAY_US         # default marketplace (overridable per tool)
 EBAY_CONTENT_LANGUAGE=en-US         # default request content language
 EBAY_USER_REFRESH_TOKEN=your_token  # for higher rate limits
 EBAY_MCP_UI=on                      # interactive MCP Apps views (beta); "off" forces plain JSON
-EBAY_MCP_TOOLS=all                  # tool exposure: "all", "dynamic", or a family list (see below)
+EBAY_MCP_TOOLS=all                  # "all", "dynamic", or an exposure-path list (see below)
 EBAY_READ_ONLY=false                # when true, only register read-only tools (gets/lists/searches)
 # HTTP deploy (optional — Docker / Railway / self-hosted):
 # MCP_HOST=0.0.0.0                  # default is 0.0.0.0 when PORT is set
@@ -254,9 +254,9 @@ By default all tools are advertised to the agent at once. On a long conversation
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | `all` _(default, or unset)_ | Every tool advertised at startup.                                                                                                                      | every host                              |
 | `dynamic`                   | Only three discovery tools are visible (`list_ebay_tools`, `enable_ebay_tools`, `disable_ebay_tools`). The agent searches the catalogue and loads only the tools it needs; they then appear natively. | hosts that honor `tools/listChanged` (e.g. Claude) |
-| `inventory,fulfillment,…`   | Registers **only** the named families (listed below), frozen for the session.                                                                          | every host (incl. ChatGPT, Cursor)      |
+| `sell.analytics,inventory,…` | Registers **only** the named exposure paths (listed below), frozen for the session.                                                                    | every host (incl. ChatGPT, Cursor)      |
 
-The family list is literal — you get exactly what you name. ChatGPT connectors need the `connector` family (its `search`/`fetch` tools); add it explicitly, e.g. `EBAY_MCP_TOOLS=connector,inventory`. An unknown family name fails fast at startup with the valid list. Valid families: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `analytics`, `metadata`, `taxonomy`, `communication`, `browse`, `other`, `developer`, `trading`.
+The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `sell.analytics`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `analytics`, `metadata`, `taxonomy`, `communication`, `browse`, `other`, `developer`, `trading`, `sell.analytics`.
 
 ### Authentication & rate limits
 
@@ -299,7 +299,8 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Orders, shipping, refunds, disputes, payment-dispute evidence |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
-| [Analytics](src/tools/categories/analytics.ts) | Traffic reports, seller standards, customer-service metrics |
+| [Sell Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic reports under the official `sell.analytics` namespace |
+| [Analytics migration inventory](src/tools/categories/analytics.ts) | Seller standards and customer-service metrics |
 | [Communication](src/tools/categories/communication.ts) | Buyer–seller messaging, negotiations, notifications, feedback |
 | [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Category trees, item aspects, item conditions |
@@ -308,7 +309,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | [Developer](src/tools/categories/developer.ts) | Rate limits, signing keys, client registration |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |
 
-**Example tools:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Example tools:** `ebay_sell_analytics_get_traffic_report`, `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 For the complete machine-readable index, see [llms.txt](llms.txt).
 
@@ -334,7 +335,7 @@ On hosts that support [MCP Apps](https://modelcontextprotocol.io), common read t
 | --- | --- |
 | **Table** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
 | **Card** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Chart** | `ebay_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Chart** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
 | **Stat** | `ebay_get_rate_limits`, `ebay_get_user_rate_limits` |
 
 The views build into self-contained HTML with `npm run build` (or `npm run build:ui`); they ship in the published package and load with no network access of their own.
@@ -356,7 +357,7 @@ Common tasks, phrased as you'd ask your AI assistant:
 - **Unofficial project.** This is not an eBay product and does not grant any additional API rights beyond your own eBay Developer account.
 - **Local server, live APIs.** The MCP server runs on your machine, but tools still call eBay's sandbox or production APIs over the internet.
 - **Mutating tools can change seller data.** Inventory, fulfillment, marketing, and Trading tools may create, revise, refund, end, or otherwise update eBay records. Test in sandbox first.
-- **Tool exposure is configurable.** Use `EBAY_MCP_TOOLS=dynamic` or a family list when you want a smaller, workflow-specific tool surface.
+- **Tool exposure is configurable.** Use `EBAY_MCP_TOOLS=dynamic` or an exposure-path list when you want a smaller, workflow-specific tool surface.
 - **Interactive views are read-only.** MCP Apps views can page, refresh, and drill into read tools, but they do not mutate eBay data.
 - **Compliance remains yours.** Keep credentials secure, monitor rate limits, and follow eBay's API terms and data-handling rules.
 

@@ -77,6 +77,18 @@ describe('Scope Utils', () => {
       );
     });
 
+    it('returns the analytics scope for the hierarchical traffic-report tool', () => {
+      const requirement = getRequiredScopesForTool('ebay_sell_analytics_get_traffic_report');
+
+      expect(requirement).toBeDefined();
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
+      );
+    });
+
     it('return scopes for create/write operations', () => {
       const requirement = getRequiredScopesForTool('ebay_create_or_replace_inventory_item');
 

@@ -276,7 +276,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | --- | --- |
 | **テーブル** | `ebay_get_orders`、`ebay_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_get_inventory_locations`、`ebay_get_payment_dispute_summaries` |
 | **カード** | `ebay_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_get_payment_dispute`、`ebay_get_seller_standards_profile` |
-| **チャート** | `ebay_get_traffic_report`、`ebay_get_customer_service_metric` |
+| **チャート** | `ebay_sell_analytics_get_traffic_report`、`ebay_get_customer_service_metric` |
 
 これらの表示は `npm run build`（または `npm run build:ui`）で自己完結型の HTML にビルドされ、公開パッケージに同梱されて、それ自体は一切のネットワークアクセスなしで読み込まれます。
 

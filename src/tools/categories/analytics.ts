@@ -3,33 +3,13 @@ import {
   findSellerStandardsProfilesInputSchema,
   getCustomerServiceMetricInputSchema,
   getSellerStandardsProfileInputSchema,
-  getTrafficReportInputSchema,
 } from '@/schemas/analytics/analytics.js';
 import { defineTool } from '@/tools/defineTool.js';
 import type { ToolEntry } from '@/tools/registry.js';
-import {
-  mapCustomerServiceMetricToChart,
-  mapStandardsProfileToCard,
-  mapTrafficReportToChart,
-} from '@/tools/ui/maps.js';
+import { mapCustomerServiceMetricToChart, mapStandardsProfileToCard } from '@/tools/ui/maps.js';
 
 /** Analytics API tools for seller traffic and performance reporting. */
 export const analyticsEntries: ToolEntry[] = [
-  defineTool({
-    name: 'ebay_get_traffic_report',
-    description: 'Get traffic report for listings',
-    inputSchema: getTrafficReportInputSchema.shape,
-    outputSchema: {
-      type: 'object',
-      properties: {
-        records: { type: 'array' },
-        warnings: { type: 'array' },
-      },
-      description: 'Traffic report data',
-    },
-    handler: (api, args) => Effect.runPromise(api.analytics.getTrafficReport(args)),
-    ui: { archetype: 'chart', map: mapTrafficReportToChart },
-  }),
   defineTool({
     name: 'ebay_find_seller_standards_profiles',
     description: 'Find all seller standards profiles',

@@ -194,7 +194,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
     },
 
     // Analytics Tools
-    ebay_get_traffic_report: {
+    ebay_sell_analytics_get_traffic_report: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
       description: 'Requires read access to analytics',
