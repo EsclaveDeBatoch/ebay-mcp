@@ -156,6 +156,16 @@
       }
     },
     {
+      "includes": ["src/**/*.test.ts", "tests/**"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUndeclaredDependencies": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": ["vitest.config.cts", "vitest.integration.config.cts"],
       "linter": {
         "rules": {
