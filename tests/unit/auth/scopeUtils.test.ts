@@ -94,6 +94,29 @@ describe('Scope Utils', () => {
       );
     });
 
+    it('returns the public-data scope for application rate limits', () => {
+      const requirement = getRequiredScopesForTool('ebay_developer_analytics_get_rate_limits');
+
+      expect(requirement?.requiredScopes).toEqual(['https://api.ebay.com/oauth/api_scope']);
+      expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope');
+    });
+
+    it('returns the supported user-scope alternatives for user rate limits', () => {
+      const requirement = getRequiredScopesForTool('ebay_developer_analytics_get_user_rate_limits');
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.marketplace.insights.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.catalog.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.marketing',
+        'https://api.ebay.com/oauth/api_scope/sell.marketing.readonly',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      );
+    });
+
     it('returns the inventory scope for listing recommendations', () => {
       const requirement = getRequiredScopesForTool(
         'ebay_sell_recommendation_find_listing_recommendations',

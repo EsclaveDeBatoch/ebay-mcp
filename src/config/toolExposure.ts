@@ -36,6 +36,7 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'commerce.notification',
   'commerce.taxonomy',
   'commerce.translation',
+  'developer.analytics',
   'sell.analytics',
   'sell.negotiation',
   'sell.recommendation',

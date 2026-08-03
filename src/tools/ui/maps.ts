@@ -14,16 +14,7 @@
  */
 
 import { formatAmount, humanizeStatus, statusTone, truncate } from '@/tools/ui/mapHelpers.js';
-import type {
-  CardBadge,
-  CardSection,
-  CardViewModel,
-  StatTile,
-  StatViewModel,
-  TableViewModel,
-  Tone,
-} from '@/ui/viewModels.js';
-import type { components as DeveloperAnalyticsComponents } from '@/generated/ebay/application-settings/developerAnalyticsV1BetaOas3.js';
+import type { CardBadge, CardSection, CardViewModel, TableViewModel } from '@/ui/viewModels.js';
 import type { components as InventorySchemas } from '@/generated/ebay/sell-apps/listing-management/sellInventoryV1Oas3.js';
 import type { components as FulfillmentSchemas } from '@/generated/ebay/sell-apps/order-management/sellFulfillmentV1Oas3.js';
 
@@ -40,8 +31,6 @@ type InventoryItems = InventorySchemas['schemas']['InventoryItems'];
 type InventoryItemWithSkuLocaleGroupid =
   InventorySchemas['schemas']['InventoryItemWithSkuLocaleGroupid'];
 type LocationResponse = InventorySchemas['schemas']['LocationResponse'];
-
-type RateLimitsResponse = DeveloperAnalyticsComponents['schemas']['RateLimitsResponse'];
 
 /**
  * Builds a table's contextual footnote from how many rows are shown versus the
@@ -490,83 +479,3 @@ export const mapDisputeToCard = (result: PaymentDispute): CardViewModel => {
     sections,
   };
 };
-
-/**
- * Buckets remaining API headroom into a tile tone: healthy above a quarter of
- * the quota, warning as it drains, danger near exhaustion. A missing or zero
- * limit is neutral — there is no meaningful ratio to colour.
- */
-const headroomTone = (remaining: number, limit: number): Tone => {
-  if (limit <= 0) {
-    return 'neutral';
-  }
-  const ratio = remaining / limit;
-  if (ratio <= 0.1) {
-    return 'danger';
-  }
-  if (ratio <= 0.25) {
-    return 'warning';
-  }
-  return 'success';
-};
-
-/**
- * Flattens a rate-limit response into one tile per API resource, showing calls
- * remaining against the quota with a tone that reflects headroom. Shared by the
- * application- and user-scoped rate-limit tools, which return the same shape.
- */
-const rateLimitTiles = (result: RateLimitsResponse): StatTile[] => {
-  const tiles: StatTile[] = [];
-  for (const rateLimit of result.rateLimits ?? []) {
-    for (const resource of rateLimit.resources ?? []) {
-      const rate = resource.rates?.[0];
-      if (!rate) {
-        continue;
-      }
-      const remaining = rate.remaining ?? 0;
-      const limit = rate.limit ?? 0;
-      const parts = [rateLimit.apiContext, rateLimit.apiName, resource.name].filter(Boolean);
-      tiles.push({
-        label: parts.length > 0 ? parts.join(' · ') : '',
-        value: remaining.toLocaleString('en-US'),
-        sub: `of ${limit.toLocaleString('en-US')}`,
-        tone: headroomTone(remaining, limit),
-      });
-    }
-  }
-  return tiles;
-};
-
-/**
- * Projects application rate limits into a stat grid (calls remaining per resource).
- *
- * @param result - Generated application rate-limit response from eBay.
- * @returns A stat view model with one tile per rated resource.
- *
- * @example
- * ```ts
- * const view = mapRateLimitsToStat({ rateLimits: [] });
- * ```
- */
-export const mapRateLimitsToStat = (result: RateLimitsResponse): StatViewModel => ({
-  archetype: 'stat',
-  title: 'Application rate limits',
-  tiles: rateLimitTiles(result),
-});
-
-/**
- * Projects user rate limits into a stat grid (per-user calls remaining per resource).
- *
- * @param result - Generated user rate-limit response from eBay.
- * @returns A stat view model with one tile per rated resource.
- *
- * @example
- * ```ts
- * const view = mapUserRateLimitsToStat({ rateLimits: [] });
- * ```
- */
-export const mapUserRateLimitsToStat = (result: RateLimitsResponse): StatViewModel => ({
-  archetype: 'stat',
-  title: 'User rate limits',
-  tiles: rateLimitTiles(result),
-});

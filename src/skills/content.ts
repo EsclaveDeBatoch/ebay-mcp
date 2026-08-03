@@ -72,7 +72,7 @@ export const buildUsingDoc = (snapshot: RegistrySnapshot): SkillDoc => ({
         '`ebay_create_listing` / `ebay_revise_listing` / `ebay_relist_item` / `ebay_end_listing`, list via `ebay_get_active_listings`. Use only when you specifically need the legacy flow — do not mix it with the REST Inventory model for the same SKU.',
         '',
         '**Diagnose failing calls.**',
-        '`ebay_get_token_status` (auth valid/expiring?) → `ebay_get_rate_limits` / `ebay_get_user_rate_limits` (quota hit?) → `ebay_get_api_status` (eBay-side outage?).',
+        '`ebay_get_token_status` (auth valid/expiring?) → `ebay_developer_analytics_get_rate_limits` / `ebay_developer_analytics_get_user_rate_limits` (quota hit?) → `ebay_get_api_status` (eBay-side outage?).',
       ].join('\n'),
     },
     {

@@ -25,6 +25,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Alert configuration, delivery destinations, topics, subscriptions, filters, and validation keys from Commerce Notification',
   'commerce.taxonomy': 'Category trees, category suggestions, and required listing aspects',
   'commerce.translation': 'Listing-title and description translation between supported languages',
+  'developer.analytics': 'Application and user API quota utilization from Developer Analytics',
   'sell.analytics':
     'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
   'sell.negotiation': 'Listings eligible for seller offers and seller-initiated discounted offers',
@@ -33,7 +34,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   browse: 'Sold/completed listing search (Finding API) for pricing comps',
   other: 'Feedback and assorted Sell-API helpers',
-  developer: 'API status, rate limits, client registration, and signing keys',
+  developer: 'API status, client registration, and signing keys',
   trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',
 };
 
@@ -44,6 +45,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'commerce.notification', title: 'Commerce Notification' },
   { namespace: 'commerce.taxonomy', title: 'Commerce Taxonomy' },
   { namespace: 'commerce.translation', title: 'Commerce Translation' },
+  { namespace: 'developer.analytics', title: 'Developer Analytics' },
   { namespace: 'sell.analytics', title: 'Sell Analytics' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },

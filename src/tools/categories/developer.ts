@@ -1,17 +1,13 @@
 import { zodToJsonSchema } from 'zod-to-json-schema';
 import { Effect } from 'effect';
 import { defineTool } from '@/tools/defineTool.js';
-import { mapRateLimitsToStat, mapUserRateLimitsToStat } from '@/tools/ui/maps.js';
 import {
   clientDetailsSchema,
   createSigningKeyInputSchema,
   getApiStatusInputSchema,
-  getRateLimitsInputSchema,
   getSigningKeyInputSchema,
   getSigningKeysInputSchema,
-  getUserRateLimitsInputSchema,
   querySigningKeysResponseSchema,
-  rateLimitsResponseSchema,
   registerClientInputSchema,
   signingKeySchema,
 } from '@/schemas/developer/developer.js';
@@ -54,30 +50,6 @@ export const developerEntries: ToolEntry[] = [
           Effect.map((feed) => ({ items: feed.items, ...(feed.error && { error: feed.error }) })),
         ),
       ),
-  }),
-  defineTool({
-    name: 'ebay_get_rate_limits',
-    description:
-      'Get application rate limits for eBay APIs. Returns call quota, remaining calls, and time until reset for each API resource.',
-    inputSchema: getRateLimitsInputSchema.shape,
-    outputSchema: zodToJsonSchema(rateLimitsResponseSchema, {
-      name: 'GetRateLimitsOutput',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.developer.getRateLimits(args)),
-    ui: { archetype: 'stat', map: mapRateLimitsToStat },
-  }),
-  defineTool({
-    name: 'ebay_get_user_rate_limits',
-    description:
-      'Get user-specific rate limits for eBay APIs. Returns call quota per user for APIs that limit by user.',
-    inputSchema: getUserRateLimitsInputSchema.shape,
-    outputSchema: zodToJsonSchema(rateLimitsResponseSchema, {
-      name: 'GetUserRateLimitsOutput',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.developer.getUserRateLimits(args)),
-    ui: { archetype: 'stat', map: mapUserRateLimitsToStat },
   }),
   defineTool({
     name: 'ebay_register_client',

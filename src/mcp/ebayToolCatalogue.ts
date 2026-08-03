@@ -39,6 +39,7 @@ import {
   getItemAspectsForCategoryTool,
 } from '@/ebay/commerce/taxonomy/categoryTree.js';
 import { translateListingTextTool } from '@/ebay/commerce/translation/language.js';
+import { getRateLimitsTool, getUserRateLimitsTool } from '@/ebay/developer/analytics/rateLimit.js';
 import { getCustomerServiceMetricTool } from '@/ebay/sell/analytics/customerServiceMetric.js';
 import {
   findSellerStandardsProfilesTool,
@@ -91,6 +92,8 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getItemAspectsForCategoryTool,
   getUserTool,
   translateListingTextTool,
+  getRateLimitsTool,
+  getUserRateLimitsTool,
   getTrafficReportTool,
   findSellerStandardsProfilesTool,
   getSellerStandardsProfileTool,

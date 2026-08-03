@@ -347,6 +347,10 @@ function normalizeForMatching(name: string): string {
 const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   // Feedback API
 
+  // Developer Analytics API
+  getratelimits: ['ebay_developer_analytics_get_rate_limits'],
+  getuserratelimits: ['ebay_developer_analytics_get_user_rate_limits'],
+
   // Taxonomy API
   getdefaultcategorytreeid: ['ebay_commerce_taxonomy_get_default_category_tree_id'],
   getcategorytree: ['ebay_commerce_taxonomy_get_category_tree'],

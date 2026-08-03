@@ -1,6 +1,5 @@
 import type { EbayApiClient } from '@/api/client.js';
 import {
-  buildEndpointParams,
   type EbayApiError,
   type EndpointInputError,
   requestGetEffect,
@@ -10,20 +9,15 @@ import {
 } from '@/api/shared/request.js';
 import type {
   createSigningKeyInputSchema,
-  getRateLimitsInputSchema,
   getSigningKeyInputSchema,
   getSigningKeysInputSchema,
-  getUserRateLimitsInputSchema,
   registerClientInputSchema,
 } from '@/schemas/developer/developer.js';
-import type { components as AnalyticsComponents } from '@/generated/ebay/application-settings/developerAnalyticsV1BetaOas3.js';
 import type { components as ClientComponents } from '@/generated/ebay/application-settings/developerClientRegistrationV1Oas3.js';
 import type { components as KeyComponents } from '@/generated/ebay/application-settings/developerKeyManagementV1Oas3.js';
 import { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
-/** Response returned by Developer Analytics rate-limit endpoints. */
-type RateLimitsResponse = AnalyticsComponents['schemas']['RateLimitsResponse'];
 /** Request body for registering a developer client. */
 type ClientSettings = ClientComponents['schemas']['ClientSettings'];
 /** Response returned after registering a developer client. */
@@ -34,88 +28,22 @@ type SigningKey = KeyComponents['schemas']['SigningKey'];
 type QuerySigningKeysResponse = KeyComponents['schemas']['QuerySigningKeysResponse'];
 /** Request body for creating a signing key. */
 type CreateSigningKeyRequest = KeyComponents['schemas']['CreateSigningKeyRequest'];
-type GetRateLimitsInput = InferEffectSchema<typeof getRateLimitsInputSchema>;
-type GetUserRateLimitsInput = InferEffectSchema<typeof getUserRateLimitsInputSchema>;
 type RegisterClientInput = InferEffectSchema<typeof registerClientInputSchema>;
 type GetSigningKeysInput = InferEffectSchema<typeof getSigningKeysInputSchema>;
 type CreateSigningKeyInput = InferEffectSchema<typeof createSigningKeyInputSchema>;
 type GetSigningKeyInput = InferEffectSchema<typeof getSigningKeyInputSchema>;
 
 /**
- * Developer API - Rate limits, client registration, and signing keys
+ * Developer API - Client registration and signing keys
  * Based on:
- * - specs/ebay/application-settings/developer_analytics_v1_beta_oas3.json
  * - specs/ebay/application-settings/developer_client_registration_v1_oas3.json
  * - specs/ebay/application-settings/developer_key_management_v1_oas3.json
  */
 export class DeveloperApi {
-  private readonly analyticsBasePath = '/developer/analytics/v1_beta';
   private readonly clientBasePath = '/developer/registration/v1';
   private readonly keyBasePath = '/developer/key_management/v1';
 
   public constructor(private readonly client: EbayApiClient) {}
-
-  // ========================================
-  // RATE LIMITS (Analytics API)
-  // ========================================
-
-  /**
-   * Retrieves application rate-limit usage across eBay APIs.
-   *
-   * @param input - Optional API context and API name filters.
-   * @returns An Effect that succeeds with eBay's generated RateLimitsResponse.
-   *
-   * @example
-   * ```ts
-   * const limits = await Effect.runPromise(
-   *   developerApi.getRateLimits({ apiContext: 'sell', apiName: 'inventory' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/developer/analytics/resources/rate_limit/methods/getRateLimits
-   */
-  public getRateLimits = (
-    input: GetRateLimitsInput = {},
-  ): Effect.Effect<RateLimitsResponse, EbayApiError> => {
-    const params = buildEndpointParams({
-      apiContext: { wireName: 'api_context', value: input.apiContext },
-      apiName: { wireName: 'api_name', value: input.apiName },
-    });
-
-    return requestGetEffect<RateLimitsResponse>(
-      this.client,
-      `${this.analyticsBasePath}/rate_limit/`,
-      params,
-    );
-  };
-
-  /**
-   * Retrieves user-specific rate-limit usage across eBay APIs.
-   *
-   * @param input - Optional API context and API name filters.
-   * @returns An Effect that succeeds with eBay's generated RateLimitsResponse.
-   *
-   * @example
-   * ```ts
-   * const limits = await Effect.runPromise(developerApi.getUserRateLimits({ apiContext: 'sell' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/developer/analytics/resources/user_rate_limit/methods/getUserRateLimits
-   */
-  public getUserRateLimits = (
-    input: GetUserRateLimitsInput = {},
-  ): Effect.Effect<RateLimitsResponse, EbayApiError> => {
-    const params = buildEndpointParams({
-      apiContext: { wireName: 'api_context', value: input.apiContext },
-      apiName: { wireName: 'api_name', value: input.apiName },
-    });
-
-    return requestGetEffect<RateLimitsResponse>(
-      this.client,
-      `${this.analyticsBasePath}/user_rate_limit/`,
-      params,
-    );
-  };
 
   // ========================================
   // CLIENT REGISTRATION

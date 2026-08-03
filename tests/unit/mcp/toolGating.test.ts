@@ -59,6 +59,14 @@ describe('toolNamesInExposurePaths', () => {
     ]);
   });
 
+  it('returns the complete Developer Analytics namespace under its official path', () => {
+    const developerAnalyticsToolNames = toolNamesInExposurePaths(['developer.analytics']);
+    expect([...developerAnalyticsToolNames]).toEqual([
+      'ebay_developer_analytics_get_rate_limits',
+      'ebay_developer_analytics_get_user_rate_limits',
+    ]);
+  });
+
   it('returns the complete migrated Commerce Translation namespace under its official path', () => {
     const names = toolNamesInExposurePaths(['commerce.translation']);
     expect([...names]).toEqual(['ebay_commerce_translation_translate']);

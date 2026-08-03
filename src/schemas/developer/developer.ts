@@ -14,21 +14,6 @@ export const getApiStatusInputSchema = z.object({
   api: z.string().optional().describe('Optional API-name substring filter'),
 });
 
-/** Input accepted by Developer Analytics API getRateLimits. */
-export const getRateLimitsInputSchema = z.object({
-  apiContext: z
-    .string()
-    .optional()
-    .describe('Optional API context filter, e.g. buy, sell, commerce, developer, or tradingapi'),
-  apiName: z
-    .string()
-    .optional()
-    .describe('Optional API name filter, e.g. browse, inventory, taxonomy, or tradingapi'),
-});
-
-/** Input accepted by Developer Analytics API getUserRateLimits. */
-export const getUserRateLimitsInputSchema = getRateLimitsInputSchema;
-
 /** Generated client-registration request fields accepted by eBay. */
 export const clientSettingsSchema = z.object({
   client_name: z.string().optional().describe('User-friendly name for the application'),
@@ -66,31 +51,6 @@ export const createSigningKeyInputSchema = z.object({
 /** Input accepted by Developer Key Management API getSigningKey. */
 export const getSigningKeyInputSchema = z.object({
   signingKeyId: z.string().describe('System-generated eBay signing key identifier'),
-});
-
-const rateSchema = z.object({
-  count: z.number().int().optional(),
-  limit: z.number().int().optional(),
-  remaining: z.number().int().optional(),
-  reset: z.string().optional(),
-  timeWindow: z.number().int().optional(),
-});
-
-const resourceSchema = z.object({
-  name: z.string().optional(),
-  rates: z.array(rateSchema).optional(),
-});
-
-const rateLimitSchema = z.object({
-  apiContext: z.string().optional(),
-  apiName: z.string().optional(),
-  apiVersion: z.string().optional(),
-  resources: z.array(resourceSchema).optional(),
-});
-
-/** Response returned by Developer Analytics rate-limit endpoints. */
-export const rateLimitsResponseSchema = z.object({
-  rateLimits: z.array(rateLimitSchema).optional(),
 });
 
 /** Response returned by Developer Client Registration API registerClient. */
@@ -137,10 +97,6 @@ export const querySigningKeysResponseSchema = z.object({
  */
 export const getDeveloperJsonSchemas = () => ({
   getApiStatusInput: zodToJsonSchema(getApiStatusInputSchema, 'getApiStatusInput'),
-  getRateLimitsInput: zodToJsonSchema(getRateLimitsInputSchema, 'getRateLimitsInput'),
-  getRateLimitsOutput: zodToJsonSchema(rateLimitsResponseSchema, 'getRateLimitsOutput'),
-  getUserRateLimitsInput: zodToJsonSchema(getUserRateLimitsInputSchema, 'getUserRateLimitsInput'),
-  getUserRateLimitsOutput: zodToJsonSchema(rateLimitsResponseSchema, 'getUserRateLimitsOutput'),
   registerClientInput: zodToJsonSchema(registerClientInputSchema, 'registerClientInput'),
   registerClientOutput: zodToJsonSchema(clientDetailsSchema, 'registerClientOutput'),
   getSigningKeysInput: zodToJsonSchema(getSigningKeysInputSchema, 'getSigningKeysInput'),

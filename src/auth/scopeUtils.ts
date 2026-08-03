@@ -214,6 +214,23 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
       description: 'Requires read access to analytics',
     },
+    ebay_developer_analytics_get_rate_limits: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve application rate limits',
+    },
+    ebay_developer_analytics_get_user_rate_limits: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.marketplace.insights.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.catalog.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.marketing',
+        'https://api.ebay.com/oauth/api_scope/sell.marketing.readonly',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires one supported user scope to retrieve user rate limits',
+    },
     ebay_sell_recommendation_find_listing_recommendations: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
