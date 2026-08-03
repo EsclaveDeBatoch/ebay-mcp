@@ -54,6 +54,7 @@
     "build/api/**/*.js",
     "build/auth/**/*.js",
     "build/config/**/*.js",
+    "build/ebay/**/*.js",
     "build/mcp/**/*.js",
     "build/schemas/**/*.js",
     "build/scripts/**/*.js",
