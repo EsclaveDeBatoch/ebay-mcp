@@ -325,6 +325,11 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope',
       description: 'Requires public API access to delete notification destinations',
     },
+    ebay_commerce_notification_get_public_key: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve a notification validation key',
+    },
 
     // Identity Tools
     ebay_commerce_identity_get_user: {

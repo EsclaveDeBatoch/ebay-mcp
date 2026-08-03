@@ -368,7 +368,7 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   deletesubscriptionfilter: ['ebay_delete_notification_subscription_filter'],
   gettopic: ['ebay_get_notification_topic'],
   gettopics: ['ebay_get_notification_topics'],
-  getpublickey: ['ebay_get_notification_public_key'],
+  getpublickey: ['ebay_commerce_notification_get_public_key'],
 
   // Marketing API
   createadbylistingid: ['ebay_create_ad_by_listing_id'],

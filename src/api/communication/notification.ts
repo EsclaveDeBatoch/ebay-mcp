@@ -20,7 +20,6 @@ import type {
   deleteSubscriptionSchema,
   disableSubscriptionSchema,
   enableSubscriptionSchema,
-  getPublicKeySchema,
   getSubscriptionFilterSchema,
   getSubscriptionSchema,
   getSubscriptionsSchema,
@@ -32,7 +31,6 @@ import type {
 import { Effect } from 'effect';
 import type { InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
-type GetPublicKeyInput = InferEffectSchema<typeof getPublicKeySchema>;
 type GetSubscriptionsInput = InferEffectSchema<typeof getSubscriptionsSchema>;
 type CreateSubscriptionInput = InferEffectSchema<typeof createSubscriptionSchema>;
 type GetSubscriptionInput = InferEffectSchema<typeof getSubscriptionSchema>;
@@ -53,12 +51,6 @@ type UpdateSubscriptionRequest = components['schemas']['UpdateSubscriptionReques
 /** Subscription filter body accepted by createSubscriptionFilter. */
 type CreateSubscriptionFilterRequest = Pick<CreateSubscriptionFilterInput, 'filterSchema'>;
 
-/**
- * Public key response returned by eBay getPublicKey.
- *
- * @see https://developer.ebay.com/api-docs/commerce/notification/resources/public_key/methods/getPublicKey
- */
-export type GetNotificationPublicKeyResponse = components['schemas']['PublicKey'];
 /**
  * Subscription search response returned by eBay getSubscriptions.
  *
@@ -102,36 +94,6 @@ export class NotificationApi {
   constructor(client: EbayApiClient) {
     this.client = client;
   }
-
-  /**
-   * Retrieves a public key used to validate notification signatures.
-   *
-   * @param input - Public key identifier from the notification signature header.
-   * @returns An Effect that succeeds with eBay's generated PublicKey response.
-   *
-   * @example
-   * ```ts
-   * const key = await Effect.runPromise(notificationApi.getPublicKey({ publicKeyId: 'key-123' }));
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/notification/resources/public_key/methods/getPublicKey
-   */
-  getPublicKey = (
-    input: GetPublicKeyInput,
-  ): Effect.Effect<GetNotificationPublicKeyResponse, EbayApiError | EndpointInputError> => {
-    const apiClient = this.client;
-    const apiBasePath = this.basePath;
-
-    return Effect.gen(function* () {
-      const request = yield* requireObjectEffect<GetPublicKeyInput>(input, 'input');
-      const validatedPublicKeyId = yield* requireStringEffect(request.publicKeyId, 'publicKeyId');
-
-      return yield* requestGetEffect<GetNotificationPublicKeyResponse>(
-        apiClient,
-        `${apiBasePath}/public_key/${validatedPublicKeyId}`,
-      );
-    });
-  };
 
   /**
    * Retrieves configured notification subscriptions.

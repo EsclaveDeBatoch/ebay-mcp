@@ -48,11 +48,6 @@ const payloadSchema = z
   })
   .optional();
 
-/** Schema for getPublicKey input. */
-export const getPublicKeySchema = z.object({
-  publicKeyId: idSchema('Public key ID', 'The unique identifier for the public key'),
-});
-
 /** Schema for getSubscriptions input. */
 export const getSubscriptionsSchema = z.object({
   limit: limitSchema,

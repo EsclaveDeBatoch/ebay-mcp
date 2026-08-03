@@ -57,6 +57,7 @@ describe('Commerce Notification configuration MCP exposure', () => {
       'ebay_commerce_notification_get_destination',
       'ebay_commerce_notification_update_destination',
       'ebay_commerce_notification_delete_destination',
+      'ebay_commerce_notification_get_public_key',
     ]);
     await mcpClient.close();
   });
@@ -75,6 +76,7 @@ describe('Commerce Notification configuration MCP exposure', () => {
       getConfigToolName,
       'ebay_commerce_notification_get_destinations',
       'ebay_commerce_notification_get_destination',
+      'ebay_commerce_notification_get_public_key',
     ]);
     await mcpClient.close();
   });

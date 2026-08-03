@@ -8,7 +8,6 @@ import {
   deleteSubscriptionSchema,
   disableSubscriptionSchema,
   enableSubscriptionSchema,
-  getPublicKeySchema,
   getSubscriptionFilterSchema,
   getSubscriptionSchema,
   getSubscriptionsSchema,
@@ -106,12 +105,5 @@ export const communicationEntries: ToolEntry[] = [
     description: 'Get all available notification topics (paginated)',
     inputSchema: getTopicsSchema.shape,
     handler: (api, args) => Effect.runPromise(api.notification.getTopics(args)),
-  }),
-  // Notification API - Public Key
-  defineTool({
-    name: 'ebay_get_notification_public_key',
-    description: 'Get a public key for verifying notification signatures',
-    inputSchema: getPublicKeySchema.shape,
-    handler: (api, args) => Effect.runPromise(api.notification.getPublicKey(args)),
   }),
 ];

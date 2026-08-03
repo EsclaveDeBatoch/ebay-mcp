@@ -207,7 +207,6 @@ describe('Tools Layer', () => {
         createSubscriptionFilter: vi.fn(),
         getSubscriptionFilter: vi.fn(),
         deleteSubscriptionFilter: vi.fn(),
-        getPublicKey: vi.fn(),
       },
       // Other APIs
       compliance: {

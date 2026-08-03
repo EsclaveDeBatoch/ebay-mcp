@@ -90,6 +90,7 @@ describe('toolNamesInExposurePaths', () => {
       'ebay_commerce_notification_get_destination',
       'ebay_commerce_notification_update_destination',
       'ebay_commerce_notification_delete_destination',
+      'ebay_commerce_notification_get_public_key',
     ]);
   });
 
