@@ -27,7 +27,7 @@
     "check:ci": "biome ci . && pnpm run style:guide",
     "style:guide": "tsx scripts/dev/reportCodeStyleGuide.ts",
     "verify": "pnpm run check:ci && pnpm run typecheck && pnpm run typecheck:ui && pnpm run typecheck:tests && pnpm run test && pnpm run build",
-    "fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true \"{src,ui}/**/*.{ts,tsx,js,json,md,css,html}\"",
+    "fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true src ui",
     "lint": "biome check .",
     "lint:fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true .",
     "format": "biome format --write .",

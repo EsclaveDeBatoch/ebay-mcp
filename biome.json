@@ -66,6 +66,7 @@
         }
       },
       "correctness": {
+        "noSolidDestructuredProps": "off",
         "noNodejsModules": "off",
         "noUndeclaredDependencies": "warn",
         "noUndeclaredVariables": "warn",
@@ -82,7 +83,8 @@
       },
       "suspicious": {
         "noConsole": "warn",
-        "noUnknownAttribute": "off",
+        "noReactSpecificProps": "off",
+        "noUnknownAttribute": "error",
         "noUnnecessaryConditions": "warn",
         "noControlCharactersInRegex": "off",
         "noNonNullAssertedOptionalChain": "warn",
