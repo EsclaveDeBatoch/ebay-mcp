@@ -25,7 +25,7 @@ query validation, authenticated HTTP behavior, MCP exposure, and browser present
     translation.
 - Use representative eBay fixtures and narrow transport/session fakes. Add a shared test
   factory only at its second real reuse.
-- Add `src/ui/presentation/analytics.ts` only for fields the browser actually renders, and
+- Add `src/ui/presentation/trafficReport.ts` only for fields the browser actually renders, and
   cover its business-facing display behavior without fallback placeholders.
 - Explicitly import each traffic-report tool into `src/mcp/ebayToolCatalogue.ts`; the
   resource exports named definitions, never an aggregate array.

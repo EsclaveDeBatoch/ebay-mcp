@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import type { TrafficReport } from '@/ebay/sell/analytics/trafficReport.js';
 
-import { trafficReportChart } from './analytics.js';
+import { trafficReportChart } from './trafficReport.js';
 
 describe('trafficReportChart', () => {
   it('shows applicable numeric metrics by their eBay labels', () => {

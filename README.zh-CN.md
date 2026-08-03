@@ -245,7 +245,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | [Inventory](src/tools/categories/inventory.ts) | 库存商品、报价、地点、商品分组、批量操作、SKU/地点映射 |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | 订单、配送、退款、纠纷、付款纠纷证据 |
 | [Marketing](src/tools/categories/marketing.ts) | 推广刊登广告活动、广告、促销、出价、批量操作 |
-| [Analytics](src/tools/categories/analytics.ts) | 流量报告、卖家标准、客户服务指标 |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | 流量报告、卖家标准、客户服务指标 |
 | [Communication](src/tools/categories/communication.ts) | 买卖双方消息、议价、通知、评价 |
 | [Metadata](src/tools/categories/metadata.ts) | 退货政策、销售税辖区、汽车兼容性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 类目树、商品属性、商品成色 |
@@ -275,8 +275,8 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | 类型 | 工具 |
 | --- | --- |
 | **表格** | `ebay_get_orders`、`ebay_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_get_inventory_locations`、`ebay_get_payment_dispute_summaries` |
-| **卡片** | `ebay_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_get_payment_dispute`、`ebay_get_seller_standards_profile` |
-| **图表** | `ebay_sell_analytics_get_traffic_report`、`ebay_get_customer_service_metric` |
+| **卡片** | `ebay_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
+| **图表** | `ebay_sell_analytics_get_traffic_report`、`ebay_sell_analytics_get_customer_service_metric` |
 
 这些视图通过 `npm run build`（或 `npm run build:ui`）构建为自包含的 HTML；它们随发布的包一同分发，加载时无需自身的任何网络访问。
 

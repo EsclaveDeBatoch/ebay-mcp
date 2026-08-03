@@ -4,7 +4,7 @@ import type { EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
 import type { EbaySellerSession } from '@/ebay/ebaySellerSession.js';
 import type { components } from '@/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
 import { defineTool } from '@/mcp/defineTool.js';
-import { trafficReportChart } from '@/ui/presentation/analytics.js';
+import { trafficReportChart } from '@/ui/presentation/trafficReport.js';
 
 /** Exact eBay query accepted by Sell Analytics getTrafficReport. */
 export const trafficReportQuerySchema = z
@@ -60,5 +60,8 @@ export const getTrafficReportTool = defineTool({
   description: "Retrieve traffic metrics for the seller's listings",
   argumentsSchema: trafficReportQuerySchema,
   operation: getTrafficReport,
-  presentation: trafficReportChart,
+  presentation: {
+    archetype: 'chart',
+    project: trafficReportChart,
+  },
 });

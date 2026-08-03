@@ -245,7 +245,7 @@ Automatisch konfiguriert durch `npm run setup`. Erfordert Node.js ≥ 22.12 und 
 | [Inventory](src/tools/categories/inventory.ts) | Bestandsartikel, Angebote, Standorte, Artikelgruppen, Massenvorgänge, SKU/Standort-Zuordnung |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Bestellungen, Versand, Rückerstattungen, Streitfälle, Nachweise zu Zahlungsstreitfällen |
 | [Marketing](src/tools/categories/marketing.ts) | Kampagnen für beworbene Angebote, Anzeigen, Aktionen, Gebote, Massenvorgänge |
-| [Analytics](src/tools/categories/analytics.ts) | Traffic-Berichte, Verkäuferstandards, Kundenservice-Kennzahlen |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic-Berichte, Verkäuferstandards, Kundenservice-Kennzahlen |
 | [Communication](src/tools/categories/communication.ts) | Käufer-Verkäufer-Nachrichten, Verhandlungen, Benachrichtigungen, Bewertungen |
 | [Metadata](src/tools/categories/metadata.ts) | Rückgaberichtlinien, Verkaufssteuer-Zuständigkeiten, Fahrzeugkompatibilität |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Kategoriebäume, Artikelmerkmale, Artikelzustände |
@@ -275,8 +275,8 @@ Auf Hosts, die [MCP Apps](https://modelcontextprotocol.io) unterstützen, stelle
 | Archetyp | Tools |
 | --- | --- |
 | **Tabelle** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **Karte** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Diagramm** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Karte** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Diagramm** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 Die Ansichten werden mit `npm run build` (oder `npm run build:ui`) zu eigenständigem HTML gebaut; sie sind im veröffentlichten Paket enthalten und laden ohne eigenen Netzwerkzugriff.
 

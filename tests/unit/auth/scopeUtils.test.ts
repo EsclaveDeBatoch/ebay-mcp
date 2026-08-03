@@ -77,8 +77,13 @@ describe('Scope Utils', () => {
       );
     });
 
-    it('returns the analytics scope for the hierarchical traffic-report tool', () => {
-      const requirement = getRequiredScopesForTool('ebay_sell_analytics_get_traffic_report');
+    it.each([
+      'ebay_sell_analytics_get_traffic_report',
+      'ebay_sell_analytics_find_seller_standards_profiles',
+      'ebay_sell_analytics_get_seller_standards_profile',
+      'ebay_sell_analytics_get_customer_service_metric',
+    ])('returns the analytics scope for the hierarchical %s tool', (analyticsToolName) => {
+      const requirement = getRequiredScopesForTool(analyticsToolName);
 
       expect(requirement).toBeDefined();
       expect(requirement?.requiredScopes).toEqual([

@@ -92,7 +92,7 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
 | `browse` | Sold/completed listing search (Finding API) for pricing comps | "What have similar items sold for recently?" |
 | `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
-| `analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
+| `sell.analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
 | `communication` | Buyer-seller messaging, negotiations, notifications, and feedback | "Show recent buyer messages that need a response." |
 | `metadata` / `taxonomy` | Category trees, aspects, item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Find required item aspects for this category." |
 | `other` | Identity, VeRO, translation, and international shipping support APIs (Compliance tools remain but report eBay's 2026-03-30 decommission) | "Show my current seller identity details." |
@@ -256,7 +256,7 @@ By default all tools are advertised to the agent at once. On a long conversation
 | `dynamic`                   | Only three discovery tools are visible (`list_ebay_tools`, `enable_ebay_tools`, `disable_ebay_tools`). The agent searches the catalogue and loads only the tools it needs; they then appear natively. | hosts that honor `tools/listChanged` (e.g. Claude) |
 | `sell.analytics,inventory,…` | Registers **only** the named exposure paths (listed below), frozen for the session.                                                                    | every host (incl. ChatGPT, Cursor)      |
 
-The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `sell.analytics`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `analytics`, `metadata`, `taxonomy`, `communication`, `browse`, `other`, `developer`, `trading`, `sell.analytics`.
+The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `sell.analytics`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.analytics`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `metadata`, `taxonomy`, `communication`, `browse`, `other`, `developer`, `trading`, `sell.analytics`.
 
 ### Authentication & rate limits
 
@@ -290,7 +290,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 <details open>
 <summary><strong>298 tools by category (100% Sell API coverage)</strong></summary>
 
-**298 tools**, 100% Sell API coverage, organized by category. Each link points to the tool definitions and handlers in [`src/tools/categories/`](src/tools/categories/):
+**298 tools**, 100% Sell API coverage, organized by category. Each link points to the module that owns its definitions and handlers:
 
 | Category | What you can do |
 | --- | --- |
@@ -299,8 +299,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Orders, shipping, refunds, disputes, payment-dispute evidence |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
-| [Sell Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic reports under the official `sell.analytics` namespace |
-| [Analytics migration inventory](src/tools/categories/analytics.ts) | Seller standards and customer-service metrics |
+| [Sell Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic reports, seller standards, and customer-service metrics under `sell.analytics` |
 | [Communication](src/tools/categories/communication.ts) | Buyer–seller messaging, negotiations, notifications, feedback |
 | [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Category trees, item aspects, item conditions |
@@ -334,8 +333,8 @@ On hosts that support [MCP Apps](https://modelcontextprotocol.io), common read t
 | Archetype | Tools |
 | --- | --- |
 | **Table** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **Card** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Chart** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Card** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Chart** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 | **Stat** | `ebay_get_rate_limits`, `ebay_get_user_rate_limits` |
 
 The views build into self-contained HTML with `npm run build` (or `npm run build:ui`); they ship in the published package and load with no network access of their own.

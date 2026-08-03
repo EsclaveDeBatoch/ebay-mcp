@@ -245,7 +245,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Inventory](src/tools/categories/inventory.ts) | 在庫アイテム、オファー、ロケーション、アイテムグループ、一括操作、SKU/ロケーションのマッピング |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | 注文、配送、返金、係争、支払い係争の証拠 |
 | [Marketing](src/tools/categories/marketing.ts) | プロモーション広告キャンペーン、広告、プロモーション、入札、一括操作 |
-| [Analytics](src/tools/categories/analytics.ts) | トラフィックレポート、出品者基準、カスタマーサービス指標 |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | トラフィックレポート、出品者基準、カスタマーサービス指標 |
 | [Communication](src/tools/categories/communication.ts) | 購入者と出品者のメッセージ、交渉、通知、評価 |
 | [Metadata](src/tools/categories/metadata.ts) | 返品ポリシー、販売税の管轄、自動車適合性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | カテゴリツリー、アイテムの特性、アイテムのコンディション |
@@ -275,8 +275,8 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | タイプ | ツール |
 | --- | --- |
 | **テーブル** | `ebay_get_orders`、`ebay_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_get_inventory_locations`、`ebay_get_payment_dispute_summaries` |
-| **カード** | `ebay_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_get_payment_dispute`、`ebay_get_seller_standards_profile` |
-| **チャート** | `ebay_sell_analytics_get_traffic_report`、`ebay_get_customer_service_metric` |
+| **カード** | `ebay_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
+| **チャート** | `ebay_sell_analytics_get_traffic_report`、`ebay_sell_analytics_get_customer_service_metric` |
 
 これらの表示は `npm run build`（または `npm run build:ui`）で自己完結型の HTML にビルドされ、公開パッケージに同梱されて、それ自体は一切のネットワークアクセスなしで読み込まれます。
 

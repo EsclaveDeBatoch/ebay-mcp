@@ -120,11 +120,6 @@ describe('Comprehensive Tools Coverage', () => {
       recommendation: {
         findListingRecommendations: vi.fn(),
       },
-      analytics: {
-        findSellerStandardsProfiles: vi.fn(),
-        getSellerStandardsProfile: vi.fn(),
-        getCustomerServiceMetric: vi.fn(),
-      },
       metadata: {
         getAutomotivePartsCompatibilityPolicies: vi.fn(),
         getCategoryPolicies: vi.fn(),
@@ -1156,49 +1151,6 @@ describe('Comprehensive Tools Coverage', () => {
       };
       await executeTool(mockApi, 'ebay_find_listing_recommendations', input);
       expect(mockApi.recommendation.findListingRecommendations).toHaveBeenCalledWith(input);
-    });
-  });
-
-  describe('Analytics Tools', () => {
-    it('ebay_find_seller_standards_profiles', async () => {
-      const mockResponse = { standardsProfiles: [] };
-      vi.mocked(mockApi.analytics.findSellerStandardsProfiles).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_find_seller_standards_profiles', {});
-      expect(mockApi.analytics.findSellerStandardsProfiles).toHaveBeenCalledWith({});
-    });
-
-    it('ebay_get_seller_standards_profile', async () => {
-      const mockResponse = { standardsLevel: 'GOOD' };
-      vi.mocked(mockApi.analytics.getSellerStandardsProfile).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_seller_standards_profile', {
-        program: 'CUSTOMER_SERVICE',
-        cycle: 'CURRENT',
-      });
-      expect(mockApi.analytics.getSellerStandardsProfile).toHaveBeenCalledWith({
-        program: 'CUSTOMER_SERVICE',
-        cycle: 'CURRENT',
-      });
-    });
-
-    it('ebay_get_customer_service_metric', async () => {
-      const mockResponse = { dimensionMetrics: [] };
-      vi.mocked(mockApi.analytics.getCustomerServiceMetric).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_get_customer_service_metric', {
-        customerServiceMetricType: 'INQUIRY_RESPONSE',
-        evaluationType: 'CURRENT',
-        evaluationMarketplaceId: 'EBAY_US',
-      });
-      expect(mockApi.analytics.getCustomerServiceMetric).toHaveBeenCalledWith({
-        customerServiceMetricType: 'INQUIRY_RESPONSE',
-        evaluationType: 'CURRENT',
-        evaluationMarketplaceId: 'EBAY_US',
-      });
     });
   });
 

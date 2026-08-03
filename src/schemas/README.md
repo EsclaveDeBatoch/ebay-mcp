@@ -18,13 +18,10 @@ src/schemas/
 │   └── marketing.ts
 ├── metadata/             # Marketplace policies, compatibility
 │   └── metadata.ts
-├── analytics/            # Reports, metrics, seller standards
-│   └── analytics.ts
 ├── taxonomy/             # Categories, suggestions, aspects
 │   └── taxonomy.ts
 ├── other/                # Identity, compliance, VERO, translation, eDelivery
 │   └── otherApis.ts
-├── index.ts              # Central export point
 └── README.md             # This file
 ```
 
@@ -53,18 +50,7 @@ The schemas in this directory serve multiple purposes:
 ### Basic Import
 
 ```typescript
-import {
-  getAccountManagementJsonSchemas,
-  getInventoryManagementJsonSchemas,
-  getCommunicationJsonSchemas,
-  getFulfillmentJsonSchemas,
-  getMarketingJsonSchemas,
-  getMetadataJsonSchemas,
-  getAnalyticsJsonSchemas,
-  getTaxonomyJsonSchemas,
-  getOtherApisJsonSchemas,
-  getAllJsonSchemas, // Gets all schemas at once
-} from '@/schemas';
+import { getAccountManagementJsonSchemas } from '@/schemas/account-management/account.js';
 
 // Get all JSON schemas for a specific category
 const accountSchemas = getAccountManagementJsonSchemas();
@@ -72,35 +58,36 @@ const accountSchemas = getAccountManagementJsonSchemas();
 // Access specific schemas
 const inputSchema = accountSchemas.getFulfillmentPoliciesInput;
 const outputSchema = accountSchemas.getFulfillmentPoliciesOutput;
-
-// Or get all schemas at once
-const allSchemas = getAllJsonSchemas();
-const marketingCampaignSchema = allSchemas.marketing.createCampaignInput;
 ```
 
 ### Using Effect-Backed Schemas for Validation
 
 ```typescript
 import { Effect } from 'effect';
-import { getInventoryItemInputSchema, getInventoryItemOutputSchema } from '@/schemas';
+import {
+  getInventoryItemInputSchema,
+  getInventoryItemOutputSchema,
+} from '@/schemas/inventory-management/inventory.js';
 import { decodeEffectSchema } from '@/utils/effectSchema.js';
 
 // Validate input
-const input = await Effect.runPromise(
+const inventoryItemArguments = await Effect.runPromise(
   decodeEffectSchema(getInventoryItemInputSchema, { sku: 'ABC123' }),
 );
 
 // Validate output
-const response = await Effect.runPromise(api.inventory.getInventoryItem(input));
+const inventoryItemDocument = await Effect.runPromise(
+  api.inventory.getInventoryItem(inventoryItemArguments),
+);
 const validatedOutput = await Effect.runPromise(
-  decodeEffectSchema(getInventoryItemOutputSchema, response),
+  decodeEffectSchema(getInventoryItemOutputSchema, inventoryItemDocument),
 );
 ```
 
 ### Using JSON Schemas with MCP Tools
 
 ```typescript
-import { getInventoryManagementJsonSchemas } from '@/schemas';
+import { getInventoryManagementJsonSchemas } from '@/schemas/inventory-management/inventory.js';
 
 const schemas = getInventoryManagementJsonSchemas();
 
@@ -236,22 +223,7 @@ Schemas for marketplace policies and product compatibility.
 - `getProductCompatibilitiesOutputSchema`
 - `getSalesTaxJurisdictionsOutputSchema`
 
-### 7. Analytics (`analytics/analytics.ts`)
-
-Schemas for reports, metrics, and seller performance tracking.
-
-**Endpoints Covered (4 total):**
-
-- Traffic Reports (analyze listing views and search impressions)
-- Seller Standards Profiles (monitor seller performance)
-- Customer Service Metrics (track customer service quality)
-
-**Key Schemas:**
-
-- `getSellerStandardsProfileOutputSchema`
-- `getCustomerServiceMetricOutputSchema`
-
-### 8. Taxonomy (`taxonomy/taxonomy.ts`)
+### 7. Taxonomy (`taxonomy/taxonomy.ts`)
 
 Schemas for category navigation, suggestions, and product aspects.
 
@@ -267,7 +239,7 @@ Schemas for category navigation, suggestions, and product aspects.
 - `getCategorySuggestionsInputSchema` / `getCategorySuggestionsOutputSchema`
 - `getItemAspectsForCategoryOutputSchema`
 
-### 9. Other APIs (`other/otherApis.ts`)
+### 8. Other APIs (`other/otherApis.ts`)
 
 Schemas for identity, compliance, VERO, translation, and international shipping.
 
@@ -358,7 +330,7 @@ To test schema validation:
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { Effect } from 'effect';
-import { getInventoryItemInputSchema } from '@/schemas';
+import { getInventoryItemInputSchema } from '@/schemas/inventory-management/inventory.js';
 import { decodeEffectSchema } from '@/utils/effectSchema.js';
 
 describe('Inventory Schemas', () => {

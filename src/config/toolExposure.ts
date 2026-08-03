@@ -25,7 +25,6 @@ export const EBAY_TOOL_EXPOSURE_PATHS = [
   'inventory',
   'fulfillment',
   'marketing',
-  'analytics',
   'metadata',
   'taxonomy',
   'communication',

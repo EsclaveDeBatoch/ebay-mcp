@@ -13,27 +13,17 @@
  * renders. Formatting lives in `./mapHelpers.js` so these stay declarative.
  */
 
-import {
-  formatAmount,
-  humanizeStatus,
-  statusTone,
-  toLabel,
-  toNumber,
-  truncate,
-} from '@/tools/ui/mapHelpers.js';
+import { formatAmount, humanizeStatus, statusTone, truncate } from '@/tools/ui/mapHelpers.js';
 import type {
   CardBadge,
   CardSection,
   CardViewModel,
-  ChartSeries,
-  ChartViewModel,
   StatTile,
   StatViewModel,
   TableViewModel,
   Tone,
 } from '@/ui/viewModels.js';
 import type { components as DeveloperAnalyticsComponents } from '@/generated/ebay/application-settings/developerAnalyticsV1BetaOas3.js';
-import type { components as AnalyticsSchemas } from '@/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
 import type { components as InventorySchemas } from '@/generated/ebay/sell-apps/listing-management/sellInventoryV1Oas3.js';
 import type { components as FulfillmentSchemas } from '@/generated/ebay/sell-apps/order-management/sellFulfillmentV1Oas3.js';
 
@@ -50,10 +40,6 @@ type InventoryItems = InventorySchemas['schemas']['InventoryItems'];
 type InventoryItemWithSkuLocaleGroupid =
   InventorySchemas['schemas']['InventoryItemWithSkuLocaleGroupid'];
 type LocationResponse = InventorySchemas['schemas']['LocationResponse'];
-
-type StandardsProfile = AnalyticsSchemas['schemas']['StandardsProfile'];
-type GetCustomerServiceMetricResponse =
-  AnalyticsSchemas['schemas']['GetCustomerServiceMetricResponse'];
 
 type RateLimitsResponse = DeveloperAnalyticsComponents['schemas']['RateLimitsResponse'];
 
@@ -502,88 +488,6 @@ export const mapDisputeToCard = (result: PaymentDispute): CardViewModel => {
     subtitle: result.orderId ? `Order: ${result.orderId}` : undefined,
     badges: disputeBadge ? [disputeBadge] : undefined,
     sections,
-  };
-};
-
-/**
- * Projects a seller standards profile into a detail card (cycle + per-metric values).
- *
- * @param result - Generated seller standards profile response from eBay.
- * @returns A card view model with profile and metric sections.
- *
- * @example
- * ```ts
- * const view = mapStandardsProfileToCard({ program: 'PROGRAM_US' });
- * ```
- */
-export const mapStandardsProfileToCard = (result: StandardsProfile): CardViewModel => {
-  const metrics = result.metrics ?? [];
-  const sections: CardSection[] = [
-    {
-      heading: 'Profile',
-      fields: [
-        { label: 'Cycle', value: humanizeStatus(result.cycle?.cycleType) },
-        { label: 'Evaluation date', value: result.cycle?.evaluationDate ?? null },
-        { label: 'Evaluation reason', value: humanizeStatus(result.evaluationReason) },
-      ],
-    },
-  ];
-  if (metrics.length) {
-    sections.push({
-      heading: 'Metrics',
-      fields: metrics.map((metric) => ({
-        label: humanizeStatus(metric.metricKey) ?? '',
-        value: metric.value ?? null,
-      })),
-    });
-  }
-  const standardsBadge = statusBadge(result.standardsLevel);
-  return {
-    archetype: 'card',
-    title: humanizeStatus(result.program) ?? 'Seller standards',
-    subtitle: humanizeStatus(result.cycle?.cycleType) ?? undefined,
-    badges: standardsBadge ? [standardsBadge] : undefined,
-    sections,
-  };
-};
-
-/**
- * Projects customer-service metrics into a bar chart: one series per metric key
- * (e.g. `RATE`, `COUNT`), with a bar per evaluated dimension. Grouping by metric
- * key keeps related bars in the same series regardless of dimension ordering.
- *
- * @param result - Generated customer-service metric response from eBay.
- * @returns A bar chart view model grouped by metric key.
- *
- * @example
- * ```ts
- * const view = mapCustomerServiceMetricToChart({ dimensionMetrics: [] });
- * ```
- */
-export const mapCustomerServiceMetricToChart = (
-  result: GetCustomerServiceMetricResponse,
-): ChartViewModel => {
-  const dimensionMetrics = result.dimensionMetrics ?? [];
-  const pointsByMetric = new Map<string, ChartSeries['points']>();
-  for (const dimensionMetric of dimensionMetrics) {
-    const x = toLabel(dimensionMetric.dimension?.value ?? dimensionMetric.dimension?.name);
-    for (const metric of dimensionMetric.metrics ?? []) {
-      const key = metric.metricKey ?? '';
-      const y = toNumber(metric.value);
-      if (y === null) {
-        continue;
-      }
-      const points = pointsByMetric.get(key) ?? [];
-      points.push({ x, y });
-      pointsByMetric.set(key, points);
-    }
-  }
-  const series: ChartSeries[] = Array.from(pointsByMetric, ([name, points]) => ({ name, points }));
-  return {
-    archetype: 'chart',
-    title: 'Customer service metrics',
-    kind: 'bar',
-    series,
   };
 };
 

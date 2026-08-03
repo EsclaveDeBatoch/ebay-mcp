@@ -245,7 +245,7 @@ Configurés automatiquement par `npm run setup`. Nécessite Node.js ≥ 22.12 et
 | [Inventory](src/tools/categories/inventory.ts) | Articles d'inventaire, offres, emplacements, groupes d'articles, opérations en masse, mappage SKU/emplacement |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Commandes, expédition, remboursements, litiges, preuves de litiges de paiement |
 | [Marketing](src/tools/categories/marketing.ts) | Campagnes d'annonces sponsorisées, annonces, promotions, enchères, opérations en masse |
-| [Analytics](src/tools/categories/analytics.ts) | Rapports de trafic, standards vendeur, métriques de service client |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Rapports de trafic, standards vendeur, métriques de service client |
 | [Communication](src/tools/categories/communication.ts) | Messagerie acheteur–vendeur, négociations, notifications, évaluations |
 | [Metadata](src/tools/categories/metadata.ts) | Politiques de retour, juridictions de taxe de vente, compatibilité automobile |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Arbres de catégories, aspects d'articles, états d'articles |
@@ -275,8 +275,8 @@ Sur les hôtes qui prennent en charge [MCP Apps](https://modelcontextprotocol.io
 | Archétype | Outils |
 | --- | --- |
 | **Tableau** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **Fiche** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Graphique** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Fiche** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Graphique** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 Les vues se compilent en HTML autonome avec `npm run build` (ou `npm run build:ui`) ; elles sont incluses dans le paquet publié et se chargent sans aucun accès réseau propre.
 

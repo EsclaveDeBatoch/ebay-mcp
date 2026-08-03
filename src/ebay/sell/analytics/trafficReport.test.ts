@@ -1,11 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import type { EbayFailure, EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
-import {
-  sellerSessionReturning,
-  trafficReportDocument,
-  trafficReportQuery,
-} from '@tests/fixtures/trafficReport.js';
+import { trafficReportDocument, trafficReportQuery } from '@tests/fixtures/trafficReport.js';
+import { sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 
 import { getTrafficReport, type TrafficReport, trafficReportQuerySchema } from './trafficReport.js';
 

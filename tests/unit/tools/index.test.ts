@@ -165,12 +165,6 @@ describe('Tools Layer', () => {
       recommendation: {
         findListingRecommendations: vi.fn(),
       },
-      // Analytics API
-      analytics: {
-        findSellerStandardsProfiles: vi.fn(),
-        getSellerStandardsProfile: vi.fn(),
-        getCustomerServiceMetric: vi.fn(),
-      },
       // Metadata API
       metadata: {
         getAutomotivePartsCompatibilityPolicies: vi.fn(),
@@ -334,7 +328,6 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
       expect(toolNames).toContain('ebay_get_orders'); // fulfillmentTools
       expect(toolNames).toContain('ebay_get_campaigns');
-      expect(toolNames).toContain('ebay_get_seller_standards_profile'); // analyticsTools
       expect(toolNames).toContain('ebay_get_currencies'); // metadataTools
       expect(toolNames).toContain('ebay_get_category_tree'); // taxonomyTools
       expect(toolNames).toContain('ebay_send_message'); // communicationTools
@@ -919,26 +912,6 @@ describe('Tools Layer', () => {
       await executeTool(mockApi, 'ebay_clone_campaign', input);
 
       expect(mockApi.marketing.cloneCampaign).toHaveBeenCalledWith(input);
-    });
-  });
-
-  describe('executeTool - Analytics', () => {
-    it('get seller standards profile', async () => {
-      const mockResponse = { program: 'CUSTOMER_SERVICE', standardsLevel: 'TOP_RATED' };
-      vi.mocked(mockApi.analytics.getSellerStandardsProfile).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-
-      const result = await executeTool(mockApi, 'ebay_get_seller_standards_profile', {
-        program: 'CUSTOMER_SERVICE',
-        cycle: 'CURRENT',
-      });
-
-      expect(mockApi.analytics.getSellerStandardsProfile).toHaveBeenCalledWith({
-        program: 'CUSTOMER_SERVICE',
-        cycle: 'CURRENT',
-      });
-      expect(result).toBe(mockResponse);
     });
   });
 

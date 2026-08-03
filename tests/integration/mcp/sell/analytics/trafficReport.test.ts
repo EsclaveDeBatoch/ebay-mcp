@@ -1,43 +1,12 @@
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { EbayFailure, EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
-import type { EbaySellerSession } from '@/ebay/ebaySellerSession.js';
 import type { TrafficReport } from '@/ebay/sell/analytics/trafficReport.js';
-import { createEbayMcpRuntime } from '@/mcp/runtime.js';
-import {
-  sellerSessionReturning,
-  trafficReportDocument,
-  trafficReportQuery,
-} from '@tests/fixtures/trafficReport.js';
+import { sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
+import { callEbayTool, listEbayTools } from '@tests/fixtures/mcp.js';
+import { trafficReportDocument, trafficReportQuery } from '@tests/fixtures/trafficReport.js';
 
 const toolName = 'ebay_sell_analytics_get_traffic_report';
-
-type McpArguments = {
-  readonly [argumentName: string]: unknown;
-};
-
-const callTrafficReportTool = async (
-  sellerSession: EbaySellerSession,
-  ebayArguments: McpArguments,
-) => {
-  const runtime = createEbayMcpRuntime({
-    ebaySellerApi: { initialize: vi.fn() } as never,
-    sellerSession,
-    serverConfig: { name: 'traffic-report-integration', version: '1.0.0' },
-  });
-  const [mcpTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-  const mcpClient = new Client({ name: 'traffic-report-test', version: '1.0.0' });
-
-  await runtime.server.connect(serverTransport);
-  await mcpClient.connect(mcpTransport);
-
-  return {
-    mcpClient,
-    toolCompletion: await mcpClient.callTool({ name: toolName, arguments: ebayArguments }),
-  };
-};
 
 describe('Sell Analytics traffic report through MCP', () => {
   afterEach(() => {
@@ -52,19 +21,9 @@ describe('Sell Analytics traffic report through MCP', () => {
       ebayDocument: trafficReportDocument,
     };
     const { sellerSession } = sellerSessionReturning(successfulRequest);
-    const runtime = createEbayMcpRuntime({
-      ebaySellerApi: { initialize: vi.fn() } as never,
-      sellerSession,
-      serverConfig: { name: 'traffic-report-catalogue', version: '1.0.0' },
-    });
-    const [mcpTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    const mcpClient = new Client({ name: 'traffic-report-test', version: '1.0.0' });
-    await runtime.server.connect(serverTransport);
-    await mcpClient.connect(mcpTransport);
+    const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    const listedTools = await mcpClient.listTools();
-
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([toolName]);
+    expect(listedTools.tools.filter((ebayTool) => ebayTool.name === toolName)).toHaveLength(1);
     await mcpClient.close();
   });
 
@@ -76,8 +35,9 @@ describe('Sell Analytics traffic report through MCP', () => {
     };
     const { sellerSession, getCalls } = sellerSessionReturning(successfulRequest);
 
-    const { mcpClient, toolCompletion } = await callTrafficReportTool(
+    const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
+      toolName,
       trafficReportQuery,
     );
 
@@ -111,8 +71,9 @@ describe('Sell Analytics traffic report through MCP', () => {
       ebayDocument: trafficReportDocument,
     });
 
-    const { mcpClient, toolCompletion } = await callTrafficReportTool(
+    const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
+      toolName,
       invalidArguments,
     );
 
@@ -141,8 +102,9 @@ describe('Sell Analytics traffic report through MCP', () => {
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning({ kind: 'ebayRequestFailed', ebayFailure });
 
-    const { mcpClient, toolCompletion } = await callTrafficReportTool(
+    const { mcpClient, toolCompletion } = await callEbayTool(
       sellerSession,
+      toolName,
       trafficReportQuery,
     );
 

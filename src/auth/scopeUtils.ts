@@ -199,6 +199,21 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
       description: 'Requires read access to analytics',
     },
+    ebay_sell_analytics_find_seller_standards_profiles: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
+      description: 'Requires read access to analytics',
+    },
+    ebay_sell_analytics_get_seller_standards_profile: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
+      description: 'Requires read access to analytics',
+    },
+    ebay_sell_analytics_get_customer_service_metric: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
+      description: 'Requires read access to analytics',
+    },
 
     // Messaging Tools
     ebay_send_message: {
@@ -222,7 +237,11 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
     },
   };
 
-  return scopeMap[toolName] || null;
+  const scopeRequirement = scopeMap[toolName];
+  if (scopeRequirement === undefined) {
+    return null;
+  }
+  return scopeRequirement;
 };
 
 /**

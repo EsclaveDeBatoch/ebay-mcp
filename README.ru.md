@@ -245,7 +245,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | [Inventory](src/tools/categories/inventory.ts) | Товары инвентаря, предложения, локации, группы товаров, массовые операции, сопоставление SKU/локации |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Заказы, доставка, возвраты средств, споры, доказательства по платёжным спорам |
 | [Marketing](src/tools/categories/marketing.ts) | Кампании продвигаемых объявлений, реклама, акции, ставки, массовые операции |
-| [Analytics](src/tools/categories/analytics.ts) | Отчёты о трафике, стандарты продавца, метрики поддержки клиентов |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Отчёты о трафике, стандарты продавца, метрики поддержки клиентов |
 | [Communication](src/tools/categories/communication.ts) | Переписка покупатель–продавец, переговоры, уведомления, отзывы |
 | [Metadata](src/tools/categories/metadata.ts) | Политики возврата, юрисдикции налога с продаж, автомобильная совместимость |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Деревья категорий, характеристики товаров, состояния товаров |
@@ -275,8 +275,8 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | Архетип | Инструменты |
 | --- | --- |
 | **Таблица** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **Карточка** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **График** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Карточка** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **График** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 Представления собираются в самодостаточный HTML командой `npm run build` (или `npm run build:ui`); они входят в опубликованный пакет и загружаются без собственного доступа к сети.
 

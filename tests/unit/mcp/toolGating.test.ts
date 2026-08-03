@@ -48,9 +48,14 @@ describe('toolNamesInExposurePaths', () => {
     expect(names.has(sampleTool)).toBe(true);
   });
 
-  it('returns the migrated traffic report under its official exposure path', () => {
+  it('returns the complete migrated Sell Analytics namespace under its official path', () => {
     const names = toolNamesInExposurePaths(['sell.analytics']);
-    expect([...names]).toEqual(['ebay_sell_analytics_get_traffic_report']);
+    expect([...names]).toEqual([
+      'ebay_sell_analytics_get_traffic_report',
+      'ebay_sell_analytics_find_seller_standards_profiles',
+      'ebay_sell_analytics_get_seller_standards_profile',
+      'ebay_sell_analytics_get_customer_service_metric',
+    ]);
   });
 
   it('ignores unknown families', () => {

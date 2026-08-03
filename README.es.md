@@ -245,7 +245,7 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | [Inventory](src/tools/categories/inventory.ts) | Artículos de inventario, ofertas, ubicaciones, grupos de artículos, operaciones masivas, mapeo SKU/ubicación |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Pedidos, envíos, reembolsos, disputas, evidencias de disputas de pago |
 | [Marketing](src/tools/categories/marketing.ts) | Campañas de anuncios promocionados, anuncios, promociones, pujas, operaciones masivas |
-| [Analytics](src/tools/categories/analytics.ts) | Informes de tráfico, estándares de vendedor, métricas de atención al cliente |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Informes de tráfico, estándares de vendedor, métricas de atención al cliente |
 | [Communication](src/tools/categories/communication.ts) | Mensajería comprador–vendedor, negociaciones, notificaciones, valoraciones |
 | [Metadata](src/tools/categories/metadata.ts) | Políticas de devolución, jurisdicciones de impuesto sobre ventas, compatibilidad de automoción |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Árboles de categorías, aspectos de artículos, condiciones de artículos |
@@ -275,8 +275,8 @@ Hoy se acogen 13 herramientas de flujos de trabajo esenciales, repartidas en tre
 | Arquetipo | Herramientas |
 | --- | --- |
 | **Tabla** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **Ficha** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Ficha** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 Las vistas se compilan en HTML autónomo con `npm run build` (o `npm run build:ui`); se incluyen en el paquete publicado y se cargan sin acceso de red propio.
 

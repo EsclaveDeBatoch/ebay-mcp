@@ -17,8 +17,8 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Inventory items, offers, locations, inventory groups, bulk publish — the REST listing model',
   fulfillment: 'Orders, shipping fulfillments, refunds, and payment disputes',
   marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
-  analytics: 'Seller standards and customer-service metrics awaiting resource migration',
-  'sell.analytics': 'Traffic reports from the official Sell Analytics resource tree',
+  'sell.analytics':
+    'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   taxonomy: 'Category trees, category suggestions, and required item aspects',
   communication: 'Buyer messages, member messages, and notification settings',

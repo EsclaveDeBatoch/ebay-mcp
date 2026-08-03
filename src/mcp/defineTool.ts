@@ -5,10 +5,18 @@ import type { EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
 import type { EbaySellerSession } from '@/ebay/ebaySellerSession.js';
 import { type McpUiBinding, uiToolCompletion } from '@/mcp/uiBridge.js';
 import { uiArchetypes } from '@/ui/archetypes.js';
-import type { ChartViewModel } from '@/ui/viewModels.js';
+import type { ViewArchetype, ViewModelByArchetype } from '@/ui/viewModels.js';
+
+/** One explicit browser projection supported by a migrated eBay tool. */
+type EbayToolPresentation<EbayDocument> = {
+  [Archetype in ViewArchetype]: {
+    readonly archetype: Archetype;
+    readonly project: (ebayDocument: EbayDocument) => ViewModelByArchetype[Archetype];
+  };
+}[ViewArchetype];
 
 /** Declarative source accepted by the target eBay tool definition. */
-export type EbayToolSpec<ArgumentsSchema extends z.ZodObject, EbayDocument> = {
+type EbayToolSpec<ArgumentsSchema extends z.ZodObject, EbayDocument> = {
   readonly name: string;
   readonly namespace: string;
   readonly description: string;
@@ -17,11 +25,11 @@ export type EbayToolSpec<ArgumentsSchema extends z.ZodObject, EbayDocument> = {
     sellerSession: EbaySellerSession,
     ebayArguments: z.infer<ArgumentsSchema>,
   ) => Promise<EbayRequestCompletion<EbayDocument>>;
-  readonly presentation?: (ebayDocument: EbayDocument) => ChartViewModel;
+  readonly presentation?: EbayToolPresentation<EbayDocument>;
 };
 
 /** Type-erased runtime shape stored by the explicit eBay tool catalogue. */
-export type EbayTool = {
+type EbayTool = {
   readonly name: string;
   readonly namespace: string;
   readonly description: string;
@@ -60,19 +68,21 @@ function failedMcpCall(
   };
 }
 
-function chartPresentationBinding<ArgumentsSchema extends z.ZodObject, EbayDocument>(
+function presentationBinding<ArgumentsSchema extends z.ZodObject, EbayDocument>(
   ebayToolSpec: EbayToolSpec<ArgumentsSchema, EbayDocument>,
 ): McpUiBinding | undefined {
   if (ebayToolSpec.presentation === undefined) {
     return;
   }
-  const chartPresentation = ebayToolSpec.presentation;
+  const browserPresentation = ebayToolSpec.presentation;
   return {
-    archetype: 'chart',
-    resourceUri: uiArchetypes.chart.uri,
-    map: (ebayDocument: unknown) => chartPresentation(ebayDocument as EbayDocument),
+    archetype: browserPresentation.archetype,
+    resourceUri: uiArchetypes[browserPresentation.archetype].uri,
+    map: (ebayDocument: unknown) => browserPresentation.project(ebayDocument as EbayDocument),
   };
 }
+
+export type { EbayTool, EbayToolPresentation, EbayToolSpec };
 
 /**
  * Couples one strict Zod argument contract to one resource operation and translates its
@@ -87,7 +97,7 @@ function chartPresentationBinding<ArgumentsSchema extends z.ZodObject, EbayDocum
 export const defineTool = <ArgumentsSchema extends z.ZodObject, EbayDocument>(
   ebayToolSpec: EbayToolSpec<ArgumentsSchema, EbayDocument>,
 ): EbayTool => {
-  const uiBinding = chartPresentationBinding(ebayToolSpec);
+  const uiBinding = presentationBinding(ebayToolSpec);
 
   return {
     name: ebayToolSpec.name,

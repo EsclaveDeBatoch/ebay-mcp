@@ -62,7 +62,7 @@ host calls ebay_sell_analytics_get_traffic_report
   -> src/ebay/sell/analytics/trafficReport.ts calls the eBay resource operation
   -> focused HTTP transport returns EbayRequestCompletion<TrafficReport>
   -> defineTool translates the completion once for MCP
-  -> src/ui/presentation/analytics.ts projects only when a browser view needs it
+  -> src/ui/presentation/trafficReport.ts projects only when a browser view needs it
 ```
 
 The resource module owns its strict inbound schema, generated eBay aliases, operation

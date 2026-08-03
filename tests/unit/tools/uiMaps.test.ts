@@ -8,7 +8,6 @@ import {
   truncate,
 } from '@/tools/ui/mapHelpers.js';
 import {
-  mapCustomerServiceMetricToChart,
   mapDisputeSummariesToTable,
   mapDisputeToCard,
   mapFulfillmentsToTable,
@@ -20,7 +19,6 @@ import {
   mapOrdersToTable,
   mapOrderToCard,
   mapRateLimitsToStat,
-  mapStandardsProfileToCard,
   mapUserRateLimitsToStat,
 } from '@/tools/ui/maps.js';
 
@@ -295,47 +293,6 @@ describe('card mappers', () => {
     expect(view.title).toBe('Dispute d1');
     const actions = view.sections.find((section) => section.heading === 'Available actions');
     expect(actions?.fields.map((field) => field.label)).toEqual(['Accept', 'Contest']);
-  });
-
-  it('maps a seller standards profile to a card with per-metric fields', () => {
-    const view = mapStandardsProfileToCard({
-      program: 'PROGRAM_US',
-      standardsLevel: 'TOP_RATED',
-      cycle: { cycleType: 'CURRENT', evaluationDate: '2026-06-01T00:00:00.000Z' },
-      metrics: [{ metricKey: 'TRANSACTION_COUNT', value: '120' }],
-    });
-    expect(view.badges?.[0]).toEqual({ label: 'Top rated', tone: 'success' });
-    const metrics = view.sections.find((section) => section.heading === 'Metrics');
-    expect(metrics?.fields[0]).toEqual({ label: 'Transaction count', value: '120' });
-  });
-});
-
-describe('chart mappers', () => {
-  it('groups customer-service metrics into a bar series per metric key', () => {
-    const view = mapCustomerServiceMetricToChart({
-      dimensionMetrics: [
-        {
-          dimension: { name: 'Domestic', value: 'DOMESTIC' },
-          metrics: [
-            { metricKey: 'COUNT', value: '10' },
-            { metricKey: 'RATE', value: '0.5' },
-          ],
-        },
-        {
-          dimension: { name: 'International', value: 'INTERNATIONAL_MATURED_REGION' },
-          metrics: [
-            { metricKey: 'COUNT', value: '4' },
-            { metricKey: 'RATE', value: '0.25' },
-          ],
-        },
-      ],
-    });
-    expect(view.kind).toBe('bar');
-    expect(view.series.map((series) => series.name)).toEqual(['COUNT', 'RATE']);
-    expect(view.series[0].points).toEqual([
-      { x: 'DOMESTIC', y: 10 },
-      { x: 'INTERNATIONAL_MATURED_REGION', y: 4 },
-    ]);
   });
 });
 

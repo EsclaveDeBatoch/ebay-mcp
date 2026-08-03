@@ -153,7 +153,7 @@ Imports use `./` for same-folder siblings, `@/` across modules, `node:` for buil
 ```ts
 // ✓ src/ebay/sell/analytics/trafficReport.ts
 import { defineTool } from '@/mcp/defineTool.js';
-import { trafficReportChart } from '@/ui/presentation/analytics.js';
+import { trafficReportChart } from '@/ui/presentation/trafficReport.js';
 import type { TrafficReportQuery } from './trafficReportQuery.js';
 
 // ✗ path ladders and facades
@@ -185,7 +185,7 @@ Why: Removing or moving code also removes its obsolete public surface.
 Authored control flow uses explicit guards and contains no `??`, `||`, ternary expression, non-null assertion, or deep optional chain.
 
 ```ts
-// ✓ src/ui/presentation/analytics.ts
+// ✓ src/ui/presentation/trafficReport.ts
 if (trafficReport.records === undefined) {
   return emptyTrafficChart;
 }
@@ -205,7 +205,7 @@ Why: Missing states and product decisions stay visible.
 Authored bindings use `const`, with mutation limited to a clearly named accumulator held by a constant reference.
 
 ```ts
-// ✓ src/ui/presentation/analytics.ts
+// ✓ src/ui/presentation/trafficReport.ts
 const chartPoints: ChartPoint[] = [];
 for (const trafficRecord of trafficRecords) {
   chartPoints.push(trafficPoint);
@@ -554,7 +554,7 @@ Why: stdout belongs to MCP and operational logs must not leak credentials or doc
 Browser-facing view models are created only in `src/ui/presentation` and browser network work calls the server through `callServerTool`.
 
 ```ts
-// ✓ src/ui/presentation/analytics.ts
+// ✓ src/ui/presentation/trafficReport.ts
 export const trafficReportChart = (trafficReport: TrafficReport): ChartViewModel => {};
 
 // ✗ transport-layer presentation and direct eBay access
@@ -795,7 +795,7 @@ import type { EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
 import type { EbaySellerSession } from '@/ebay/ebaySellerSession.js';
 import type { components } from '@/generated/ebay/sell-apps/analytics-and-report/sellAnalyticsV1Oas3.js';
 import { defineTool } from '@/mcp/defineTool.js';
-import { trafficReportChart } from '@/ui/presentation/analytics.js';
+import { trafficReportChart } from '@/ui/presentation/trafficReport.js';
 
 export const trafficReportQuerySchema = z
   .object({
@@ -874,7 +874,7 @@ Production evidence:
 - `src/ebay/sell/analytics/trafficReport.test.ts` — complete local resource contract.
 - `tests/integration/mcp/sell/analytics/trafficReport.test.ts` — the same product depth through
   the real MCP SDK transport and runtime catalogue.
-- `src/ui/presentation/analytics.ts` — the only traffic-report projection boundary.
+- `src/ui/presentation/trafficReport.ts` — the only traffic-report projection boundary.
 
 ## Never
 

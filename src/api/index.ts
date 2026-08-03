@@ -1,5 +1,4 @@
 import { AccountApi } from '@/api/account-management/account.js';
-import { AnalyticsApi } from '@/api/analytics-and-report/analytics.js';
 import { EbayApiClient } from '@/api/client.js';
 import { FeedbackApi } from '@/api/communication/feedback.js';
 import { MessageApi } from '@/api/communication/message.js';
@@ -39,7 +38,6 @@ export class EbaySellerApi {
   public dispute: DisputeApi;
   public marketing: MarketingApi;
   public recommendation: RecommendationApi;
-  public analytics: AnalyticsApi;
   public metadata: MetadataApi;
   public taxonomy: TaxonomyApi;
   public negotiation: NegotiationApi;
@@ -66,7 +64,6 @@ export class EbaySellerApi {
     this.dispute = new DisputeApi(this.client);
     this.marketing = new MarketingApi(this.client);
     this.recommendation = new RecommendationApi(this.client);
-    this.analytics = new AnalyticsApi(this.client);
     this.metadata = new MetadataApi(this.client);
     this.taxonomy = new TaxonomyApi(this.client);
     this.negotiation = new NegotiationApi(this.client);
@@ -144,7 +141,6 @@ export class EbaySellerApi {
 }
 
 export * from '@/api/account-management/account.js';
-export * from '@/api/analytics-and-report/analytics.js';
 export * from '@/api/client.js';
 export * from '@/api/communication/feedback.js';
 export * from '@/api/communication/message.js';

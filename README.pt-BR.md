@@ -245,7 +245,7 @@ Autoconfigurados pelo `npm run setup`. Requer Node.js ≥ 22.12 e o protocolo MC
 | [Inventory](src/tools/categories/inventory.ts) | Itens de estoque, ofertas, locais, grupos de itens, operações em massa, mapeamento SKU/local |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | Pedidos, envio, reembolsos, disputas, evidências de disputas de pagamento |
 | [Marketing](src/tools/categories/marketing.ts) | Campanhas de anúncios patrocinados, anúncios, promoções, lances, operações em massa |
-| [Analytics](src/tools/categories/analytics.ts) | Relatórios de tráfego, padrões do vendedor, métricas de atendimento ao cliente |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | Relatórios de tráfego, padrões do vendedor, métricas de atendimento ao cliente |
 | [Communication](src/tools/categories/communication.ts) | Mensagens comprador–vendedor, negociações, notificações, avaliações |
 | [Metadata](src/tools/categories/metadata.ts) | Políticas de devolução, jurisdições de imposto sobre vendas, compatibilidade automotiva |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | Árvores de categorias, aspectos de itens, condições de itens |
@@ -275,8 +275,8 @@ Em hosts compatíveis com [MCP Apps](https://modelcontextprotocol.io), as ferram
 | Arquétipo | Ferramentas |
 | --- | --- |
 | **Tabela** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **Cartão** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **Cartão** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 As visualizações são compiladas em HTML autocontido com `npm run build` (ou `npm run build:ui`); elas são distribuídas no pacote publicado e carregam sem nenhum acesso à rede próprio.
 

@@ -5,7 +5,6 @@ import { accountEntries } from './account.js';
 import { inventoryEntries } from './inventory.js';
 import { fulfillmentEntries } from './fulfillment.js';
 import { marketingEntries } from './marketing.js';
-import { analyticsEntries } from './analytics.js';
 import { metadataEntries } from './metadata.js';
 import { taxonomyEntries } from './taxonomy.js';
 import { communicationEntries } from './communication.js';
@@ -40,7 +39,6 @@ export const toolCategories: ToolCategory[] = [
   { key: 'inventory', title: 'Inventory', entries: inventoryEntries },
   { key: 'fulfillment', title: 'Fulfillment', entries: fulfillmentEntries },
   { key: 'marketing', title: 'Marketing', entries: marketingEntries },
-  { key: 'analytics', title: 'Analytics', entries: analyticsEntries },
   { key: 'metadata', title: 'Metadata', entries: metadataEntries },
   { key: 'taxonomy', title: 'Taxonomy', entries: taxonomyEntries },
   { key: 'communication', title: 'Communication', entries: communicationEntries },

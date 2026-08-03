@@ -245,7 +245,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | [Inventory](src/tools/categories/inventory.ts) | 재고 항목, 오퍼, 위치, 항목 그룹, 일괄 작업, SKU/위치 매핑 |
 | [Fulfillment](src/tools/categories/fulfillment.ts) | 주문, 배송, 환불, 분쟁, 결제 분쟁 증거 |
 | [Marketing](src/tools/categories/marketing.ts) | 프로모션 광고 캠페인, 광고, 프로모션, 입찰, 일괄 작업 |
-| [Analytics](src/tools/categories/analytics.ts) | 트래픽 보고서, 판매자 기준, 고객 서비스 지표 |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | 트래픽 보고서, 판매자 기준, 고객 서비스 지표 |
 | [Communication](src/tools/categories/communication.ts) | 구매자–판매자 메시지, 협상, 알림, 피드백 |
 | [Metadata](src/tools/categories/metadata.ts) | 반품 정책, 판매세 관할, 자동차 호환성 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 카테고리 트리, 항목 속성, 항목 상태 |
@@ -275,8 +275,8 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | 원형 | 도구 |
 | --- | --- |
 | **테이블** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **카드** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **차트** | `ebay_sell_analytics_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **카드** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **차트** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 보기는 `npm run build`(또는 `npm run build:ui`)로 자체 완결형 HTML로 빌드되며, 게시된 패키지에 포함되어 자체적인 네트워크 접근 없이 로드됩니다.
 
