@@ -2,20 +2,18 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { Effect } from 'effect';
 import { defineTool } from '@/tools/defineTool.js';
 import {
-  clientDetailsSchema,
   createSigningKeyInputSchema,
   getApiStatusInputSchema,
   getSigningKeyInputSchema,
   getSigningKeysInputSchema,
   querySigningKeysResponseSchema,
-  registerClientInputSchema,
   signingKeySchema,
 } from '@/schemas/developer/developer.js';
 import type { OutputArgs } from '@/tools/types.js';
 import { getApiStatusFeed } from '@/utils/apiStatusFeed.js';
 import type { ToolEntry } from '@/tools/registry.js';
 
-/** Developer API tools for eBay application and keyset management. */
+/** eBay API status and Developer Key Management tools. */
 export const developerEntries: ToolEntry[] = [
   defineTool({
     name: 'ebay_get_api_status',
@@ -50,17 +48,6 @@ export const developerEntries: ToolEntry[] = [
           Effect.map((feed) => ({ items: feed.items, ...(feed.error && { error: feed.error }) })),
         ),
       ),
-  }),
-  defineTool({
-    name: 'ebay_register_client',
-    description:
-      'Register a third party financial application with eBay (Open Banking / PSD2). Requires valid eIDAS certificate via MTLS.',
-    inputSchema: registerClientInputSchema.shape,
-    outputSchema: zodToJsonSchema(clientDetailsSchema, {
-      name: 'RegisterClientOutput',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.developer.registerClient(args)),
   }),
   defineTool({
     name: 'ebay_get_signing_keys',

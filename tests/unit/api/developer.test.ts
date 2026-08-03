@@ -18,60 +18,6 @@ describe('DeveloperApi', () => {
     api = new DeveloperApi(client);
   });
 
-  describe('registerClient', () => {
-    it('register a new client', async () => {
-      const clientSettings = {
-        client_name: 'Test Application',
-        contacts: ['owner@example.com'],
-        policy_uri: 'https://example.com/privacy',
-        redirect_uris: ['https://example.com/callback'],
-        software_id: 'test-application',
-        software_statement: 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...',
-      };
-
-      const mockResponse = {
-        client_id: 'new_client_123',
-        client_secret: 'secret_xyz',
-        client_id_issued_at: 1_704_067_200,
-        client_secret_expires_at: 0,
-        registration_client_uri:
-          'https://api.ebay.com/developer/registration/v1/client/new_client_123',
-        registration_access_token: 'access_token_abc',
-      };
-
-      vi.mocked(client.post).mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(api.registerClient({ clientSettings }));
-
-      expect(client.post).toHaveBeenCalledWith(
-        '/developer/registration/v1/client/register',
-        clientSettings,
-      );
-      expect(result).toEqual(mockResponse);
-    });
-
-    it('handle registration with minimal settings', async () => {
-      const clientSettings = {
-        client_name: 'Minimal App',
-        redirect_uris: ['com.example.app://oauth/callback'],
-      };
-
-      const mockResponse = {
-        client_id: 'minimal_client_456',
-      };
-
-      vi.mocked(client.post).mockResolvedValue(mockResponse);
-
-      const result = await Effect.runPromise(api.registerClient({ clientSettings }));
-
-      expect(client.post).toHaveBeenCalledWith(
-        '/developer/registration/v1/client/register',
-        clientSettings,
-      );
-      expect(result).toEqual(mockResponse);
-    });
-  });
-
   describe('getSigningKeys', () => {
     it('get all signing keys', async () => {
       const mockResponse = {
@@ -221,16 +167,6 @@ describe('DeveloperApi', () => {
   });
 
   describe('error handling', () => {
-    it('propagate errors from registerClient', async () => {
-      vi.mocked(client.post).mockRejectedValue(new Error('Registration failed'));
-
-      const error = await Effect.runPromise(
-        Effect.flip(api.registerClient({ clientSettings: invalidInput({}) })),
-      );
-
-      expect(error._tag).toBe('EbayApiError');
-    });
-
     it('propagate errors from getSigningKeys', async () => {
       vi.mocked(client.get).mockRejectedValue(new Error('Key management API unavailable'));
 

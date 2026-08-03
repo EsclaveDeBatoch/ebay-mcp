@@ -48,11 +48,6 @@ const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
   },
   {
     file: 'src/api/developer/developer.ts',
-    constant: 'clientBasePath',
-    spec: 'specs/ebay/application-settings/developer_client_registration_v1_oas3.json',
-  },
-  {
-    file: 'src/api/developer/developer.ts',
     constant: 'keyBasePath',
     spec: 'specs/ebay/application-settings/developer_key_management_v1_oas3.json',
   },

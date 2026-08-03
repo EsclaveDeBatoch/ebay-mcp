@@ -14,24 +14,6 @@ export const getApiStatusInputSchema = z.object({
   api: z.string().optional().describe('Optional API-name substring filter'),
 });
 
-/** Generated client-registration request fields accepted by eBay. */
-export const clientSettingsSchema = z.object({
-  client_name: z.string().optional().describe('User-friendly name for the application'),
-  contacts: z.array(z.string()).optional().describe('Contact email addresses for the registrant'),
-  policy_uri: z.string().optional().describe('HTTPS URL to the application privacy policy'),
-  redirect_uris: z.array(z.string()).optional().describe('OAuth redirect URIs'),
-  software_id: z.string().optional().describe('Stable identifier for the client software'),
-  software_statement: z
-    .string()
-    .optional()
-    .describe('Base64-encoded Software Statement Assertion JWT'),
-});
-
-/** Input accepted by Developer Client Registration API registerClient. */
-export const registerClientInputSchema = z.object({
-  clientSettings: clientSettingsSchema.describe('Generated ClientSettings request body'),
-});
-
 /** Input accepted by Developer Key Management API getSigningKeys. */
 export const getSigningKeysInputSchema = z.object({});
 
@@ -51,22 +33,6 @@ export const createSigningKeyInputSchema = z.object({
 /** Input accepted by Developer Key Management API getSigningKey. */
 export const getSigningKeyInputSchema = z.object({
   signingKeyId: z.string().describe('System-generated eBay signing key identifier'),
-});
-
-/** Response returned by Developer Client Registration API registerClient. */
-export const clientDetailsSchema = z.object({
-  client_id: z.string().optional(),
-  client_id_issued_at: z.number().int().optional(),
-  client_name: z.string().optional(),
-  client_secret: z.string().optional(),
-  client_secret_expires_at: z.number().int().optional(),
-  contacts: z.array(z.string()).optional(),
-  grant_types: z.array(z.string()).optional(),
-  policy_uri: z.string().optional(),
-  redirect_uris: z.array(z.string()).optional(),
-  scope: z.string().optional(),
-  software_id: z.string().optional(),
-  software_statement: z.string().optional(),
 });
 
 /** Response returned by Developer Key Management signing-key endpoints. */
@@ -97,8 +63,6 @@ export const querySigningKeysResponseSchema = z.object({
  */
 export const getDeveloperJsonSchemas = () => ({
   getApiStatusInput: zodToJsonSchema(getApiStatusInputSchema, 'getApiStatusInput'),
-  registerClientInput: zodToJsonSchema(registerClientInputSchema, 'registerClientInput'),
-  registerClientOutput: zodToJsonSchema(clientDetailsSchema, 'registerClientOutput'),
   getSigningKeysInput: zodToJsonSchema(getSigningKeysInputSchema, 'getSigningKeysInput'),
   getSigningKeysOutput: zodToJsonSchema(querySigningKeysResponseSchema, 'getSigningKeysOutput'),
   createSigningKeyInput: zodToJsonSchema(createSigningKeyInputSchema, 'createSigningKeyInput'),

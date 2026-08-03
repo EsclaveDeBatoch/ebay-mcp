@@ -614,7 +614,7 @@ Every eBay operation is written red-first with complete resource-contract covera
 // tests/integration/mcp/sell/analytics/trafficReport.test.ts
 
 // ✗ framework-only confidence
-it('registers all tools', () => expect(toolCount).toBe(298));
+it('registers all tools', () => expect(toolCount).toBe(297));
 ```
 
 Why: Both public boundaries are independently proven as requested.

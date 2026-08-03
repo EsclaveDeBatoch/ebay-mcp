@@ -34,7 +34,7 @@ const FAMILY_BLURBS: Record<string, string> = {
   metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
   browse: 'Sold/completed listing search (Finding API) for pricing comps',
   other: 'Feedback and assorted Sell-API helpers',
-  developer: 'API status, client registration, and signing keys',
+  developer: 'API status and signing keys',
   trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',
 };
 
