@@ -40,14 +40,6 @@ const sortSchema = z
   })
   .optional();
 
-/** Schema for getAwaitingFeedback input. */
-export const getAwaitingFeedbackSchema = z.object({
-  filter: filterSchema,
-  limit: limitSchema,
-  offset: offsetSchema,
-  sort: sortSchema,
-});
-
 /** Schema for getFeedback input. */
 export const getFeedbackSchema = z.object({
   userId: z.string({

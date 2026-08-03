@@ -14,18 +14,6 @@ import {
 import type { components } from '@/generated/ebay/sell-apps/communication/commerceFeedbackV1BetaOas3.js';
 import { Effect } from 'effect';
 
-/** Query parameters accepted by getItemsAwaitingFeedback. */
-export interface GetAwaitingFeedbackInput {
-  /** Optional OpenAPI filter expression. */
-  readonly filter?: string;
-  /** Optional page size. */
-  readonly limit?: number;
-  /** Optional zero-based page offset. */
-  readonly offset?: number;
-  /** Optional result sort order. */
-  readonly sort?: string;
-}
-
 /** Query parameters accepted by getFeedback. */
 export interface GetFeedbackInput {
   /** eBay user ID whose feedback is being retrieved. */
@@ -50,8 +38,6 @@ export interface GetFeedbackInput {
   readonly transactionId?: string;
 }
 
-/** Response returned by getItemsAwaitingFeedback. */
-type AwaitingFeedbackResponse = components['schemas']['AwaitingFeedbackResponse'];
 /** Response returned by getFeedback. */
 type GetFeedbackResponse = components['schemas']['GetFeedbackResponse'];
 /** Request body accepted by leaveFeedback. */
@@ -71,43 +57,6 @@ export class FeedbackApi {
   private readonly basePath = '/commerce/feedback/v1';
 
   constructor(private readonly client: EbayApiClient) {}
-
-  /**
-   * Retrieves line items awaiting feedback.
-   *
-   * @param input - Optional filter, pagination, and sort query parameters.
-   * @returns An Effect that succeeds with eBay's generated AwaitingFeedbackResponse.
-   *
-   * @example
-   * ```ts
-   * const awaiting = await Effect.runPromise(
-   *   feedbackApi.getAwaitingFeedback({ filter: 'userRole:SELLER', limit: 25 }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/feedback/resources/awaiting_feedback/methods/getItemsAwaitingFeedback
-   */
-  getAwaitingFeedback = (
-    input: GetAwaitingFeedbackInput = {},
-  ): Effect.Effect<AwaitingFeedbackResponse, EbayApiError | EndpointInputError> => {
-    const client = this.client;
-    const path = `${this.basePath}/awaiting_feedback`;
-
-    return Effect.gen(function* () {
-      const filter = yield* optionalStringEffect(input.filter, 'filter');
-      const limit = yield* optionalPositiveNumberEffect(input.limit, 'limit');
-      const offset = yield* optionalNonNegativeNumberEffect(input.offset, 'offset');
-      const sort = yield* optionalStringEffect(input.sort, 'sort');
-      const params = buildEndpointParams({
-        filter: { wireName: 'filter', value: filter },
-        limit: { wireName: 'limit', value: limit },
-        offset: { wireName: 'offset', value: offset },
-        sort: { wireName: 'sort', value: sort },
-      });
-
-      return yield* requestGetEffect<AwaitingFeedbackResponse>(client, path, params);
-    });
-  };
 
   /**
    * Retrieves feedback for a specified eBay user.

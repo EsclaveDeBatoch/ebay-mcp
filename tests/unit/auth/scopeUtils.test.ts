@@ -139,6 +139,19 @@ describe('Scope Utils', () => {
       );
     });
 
+    it('returns the feedback scope for line items awaiting feedback', () => {
+      const requirement = getRequiredScopesForTool(
+        'ebay_commerce_feedback_get_items_awaiting_feedback',
+      );
+
+      expect(requirement?.requiredScopes).toEqual([
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      ]);
+      expect(requirement?.minimumScope).toBe(
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      );
+    });
+
     it('returns the readonly inventory scope for eligible seller-offer listings', () => {
       const requirement = getRequiredScopesForTool('ebay_sell_negotiation_find_eligible_items');
 

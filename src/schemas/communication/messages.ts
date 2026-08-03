@@ -31,11 +31,6 @@ const errorSchema = z.object({
     .optional(),
 });
 
-const amountSchema = z.object({
-  currency: z.string(),
-  value: z.string(),
-});
-
 // ============================================================================
 // Message API Schemas
 // ============================================================================
@@ -209,41 +204,6 @@ export const getFeedbackSummaryOutputSchema = z.object({
 });
 
 /**
- * Validates the Communication API get awaiting feedback request payload.
- */
-export const getAwaitingFeedbackInputSchema = z.object({
-  filter: z.string().optional().describe('Filter criteria for awaiting feedback'),
-  limit: z.number().optional().describe('Number of items to return'),
-  offset: z.number().optional().describe('Number of items to skip'),
-});
-
-/**
- * Validates the Communication API get awaiting feedback response payload.
- */
-export const getAwaitingFeedbackOutputSchema = z.object({
-  items: z
-    .array(
-      z.object({
-        orderLineItemId: z.string().optional(),
-        transactionId: z.string().optional(),
-        itemId: z.string().optional(),
-        title: z.string().optional(),
-        buyer: z.string().optional(),
-        transactionDate: z.string().optional(),
-        transactionPrice: amountSchema.optional(),
-      }),
-    )
-    .optional(),
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional(),
-  offset: z.number().optional(),
-  prev: z.string().optional(),
-  total: z.number().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
  * Validates the Communication API respond to feedback request payload.
  */
 export const respondToFeedbackInputSchema = z.object({
@@ -406,14 +366,6 @@ export const getCommunicationJsonSchemas = () => {
     getFeedbackSummaryOutput: zodToJsonSchema(
       getFeedbackSummaryOutputSchema,
       'getFeedbackSummaryOutput',
-    ),
-    getAwaitingFeedbackInput: zodToJsonSchema(
-      getAwaitingFeedbackInputSchema,
-      'getAwaitingFeedbackInput',
-    ),
-    getAwaitingFeedbackOutput: zodToJsonSchema(
-      getAwaitingFeedbackOutputSchema,
-      'getAwaitingFeedbackOutput',
     ),
     respondToFeedbackInput: zodToJsonSchema(respondToFeedbackInputSchema, 'respondToFeedbackInput'),
     respondToFeedbackOutput: zodToJsonSchema(

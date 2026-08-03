@@ -17,32 +17,6 @@ beforeEach(() => {
   api = new FeedbackApi(client);
 });
 
-describe('getAwaitingFeedback', () => {
-  it('get awaiting feedback with parameters', async () => {
-    const mockResponse = { feedback: [] };
-    vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-    await Effect.runPromise(
-      api.getAwaitingFeedback({ filter: 'filter:test', limit: 10, offset: 0 }),
-    );
-
-    expect(client.get).toHaveBeenCalledWith('/commerce/feedback/v1/awaiting_feedback', {
-      filter: 'filter:test',
-      limit: 10,
-      offset: 0,
-    });
-  });
-
-  it('handle missing optional parameters', async () => {
-    const mockResponse = { feedback: [] };
-    vi.mocked(client.get).mockResolvedValue(mockResponse);
-
-    await Effect.runPromise(api.getAwaitingFeedback());
-
-    expect(client.get).toHaveBeenCalledWith('/commerce/feedback/v1/awaiting_feedback');
-  });
-});
-
 describe('getFeedback', () => {
   it('get feedback for transaction', async () => {
     const mockResponse = { feedback: [] };

@@ -32,7 +32,7 @@ describe('Commerce Feedback rating-summary MCP exposure', () => {
     await mcpClient.close();
   });
 
-  it('is exposed once under its official namespace gate', async () => {
+  it('shares its official namespace gate with the awaiting-feedback resource', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'commerce.feedback');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     const { sellerSession } = sellerSessionReturning<FeedbackRatingSummary>({
@@ -41,7 +41,10 @@ describe('Commerce Feedback rating-summary MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([toolName]);
+    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
+      'ebay_commerce_feedback_get_items_awaiting_feedback',
+      toolName,
+    ]);
     await mcpClient.close();
   });
 
@@ -55,7 +58,10 @@ describe('Commerce Feedback rating-summary MCP exposure', () => {
     });
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
-    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([toolName]);
+    expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
+      'ebay_commerce_feedback_get_items_awaiting_feedback',
+      toolName,
+    ]);
     await mcpClient.close();
   });
 });

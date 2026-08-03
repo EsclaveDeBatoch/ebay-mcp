@@ -70,7 +70,10 @@ describe('toolNamesInExposurePaths', () => {
 
   it('returns the migrated Commerce Feedback resource under its official path', () => {
     const names = toolNamesInExposurePaths(['commerce.feedback']);
-    expect([...names]).toEqual(['ebay_commerce_feedback_get_feedback_rating_summary']);
+    expect([...names]).toEqual([
+      'ebay_commerce_feedback_get_items_awaiting_feedback',
+      'ebay_commerce_feedback_get_feedback_rating_summary',
+    ]);
   });
 
   it('returns the complete migrated Sell Recommendation namespace under its official path', () => {

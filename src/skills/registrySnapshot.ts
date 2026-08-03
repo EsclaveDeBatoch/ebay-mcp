@@ -17,7 +17,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'Inventory items, offers, locations, inventory groups, bulk publish — the REST listing model',
   fulfillment: 'Orders, shipping fulfillments, refunds, and payment disputes',
   marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
-  'commerce.feedback': 'Feedback rating metrics from Commerce Feedback',
+  'commerce.feedback': 'Pending feedback tasks and user rating metrics from Commerce Feedback',
   'commerce.identity': 'Authenticated eBay account profile information',
   'commerce.translation': 'Listing-title and description translation between supported languages',
   'sell.analytics':

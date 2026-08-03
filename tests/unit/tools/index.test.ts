@@ -225,7 +225,6 @@ describe('Tools Layer', () => {
       feedback: {
         getFeedback: vi.fn(),
         leaveFeedbackForBuyer: vi.fn(),
-        getAwaitingFeedback: vi.fn(),
         respondToFeedback: vi.fn(),
       },
       // Other APIs

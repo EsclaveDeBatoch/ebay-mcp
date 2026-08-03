@@ -346,7 +346,6 @@ function normalizeForMatching(name: string): string {
  */
 const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   // Feedback API
-  getitemsawaitingfeedback: ['ebay_get_awaiting_feedback'],
   leavefeedback: ['ebay_leave_feedback_for_buyer'],
 
   // Notification API — tools use the ebay_*_notification_* naming convention
