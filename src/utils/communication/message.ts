@@ -37,31 +37,3 @@ export const bulkUpdateConversationSchema = z.object({
     )
     .optional(),
 });
-
-/** Schema for updateConversation input. */
-export const updateConversationSchema = z.object({
-  conversationId: z
-    .string({
-      invalid_type_error: 'conversationId must be a string',
-      description: 'The unique identifier of the conversation',
-    })
-    .optional(),
-  conversationStatus: z
-    .string({
-      invalid_type_error: 'conversationStatus must be a string',
-      description: 'The updated status: ACTIVE, ARCHIVE, DELETE',
-    })
-    .optional(),
-  conversationType: z
-    .string({
-      invalid_type_error: 'conversationType must be a string',
-      description: 'The existing type: FROM_MEMBERS or FROM_EBAY (required but cannot be updated)',
-    })
-    .optional(),
-  read: z
-    .boolean({
-      invalid_type_error: 'read must be a boolean',
-      description: 'The read status to set (true = read, false = unread)',
-    })
-    .optional(),
-});

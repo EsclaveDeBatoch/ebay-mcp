@@ -1,10 +1,7 @@
 import { defineTool } from '@/tools/defineTool.js';
 import type { ToolEntry } from '@/tools/registry.js';
 import { Effect } from 'effect';
-import {
-  bulkUpdateConversationSchema,
-  updateConversationSchema,
-} from '@/utils/communication/message.js';
+import { bulkUpdateConversationSchema } from '@/utils/communication/message.js';
 import {
   createDestinationSchema,
   createSubscriptionFilterSchema,
@@ -176,12 +173,5 @@ export const communicationEntries: ToolEntry[] = [
       'Bulk update multiple conversations. Each entry sets conversationStatus (ACTIVE, ARCHIVE, DELETE, READ, UNREAD) for a conversationId.',
     inputSchema: bulkUpdateConversationSchema.shape,
     handler: (api, args) => Effect.runPromise(api.message.bulkUpdateConversation(args)),
-  }),
-  defineTool({
-    name: 'ebay_update_conversation',
-    description:
-      'Update a single conversation (conversationStatus: ACTIVE, ARCHIVE, DELETE; or read flag).',
-    inputSchema: updateConversationSchema.shape,
-    handler: (api, args) => Effect.runPromise(api.message.updateConversation(args)),
   }),
 ];

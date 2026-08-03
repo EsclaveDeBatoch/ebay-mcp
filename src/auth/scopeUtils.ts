@@ -280,6 +280,11 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
       description: 'Requires access to send buyer-seller messages',
     },
+    ebay_commerce_message_update_conversation: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
+      description: 'Requires access to update a buyer-seller conversation',
+    },
 
     // Identity Tools
     ebay_commerce_identity_get_user: {

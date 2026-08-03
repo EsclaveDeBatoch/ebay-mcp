@@ -190,6 +190,7 @@ describe('Scope Utils', () => {
       'ebay_commerce_message_get_conversations',
       'ebay_commerce_message_get_conversation',
       'ebay_commerce_message_send_message',
+      'ebay_commerce_message_update_conversation',
     ])('returns the production message scope for %s', (toolName) => {
       const requirement = getRequiredScopesForTool(toolName);
 

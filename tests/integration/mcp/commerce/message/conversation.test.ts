@@ -67,6 +67,7 @@ describe('Commerce Message conversation MCP exposure', () => {
       getConversationsToolName,
       getConversationToolName,
       'ebay_commerce_message_send_message',
+      'ebay_commerce_message_update_conversation',
     ]);
     await mcpClient.close();
   });

@@ -12,8 +12,6 @@ import { Effect } from 'effect';
 type BulkUpdateConversationsRequest = components['schemas']['BulkUpdateConversationsRequest'];
 /** Response returned by bulkUpdateConversation. */
 type BulkUpdateConversationsResponse = components['schemas']['BulkUpdateConversationsResponse'];
-/** Request body accepted by updateConversation. */
-type UpdateConversationRequest = components['schemas']['UpdateConversationRequest'];
 
 /**
  * Message API - Buyer-seller messaging
@@ -52,34 +50,6 @@ export class MessageApi {
       );
 
       return yield* requestPostEffect<BulkUpdateConversationsResponse>(client, path, body);
-    });
-  };
-
-  /**
-   * Updates a conversation status.
-   *
-   * @param updateData - Generated UpdateConversationRequest body.
-   * @returns An Effect that succeeds when eBay accepts the update.
-   *
-   * @example
-   * ```ts
-   * await Effect.runPromise(
-   *   messageApi.updateConversation({ conversationId: 'c1', conversationStatus: 'READ' }),
-   * );
-   * ```
-   *
-   * @see https://developer.ebay.com/api-docs/commerce/message/resources/update_conversation/methods/updateConversation
-   */
-  updateConversation = (
-    updateData: UpdateConversationRequest,
-  ): Effect.Effect<void, EbayApiError | EndpointInputError> => {
-    const client = this.client;
-    const path = `${this.basePath}/update_conversation`;
-
-    return Effect.gen(function* () {
-      const body = yield* requireObjectEffect<UpdateConversationRequest>(updateData, 'updateData');
-
-      return yield* requestPostEffect<void>(client, path, body);
     });
   };
 }
