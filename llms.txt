@@ -38,7 +38,7 @@ Tool definitions and handlers are co-located in their owning legacy family or mi
 - [Sell eDelivery](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/edelivery): International shipment creation, management, labels, and tracking under `sell.edelivery` for Greater-China sellers with active eDIS
 - [Trading](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/trading/fixedPriceListing.ts): Legacy XML API — fixed-price listing retrieval, creation, revision, relisting, and ending under `trading`
 - [Token Management](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/tokenManagement.ts): OAuth token retrieval, refresh, and diagnostics
-- [Connector](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/connector.ts): ChatGPT connector search/fetch tools over the eBay MCP catalogue
+- [Connector](https://github.com/YosefHayim/ebay-mcp/tree/main/src/mcp/connector): ChatGPT connector search/fetch tools over the eBay MCP catalogue
 
 ## Features and Runtime Behavior
 

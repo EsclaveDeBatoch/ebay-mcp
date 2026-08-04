@@ -10,6 +10,7 @@ describe('toolExposure', () => {
   describe('EBAY_TOOL_EXPOSURE_PATHS', () => {
     it('contains legacy categories and migrated official exposure paths', () => {
       expect([...EBAY_TOOL_EXPOSURE_PATHS]).toEqual([
+        'connector',
         ...toolCategories.map((category) => category.key),
         'trading',
         'commerce.feedback',

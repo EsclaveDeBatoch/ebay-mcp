@@ -240,7 +240,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 
 | Категория | Что вы можете делать |
 | --- | --- |
-| [Connector](src/tools/categories/connector.ts) | Инструменты search/fetch коннектора ChatGPT по каталогу eBay MCP |
+| [Connector](src/mcp/connector/) | Инструменты search/fetch коннектора ChatGPT по каталогу eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Статус продавца, участие в программах, налог с продаж, подписки, таблицы тарифов, право на рекламу, устаревший статус платёжной программы и бизнес-политики |
 | [Sell Inventory](src/ebay/sell/inventory/) | Группы товаров, совместимость автомобилей, сопоставления местоположений SKU и локации инвентаря в `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Заказы, доставка, возвраты средств, споры, доказательства по платёжным спорам |

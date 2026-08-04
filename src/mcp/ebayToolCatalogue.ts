@@ -1,3 +1,5 @@
+import { fetchTool } from '@/mcp/connector/fetch.js';
+import { searchTool } from '@/mcp/connector/search.js';
 import { getItemsAwaitingFeedbackTool } from '@/ebay/commerce/feedback/awaitingFeedback.js';
 import { getFeedbackTool, leaveFeedbackTool } from '@/ebay/commerce/feedback/feedback.js';
 import { getFeedbackRatingSummaryTool } from '@/ebay/commerce/feedback/feedbackRatingSummary.js';
@@ -355,6 +357,8 @@ import type { EbayTool } from '@/mcp/defineTool.js';
 
 /** Explicit catalogue of migrated eBay resource tools. */
 export const ebayToolCatalogue: readonly EbayTool[] = [
+  searchTool,
+  fetchTool,
   getItemsAwaitingFeedbackTool,
   getFeedbackTool,
   leaveFeedbackTool,

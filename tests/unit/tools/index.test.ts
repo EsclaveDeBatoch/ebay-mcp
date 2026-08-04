@@ -5,10 +5,6 @@ import { executeTool, getToolDefinitions } from '@/tools/index.js';
 import type { EbaySellerApi } from '@/api/index.js';
 import type { EbayConfig } from '@/types/ebay.js';
 
-type TextContentToolResult = {
-  content: Array<{ text: string }>;
-};
-
 type OAuthUrlToolResult = {
   redirectUri: string;
 };
@@ -92,58 +88,14 @@ describe('Tools Layer', () => {
       });
     });
 
-    it('include all tool categories', () => {
+    it('include remaining legacy token-management tools', () => {
       const tools = getToolDefinitions();
       const toolNames = tools.map((t) => t.name);
 
-      // Check for tools from each remaining legacy category
-      expect(toolNames).toContain('search'); // connector
+      // Connector search/fetch live in the migrated MCP catalogue, not legacy registry.
+      expect(toolNames).not.toContain('search');
+      expect(toolNames).not.toContain('fetch');
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-    });
-  });
-
-  describe('executeTool - ChatGPT Connector Tools', () => {
-    it('execute search tool', async () => {
-      const inventoryItemCollection = {
-        inventoryItems: [
-          { sku: 'SKU-1', product: { title: 'Test Product' } },
-          { sku: 'SKU-2', product: { title: 'Another Product' } },
-        ],
-      };
-      vi.mocked(mockApi.getAuthClient().get).mockResolvedValue(inventoryItemCollection);
-
-      const result = await executeTool(mockApi, 'search', { query: '', limit: 10 });
-
-      expect(mockApi.getAuthClient().get).toHaveBeenCalledWith(
-        '/sell/inventory/v1/inventory_item',
-        {
-          limit: '10',
-          offset: '0',
-        },
-      );
-      expect(result).toHaveProperty('content');
-      expect(Array.isArray((result as TextContentToolResult).content)).toBe(true);
-    });
-
-    it('execute fetch tool', async () => {
-      const inventoryItem = {
-        sku: 'TEST-SKU',
-        product: {
-          title: 'Test Product',
-          description: 'Test Description',
-          aspects: '{"Brand":["TestBrand"]}',
-        },
-        condition: 'NEW',
-      };
-      vi.mocked(mockApi.getAuthClient().get).mockResolvedValue(inventoryItem);
-
-      const result = await executeTool(mockApi, 'fetch', { id: 'TEST-SKU' });
-
-      expect(mockApi.getAuthClient().get).toHaveBeenCalledWith(
-        '/sell/inventory/v1/inventory_item/TEST-SKU',
-        undefined,
-      );
-      expect(result).toHaveProperty('content');
     });
   });
 

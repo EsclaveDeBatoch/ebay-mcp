@@ -240,7 +240,7 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 
 | Categoría | Lo que puedes hacer |
 | --- | --- |
-| [Connector](src/tools/categories/connector.ts) | Herramientas search/fetch del conector de ChatGPT sobre el catálogo eBay MCP |
+| [Connector](src/mcp/connector/) | Herramientas search/fetch del conector de ChatGPT sobre el catálogo eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Estado del vendedor, inscripción en programas, impuesto sobre ventas, suscripciones, tablas de tarifas, elegibilidad publicitaria, estado obsoleto del programa de pagos y políticas comerciales |
 | [Sell Inventory](src/ebay/sell/inventory/) | Grupos de artículos, compatibilidad de vehículos, asignaciones de ubicaciones de SKU y ubicaciones de inventario bajo `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Pedidos, envíos, reembolsos, disputas, evidencias de disputas de pago |
