@@ -1,26 +1,29 @@
 # LANGUAGE.md
 
-The human↔agent vocabulary bridge: **names only** — each term, its definition,
-and aliases to avoid. Use these exact words in code, commits, and PRs. Concepts
-and flow live in [CONTEXT.md](CONTEXT.md); this file just pins the names.
+The human-to-agent vocabulary bridge. Use these terms in code, commits, pull requests, and
+architecture discussions. Runtime flow belongs in [CONTEXT.md](CONTEXT.md).
 
-| Term | Means | Avoid calling it |
+| Term | Exact meaning | Avoid calling it |
 | --- | --- | --- |
-| **tool** | One MCP-exposed capability (name + input schema + handler). The unit an agent calls. | "endpoint", "command", "function" |
-| **family** / **category** | A group of related tools, one file per group in `src/tools/categories/` (account, inventory, fulfillment, marketing, analytics, metadata, taxonomy, communication, developer, trading, connector, token-management, other). | "module", "domain" |
-| **`defineTool`** | The factory binding a tool's Zod raw shape to its handler; the shape is the SSOT for both wire schema and arg types. | "registerTool", "createTool" |
-| **`rawTool`** | Variant of `defineTool` that skips re-validating args (the handler validates against its own schema). | — |
-| **`ToolSpec`** | The input to `defineTool` (name, description, inputSchema, handler, optional ui). | — |
-| **`ToolEntry`** | The output of `defineTool` (definition + handler + resolved ui); what the registry stores. | — |
-| **registry** | `src/tools/registry.ts` — assembles all `ToolEntry`s from `categories/` and exposes `executeTool`. | "router" (that's the CLI sense) |
-| **gating** | Controlling which tools are exposed via `EBAY_MCP_TOOLS`: **all**, **dynamic** (discovery meta-tools), or a **static** family list. | "filtering", "scoping" |
-| **connector** | The MCP connector-metadata tools/plumbing (category/version passed through `_meta`). | — |
-| **archetype** | A tool's optional MCP-Apps view shape: `table`, `card`, or `chart`. | "widget", "component" |
-| **area** | An eBay API surface implemented as a class under `src/api/<area>/` (e.g. account-management, order-management). | "service" |
-| **facade** | `EbaySellerApi` — the object handlers call (`api.account.…`, `api.fulfillment.…`) that fronts all areas. | — |
-| **`EbayApiClient`** | The REST HTTP client (modern Sell APIs). | — |
-| **`TradingApiClient`** | The legacy Trading **XML** client (fast-xml-parser). | — |
-| **`withApiError`** | The wrapper that prefixes an I/O failure with a contextual message. | "try/catch helper" |
-| **marketplace** | An eBay site/locale (e.g. `EBAY_US`), `MarketplaceId` enum. | "region", "site" (in code) |
-| **scope** | An OAuth permission string granted to a token. | "permission" (in code) |
-| **sync** | `pnpm run sync` — download eBay specs, regenerate `src/types/`, report endpoints not yet exposed as tools. | "codegen" |
+| **tool** | One MCP-exposed capability: name, strict inbound schema, description, operation, and optional browser metadata. | endpoint, command, function |
+| **eBay operation** | One authenticated call to an official eBay method. It accepts `EbaySellerSession` plus one precisely named eBay query or document. | service method, action wrapper |
+| **resource module** | `src/ebay/<namespace>/<api>/<resource>.ts`; owns the resource's schemas, generated aliases, operations, and named tools. | area class, category file, helper module |
+| **namespace** | The first official eBay API segment, such as `sell`, `commerce`, `developer`, `finding`, or `trading`. | family, category, domain |
+| **API** | The official API segment inside a namespace, such as `analytics`, `inventory`, or `fulfillment`. | area, service |
+| **resource** | The official eBay resource grouping one or more related operations, such as `traffic_report`. | utility, manager |
+| **`defineTool`** | The MCP boundary adapter that accepts a strict Zod schema and one operation, injects the seller session, and translates its completion once. | factory hierarchy, handler wrapper |
+| **eBay tool catalogue** | `src/mcp/ebayToolCatalogue.ts`; explicitly imports every named tool definition and is the source for exposure and registration. | registry, barrel, discovered tools |
+| **`EbaySellerSession`** | The explicit authenticated dependency used by eBay operations. | global API facade, API client singleton |
+| **`EbayRequestCompletion<EbayDocument>`** | The shared discriminated success-or-failure contract returned by fallible eBay work. | Result, Outcome, thrown endpoint error |
+| **eBay document** | An official generated OpenAPI response shape passed through unchanged by operation code. | normalized response, DTO copy |
+| **tool exposure** | Selecting tools by official namespace/API path, by `all`, or through dynamic discovery. | family filter, compatibility scope |
+| **local tool** | A non-eBay capability owned by this server, such as OAuth or connector discovery. | eBay namespace |
+| **presentation projection** | A browser-only transformation in `src/ui/presentation/<api>.ts`. | response mapper, operation normalization |
+| **`CommandCompletion`** | The discriminated completion returned by a CLI command to the process entry. | process exit, command result |
+| **sync** | The development command that downloads specifications, regenerates TypeScript, and compares exact operation identifiers with the catalogue. | fuzzy endpoint scan, status snapshot |
+| **marketplace** | An eBay site/locale represented by an official marketplace identifier such as `EBAY_US`. | region, site in authored code |
+| **scope** | An OAuth permission string granted to a token. | permission in authored code |
+| **archetype** | A finite MCP Apps presentation shape: `table`, `card`, or `chart`. | arbitrary widget mode |
+
+The connector tool names `search` and `fetch` are exact protocol-facing exceptions to the
+hierarchical eBay tool naming convention.

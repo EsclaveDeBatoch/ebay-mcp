@@ -91,14 +91,14 @@ export const validateScopesDetailed = (
  *
  * @example
  * ```ts
- * const requirement = getRequiredScopesForTool('ebay_get_inventory_items');
+ * const requirement = getRequiredScopesForTool('ebay_sell_inventory_get_inventory_items');
  * ```
  */
 export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | null => {
   // Scope requirements mapping based on eBay API documentation
   const scopeMap: Record<string, ScopeRequirement> = {
     // Inventory Management Tools
-    ebay_get_inventory_items: {
+    ebay_sell_inventory_get_inventory_items: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.inventory',
@@ -106,7 +106,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
       description: 'Requires read access to inventory',
     },
-    ebay_get_inventory_item: {
+    ebay_sell_inventory_get_inventory_item: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.inventory',
@@ -114,28 +114,123 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
       description: 'Requires read access to inventory',
     },
-    ebay_create_or_replace_inventory_item: {
+    ebay_sell_inventory_bulk_get_inventory_item: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory',
+    },
+    ebay_sell_inventory_create_or_replace_inventory_item: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
-      description: 'Requires write access to inventory',
+      description: 'Requires write access to inventory items',
     },
-    ebay_create_offer: {
+    ebay_sell_inventory_delete_inventory_item: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
-      description: 'Requires write access to inventory',
+      description: 'Requires write access to inventory items',
     },
-    ebay_publish_offer: {
+    ebay_sell_inventory_bulk_create_or_replace_inventory_item: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory items',
+    },
+    ebay_sell_inventory_bulk_update_price_quantity: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory items and offers',
+    },
+    ebay_sell_inventory_bulk_migrate_listing: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to migrate listings into inventory',
+    },
+    ebay_sell_inventory_get_offers: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory offers',
+    },
+    ebay_sell_inventory_get_offer: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory offers',
+    },
+    ebay_sell_inventory_get_listing_fees: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory offer listing fees',
+    },
+    ebay_sell_inventory_create_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_update_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_delete_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_bulk_create_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_publish_offer: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
       optionalScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.account',
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
       ],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
-      description: 'Requires write access to inventory; policies must exist (sell.account)',
+      description: 'Requires write access to inventory offers; policies must exist (sell.account)',
+    },
+    ebay_sell_inventory_withdraw_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_bulk_publish_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      optionalScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers; policies must exist (sell.account)',
+    },
+    ebay_sell_inventory_publish_offer_by_inventory_item_group: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      optionalScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers; policies must exist (sell.account)',
+    },
+    ebay_sell_inventory_withdraw_offer_by_inventory_item_group: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
     },
 
     // Order Management Tools
-    ebay_get_orders: {
+    ebay_sell_fulfillment_get_orders: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
@@ -143,7 +238,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
       description: 'Requires read access to order fulfillment',
     },
-    ebay_get_order: {
+    ebay_sell_fulfillment_get_order: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
@@ -151,34 +246,441 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
       description: 'Requires read access to order fulfillment',
     },
-    ebay_create_shipping_fulfillment: {
+    ebay_sell_fulfillment_get_shipping_fulfillments: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+      description: 'Requires read access to order fulfillment',
+    },
+    ebay_sell_fulfillment_get_shipping_fulfillment: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment.readonly',
+      description: 'Requires read access to order fulfillment',
+    },
+    ebay_sell_fulfillment_create_shipping_fulfillment: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.fulfillment'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
       description: 'Requires write access to order fulfillment',
     },
-    ebay_issue_refund: {
-      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.fulfillment'],
-      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
-      description: 'Requires write access to order fulfillment',
+    ebay_sell_fulfillment_issue_refund: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.finances'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.finances',
+      description: 'Requires permission to issue order refunds',
+    },
+    ebay_sell_fulfillment_get_payment_dispute: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_fetch_evidence_content: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_get_activities: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_get_payment_dispute_summaries: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_contest_payment_dispute: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_accept_payment_dispute: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_upload_evidence_file: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_add_evidence: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
+    },
+    ebay_sell_fulfillment_update_evidence: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.payment.dispute'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.payment.dispute',
+      description: 'Requires payment-dispute access',
     },
 
-    // Account Management Tools
-    ebay_get_fulfillment_policies: {
+    // Sell Account custom-policy tools
+    ebay_sell_account_get_custom_policies: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.account',
       ],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
-      description: 'Requires read access to account settings',
+      description: 'Requires read access to seller custom policies',
     },
-    ebay_create_fulfillment_policy: {
+    ebay_sell_account_create_custom_policy: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
-      description: 'Requires write access to account settings',
+      description: 'Requires write access to seller custom policies',
+    },
+    ebay_sell_account_get_custom_policy: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller custom policies',
+    },
+    ebay_sell_account_update_custom_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller custom policies',
     },
 
-    // Marketing Tools
-    ebay_get_campaigns: {
+    // Sell Account fulfillment-policy tools
+    ebay_sell_account_get_fulfillment_policies: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller fulfillment policies',
+    },
+    ebay_sell_account_create_fulfillment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller fulfillment policies',
+    },
+    ebay_sell_account_get_fulfillment_policy: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller fulfillment policies',
+    },
+    ebay_sell_account_get_fulfillment_policy_by_name: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller fulfillment policies',
+    },
+    ebay_sell_account_update_fulfillment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller fulfillment policies',
+    },
+    ebay_sell_account_delete_fulfillment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller fulfillment policies',
+    },
+
+    // Sell Account payment-policy tools
+    ebay_sell_account_get_payment_policies: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller payment policies',
+    },
+    ebay_sell_account_create_payment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller payment policies',
+    },
+    ebay_sell_account_get_payment_policy: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller payment policies',
+    },
+    ebay_sell_account_get_payment_policy_by_name: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller payment policies',
+    },
+    ebay_sell_account_update_payment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller payment policies',
+    },
+    ebay_sell_account_delete_payment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller payment policies',
+    },
+
+    // Sell Account return-policy tools
+    ebay_sell_account_get_return_policies: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller return policies',
+    },
+    ebay_sell_account_create_return_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller return policies',
+    },
+    ebay_sell_account_get_return_policy: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller return policies',
+    },
+    ebay_sell_account_get_return_policy_by_name: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller return policies',
+    },
+    ebay_sell_account_update_return_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller return policies',
+    },
+    ebay_sell_account_delete_return_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller return policies',
+    },
+
+    // Sell Account read-resource tools
+    ebay_sell_account_get_privileges: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+    ebay_sell_account_get_rate_tables: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+    ebay_sell_account_get_subscription: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+    ebay_sell_account_get_kyc: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+    ebay_sell_account_get_advertising_eligibility: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller account information',
+    },
+
+    // Sell Account seller-program tools
+    ebay_sell_account_get_opted_in_programs: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller program enrollment',
+    },
+    ebay_sell_account_opt_in_to_program: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller program enrollment',
+    },
+    ebay_sell_account_opt_out_of_program: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller program enrollment',
+    },
+
+    // Sell Account sales-tax tools
+    ebay_sell_account_get_sales_tax: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller sales-tax entries',
+    },
+    ebay_sell_account_get_sales_taxes: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to seller sales-tax entries',
+    },
+    ebay_sell_account_create_or_replace_sales_tax: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller sales-tax entries',
+    },
+    ebay_sell_account_bulk_create_or_replace_sales_tax: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller sales-tax entries',
+    },
+    ebay_sell_account_delete_sales_tax: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to seller sales-tax entries',
+    },
+
+    // Sell Account deprecated payments-program tools
+    ebay_sell_account_get_payments_program: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to deprecated payments-program status',
+    },
+    ebay_sell_account_get_payments_program_onboarding: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account.readonly',
+      description: 'Requires read access to deprecated payments-program status',
+    },
+
+    // Sell Inventory tools
+    ebay_sell_inventory_get_inventory_item_group: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory item groups',
+    },
+    ebay_sell_inventory_create_or_replace_inventory_item_group: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory item groups',
+    },
+    ebay_sell_inventory_delete_inventory_item_group: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory item groups',
+    },
+    ebay_sell_inventory_get_product_compatibility: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory product compatibility',
+    },
+    ebay_sell_inventory_create_or_replace_product_compatibility: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory product compatibility',
+    },
+    ebay_sell_inventory_delete_product_compatibility: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory product compatibility',
+    },
+    ebay_sell_inventory_get_sku_location_mapping: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory SKU location mappings',
+    },
+    ebay_sell_inventory_create_or_replace_sku_location_mapping: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory SKU location mappings',
+    },
+    ebay_sell_inventory_delete_sku_location_mapping: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory SKU location mappings',
+    },
+    ebay_sell_inventory_get_inventory_locations: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory locations',
+    },
+    ebay_sell_inventory_get_inventory_location: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory locations',
+    },
+    ebay_sell_inventory_create_inventory_location: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory locations',
+    },
+    ebay_sell_inventory_delete_inventory_location: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory locations',
+    },
+    ebay_sell_inventory_disable_inventory_location: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory locations',
+    },
+    ebay_sell_inventory_enable_inventory_location: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory locations',
+    },
+    ebay_sell_inventory_update_inventory_location: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory locations',
+    },
+
+    // Sell Marketing Tools
+    ebay_sell_marketing_get_campaigns: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.marketing.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.marketing',
@@ -186,7 +688,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.marketing.readonly',
       description: 'Requires read access to marketing campaigns',
     },
-    ebay_create_campaign: {
+    ebay_sell_marketing_create_campaign: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.marketing'],
       optionalScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory.readonly'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.marketing',
@@ -194,35 +696,287 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
     },
 
     // Analytics Tools
-    ebay_get_traffic_report: {
+    ebay_sell_analytics_get_traffic_report: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
       description: 'Requires read access to analytics',
     },
-
-    // Messaging Tools
-    ebay_send_message: {
-      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
-      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
-      description: 'Requires access to messaging (production only)',
+    ebay_sell_analytics_find_seller_standards_profiles: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
+      description: 'Requires read access to analytics',
     },
-
-    // Feedback Tools
-    ebay_leave_feedback_for_buyer: {
+    ebay_sell_analytics_get_seller_standards_profile: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
+      description: 'Requires read access to analytics',
+    },
+    ebay_sell_analytics_get_customer_service_metric: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.analytics.readonly'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.analytics.readonly',
+      description: 'Requires read access to analytics',
+    },
+    ebay_developer_analytics_get_rate_limits: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve application rate limits',
+    },
+    ebay_developer_analytics_get_user_rate_limits: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.marketplace.insights.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.catalog.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.marketing',
+        'https://api.ebay.com/oauth/api_scope/sell.marketing.readonly',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires one supported user scope to retrieve user rate limits',
+    },
+    ebay_developer_key_management_get_signing_keys: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve application signing keys',
+    },
+    ebay_developer_key_management_create_signing_key: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to create an application signing key',
+    },
+    ebay_developer_key_management_get_signing_key: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve an application signing key',
+    },
+    ebay_sell_recommendation_find_listing_recommendations: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires inventory access for listing recommendations',
+    },
+    ebay_sell_negotiation_find_eligible_items: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires inventory access to find listings eligible for seller offers',
+    },
+    ebay_sell_negotiation_send_offer_to_interested_buyers: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires inventory write access to send seller offers',
+    },
+    ebay_commerce_translation_translate: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires eBay public-data access for listing translation',
+    },
+    ebay_commerce_feedback_get_feedback_rating_summary: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+      description: 'Requires read access to feedback rating summaries',
+    },
+    ebay_commerce_feedback_get_items_awaiting_feedback: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.feedback'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
-      description: 'Requires write access to feedback',
+      description: 'Requires feedback access to retrieve line items awaiting feedback',
+    },
+    ebay_commerce_feedback_get_feedback: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback.readonly',
+      description: 'Requires read access to retrieve user feedback',
+    },
+    ebay_commerce_feedback_leave_feedback: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.feedback'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      description: 'Requires write access to leave feedback',
+    },
+    ebay_commerce_feedback_respond_to_feedback: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.feedback'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.feedback',
+      description: 'Requires write access to reply to feedback',
+    },
+    ebay_commerce_message_get_conversations: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
+      description: 'Requires access to retrieve buyer-seller conversations',
+    },
+    ebay_commerce_message_get_conversation: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
+      description: 'Requires access to retrieve one buyer-seller conversation',
+    },
+    ebay_commerce_message_send_message: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
+      description: 'Requires access to send buyer-seller messages',
+    },
+    ebay_commerce_message_update_conversation: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
+      description: 'Requires access to update a buyer-seller conversation',
+    },
+    ebay_commerce_message_bulk_update_conversation: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.message'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.message',
+      description: 'Requires access to update buyer-seller conversations in a batch',
+    },
+    ebay_commerce_notification_get_config: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve notification alert configuration',
+    },
+    ebay_commerce_notification_update_config: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to update notification alert configuration',
+    },
+    ebay_commerce_notification_get_destinations: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve notification destinations',
+    },
+    ebay_commerce_notification_create_destination: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to create notification destinations',
+    },
+    ebay_commerce_notification_get_destination: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve a notification destination',
+    },
+    ebay_commerce_notification_update_destination: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to update notification destinations',
+    },
+    ebay_commerce_notification_delete_destination: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to delete notification destinations',
+    },
+    ebay_commerce_notification_get_public_key: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve a notification validation key',
+    },
+    ebay_commerce_notification_get_topic: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve a notification topic',
+    },
+    ebay_commerce_notification_get_topics: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve notification topics',
+    },
+    ebay_commerce_notification_get_subscriptions: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      ],
+      minimumScope:
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+      description: 'Requires read access to notification subscriptions',
+    },
+    ebay_commerce_notification_get_subscription: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      ],
+      minimumScope:
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+      description: 'Requires read access to a notification subscription',
+    },
+    ebay_commerce_notification_get_subscription_filter: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      ],
+      minimumScope:
+        'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription.readonly',
+      description: 'Requires read access to a notification subscription filter',
+    },
+    ebay_commerce_notification_create_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to create notification subscriptions',
+    },
+    ebay_commerce_notification_update_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to update notification subscriptions',
+    },
+    ebay_commerce_notification_delete_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to delete notification subscriptions',
+    },
+    ebay_commerce_notification_disable_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to pause notification subscriptions',
+    },
+    ebay_commerce_notification_enable_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to resume notification subscriptions',
+    },
+    ebay_commerce_notification_test_subscription: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to test notification subscriptions',
+    },
+    ebay_commerce_notification_create_subscription_filter: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to create notification subscription filters',
+    },
+    ebay_commerce_notification_delete_subscription_filter: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.notification.subscription'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.notification.subscription',
+      description: 'Requires write access to delete notification subscription filters',
+    },
+
+    // Taxonomy Tools
+    ebay_commerce_taxonomy_get_default_category_tree_id: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve a marketplace category tree',
+    },
+    ebay_commerce_taxonomy_get_category_tree: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve category trees',
+    },
+    ebay_commerce_taxonomy_get_category_suggestions: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope',
+      description: 'Requires public API access to retrieve category suggestions',
+    },
+    ebay_commerce_taxonomy_get_item_aspects_for_category: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/metadata.insights'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/metadata.insights',
+      description: 'Requires public API access plus metadata insight access',
     },
 
     // Identity Tools
-    ebay_get_user: {
+    ebay_commerce_identity_get_user: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/commerce.identity.readonly'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/commerce.identity.readonly',
       description: 'Requires read access to user identity',
     },
   };
 
-  return scopeMap[toolName] || null;
+  const scopeRequirement = scopeMap[toolName];
+  if (scopeRequirement === undefined) {
+    return null;
+  }
+  return scopeRequirement;
 };
 
 /**

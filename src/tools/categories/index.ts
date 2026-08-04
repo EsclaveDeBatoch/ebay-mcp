@@ -1,18 +1,6 @@
 import type { ToolEntry } from '@/tools/registry.js';
 import { connectorEntries } from './connector.js';
 import { tokenManagementEntries } from './tokenManagement.js';
-import { accountEntries } from './account.js';
-import { inventoryEntries } from './inventory.js';
-import { fulfillmentEntries } from './fulfillment.js';
-import { marketingEntries } from './marketing.js';
-import { analyticsEntries } from './analytics.js';
-import { metadataEntries } from './metadata.js';
-import { taxonomyEntries } from './taxonomy.js';
-import { communicationEntries } from './communication.js';
-import { browseEntries } from './browse.js';
-import { otherEntries } from './other.js';
-import { developerEntries } from './developer.js';
-import { tradingEntries } from './trading.js';
 
 /**
  * A named group of registered tool entries, owned by one eBay API area (or the
@@ -36,18 +24,6 @@ export interface ToolCategory {
 export const toolCategories: ToolCategory[] = [
   { key: 'connector', title: 'Connector', entries: connectorEntries },
   { key: 'token-management', title: 'Token Management', entries: tokenManagementEntries },
-  { key: 'account', title: 'Account', entries: accountEntries },
-  { key: 'inventory', title: 'Inventory', entries: inventoryEntries },
-  { key: 'fulfillment', title: 'Fulfillment', entries: fulfillmentEntries },
-  { key: 'marketing', title: 'Marketing', entries: marketingEntries },
-  { key: 'analytics', title: 'Analytics', entries: analyticsEntries },
-  { key: 'metadata', title: 'Metadata', entries: metadataEntries },
-  { key: 'taxonomy', title: 'Taxonomy', entries: taxonomyEntries },
-  { key: 'communication', title: 'Communication', entries: communicationEntries },
-  { key: 'browse', title: 'Browse', entries: browseEntries },
-  { key: 'other', title: 'Other', entries: otherEntries },
-  { key: 'developer', title: 'Developer', entries: developerEntries },
-  { key: 'trading', title: 'Trading', entries: tradingEntries },
 ];
 
 /**

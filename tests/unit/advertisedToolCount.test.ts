@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { getToolDefinitions } from '@/tools/index.js';
+import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 
 /**
  * Advertised-tool-count guard.
@@ -18,14 +19,14 @@ import { getToolDefinitions } from '@/tools/index.js';
  */
 const repoRoot = fileURLToPath(new URL('../../', import.meta.url));
 
-const advertisedToolCount = getToolDefinitions().length;
+const advertisedToolCount = getToolDefinitions().length + ebayToolCatalogue.length;
 
 /**
  * Numbers inside {@link COUNT_BAND} that legitimately are not the tool count.
  * Anything else in the band is treated as a stale tool-count claim.
  */
 const NON_COUNT_NUMBERS = new Set([
-  270, // unique eBay Sell API endpoints covered
+  266, // unique eBay Sell API endpoints covered
   300, // Biome per-file line-count warning threshold, cited in AGENTS.md
 ]);
 

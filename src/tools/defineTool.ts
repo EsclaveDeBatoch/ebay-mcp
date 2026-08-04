@@ -1,15 +1,16 @@
 import type { EbaySellerApi } from '@/api/index.js';
+import type { McpUiBinding } from '@/mcp/uiBridge.js';
 import type { OutputArgs, ToolAnnotations } from '@/tools/types.js';
-import type { ResolvedToolUi, ToolEntry } from '@/tools/registry.js';
+import type { ToolEntry } from '@/tools/registry.js';
 import type { ToolHandler } from '@/tools/types.js';
-import { uiArchetypes } from '@/tools/ui/archetypes.js';
+import { uiArchetypes } from '@/ui/archetypes.js';
 import type {
   CardViewModel,
   ChartViewModel,
   StatViewModel,
   TableViewModel,
   ViewModel,
-} from '@/tools/ui/viewModels.js';
+} from '@/ui/viewModels.js';
 import { decodeEffectSchemaSync, z } from '@/utils/effectSchema.js';
 import type { EffectBackedRawShape, InferEffectRawShape } from '@/utils/effectSchemaTypes.js';
 
@@ -72,7 +73,7 @@ export interface ToolSpec<Shape extends EffectBackedRawShape, Result = unknown> 
  * ever receives the very value its own handler returned, so the cast restores the
  * type the mapper was written and type-checked against.
  */
-function resolveToolUi<Result>(ui: ToolUiSpec<Result>): ResolvedToolUi {
+function mcpUiBinding<Result>(ui: ToolUiSpec<Result>): McpUiBinding {
   return {
     archetype: ui.archetype,
     resourceUri: uiArchetypes[ui.archetype].uri,
@@ -81,7 +82,7 @@ function resolveToolUi<Result>(ui: ToolUiSpec<Result>): ResolvedToolUi {
 }
 
 /** Builds the public MCP definition from the richer tool spec. */
-function toDefinition<Shape extends EffectBackedRawShape, Result>(
+function publicToolDefinition<Shape extends EffectBackedRawShape, Result>(
   spec: ToolSpec<Shape, Result>,
 ): ToolEntry['definition'] {
   return {
@@ -111,10 +112,10 @@ function toDefinition<Shape extends EffectBackedRawShape, Result>(
  * @example
  * ```ts
  * const entry = defineTool({
- *   name: 'ebay_get_custom_policies',
- *   description: 'Retrieve custom policies defined for the seller account',
- *   inputSchema: getCustomPoliciesInputSchema.shape,
- *   handler: (api, args) => Effect.runPromise(api.account.getCustomPolicies(args)),
+ *   name: 'ebay_sell_inventory_get_offer',
+ *   description: 'Retrieve one inventory offer',
+ *   inputSchema: getOfferInputSchema.shape,
+ *   handler: (api, args) => Effect.runPromise(api.inventory.getOffer(args)),
  * });
  * ```
  */
@@ -129,48 +130,8 @@ export const defineTool = <Shape extends EffectBackedRawShape, Result>(
     spec.handler(api, decodeEffectSchemaSync(schema, args));
 
   return {
-    definition: toDefinition(spec),
+    definition: publicToolDefinition(spec),
     handler,
-    ui: spec.ui ? resolveToolUi(spec.ui) : undefined,
-  };
-};
-
-/**
- * Like {@link defineTool}, but invokes the handler with the raw transport
- * arguments WITHOUT re-validating them against `inputSchema`.
- *
- * Use this for tools whose handler performs its own validation against a
- * dedicated schema, and whose advertised `inputSchema` intentionally differs
- * from that internal schema. The communication tools are the motivating case:
- * each handler re-parses its arguments with a `@/utils/communication` schema
- * (the real call contract), while the advertised input schema describes a
- * different, client-facing shape. Re-parsing against the advertised schema here
- * would strip or reject fields the handler's own schema needs.
- *
- * `args` is typed from the shape for handler ergonomics, but the values are not
- * validated by this factory — the handler is responsible for that.
- *
- * @param spec - Tool definition, advertised input schema, raw handler, and optional UI projection.
- * @returns A registry entry whose handler receives raw transport args.
- *
- * @example
- * ```ts
- * const entry = rawTool({
- *   name: 'ebay_send_message',
- *   description: 'Send a member message',
- *   inputSchema: advertisedMessageShape,
- *   handler: (api, args) => api.message.sendMessage(args),
- * });
- * ```
- */
-export const rawTool = <Shape extends EffectBackedRawShape, Result>(
-  spec: ToolSpec<Shape, Result>,
-): ToolEntry => {
-  const handler: ToolHandler = (api, args) => spec.handler(api, args as InferEffectRawShape<Shape>);
-
-  return {
-    definition: toDefinition(spec),
-    handler,
-    ui: spec.ui ? resolveToolUi(spec.ui) : undefined,
+    ui: spec.ui ? mcpUiBinding(spec.ui) : undefined,
   };
 };

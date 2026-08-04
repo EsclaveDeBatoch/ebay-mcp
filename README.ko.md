@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>eBay MCP 서버 — Claude, Cursor 및 모든 AI 어시스턴트에 eBay Sell API에 대한 완전한 접근 권한을. 재고, 주문, 마케팅, 분석을 위한 298개 도구를 자신의 키로 로컬에서 실행합니다.</strong>
+  <strong>eBay MCP 서버 — Claude, Cursor 및 모든 AI 어시스턴트에 eBay Sell API에 대한 완전한 접근 권한을. 재고, 주문, 마케팅, 분석을 위한 292개 도구를 자신의 키로 로컬에서 실행합니다.</strong>
 </p>
 
 <p align="center"><sub>비공식 오픈소스 프로젝트 — eBay Inc.와 제휴, 승인 또는 보증 관계가 없습니다.</sub></p>
@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/tools-298-8957e5?logo=ebay&logoColor=white" alt="298개 eBay API 도구" />
+  <img src="https://img.shields.io/badge/tools-292-8957e5?logo=ebay&logoColor=white" alt="292개 eBay API 도구" />
   <img src="https://img.shields.io/badge/Sell%20API%20coverage-100%25-success" alt="eBay Sell API 100% 커버리지" />
   <img src="https://img.shields.io/badge/Model%20Context%20Protocol-compatible-000000" alt="Model Context Protocol 호환" />
   <img src="https://img.shields.io/badge/tests-1%2C000%2B%20passing-3fb950?logo=vitest&logoColor=white" alt="1,000개 이상의 테스트 통과" />
@@ -47,7 +47,7 @@
 
 > **참고:** 최신 제품 설명(도구 패밀리, API 폐기, 버전 노트)의 기준 문서는 영어 [README.md](README.md)입니다. 이 번역은 뒤처질 수 있습니다.
 
-**eBay MCP**는 AI 어시스턴트 —Claude Desktop, Claude Code, Cursor, Cline, Windsurf, Zed, Continue.dev, Roo Code, Amazon Q— 를 **eBay의 Sell API**에 직접 연결하는 로컬 [Model Context Protocol](https://modelcontextprotocol.io) 서버입니다. **eBay Sell API 전체(고유 엔드포인트 270개)의 100%**를 포괄하는 **298개 도구**를 제공하여 재고 관리, 주문 처리, 프로모션 광고 마케팅, 분석, 개발자 도구를 다룹니다. 모든 것은 STDIO 또는 로컬 HTTP를 통해 사용자의 컴퓨터에서 실행되며 — **클라우드 중계가 없고** — eBay 자격 증명은 절대 사용자의 컴퓨터를 벗어나지 않습니다.
+**eBay MCP**는 AI 어시스턴트 —Claude Desktop, Claude Code, Cursor, Cline, Windsurf, Zed, Continue.dev, Roo Code, Amazon Q— 를 **eBay의 Sell API**에 직접 연결하는 로컬 [Model Context Protocol](https://modelcontextprotocol.io) 서버입니다. **eBay Sell API 전체(고유 엔드포인트 266개)의 100%**를 포괄하는 **292개 도구**를 제공하여 재고 관리, 주문 처리, 프로모션 광고 마케팅, 분석, 개발자 도구를 다룹니다. 모든 것은 STDIO 또는 로컬 HTTP를 통해 사용자의 컴퓨터에서 실행되며 — **클라우드 중계가 없고** — eBay 자격 증명은 절대 사용자의 컴퓨터를 벗어나지 않습니다.
 
 > **면책 조항:** 비공식 서드파티 프로젝트로서 **eBay Inc.와 제휴하거나 보증받지 않습니다.** "있는 그대로" 제공되며 어떠한 보증도 없습니다. [eBay API 라이선스 계약](https://developer.ebay.com/join/api-license-agreement) 및 [데이터 처리 요건](https://developer.ebay.com/api-docs/static/data-handling-update.html) 준수, 자격 증명의 안전한 보관, 속도 제한 준수는 사용자의 책임입니다. 프로덕션 전에 샌드박스에서 테스트하세요. [LICENSE](LICENSE), [SECURITY.md](SECURITY.md), [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md)를 참조하세요.
 
@@ -71,7 +71,7 @@
 
 ## 기능
 
-- **298개 eBay API 도구** — 재고, 주문, 마케팅, 분석, 메타데이터, 분류체계, 개발자 도구 전반에서 eBay Sell API를 100% 커버.
+- **292개 eBay API 도구** — 재고, 주문, 마케팅, 분석, 메타데이터, 분류체계, 개발자 도구 전반에서 eBay Sell API를 100% 커버.
 - **9개 AI 클라이언트 자동 구성** — Claude Desktop, Cursor, Zed, Cline, Continue.dev, Windsurf, Roo Code, Claude Code CLI, Amazon Q Developer.
 - **OAuth 2.0 내장** — 사용자 토큰의 완전한 관리와 자동 갱신, 그리고 사용자 토큰(일 1만~5만 요청)에서 클라이언트 자격 증명(일 1천 요청)으로의 스마트 폴백.
 - **기본적으로 견고함** — `429` 속도 제한 시 지수 백오프로 자동 재시도하고, 일관되고 명확하게 오류를 표시합니다.
@@ -93,7 +93,7 @@
 | 입력 검증 | 모든 도구에 Zod 스키마 + TypeScript 타입 | 없음 — 페이로드를 직접 검증 |
 | 설정 | 단일 마법사(`npm run setup`) | 호출마다 인증, 헤더, 마켓플레이스 |
 | AI 클라이언트 지원 | 9개 클라이언트 자동 구성 | 해당 없음 |
-| API 커버리지 | Sell API 100%에 걸친 298개 도구, 바로 호출 가능 | 문서를 보고 각 요청을 직접 구성 |
+| API 커버리지 | Sell API 100%에 걸친 292개 도구, 바로 호출 가능 | 문서를 보고 각 요청을 직접 구성 |
 | 호스팅 | 로컬 실행, 클라우드 중계 없음 | 자체 인프라 |
 
 ## AI 원클릭 설정
@@ -220,7 +220,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 
 ### MCP 클라이언트 호환성
 
-`npm run setup`으로 자동 구성됩니다. Node.js ≥ 20과 STDIO(기본) 또는 HTTP를 통한 MCP 프로토콜 1.0+가 필요합니다.
+`npm run setup`으로 자동 구성됩니다. Node.js ≥ 22.12와 STDIO(기본) 또는 HTTP를 통한 MCP 프로토콜 1.0+가 필요합니다.
 
 | 클라이언트             | 플랫폼                | 구성 경로                                                                   |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -236,26 +236,26 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 
 ## 사용 가능한 도구
 
-**298개 도구**, Sell API 100% 커버리지, 카테고리별로 구성. 각 링크는 [`src/tools/categories/`](src/tools/categories/)의 도구 정의와 핸들러를 가리킵니다:
+**292개 도구**, Sell API 100% 커버리지, 카테고리별로 구성. 각 링크는 [`src/tools/categories/`](src/tools/categories/)의 도구 정의와 핸들러를 가리킵니다:
 
 | 카테고리 | 할 수 있는 일 |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | eBay MCP 카탈로그용 ChatGPT 커넥터 search/fetch 도구 |
-| [Account](src/tools/categories/account.ts) | 비즈니스·배송·결제·반품 정책, 프로그램, 구독, 판매세 |
-| [Inventory](src/tools/categories/inventory.ts) | 재고 항목, 오퍼, 위치, 항목 그룹, 일괄 작업, SKU/위치 매핑 |
-| [Fulfillment](src/tools/categories/fulfillment.ts) | 주문, 배송, 환불, 분쟁, 결제 분쟁 증거 |
-| [Marketing](src/tools/categories/marketing.ts) | 프로모션 광고 캠페인, 광고, 프로모션, 입찰, 일괄 작업 |
-| [Analytics](src/tools/categories/analytics.ts) | 트래픽 보고서, 판매자 기준, 고객 서비스 지표 |
+| [Sell Account](src/ebay/sell/account/) | 판매자 상태, 프로그램 등록, 판매세, 구독, 요금표, 광고 자격, 지원 중단 예정 결제 프로그램 상태, 비즈니스 정책 |
+| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory`의 항목 그룹, 차량 호환성, SKU 위치 매핑 및 재고 위치 |
+| [Fulfillment](src/ebay/sell/fulfillment/) | 주문, 배송, 환불, 분쟁, 결제 분쟁 증거 |
+| [Marketing](src/ebay/sell/marketing/) | 프로모션 광고 캠페인, 광고, 프로모션, 입찰, 일괄 작업 |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | 트래픽 보고서, 판매자 기준, 고객 서비스 지표 |
 | [Communication](src/tools/categories/communication.ts) | 구매자–판매자 메시지, 협상, 알림, 피드백 |
-| [Metadata](src/tools/categories/metadata.ts) | 반품 정책, 판매세 관할, 자동차 호환성 |
+| [Metadata](src/ebay/sell/metadata/) | 반품 정책, 판매세 관할, 자동차 호환성 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 카테고리 트리, 항목 속성, 항목 상태 |
-| [Browse](src/tools/categories/browse.ts) | 가격 비교용 판매/완료 리스팅 검색(Finding API) |
-| [Other](src/tools/categories/other.ts) | Identity, VeRO, 번역 및 국제 배송 지원 API(Compliance 도구는 eBay 2026-03-30 폐기를 보고) |
-| [Trading(레거시 XML)](src/tools/categories/trading.ts) | 고정 가격 리스팅 생성, 수정, 재등록, 종료 |
-| [Developer](src/tools/categories/developer.ts) | 속도 제한, 서명 키, 클라이언트 등록 |
+| [Commerce VeRO](src/ebay/commerce/vero/) | 지식 재산권 침해 신고 및 VeRO 사유 코드 |
+| [Sell eDelivery](src/ebay/sell/edelivery/) | eDelivery API를 통한 국제 배송 |
+| [Trading(레거시 XML)](src/ebay/trading/fixedPriceListing.ts) | 고정 가격 리스팅 생성, 수정, 재등록, 종료 |
+| [Developer](src/ebay/developer) | 속도 제한, 서명 키, API 상태 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 생성 및 토큰 관리 |
 
-**예시 도구:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**예시 도구:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_sell_marketing_get_campaigns`, `ebay_get_oauth_url`.
 
 전체 기계 판독 인덱스는 [llms.txt](llms.txt)를 참조하세요.
 
@@ -274,9 +274,9 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 
 | 원형 | 도구 |
 | --- | --- |
-| **테이블** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **카드** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **차트** | `ebay_get_traffic_report`, `ebay_get_customer_service_metric` |
+| **테이블** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_sell_inventory_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **카드** | `ebay_sell_fulfillment_get_order`, `ebay_sell_inventory_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **차트** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 보기는 `npm run build`(또는 `npm run build:ui`)로 자체 완결형 HTML로 빌드되며, 게시된 패키지에 포함되어 자체적인 네트워크 접근 없이 로드됩니다.
 
@@ -285,10 +285,10 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 AI 어시스턴트에게 묻듯이 표현한 일반적인 작업:
 
 - **OAuth 설정** — *"내 eBay 계정의 OAuth 설정을 도와줘."* → `ebay_get_oauth_url`로 인증 URL을 생성한 뒤 리프레시 토큰을 구성합니다. 일 1만~5만 요청을 해제합니다.
-- **재고 관리** — *"내 활성 리스팅을 모두 보여줘."* → `ebay_get_inventory_items`가 SKU, 수량, 상태를 반환합니다.
-- **주문 처리** — *"지난 7일간 미처리 주문을 모두 가져와줘."* → 날짜와 처리 상태 필터를 적용한 `ebay_get_orders`.
-- **캠페인 생성** — *"전자제품용 프로모션 광고 캠페인을 만들어줘."* → `ebay_create_campaign` 및 관련 마케팅 도구.
-- **일괄 작업** — *"'빈티지 시계' 항목 전체에 10% 할인을 적용해줘."* → 일치 항목에 `ebay_get_inventory_items` + `ebay_update_offer`.
+- **재고 관리** — *"내 활성 리스팅을 모두 보여줘."* → `ebay_sell_inventory_get_inventory_items`가 SKU, 수량, 상태를 반환합니다.
+- **주문 처리** — *"지난 7일간 미처리 주문을 모두 가져와줘."* → 날짜와 처리 상태 필터를 적용한 `ebay_sell_fulfillment_get_orders`.
+- **캠페인 생성** — *"전자제품용 프로모션 광고 캠페인을 만들어줘."* → `ebay_sell_marketing_create_campaign` 및 관련 마케팅 도구.
+- **일괄 작업** — *"'빈티지 시계' 항목 전체에 10% 할인을 적용해줘."* → 일치 항목에 `ebay_sell_inventory_get_inventory_items` + `ebay_sell_inventory_update_offer`.
 
 ## 로깅 및 문제 해결
 
@@ -299,7 +299,7 @@ AI 어시스턴트에게 묻듯이 표현한 일반적인 작업:
 
 ### eBay MCP 서버란 무엇인가요?
 
-AI 어시스턴트에 **eBay Sell API의 100%**(270개 엔드포인트)를 포괄하는 **298개 도구**를 제공하는 로컬 [Model Context Protocol](https://modelcontextprotocol.io) 서버입니다 — 재고, 주문 처리, 마케팅, 분석, 개발자 도구.
+AI 어시스턴트에 **eBay Sell API의 100%**(266개 엔드포인트)를 포괄하는 **292개 도구**를 제공하는 로컬 [Model Context Protocol](https://modelcontextprotocol.io) 서버입니다 — 재고, 주문 처리, 마케팅, 분석, 개발자 도구.
 
 ### 이것은 eBay 공식 제품인가요?
 
@@ -319,7 +319,7 @@ AI 어시스턴트에 **eBay Sell API의 100%**(270개 엔드포인트)를 포�
 
 ### eBay API와 도구를 얼마나 커버하나요?
 
-270개 고유 엔드포인트에 걸친 298개 도구 — eBay Sell API의 100%입니다.
+266개 고유 엔드포인트에 걸친 292개 도구 — eBay Sell API의 100%입니다.
 
 ### 무료이고 오픈소스인가요?
 
@@ -331,7 +331,7 @@ STDIO(또는 로컬 HTTP)를 통해 전적으로 사용자의 컴퓨터에서 �
 
 ### 시작하려면 무엇이 필요한가요?
 
-Node.js ≥ 20, 무료 [eBay 개발자 계정](https://developer.ebay.com/)(Client ID + Client Secret), 그리고 `npm run setup` 실행입니다.
+Node.js ≥ 22.12, 무료 [eBay 개발자 계정](https://developer.ebay.com/)(Client ID + Client Secret), 그리고 `npm run setup` 실행입니다.
 
 ### eBay API 속도 제한은 어떻게 되나요?
 
@@ -383,7 +383,7 @@ TypeScript와 Node.js(ESM), 공식 MCP SDK, 검증용 Zod, OpenAPI에서 생성�
 - [eBay 데이터 처리 요건](https://developer.ebay.com/api-docs/static/data-handling-update.html) — 데이터 보호 및 개인정보
 - [MCP 문서](https://modelcontextprotocol.io/) — Model Context Protocol 사양
 - [OAuth 빠른 참조](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes, 문제 해결, 예시
-- [eBay API 상태](https://developer.ebay.com/support/api-status) — 공식 상태 페이지(`ebay_get_api_status` 도구 및 [리포지토리 내 스냅샷](docs/API_STATUS.md)으로도 가능)
+- [eBay API 상태](https://developer.ebay.com/support/api-status) — 공식 상태 페이지(`ebay_developer_status_get_incidents` 도구 및 [리포지토리 내 스냅샷](docs/API_STATUS.md)으로도 가능)
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [이슈 트래커](https://github.com/YosefHayim/ebay-mcp/issues) — 버그 신고 및 기능 요청
 

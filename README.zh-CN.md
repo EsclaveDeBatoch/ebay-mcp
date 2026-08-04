@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>eBay MCP 服务器 — 让 Claude、Cursor 以及任意 AI 助手完全访问 eBay 的 Sell API。298 个工具覆盖库存、订单、营销与分析，使用你自己的密钥在本地运行。</strong>
+  <strong>eBay MCP 服务器 — 让 Claude、Cursor 以及任意 AI 助手完全访问 eBay 的 Sell API。292 个工具覆盖库存、订单、营销与分析，使用你自己的密钥在本地运行。</strong>
 </p>
 
 <p align="center"><sub>非官方开源项目 — 与 eBay Inc. 无任何关联，未获其授权或认可。</sub></p>
@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/tools-298-8957e5?logo=ebay&logoColor=white" alt="298 个 eBay API 工具" />
+  <img src="https://img.shields.io/badge/tools-292-8957e5?logo=ebay&logoColor=white" alt="292 个 eBay API 工具" />
   <img src="https://img.shields.io/badge/Sell%20API%20coverage-100%25-success" alt="100% 覆盖 eBay Sell API" />
   <img src="https://img.shields.io/badge/Model%20Context%20Protocol-compatible-000000" alt="兼容 Model Context Protocol" />
   <img src="https://img.shields.io/badge/tests-1%2C000%2B%20passing-3fb950?logo=vitest&logoColor=white" alt="超过 1000 个通过的测试" />
@@ -47,7 +47,7 @@
 
 > **说明：** 英文 [README.md](README.md) 是最新产品说明（工具族、API 下线、版本说明）的权威来源。本翻译可能滞后。
 
-**eBay MCP** 是一个本地的 [Model Context Protocol](https://modelcontextprotocol.io) 服务器，可将 AI 助手 —Claude Desktop、Claude Code、Cursor、Cline、Windsurf、Zed、Continue.dev、Roo Code 和 Amazon Q— 直接连接到 **eBay 的 Sell API**。它提供 **298 个工具**，覆盖 **eBay Sell API 的 100% 范围**（270 个唯一端点），涵盖库存管理、订单履行、推广刊登营销、分析和开发者工具。一切都在你的机器上通过 STDIO 或本地 HTTP 运行 — **没有云端中继**，你的 eBay 凭据永远不会离开你的电脑。
+**eBay MCP** 是一个本地的 [Model Context Protocol](https://modelcontextprotocol.io) 服务器，可将 AI 助手 —Claude Desktop、Claude Code、Cursor、Cline、Windsurf、Zed、Continue.dev、Roo Code 和 Amazon Q— 直接连接到 **eBay 的 Sell API**。它提供 **292 个工具**，覆盖 **eBay Sell API 的 100% 范围**（266 个唯一端点），涵盖库存管理、订单履行、推广刊登营销、分析和开发者工具。一切都在你的机器上通过 STDIO 或本地 HTTP 运行 — **没有云端中继**，你的 eBay 凭据永远不会离开你的电脑。
 
 > **免责声明：** 非官方第三方项目 — **与 eBay Inc. 无关联，也未获其认可。** 按"原样"提供，不附带任何担保。你需自行负责遵守 [eBay API 许可协议](https://developer.ebay.com/join/api-license-agreement) 和 [数据处理要求](https://developer.ebay.com/api-docs/static/data-handling-update.html)、妥善保管你的凭据并遵守速率限制。在投入生产前请先在沙盒中测试。参见 [LICENSE](LICENSE)、[SECURITY.md](SECURITY.md) 和 [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md)。
 
@@ -71,7 +71,7 @@
 
 ## 功能特性
 
-- **298 个 eBay API 工具** — 100% 覆盖 eBay Sell API，涵盖库存、订单、营销、分析、元数据、分类法和开发者工具。
+- **292 个 eBay API 工具** — 100% 覆盖 eBay Sell API，涵盖库存、订单、营销、分析、元数据、分类法和开发者工具。
 - **自动配置 9 个 AI 客户端** — Claude Desktop、Cursor、Zed、Cline、Continue.dev、Windsurf、Roo Code、Claude Code CLI 和 Amazon Q Developer。
 - **内置 OAuth 2.0** — 完整的用户令牌管理与自动刷新，并能从用户令牌（每天 1 万–5 万次请求）智能回退到客户端凭据（每天 1 千次请求）。
 - **默认具备韧性** — 遇到 `429` 速率限制时自动重试并采用指数退避，错误提示清晰一致。
@@ -93,7 +93,7 @@
 | 输入校验 | 每个工具都有 Zod 模式 + TypeScript 类型 | 无 — 由你校验自己的载荷 |
 | 配置 | 一个向导（`npm run setup`） | 每次调用都要处理认证、请求头和站点 |
 | AI 客户端支持 | 自动配置 9 个客户端 | 不适用 |
-| API 覆盖 | 298 个工具覆盖 100% Sell API，开箱即用 | 你需根据文档构建每个请求 |
+| API 覆盖 | 292 个工具覆盖 100% Sell API，开箱即用 | 你需根据文档构建每个请求 |
 | 托管 | 本地运行，无云端中继 | 你自己的基础设施 |
 
 ## AI 一键配置
@@ -220,7 +220,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 ### MCP 客户端兼容性
 
-由 `npm run setup` 自动配置。需要 Node.js ≥ 20 以及通过 STDIO（默认）或 HTTP 的 MCP 协议 1.0+。
+由 `npm run setup` 自动配置。需要 Node.js ≥ 22.12 以及通过 STDIO（默认）或 HTTP 的 MCP 协议 1.0+。
 
 | 客户端                 | 平台                  | 配置路径                                                                    |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -236,26 +236,26 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 ## 可用工具
 
-**298 个工具**，100% Sell API 覆盖，按类别组织。每个链接都指向 [`src/tools/categories/`](src/tools/categories/) 中的工具定义及其处理程序：
+**292 个工具**，100% Sell API 覆盖，按类别组织。每个链接都指向 [`src/tools/categories/`](src/tools/categories/) 中的工具定义及其处理程序：
 
 | 类别 | 你可以做什么 |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | 面向 eBay MCP 目录的 ChatGPT 连接器 search/fetch 工具 |
-| [Account](src/tools/categories/account.ts) | 业务、履行、付款和退货政策；计划；订阅；销售税 |
-| [Inventory](src/tools/categories/inventory.ts) | 库存商品、报价、地点、商品分组、批量操作、SKU/地点映射 |
-| [Fulfillment](src/tools/categories/fulfillment.ts) | 订单、配送、退款、纠纷、付款纠纷证据 |
-| [Marketing](src/tools/categories/marketing.ts) | 推广刊登广告活动、广告、促销、出价、批量操作 |
-| [Analytics](src/tools/categories/analytics.ts) | 流量报告、卖家标准、客户服务指标 |
+| [Sell Account](src/ebay/sell/account/) | 卖家状态、计划注册、销售税、订阅、费率表、广告资格、已弃用的付款计划状态和业务政策 |
+| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` 下的商品分组、车辆兼容性、SKU 库存地点映射与库存地点 |
+| [Fulfillment](src/ebay/sell/fulfillment/) | 订单、配送、退款、纠纷、付款纠纷证据 |
+| [Marketing](src/ebay/sell/marketing/) | 推广刊登广告活动、广告、促销、出价、批量操作 |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | 流量报告、卖家标准、客户服务指标 |
 | [Communication](src/tools/categories/communication.ts) | 买卖双方消息、议价、通知、评价 |
-| [Metadata](src/tools/categories/metadata.ts) | 退货政策、销售税辖区、汽车兼容性 |
+| [Metadata](src/ebay/sell/metadata/) | 退货政策、销售税辖区、汽车兼容性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | 类目树、商品属性、商品成色 |
-| [Browse](src/tools/categories/browse.ts) | 已售/已完成 listing 搜索（Finding API）用于比价 |
-| [Other](src/tools/categories/other.ts) | Identity、VeRO、翻译与国际物流支持 API（Compliance 工具会报告 eBay 于 2026-03-30 的下线） |
-| [Trading（旧版 XML）](src/tools/categories/trading.ts) | 固定价格刊登的创建、修改、重新刊登和结束 |
-| [Developer](src/tools/categories/developer.ts) | 速率限制、签名密钥、客户端注册 |
+| [Commerce VeRO](src/ebay/commerce/vero/) | 知识产权侵权举报与 VeRO 原因代码 |
+| [Sell eDelivery](src/ebay/sell/edelivery/) | 通过 eDelivery API 进行国际配送 |
+| [Trading（旧版 XML）](src/ebay/trading/fixedPriceListing.ts) | 固定价格刊登的创建、修改、重新刊登和结束 |
+| [Developer](src/ebay/developer) | 速率限制、签名密钥和 API 状态 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 生成与令牌管理 |
 
-**示例工具：** `ebay_get_inventory_items`、`ebay_get_orders`、`ebay_create_offer`、`ebay_get_campaigns`、`ebay_get_oauth_url`。
+**示例工具：** `ebay_sell_inventory_get_inventory_items`、`ebay_sell_fulfillment_get_orders`、`ebay_sell_inventory_create_offer`、`ebay_sell_marketing_get_campaigns`、`ebay_get_oauth_url`。
 
 完整的机器可读索引见 [llms.txt](llms.txt)。
 
@@ -274,9 +274,9 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 | 类型 | 工具 |
 | --- | --- |
-| **表格** | `ebay_get_orders`、`ebay_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_get_inventory_locations`、`ebay_get_payment_dispute_summaries` |
-| **卡片** | `ebay_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_get_payment_dispute`、`ebay_get_seller_standards_profile` |
-| **图表** | `ebay_get_traffic_report`、`ebay_get_customer_service_metric` |
+| **表格** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_sell_inventory_get_offers`、`ebay_sell_inventory_get_inventory_items`、`ebay_sell_inventory_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **卡片** | `ebay_sell_fulfillment_get_order`、`ebay_sell_inventory_get_offer`、`ebay_sell_inventory_get_inventory_item`、`ebay_sell_fulfillment_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
+| **图表** | `ebay_sell_analytics_get_traffic_report`、`ebay_sell_analytics_get_customer_service_metric` |
 
 这些视图通过 `npm run build`（或 `npm run build:ui`）构建为自包含的 HTML；它们随发布的包一同分发，加载时无需自身的任何网络访问。
 
@@ -285,10 +285,10 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 常见任务，按你向 AI 助手提问的方式表述：
 
 - **设置 OAuth** — *"帮我为我的 eBay 账号设置 OAuth。"* → 通过 `ebay_get_oauth_url` 生成授权 URL，然后配置刷新令牌。解锁每天 1 万–5 万次请求。
-- **管理库存** — *"显示我所有的在售刊登。"* → `ebay_get_inventory_items` 返回 SKU、数量和状态。
-- **处理订单** — *"获取过去 7 天所有未履行的订单。"* → 带日期和履行状态筛选的 `ebay_get_orders`。
-- **创建广告活动** — *"为电子产品创建一个推广刊登广告活动。"* → `ebay_create_campaign` 及相关营销工具。
-- **批量操作** — *"为所有'复古手表'商品应用 10% 折扣。"* → 在匹配项上使用 `ebay_get_inventory_items` + `ebay_update_offer`。
+- **管理库存** — *"显示我所有的在售刊登。"* → `ebay_sell_inventory_get_inventory_items` 返回 SKU、数量和状态。
+- **处理订单** — *"获取过去 7 天所有未履行的订单。"* → 带日期和履行状态筛选的 `ebay_sell_fulfillment_get_orders`。
+- **创建广告活动** — *"为电子产品创建一个推广刊登广告活动。"* → `ebay_sell_marketing_create_campaign` 及相关营销工具。
+- **批量操作** — *"为所有'复古手表'商品应用 10% 折扣。"* → 在匹配项上使用 `ebay_sell_inventory_get_inventory_items` + `ebay_sell_inventory_update_offer`。
 
 ## 日志与故障排查
 
@@ -299,7 +299,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 ### 什么是 eBay MCP 服务器？
 
-一个本地的 [Model Context Protocol](https://modelcontextprotocol.io) 服务器，向 AI 助手提供 **298 个工具**，覆盖 **eBay Sell API 的 100%**（270 个端点）—— 库存、订单履行、营销、分析和开发者工具。
+一个本地的 [Model Context Protocol](https://modelcontextprotocol.io) 服务器，向 AI 助手提供 **292 个工具**，覆盖 **eBay Sell API 的 100%**（266 个端点）—— 库存、订单履行、营销、分析和开发者工具。
 
 ### 这是 eBay 的官方产品吗？
 
@@ -319,7 +319,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 ### 它覆盖多少 eBay API 和工具？
 
-298 个工具，覆盖 270 个唯一端点 —— eBay Sell API 的 100%。
+292 个工具，覆盖 266 个唯一端点 —— eBay Sell API 的 100%。
 
 ### 它是免费且开源的吗？
 
@@ -331,7 +331,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 ### 我需要什么才能开始？
 
-Node.js ≥ 20、一个免费的 [eBay 开发者账号](https://developer.ebay.com/)（Client ID + Client Secret），然后运行 `npm run setup`。
+Node.js ≥ 22.12、一个免费的 [eBay 开发者账号](https://developer.ebay.com/)（Client ID + Client Secret），然后运行 `npm run setup`。
 
 ### eBay API 的速率限制是多少？
 
@@ -383,7 +383,7 @@ TypeScript 和 Node.js（ESM），使用官方 MCP SDK、用于校验的 Zod 以
 - [eBay 数据处理要求](https://developer.ebay.com/api-docs/static/data-handling-update.html) — 数据保护与隐私
 - [MCP 文档](https://modelcontextprotocol.io/) — Model Context Protocol 规范
 - [OAuth 快速参考](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes、故障排查、示例
-- [eBay API 状态](https://developer.ebay.com/support/api-status) — 官方状态页面（也可通过 `ebay_get_api_status` 工具和[仓库内快照](docs/API_STATUS.md)）
+- [eBay API 状态](https://developer.ebay.com/support/api-status) — 官方状态页面（也可通过 `ebay_developer_status_get_incidents` 工具和[仓库内快照](docs/API_STATUS.md)）
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [问题跟踪](https://github.com/YosefHayim/ebay-mcp/issues) — 错误报告和功能请求
 

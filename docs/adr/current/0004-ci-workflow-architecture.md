@@ -1,6 +1,7 @@
 # 0004 — CI workflow architecture
 
-**Status:** Accepted · 2026-07-02 · `ui/` gate follow-up **resolved** by [0006](0006-close-style-backlog.md)
+**Status:** Accepted · 2026-07-02 · refreshed 2026-08-03; Node matrix baseline is
+superseded by [0009](0009-dependency-baseline-2026.md)
 
 ## Context
 
@@ -20,17 +21,17 @@ Adopt a **reusable single-purpose gate** (each leg is `on: workflow_call`):
   protection instead of five separate checks). On a **main** failure it calls
   `report-failure.yml`, which opens/updates a `ci-failure` issue with the failing
   job's captured log tail.
-- `biome.yml` — `pnpm run check:ci` (`biome ci .`), single-leg (ubuntu, Node 24) —
-  deterministic, no matrix.
-- `typecheck.yml` — `pnpm run typecheck` (`tsc --noEmit`, **src only**),
-  single-leg.
+- `biome.yml` — `pnpm run check:ci` (Biome plus the code-style rule-card parity
+  gate), single-leg — deterministic, no matrix.
+- `typecheck.yml` — source, UI, and test TypeScript checks, single-leg.
 - `test.yml` — unit + hermetic integration across the matrix; coverage runs once,
   informational and non-blocking.
 - `build.yml` — `pnpm run build` across the matrix.
 
-**Matrix:** `test` + `build` run on `[ubuntu, windows, macos] × [20, 22, 24]`
-(cross-environment bugs surface here); `biome` + `typecheck` are single-leg.
-`package.json` `engines.node` is bumped to `>=20`.
+**Historical matrix:** `test` + `build` landed on
+`[ubuntu, windows, macos] × [20, 22, 24]`; `biome` + `typecheck` are single-leg.
+ADR [0009](0009-dependency-baseline-2026.md) now owns the approved maintained
+Node 22/24 baseline.
 
 **Crons:** merged into one `api-sync.yml` (single schedule, two independent jobs:
 `update-status-doc`, `sync-check`). `publish.yml` (npm OIDC trusted publishing),

@@ -1,23 +1,140 @@
-import { z } from '@/utils/effectSchema.js';
-import { Effect } from 'effect';
+import type { EbayRequestCompletion } from '@/ebay/ebayRequestCompletion.js';
+import { createEbaySellerSession, type EbaySellerSession } from '@/ebay/ebaySellerSession.js';
+import {
+  getInventoryItem,
+  getInventoryItems,
+  type InventoryItem,
+} from '@/ebay/sell/inventory/inventoryItem.js';
 import { defineTool } from '@/tools/defineTool.js';
 import type { ToolEntry } from '@/tools/registry.js';
+import { z } from '@/utils/effectSchema.js';
 
 const connectorSearchInputSchema = z.object({
   query: z.string().describe('Search query'),
-  limit: z.number().optional().describe('Maximum number of results'),
+  limit: z.number().optional().describe('Maximum number of matches'),
 });
 
 const connectorFetchInputSchema = z.object({
-  id: z.string().describe('Item SKU'),
+  id: z.string().describe('Inventory-item SKU'),
 });
+
+type InventoryItemWithSku = InventoryItem & { readonly sku: string };
+
+function successfulEbayDocument<EbayDocument>(
+  ebayRequestCompletion: EbayRequestCompletion<EbayDocument>,
+): EbayDocument {
+  if (ebayRequestCompletion.kind === 'ebayRequestFailed') {
+    throw new Error(ebayRequestCompletion.ebayFailure.message);
+  }
+  return ebayRequestCompletion.ebayDocument;
+}
+
+function connectorMatchLimit(requestedMatchLimit: number | undefined): number {
+  if (requestedMatchLimit === undefined) {
+    return 10;
+  }
+  if (!Number.isFinite(requestedMatchLimit)) {
+    return 10;
+  }
+  return Math.max(Math.floor(requestedMatchLimit), 1);
+}
+
+function connectorPageSize(searchPhrase: string, matchLimit: number): number {
+  if (searchPhrase === '') {
+    return Math.min(matchLimit, 200);
+  }
+  return Math.min(Math.max(matchLimit, 50), 200);
+}
+
+function hasSellerSku(inventoryItem: InventoryItem): inventoryItem is InventoryItemWithSku {
+  if (inventoryItem.sku === undefined) {
+    return false;
+  }
+  return inventoryItem.sku.trim() !== '';
+}
+
+function inventoryItemTitle(inventoryItem: InventoryItem): string {
+  if (inventoryItem.product === undefined) {
+    return '';
+  }
+  if (inventoryItem.product.title === undefined) {
+    return '';
+  }
+  return inventoryItem.product.title;
+}
+
+function inventoryItemDescription(inventoryItem: InventoryItem): string {
+  if (inventoryItem.product === undefined) {
+    return '';
+  }
+  if (inventoryItem.product.description === undefined) {
+    return '';
+  }
+  return inventoryItem.product.description;
+}
+
+function matchingPageItems(
+  inventoryItems: readonly InventoryItemWithSku[],
+  searchPhrase: string,
+): InventoryItemWithSku[] {
+  if (searchPhrase === '') {
+    return [...inventoryItems];
+  }
+  return inventoryItems.filter((inventoryItem) =>
+    inventoryItemTitle(inventoryItem).toLowerCase().includes(searchPhrase),
+  );
+}
+
+async function matchingInventoryItems(
+  sellerSession: EbaySellerSession,
+  searchPhrase: string,
+  matchLimit: number,
+  pageOffset: number,
+  previousMatches: readonly InventoryItemWithSku[],
+): Promise<InventoryItemWithSku[]> {
+  const pageSize = connectorPageSize(searchPhrase, matchLimit);
+  const inventoryItemCompletion = await getInventoryItems(sellerSession, {
+    limit: String(pageSize),
+    offset: String(pageOffset),
+  });
+  const inventoryItemCollection = successfulEbayDocument(inventoryItemCompletion);
+  const inventoryItems = inventoryItemCollection.inventoryItems;
+  if (inventoryItems === undefined) {
+    return [...previousMatches];
+  }
+  if (inventoryItems.length === 0) {
+    return [...previousMatches];
+  }
+
+  const inventoryItemsWithSku = inventoryItems.filter(hasSellerSku);
+  const currentMatches = matchingPageItems(inventoryItemsWithSku, searchPhrase);
+  const combinedMatches = [...previousMatches, ...currentMatches];
+  if (combinedMatches.length >= matchLimit) {
+    return combinedMatches.slice(0, matchLimit);
+  }
+  if (inventoryItems.length < pageSize) {
+    return combinedMatches;
+  }
+  if (inventoryItemCollection.total !== undefined) {
+    const scannedInventoryItemCount = (pageOffset + 1) * pageSize;
+    if (scannedInventoryItemCount >= inventoryItemCollection.total) {
+      return combinedMatches;
+    }
+  }
+  return matchingInventoryItems(
+    sellerSession,
+    searchPhrase,
+    matchLimit,
+    pageOffset + 1,
+    combinedMatches,
+  );
+}
 
 /**
  * OpenAI ChatGPT connector tools.
  *
- * The ChatGPT connector protocol requires exactly two tools named `search` and
- * `fetch`. The registry prepends them ahead of the eBay API tools, and their
- * names are fixed by the connector spec rather than by an eBay API domain.
+ * The connector protocol fixes the names `search` and `fetch`. Both reuse the
+ * strict Sell Inventory resource operations while retaining their connector wire shapes.
  */
 export const connectorEntries: ToolEntry[] = [
   defineTool({
@@ -40,71 +157,32 @@ export const connectorEntries: ToolEntry[] = [
       category: 'chat',
       version: '1.0.0',
     },
-    handler: (api, args) =>
-      Effect.runPromise(
-        Effect.gen(function* () {
-          const requestedLimit = args.limit;
-          const limit =
-            typeof requestedLimit === 'number' && Number.isFinite(requestedLimit)
-              ? Math.max(Math.floor(requestedLimit), 1)
-              : 10;
-          const query = args.query.toLowerCase().trim();
-          const pageSize = query ? Math.min(Math.max(limit, 50), 200) : limit;
-          const matches: {
-            product?: { title?: string };
-            sku: string;
-          }[] = [];
-          let offset = 0;
+    handler: async (ebaySellerApi, connectorArguments) => {
+      const sellerSession = createEbaySellerSession(ebaySellerApi.getAuthClient());
+      const matchLimit = connectorMatchLimit(connectorArguments.limit);
+      const searchPhrase = connectorArguments.query.toLowerCase().trim();
+      const inventoryMatches = await matchingInventoryItems(
+        sellerSession,
+        searchPhrase,
+        matchLimit,
+        0,
+        [],
+      );
+      const connectorMatches = inventoryMatches.map((inventoryItem) => ({
+        id: inventoryItem.sku,
+        title: inventoryItemTitle(inventoryItem),
+        url: 'https://www.ebay.com/',
+      }));
 
-          while (matches.length < limit) {
-            const response = yield* api.inventory.getInventoryItems({ limit: pageSize, offset });
-            const pageItems = response.inventoryItems ?? [];
-            if (pageItems.length === 0) {
-              break;
-            }
-
-            // Only items with valid SKUs can be passed to getInventoryItem later.
-            const itemsWithSku = pageItems.filter(
-              (item): item is typeof item & { sku: string } =>
-                typeof item.sku === 'string' && item.sku.trim() !== '',
-            );
-
-            const filtered = query
-              ? itemsWithSku.filter((item) =>
-                  (item.product?.title ?? '').toLowerCase().includes(query),
-                )
-              : itemsWithSku;
-
-            matches.push(...filtered);
-            offset += pageSize;
-
-            const total = (response as { total?: number }).total;
-            if (typeof total === 'number' && offset >= total) {
-              break;
-            }
-
-            if (!query || pageItems.length < pageSize) {
-              break;
-            }
-          }
-
-          const results = matches.slice(0, limit).map((item) => ({
-            id: item.sku,
-            title: item.product?.title ?? '',
-            url: 'https://www.ebay.com/', // Placeholder: eBay does not expose a canonical item URL here.
-          }));
-
-          // The ChatGPT connector spec requires a single text content block.
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify({ results }),
-              },
-            ],
-          };
-        }),
-      ),
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({ results: connectorMatches }),
+          },
+        ],
+      };
+    },
   }),
   defineTool({
     name: 'fetch',
@@ -126,33 +204,33 @@ export const connectorEntries: ToolEntry[] = [
       category: 'chat',
       version: '1.0.0',
     },
-    handler: (api, args) =>
-      Effect.runPromise(
-        Effect.gen(function* () {
-          const sku = args.id;
-          const item = yield* api.inventory.getInventoryItem({ sku });
+    handler: async (ebaySellerApi, connectorArguments) => {
+      const sellerSession = createEbaySellerSession(ebaySellerApi.getAuthClient());
+      const inventoryItemCompletion = await getInventoryItem(sellerSession, {
+        sku: connectorArguments.id,
+      });
+      const inventoryItem = successfulEbayDocument(inventoryItemCompletion);
+      const productDetails = inventoryItem.product;
+      const connectorDocument = {
+        id: connectorArguments.id,
+        title: inventoryItemTitle(inventoryItem),
+        text: inventoryItemDescription(inventoryItem),
+        url: 'https://www.ebay.com/',
+        metadata: {
+          source: 'ebay_inventory',
+          aspects: productDetails?.aspects,
+          condition: inventoryItem.condition,
+        },
+      };
 
-          const result = {
-            id: sku,
-            title: item.product?.title ?? '',
-            text: item.product?.description ?? '',
-            url: 'https://www.ebay.com/', // Placeholder: eBay does not expose a canonical item URL here.
-            metadata: {
-              source: 'ebay_inventory',
-              aspects: item.product?.aspects,
-              condition: item.condition,
-            },
-          };
-
-          return {
-            content: [
-              {
-                type: 'text',
-                text: JSON.stringify(result),
-              },
-            ],
-          };
-        }),
-      ),
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(connectorDocument),
+          },
+        ],
+      };
+    },
   }),
 ];

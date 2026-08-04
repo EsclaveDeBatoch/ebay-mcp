@@ -12,6 +12,7 @@
  * Intentionally structural so callers can pass full {@link ToolDefinition}s
  * without this module importing the tools tree.
  */
+import process from 'node:process';
 export interface ReadOnlyToolDefinition {
   name: string;
   annotations?: {
@@ -42,7 +43,7 @@ const READ_NAME_PATTERN =
  *
  * @example
  * ```ts
- * isReadOnlyTool({ name: 'ebay_get_orders' }); // true
+ * isReadOnlyTool({ name: 'ebay_sell_fulfillment_get_orders' }); // true
  * isReadOnlyTool({ name: 'ebay_create_offer' }); // false
  * ```
  */

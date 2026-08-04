@@ -1,7 +1,8 @@
 import { decodeEffectSchemaSync, z } from '@/utils/effectSchema.js';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
-import { TOOL_FAMILY_KEYS } from '@/config/toolFamilies.js';
+import { EBAY_TOOL_EXPOSURE_PATHS } from '@/config/toolExposure.js';
+import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import { toolCategories } from '@/tools/categories/index.js';
 
 /**
@@ -15,7 +16,7 @@ import { toolCategories } from '@/tools/categories/index.js';
  * real input schemas and validation. This keeps advertised context proportional
  * to what the agent actually uses instead of the full ~187-tool catalogue.
  *
- * The pure env parsing/validation lives in `@/config/toolFamilies.ts`; this
+ * The pure environment parsing/validation lives in `@/config/toolExposure.ts`; this
  * module owns everything that needs the live tool registry.
  */
 
@@ -58,7 +59,7 @@ interface ToolCatalog {
 }
 
 /** Condenses a tool description to a single sentence for the discovery listing. */
-const toSummary = (description: string): string => {
+const summarizeTool = (description: string): string => {
   const firstLine = description.split('\n', 1)[0].trim();
   const sentenceEnd = firstLine.indexOf('. ');
   const sentence = sentenceEnd === -1 ? firstLine : firstLine.slice(0, sentenceEnd + 1);
@@ -66,7 +67,7 @@ const toSummary = (description: string): string => {
 };
 
 /** Builds the discovery catalogue (tool rows, family overview, name→family index). */
-const buildCatalog = (): ToolCatalog => {
+const catalogueTools = (): ToolCatalog => {
   const rows: ToolCatalogRow[] = [];
   const families: FamilyOverviewRow[] = [];
   const familyByToolName = new Map<string, string>();
@@ -75,15 +76,32 @@ const buildCatalog = (): ToolCatalog => {
     families.push({ key: category.key, title: category.title, count: category.entries.length });
     for (const entry of category.entries) {
       const { name, description } = entry.definition;
-      rows.push({ name, family: category.key, summary: toSummary(description) });
+      rows.push({ name, family: category.key, summary: summarizeTool(description) });
       familyByToolName.set(name, category.key);
     }
+  }
+
+  for (const ebayTool of ebayToolCatalogue) {
+    const namespaceOverview = families.find(
+      (familyOverview) => familyOverview.key === ebayTool.namespace,
+    );
+    if (namespaceOverview === undefined) {
+      families.push({ key: ebayTool.namespace, title: ebayTool.namespace, count: 1 });
+    } else {
+      namespaceOverview.count += 1;
+    }
+    rows.push({
+      name: ebayTool.name,
+      family: ebayTool.namespace,
+      summary: summarizeTool(ebayTool.description),
+    });
+    familyByToolName.set(ebayTool.name, ebayTool.namespace);
   }
 
   return { rows, families, familyByToolName };
 };
 
-const CATALOG = buildCatalog();
+const CATALOG = catalogueTools();
 
 /** Input accepted by the lightweight dynamic-mode tool catalogue. */
 const listEbayToolsInputSchema = z.object({
@@ -120,10 +138,10 @@ const dynamicToolNamesInputSchema = z.object({
  *
  * @example
  * ```ts
- * const names = toolNamesInFamilies(['inventory', 'account']);
+ * const names = toolNamesInExposurePaths(['inventory', 'account']);
  * ```
  */
-export const toolNamesInFamilies = (families: Iterable<string>): Set<string> => {
+export const toolNamesInExposurePaths = (families: Iterable<string>): Set<string> => {
   const wanted = new Set(families);
   const names = new Set<string>();
   for (const [name, family] of CATALOG.familyByToolName) {
@@ -147,14 +165,19 @@ interface MutationResult {
  * Backed by the per-connection `RegisteredTool` map, so enabling/disabling is
  * naturally isolated to one client session.
  */
-export interface ToolGatingController {
+export type ToolGatingController = {
   /** Lists families or lightweight tool rows matching the provided filters. */
-  list(args: { family?: string; query?: string; cursor?: string; limit?: number }): unknown;
+  readonly list: (metaToolArguments: {
+    family?: string;
+    query?: string;
+    cursor?: string;
+    limit?: number;
+  }) => unknown;
   /** Enables registered eBay tools by exact tool name. */
-  enable(names: string[]): MutationResult;
+  readonly enable: (names: string[]) => MutationResult;
   /** Disables registered eBay tools by exact tool name. */
-  disable(names: string[]): MutationResult;
-}
+  readonly disable: (names: string[]) => MutationResult;
+};
 
 /** Parses an opaque list cursor (a stringified offset) back into a non-negative offset. */
 const parseCursor = (cursor: string | undefined): number => {
@@ -191,16 +214,16 @@ export const createToolGatingController = (
       const handle = handles.get(name);
       if (!handle) {
         unknown.push(name);
-        continue;
-      }
-      if (handle.enabled !== enable) {
-        if (enable) {
-          handle.enable();
-        } else {
-          handle.disable();
+      } else {
+        if (handle.enabled !== enable) {
+          if (enable) {
+            handle.enable();
+          } else {
+            handle.disable();
+          }
         }
+        changed.push(name);
       }
-      changed.push(name);
     }
 
     return enable
@@ -225,7 +248,7 @@ export const createToolGatingController = (
       if (family && !CATALOG.families.some((row) => row.key === family)) {
         return {
           error: `Unknown tool family "${family}".`,
-          validFamilies: TOOL_FAMILY_KEYS,
+          validFamilies: EBAY_TOOL_EXPOSURE_PATHS,
         };
       }
 
@@ -262,8 +285,8 @@ export const createToolGatingController = (
 };
 
 /** Wraps controller output as a standard text tool result. */
-const toToolResult = (data: unknown): CallToolResult => ({
-  content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
+const metaToolCompletion = (metaToolDocument: unknown): CallToolResult => ({
+  content: [{ type: 'text', text: JSON.stringify(metaToolDocument, null, 2) }],
 });
 
 /**
@@ -288,7 +311,10 @@ export const registerMetaTools = (server: McpServer, controller: ToolGatingContr
         "Discover eBay tools without loading them into context. Call with no arguments to list the tool families; pass `family` to list a family's tools, or `query` to keyword-search across all tools. Returns lightweight rows (name, family, summary) — enable a tool with enable_ebay_tools to get its full schema and call it.",
       inputSchema: listEbayToolsInputSchema.shape,
     },
-    (args) => toToolResult(controller.list(decodeEffectSchemaSync(listEbayToolsInputSchema, args))),
+    (metaToolArguments) =>
+      metaToolCompletion(
+        controller.list(decodeEffectSchemaSync(listEbayToolsInputSchema, metaToolArguments)),
+      ),
   );
 
   server.registerTool(
@@ -298,9 +324,9 @@ export const registerMetaTools = (server: McpServer, controller: ToolGatingContr
         'Load specific eBay tools into context so they can be called. Pass the exact tool names from list_ebay_tools. Returns the names enabled, any unknown names, and the active tool count.',
       inputSchema: dynamicToolNamesInputSchema.shape,
     },
-    (args) => {
-      const { names } = decodeEffectSchemaSync(dynamicToolNamesInputSchema, args);
-      return toToolResult(controller.enable(names));
+    (metaToolArguments) => {
+      const { names } = decodeEffectSchemaSync(dynamicToolNamesInputSchema, metaToolArguments);
+      return metaToolCompletion(controller.enable(names));
     },
   );
 
@@ -311,9 +337,9 @@ export const registerMetaTools = (server: McpServer, controller: ToolGatingContr
         'Unload eBay tools previously enabled, reclaiming their context. Pass the exact tool names. Returns the names disabled, any unknown names, and the active tool count.',
       inputSchema: dynamicToolNamesInputSchema.shape,
     },
-    (args) => {
-      const { names } = decodeEffectSchemaSync(dynamicToolNamesInputSchema, args);
-      return toToolResult(controller.disable(names));
+    (metaToolArguments) => {
+      const { names } = decodeEffectSchemaSync(dynamicToolNamesInputSchema, metaToolArguments);
+      return metaToolCompletion(controller.disable(names));
     },
   );
 };

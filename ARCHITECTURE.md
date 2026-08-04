@@ -1,112 +1,163 @@
-# ebay-mcp Architecture
+# ebay-mcp architecture
 
-The real file map and the pipeline a tool call flows through. Orientation is in
-[CONTEXT.md](CONTEXT.md); code idioms are in [CODE-STYLE.md](CODE-STYLE.md).
+This document records the checked-in migration inventory and the approved destination.
+Read [CONTEXT.md](CONTEXT.md) first and use [CODE-STYLE.md](CODE-STYLE.md) for code idioms.
 
-## Layout
+## Current migration inventory
 
-```txt
+The repository currently separates one operation across layers:
+
+```text
+src/api/       endpoint classes and transports
+src/schemas/   Effect-backed endpoint schemas
+src/tools/     category definitions, handlers, registry, and UI metadata
+src/types/     handwritten migration-era contracts
+src/utils/     unrelated platform primitives and schema adapters
+src/scripts/   shipped commands and development automation mixed together
+src/generated/ebay/  openapi-typescript output only
+specs/ebay/          official eBay OpenAPI inputs
+docs/                human-owned documentation
+```
+
+These roots remain real until their final callers migrate. They are not patterns for new
+code and receive no compatibility exports when removed.
+
+## Approved target layout
+
+```text
+specs/ebay/                         # upstream OpenAPI JSON; machine-owned
 src/
-├── index.ts          # bin entry — routes `setup` / `skills`, else runs the MCP stdio server
-├── serverHttp.ts     # HTTP transport entry point
-├── api/              # eBay API area classes + clients — one subfolder per area
-│                     #   (account-management, order-management, marketing-and-promotions, …)
-│                     #   plus client.ts (REST) and clientTrading.ts (Trading XML)
-├── auth/             # OAuth 2.0 flow, token store, JWT verification, setup callback helper
-├── config/           # environment loading, constants, toolFamilies
-├── mcp/              # runtime.ts, httpTransport.ts, toolGating.ts, uiBridge.ts
-├── tools/            # tool wiring: defineTool.ts, registry.ts, contracts.ts, schemas.ts,
-│                     #   types.ts, categories/ (one family file per EBAY_MCP_TOOLS key), ui/
-├── schemas/          # Effect-backed endpoint input schemas by family
-├── skills/           # agent-skills generator (`ebay-mcp skills`)
-├── scripts/          # CLI tooling (setup, skills, diagnostics, wizards/validators, …)
-├── types/            # generated OpenAPI types — do NOT hand-edit (`pnpm run sync`)
-└── utils/            # platform primitives: logging, http, errors, effectSchema*, version, cliUi
+├── index.ts                        # package/bin entry
+├── serverHttp.ts                   # HTTP process entry
+├── auth/                           # OAuth and credential lifecycles
+├── cli/                            # shipped deterministic commands
+├── config/                         # strict process-entry environment contracts
+├── ebay/
+│   ├── ebayRequestCompletion.ts    # shared discriminated eBay completion
+│   ├── ebaySellerSession.ts        # explicit authenticated operation dependency
+│   ├── sell/<api>/<resource>.ts
+│   ├── commerce/<api>/<resource>.ts
+│   ├── developer/<api>/<resource>.ts
+│   ├── finding/<resource>.ts
+│   └── trading/<resource>.ts
+├── generated/ebay/                 # openapi-typescript output only; machine-owned
+├── http/                           # focused HTTP transport and security policy
+├── logging/                        # four-level structured STDERR logger
+├── mcp/
+│   ├── defineTool.ts               # strict Zod/session/completion boundary
+│   ├── ebayToolCatalogue.ts        # explicit named imports for every tool
+│   └── runtime.ts                  # transport-independent MCP composition
+└── ui/
+    ├── presentation/<api>.ts       # browser-only projections
+    └── browser/                    # React MCP Apps surface
+scripts/
+├── dev/syncEbaySpecs.ts            # thin multi-spec generation glue
+└── production/                     # release and production automation
+tests/integration/mcp/<namespace>/<api>/<resource>.test.ts
 ```
 
-## Pipeline — a tool call
+Final removed roots are `src/api`, `src/schemas`, `src/tools`, `src/utils`, `src/types`,
+and `src/scripts`.
 
-```txt
-src/tools/categories/<family>.ts
-  → defineTool(spec)                     # Effect-backed .shape = SSOT for wire schema + handler args
-  → registry (src/tools/registry.ts)     # assembles ToolEntry[] from categories/index.ts
+## Resource ownership
 
-host call → registry.executeTool
-  → handler (args already decoded by defineTool)
-  → EbaySellerApi facade                 # api.<area>.<method>
-  → src/api/<area>/*.ts
-  → EbayApiClient (REST)  |  TradingApiClient (XML, fast-xml-parser)
-    # target: Effect-returning endpoint methods; runPromise only at MCP/CLI boundaries
-  → eBay
-  ← result  → optional MCP-Apps view model (archetype: table | card | chart)  → host
+A resource module owns only the pieces needed to understand and expose that official eBay
+resource:
+
+```text
+src/ebay/sell/analytics/trafficReport.ts
+  strict Zod arguments schema
+  generated TrafficReport aliases
+  getTrafficReport seller operation
+  ebay_sell_analytics_get_traffic_report named tool definition
 ```
 
-Tool exposure is gated by `EBAY_MCP_TOOLS` (`all` | `dynamic` | family list),
-applied in `src/mcp/runtime.ts`. Both transports (`index.ts` stdio,
-`serverHttp.ts`) wrap the same runtime; **stdout is reserved for the protocol**,
-so logs go to stderr.
+The module does not export an array for a parent barrel. The explicit catalogue imports
+each named definition directly. A resource may contain multiple related operations when
+the official resource owns them; files do not split merely to satisfy a line cap.
 
-## Family map (MCP key ↔ folders)
+## Operation pipeline
 
-Three parallel naming systems on purpose — do **not** mass-rename to force one vocabulary:
+```text
+MCP call
+  -> runtime chooses an explicitly catalogued tool
+  -> defineTool decodes one strict Zod object
+  -> defineTool injects EbaySellerSession
+  -> one resource operation calls the focused HTTP or Trading transport
+  -> operation returns EbayRequestCompletion<GeneratedEbayDocument>
+  -> defineTool translates success or failure once
+  -> optional presentation projection produces browser fields
+```
 
-| MCP family (`EBAY_MCP_TOOLS`) | `src/tools/categories/` | `src/api/` | `src/schemas/` |
-| --- | --- | --- | --- |
-| `connector` | `connector.ts` | — (catalogue meta) | — |
-| `token-management` | `tokenManagement.ts` | via `auth/` | — |
-| `account` | `account.ts` | `account-management/` | `account-management/` |
-| `inventory` | `inventory.ts` | `listing-management/` (items/offers/locations + facade) | `inventory-management/` |
-| `fulfillment` | `fulfillment.ts` | `order-management/` | `fulfillment/` |
-| `marketing` | `marketing.ts` | `marketing-and-promotions/` (campaigns/ads/promotions/reports + facade) | `marketing/` (same slices + barrel) |
-| `analytics` | `analytics.ts` | `analytics-and-report/` | `analytics/` |
-| `metadata` | `metadata.ts` | `listing-metadata/` | `metadata/` |
-| `taxonomy` | `taxonomy.ts` | `listing-metadata/` (taxonomy) | `taxonomy/` |
-| `communication` | `communication.ts` | `communication/` | `communication/` |
-| `browse` | `browse.ts` | `other/` (Finding) | `other/` |
-| `other` | `other.ts` | `other/` | `other/` |
-| `developer` | `developer.ts` | `developer/` | `developer/` |
-| `trading` | `trading.ts` | `trading/` | — (Trading XML shapes in utils/tools) |
+Operation functions take two parameters: `sellerSession` and a precisely named eBay query
+or document. A one-use options wrapper, API facade, endpoint class, handler map, or response
+reshaper adds no architectural value.
 
-Generated OpenAPI types live under `src/types/sell-apps/` (and application-settings) and
-mirror the `docs/sell-apps/` tree (owned by `downloadSpecs` / `devSync` folder maps).
-Hand-written code should import those generated paths as-is; do not invent parallel DTOs.
+## Machine-owned boundaries
 
-## Schema ownership
+| Root | Owner | Rule |
+| --- | --- | --- |
+| `specs/ebay/` | eBay OpenAPI download | Never hand-edit or mix with prose docs. |
+| `src/generated/ebay/` | `openapi-typescript` | Never hand-edit or add authored contracts. |
+| Resource module | Repository | Import generated aliases directly and keep wire keys exact. |
+| Presentation module | Repository | Project generated documents only for browser display. |
 
-| Surface | Owns |
-| --- | --- |
-| `src/tools/schemas.ts` | Shared primitives reused across families (money, dimensions, enums wrappers, …) |
-| `src/schemas/<family>/` | Endpoint/tool **input** (and when needed response) schemas for that family |
-| `src/types/**` | Generated eBay DTOs — never hand-edit; regenerate with `pnpm run sync` |
+The sync command uses explicit specification folders and exact operation identifiers. It
+does not patch generated files, use fuzzy matching, create a persistent status snapshot,
+or maintain parallel endpoint reports.
 
-New endpoint tools: author the Effect-backed input schema under `src/schemas/…`, derive
-MCP `inputSchema` from `.shape` in `defineTool`, return generated response types from API
-methods. Do not add a third schema home.
+## Tool exposure and naming
 
-## Build output
+eBay tools use `ebay_<namespace>_<api>_<operation>` names, for example
+`ebay_sell_analytics_get_traffic_report`. Exposure gates use official paths such as
+`sell.analytics`. Valid exposure paths are derived when the process composes the explicit
+catalogue, keeping environment parsing free of tool-tree cycles. `search` and `fetch` are
+the exact connector exceptions.
 
-`build/` is generated (`tsc` + UI bundle) and gitignored. After renames, wipe stale dual
-kebab/camel artifacts with `rm -rf build && npm run build`. Do not commit `build/`.
+## Process composition
 
-`devSyncReport.json` is generated by `npm run sync` and is gitignored; CI may upload it as
-an artifact.
+Each process entry parses its environment once with strict Zod, creates explicit auth,
+logging, transport, and seller-session dependencies, then passes them inward. HTTP fails
+closed. STDIO trusts the local process boundary but still decodes every MCP call. Runtime
+logs never write to STDOUT.
 
-## Code style (the load-bearing rules)
+## CLI architecture
 
-Full guide: [CODE-STYLE.md](CODE-STYLE.md). In short:
+The package entry uses Node's `parseArgs` and the existing `prompts` dependency. A bare TTY
+invocation opens the menu; a bare non-TTY invocation starts STDIO. Explicit commands never
+prompt. Command modules accept explicit dependencies and return `CommandCompletion`; only
+the entry writes streams and assigns `process.exitCode`.
 
-| Rule | Shape |
-| --- | --- |
-| Imports | `@/` alias except same-dir siblings; keep NodeNext `.js` |
-| Files | hand-written source/test/UI file basenames are camelCase, never kebab-case or snake_case; generated/upstream filenames keep source names |
-| Casts | boundary-only; never `as any`; no hand-written source excluded from typecheck |
-| Functions | new/migrated exported functions use `export const ... = (...) =>`; named exports only |
-| Errors | fallible API/IO returns typed Effects; run with `Effect.runPromise` only at MCP/HTTP/CLI boundaries |
-| Tools | Effect-backed schema `.shape` is the tool input SSOT; co-locate definition + handler in `categories/` via `defineTool` |
-| File size | Biome warns > ~300 lines/file, ~60 lines/function on logic dirs; declarative/generated/table files are warning-exempt |
+Public commands are `serve`, `setup`, `diagnose [--json]`, `skills install`,
+`help [--json]`, and `version [--json]`. Development typecheck, test, build, and sync work
+remains in package scripts.
 
-Enforcement is **Biome** (`biome.json`) + `tsc`, run as `pnpm run check:ci` and
-`pnpm run typecheck`. (There is no `lint:lines` script; size caps are Biome
-rules.)
+## Test architecture
 
-Historical deepening notes (mostly implemented): [docs/archive/architecture-deepening-opportunities.md](docs/archive/architecture-deepening-opportunities.md).
+Every operation has two complete business-contract suites:
+
+- A colocated resource test proves strict validation, exact wire behavior, generated
+  document passthrough, and every typed failure branch.
+- A central integration test exercises the same validation and failure depth through the
+  real MCP runtime and catalogue.
+
+Tests use representative eBay fixtures and narrow fakes. A test factory appears only at
+its second genuine reuse.
+
+## Migration order
+
+1. Land the code-style contract, docs, and ADRs.
+2. Establish the secure Node/dependency baseline and relocate machine-owned roots.
+3. Migrate Sell Analytics `traffic_report` as the golden resource slice.
+4. Migrate one official namespace/API/resource slice at a time, tests first.
+5. Consolidate auth, HTTP, logging, configuration, and CLI after their resource callers are
+   explicit.
+6. Move UI projections and browser ownership.
+7. Delete final legacy roots, dependencies, reports, scripts, and tests.
+8. Clean each mechanical rule, prove it with a planted violation, and make it blocking.
+
+Every slice stays independently green and deletes its old path when the final caller moves.
+The governing records are [ADR 0007](docs/adr/current/0007-promise-zod-resource-architecture.md),
+[ADR 0008](docs/adr/current/0008-cli-command-surface-v2.md),
+[ADR 0009](docs/adr/current/0009-dependency-baseline-2026.md), and
+[ADR 0010](docs/adr/current/0010-golden-resource-test-depth.md).

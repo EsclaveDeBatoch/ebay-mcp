@@ -56,7 +56,7 @@ class EbayMcpServer {
    * Initialize the API (load tokens from storage)
    */
   private async initialize(): Promise<void> {
-    await this.runtime.initializeApi();
+    await this.runtime.initializeEbaySellerApi();
   }
 
   private setupErrorHandling(): void {

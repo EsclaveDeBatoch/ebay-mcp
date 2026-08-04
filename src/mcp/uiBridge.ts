@@ -10,9 +10,8 @@ import {
   RESOURCE_URI_META_KEY,
 } from '@modelcontextprotocol/ext-apps/server';
 import { getUiRuntimeConfig } from '@/config/environment.js';
-import type { ResolvedToolUi, ToolEntry } from '@/tools/registry.js';
-import { uiArchetypes } from '@/tools/ui/archetypes.js';
-import type { ViewArchetype, ViewModel } from '@/tools/ui/viewModels.js';
+import { uiArchetypes } from '@/ui/archetypes.js';
+import type { ViewArchetype, ViewModel } from '@/ui/viewModels.js';
 import { serverLogger } from '@/utils/logger.js';
 
 /**
@@ -37,6 +36,13 @@ import { serverLogger } from '@/utils/logger.js';
 /** Capabilities shape accepted by ext-apps' {@link getUiCapability}. */
 type ClientUiCapabilities = Parameters<typeof getUiCapability>[0];
 
+/** Browser presentation binding shared by migrated and legacy MCP tool catalogues. */
+export type McpUiBinding = {
+  readonly archetype: ViewArchetype;
+  readonly resourceUri: string;
+  readonly map: (operationDocument: unknown) => ViewModel;
+};
+
 /**
  * Decides whether interactive views should be advertised to the connected client.
  *
@@ -51,10 +57,10 @@ type ClientUiCapabilities = Parameters<typeof getUiCapability>[0];
  *
  * @example
  * ```ts
- * const enabled = resolveUiEnabled(server.server.getClientCapabilities());
+ * const enabled = shouldRenderUi(server.server.getClientCapabilities());
  * ```
  */
-export const resolveUiEnabled = (
+export const shouldRenderUi = (
   capabilities: ClientUiCapabilities,
   uiEnabledByConfig = getUiRuntimeConfig().enabled,
 ): boolean => {
@@ -132,15 +138,18 @@ const asStructuredContent = (view: ViewModel): Record<string, unknown> =>
  *
  * @example
  * ```ts
- * const toolResult = buildUiToolResult(entry.ui, handlerResult);
+ * const toolCompletion = uiToolCompletion(uiBinding, ebayDocument);
  * ```
  */
-export const buildUiToolResult = (ui: ResolvedToolUi, result: unknown): CallToolResult => {
-  const view = ui.map(result);
+export const uiToolCompletion = (
+  uiBinding: McpUiBinding,
+  operationDocument: unknown,
+): CallToolResult => {
+  const view = uiBinding.map(operationDocument);
   return {
     content: [{ type: 'text', text: summarizeView(view) }],
     structuredContent: asStructuredContent(view),
-    _meta: { ui: { resourceUri: ui.resourceUri } },
+    _meta: { ui: { resourceUri: uiBinding.resourceUri } },
   };
 };
 
@@ -179,10 +188,10 @@ export const findRepoRoot = (startDir: string): string | undefined => {
  *
  * @example
  * ```ts
- * const builtUiDir = resolveBuiltUiDir(import.meta.url);
+ * const builtUiDir = builtUiDirectoryFor(import.meta.url);
  * ```
  */
-export const resolveBuiltUiDir = (moduleUrl: string): string => {
+export const builtUiDirectoryFor = (moduleUrl: string): string => {
   const fromDir = dirname(fileURLToPath(moduleUrl));
   const root = findRepoRoot(fromDir);
   return root ? join(root, 'build', 'ui') : join(fromDir, '..', 'ui');
@@ -193,14 +202,14 @@ export const resolveBuiltUiDir = (moduleUrl: string): string => {
  * `runtime.ts` registers tools as usual and calls into this to capture UI-eligible
  * tools, decide per-call whether to render, and install the capability gate.
  */
-export interface UiBridge {
+export type UiBridge = {
   /** Records a freshly registered tool so the gate can flip its `_meta` on connect. */
-  register(entry: ToolEntry, registered: RegisteredTool): void;
-  /** Narrows to a UI-eligible entry whose view should be emitted for this client. */
-  shouldRender(entry: ToolEntry): entry is ToolEntry & { ui: ResolvedToolUi };
+  register: (uiBinding: McpUiBinding | undefined, registered: RegisteredTool) => void;
+  /** Reports whether this binding should emit a browser view for the connected client. */
+  shouldRender: (uiBinding: McpUiBinding | undefined) => boolean;
   /** Wires `oninitialized` to enable UI and advertise resource URIs when supported. */
-  installCapabilityGate(): void;
-}
+  installCapabilityGate: () => void;
+};
 
 /**
  * Constructs the {@link UiBridge}: reads the built archetype HTML, registers each
@@ -216,7 +225,7 @@ export interface UiBridge {
  * ```
  */
 export const createUiBridge = (server: McpServer, moduleUrl: string): UiBridge => {
-  const builtUiDir = resolveBuiltUiDir(moduleUrl);
+  const builtUiDir = builtUiDirectoryFor(moduleUrl);
   const available = new Set<ViewArchetype>();
 
   // `Object.keys` widens to `string[]`; the cast restores the manifest's key type.
@@ -226,35 +235,40 @@ export const createUiBridge = (server: McpServer, moduleUrl: string): UiBridge =
 
     if (!existsSync(htmlPath)) {
       serverLogger.warn(`UI view not built; "${uri}" disabled (expected ${htmlPath})`);
-      continue;
+    } else {
+      const html = readFileSync(htmlPath, 'utf-8');
+      registerAppResource(server, name, uri, {}, () => ({
+        contents: [{ uri, mimeType: RESOURCE_MIME_TYPE, text: html }],
+      }));
+      available.add(archetype);
     }
-
-    const html = readFileSync(htmlPath, 'utf-8');
-    registerAppResource(server, name, uri, {}, () => ({
-      contents: [{ uri, mimeType: RESOURCE_MIME_TYPE, text: html }],
-    }));
-    available.add(archetype);
   }
 
   let uiEnabled = false;
   const uiTools: { registered: RegisteredTool; resourceUri: string }[] = [];
 
   return {
-    register(entry, registered) {
-      if (entry.ui && available.has(entry.ui.archetype)) {
-        uiTools.push({ registered, resourceUri: entry.ui.resourceUri });
+    register(uiBinding, registered) {
+      if (uiBinding && available.has(uiBinding.archetype)) {
+        uiTools.push({ registered, resourceUri: uiBinding.resourceUri });
       }
     },
 
-    shouldRender(entry): entry is ToolEntry & { ui: ResolvedToolUi } {
-      return uiEnabled && entry.ui != null && available.has(entry.ui.archetype);
+    shouldRender(uiBinding) {
+      if (!uiEnabled) {
+        return false;
+      }
+      if (uiBinding === undefined) {
+        return false;
+      }
+      return available.has(uiBinding.archetype);
     },
 
     installCapabilityGate() {
       const priorOnInitialized = server.server.oninitialized;
       server.server.oninitialized = () => {
         priorOnInitialized?.();
-        uiEnabled = resolveUiEnabled(server.server.getClientCapabilities());
+        uiEnabled = shouldRenderUi(server.server.getClientCapabilities());
         if (!uiEnabled) {
           return;
         }

@@ -1,6 +1,6 @@
 # 0002 — CLI command surface
 
-**Status:** Accepted · 2026-07-02 · refreshed 2026-07-06 (commander adoption reversed by [0006](0006-close-style-backlog.md))
+**Status:** Superseded by [0008](0008-cli-command-surface-v2.md) · 2026-08-03
 
 ## Context
 

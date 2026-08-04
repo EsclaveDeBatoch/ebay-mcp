@@ -153,7 +153,7 @@ async function createMcpServer(serverUrl: string): Promise<McpServer> {
   const initialized = await Effect.runPromise(
     Effect.either(
       Effect.tryPromise({
-        try: () => runtime.initializeApi(),
+        try: () => runtime.initializeEbaySellerApi(),
         catch: (error) => error,
       }),
     ),

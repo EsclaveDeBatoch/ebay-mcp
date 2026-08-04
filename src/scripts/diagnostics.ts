@@ -17,6 +17,8 @@ import { detectLLMClients } from '@/utils/llmClientDetector.js';
 import { displayScopeVerification, parseScopeString } from '@/scripts/scopeHelper.js';
 import { readEnvironment } from './setupShared.js';
 import { EbaySellerApi } from '@/api/index.js';
+import { createEbaySellerSession } from '@/ebay/ebaySellerSession.js';
+import { getUser } from '@/ebay/commerce/identity/user.js';
 import { getErrorMessage } from '@/utils/errors.js';
 import { getUpdateInfo, getVersion } from '@/utils/version.js';
 import type { EbayConfig } from '@/types/ebay.js';
@@ -81,28 +83,26 @@ async function checkApiConnectivity(): Promise<{ canReachEbay: boolean; error?: 
  * Test eBay API authentication
  */
 async function testEbayAuthentication(
-  config: EbayConfig,
+  ebaySettings: EbayConfig,
 ): Promise<{ success: boolean; error?: string; userInfo?: unknown }> {
-  const authenticated = await Effect.runPromise(
-    Effect.either(
-      Effect.gen(function* () {
-        const api = new EbaySellerApi(config);
-        yield* api.initialize();
-
-        // Try to get user info
-        return yield* api.identity.getUser();
-      }),
-    ),
+  const sellerApi = new EbaySellerApi(ebaySettings);
+  const initialization = await Effect.runPromise(sellerApi.initialize()).then(
+    () => ({ kind: 'sellerApiInitialized' }) as const,
+    (thrownFailure: unknown) =>
+      ({ kind: 'sellerApiInitializationFailed', message: getErrorMessage(thrownFailure) }) as const,
   );
-
-  if (Either.isLeft(authenticated)) {
+  if (initialization.kind === 'sellerApiInitializationFailed') {
     return {
       success: false,
-      error: getErrorMessage(authenticated.left),
+      error: initialization.message,
     };
   }
 
-  return { success: true, userInfo: authenticated.right };
+  const identityLookup = await getUser(createEbaySellerSession(sellerApi.getAuthClient()));
+  if (identityLookup.kind === 'ebayRequestFailed') {
+    return { success: false, error: identityLookup.ebayFailure.message };
+  }
+  return { success: true, userInfo: identityLookup.ebayDocument };
 }
 
 /**

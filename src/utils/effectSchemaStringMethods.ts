@@ -1,5 +1,5 @@
 import { Schema } from 'effect';
-import type { z as zodTypes } from 'zod';
+import type { z as zodTypes } from 'zod/v3';
 import { BASIC_EMAIL_PATTERN } from './effectSchemaRefinements.js';
 import type { EffectBackedSchema, EffectSchemaState } from './effectSchemaTypes.js';
 

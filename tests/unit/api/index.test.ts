@@ -55,26 +55,9 @@ describe('EbaySellerApi', () => {
       await expect(Effect.runPromise(newApi.initialize())).resolves.not.toThrow();
     });
 
-    it('have all API modules', () => {
-      expect(api.account).toBeDefined();
-      expect(api.inventory).toBeDefined();
-      expect(api.fulfillment).toBeDefined();
-      expect(api.dispute).toBeDefined();
-      expect(api.marketing).toBeDefined();
-      expect(api.recommendation).toBeDefined();
-      expect(api.analytics).toBeDefined();
-      expect(api.metadata).toBeDefined();
-      expect(api.taxonomy).toBeDefined();
-      expect(api.negotiation).toBeDefined();
-      expect(api.message).toBeDefined();
-      expect(api.notification).toBeDefined();
-      expect(api.feedback).toBeDefined();
-      expect(api.identity).toBeDefined();
-      expect(api.compliance).toBeDefined();
-      expect(api.vero).toBeDefined();
-      expect(api.translation).toBeDefined();
-      expect(api.edelivery).toBeDefined();
-      expect(api.finding).toBeDefined();
+    it('exposes the authenticated client boundary', () => {
+      expect(api.getAuthClient()).toBeDefined();
+      expect(api.getConfig()).toEqual(config);
     });
   });
 

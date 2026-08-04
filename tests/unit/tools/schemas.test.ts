@@ -1,17 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Effect, Either } from 'effect';
-import {
-  timeDurationSchema,
-  amountSchema,
-  regionSchema,
-  regionSetSchema,
-  fulfillmentPolicySchema,
-  paymentPolicySchema,
-  returnPolicySchema,
-  inventoryItemSchema,
-  offerSchema,
-  locationSchema as inventoryLocationSchema,
-} from '@/tools/schemas.js';
+import { timeDurationSchema, amountSchema, offerSchema } from '@/tools/schemas.js';
 import { decodeEffectSchema } from '@/utils/effectSchema.js';
 import type { EffectBackedSchema, InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
@@ -103,199 +92,9 @@ describe('Schema Validation', () => {
         expect(decodeResult(amountSchema, missingCurrency).success).toBe(false);
       });
     });
-
-    describe('regionSchema', () => {
-      it('validate region with name and type', () => {
-        const validRegion = {
-          regionName: 'United States',
-          regionType: 'COUNTRY',
-        };
-
-        const result = decodeResult(regionSchema, validRegion);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow optional fields', () => {
-        const minimalRegion = {};
-
-        const result = decodeResult(regionSchema, minimalRegion);
-        expect(result.success).toBe(true);
-      });
-
-      it('validate all region types', () => {
-        const regionTypes = [
-          'COUNTRY',
-          'COUNTRY_REGION',
-          'STATE_OR_PROVINCE',
-          'WORLD_REGION',
-          'WORLDWIDE',
-        ];
-
-        regionTypes.forEach((regionType) => {
-          const region = { regionName: 'Test', regionType };
-          const result = decodeResult(regionSchema, region);
-          expect(result.success).toBe(true);
-        });
-      });
-    });
-
-    describe('regionSetSchema', () => {
-      it('validate region set with included and excluded regions', () => {
-        const validRegionSet = {
-          regionIncluded: [
-            { regionName: 'United States', regionType: 'COUNTRY' },
-            { regionName: 'Canada', regionType: 'COUNTRY' },
-          ],
-          regionExcluded: [{ regionName: 'Alaska', regionType: 'STATE_OR_PROVINCE' }],
-        };
-
-        const result = decodeResult(regionSetSchema, validRegionSet);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow empty region set', () => {
-        const result = decodeResult(regionSetSchema, {});
-        expect(result.success).toBe(true);
-      });
-    });
-  });
-
-  describe('Account Management Schemas', () => {
-    describe('fulfillmentPolicySchema', () => {
-      it('validate basic fulfillment policy', () => {
-        const validPolicy = {
-          name: 'Standard Shipping',
-          marketplaceId: 'EBAY_US',
-          categoryTypes: [{ name: 'ALL_EXCLUDING_MOTORS_VEHICLES', default: true }],
-          handlingTime: { unit: 'DAY', value: 1 },
-          shippingOptions: [
-            {
-              costType: 'FLAT_RATE',
-              optionType: 'DOMESTIC',
-              shippingServices: [
-                {
-                  shippingCost: { currency: 'USD', value: '5.99' },
-                  shippingCarrierCode: 'USPS',
-                  shippingServiceCode: 'USPSPriority',
-                },
-              ],
-            },
-          ],
-        };
-
-        const result = decodeResult(fulfillmentPolicySchema, validPolicy);
-        expect(result.success).toBe(true);
-      });
-
-      it('require name and marketplaceId', () => {
-        const missingName = { marketplaceId: 'EBAY_US' };
-        const missingMarketplace = { name: 'Test Policy' };
-
-        expect(decodeResult(fulfillmentPolicySchema, missingName).success).toBe(false);
-        expect(decodeResult(fulfillmentPolicySchema, missingMarketplace).success).toBe(false);
-      });
-    });
-
-    describe('paymentPolicySchema', () => {
-      it('validate basic payment policy', () => {
-        const validPolicy = {
-          name: 'Immediate Payment Required',
-          marketplaceId: 'EBAY_US',
-          categoryTypes: [{ name: 'ALL_EXCLUDING_MOTORS_VEHICLES', default: true }],
-          paymentMethods: [{ paymentMethodType: 'PAYPAL' }],
-        };
-
-        const result = decodeResult(paymentPolicySchema, validPolicy);
-        expect(result.success).toBe(true);
-      });
-
-      it('require name and marketplaceId', () => {
-        const missingName = { marketplaceId: 'EBAY_US' };
-
-        expect(decodeResult(paymentPolicySchema, missingName).success).toBe(false);
-      });
-    });
-
-    describe('returnPolicySchema', () => {
-      it('validate return policy', () => {
-        const validPolicy = {
-          name: '30 Day Returns',
-          marketplaceId: 'EBAY_US',
-          categoryTypes: [{ name: 'ALL_EXCLUDING_MOTORS_VEHICLES', default: true }],
-          returnsAccepted: true,
-          returnPeriod: { unit: 'DAY', value: 30 },
-        };
-
-        const result = decodeResult(returnPolicySchema, validPolicy);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow no returns accepted', () => {
-        const noReturns = {
-          name: 'No Returns',
-          marketplaceId: 'EBAY_US',
-          returnsAccepted: false,
-        };
-
-        const result = decodeResult(returnPolicySchema, noReturns);
-        expect(result.success).toBe(true);
-      });
-    });
   });
 
   describe('Inventory Management Schemas', () => {
-    describe('inventoryItemSchema', () => {
-      it('validate complete inventory item', () => {
-        const validItem = {
-          availability: {
-            shipToLocationAvailability: {
-              quantity: 10,
-            },
-          },
-          condition: 'NEW',
-          product: {
-            title: 'Test Product',
-            description: 'A test product description',
-            aspects: {
-              Brand: ['Test Brand'],
-              Color: ['Blue'],
-            },
-            imageUrls: ['https://example.com/image.jpg'],
-          },
-        };
-
-        const result = decodeResult(inventoryItemSchema, validItem);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow missing availability (all fields optional)', () => {
-        const missingAvailability = {
-          condition: 'NEW',
-          product: {
-            title: 'Test',
-            description: 'Test',
-          },
-        };
-
-        const result = decodeResult(inventoryItemSchema, missingAvailability);
-        expect(result.success).toBe(true);
-      });
-
-      it('accept different conditions', () => {
-        const conditions = ['NEW', 'LIKE_NEW', 'NEW_OTHER', 'USED_EXCELLENT', 'USED_GOOD'];
-
-        conditions.forEach((condition) => {
-          const item = {
-            availability: { shipToLocationAvailability: { quantity: 1 } },
-            condition,
-            product: { title: 'Test' },
-          };
-          const result = decodeResult(inventoryItemSchema, item);
-          expect(result.success).toBe(true);
-        });
-      });
-    });
-
     describe('offerSchema', () => {
       it('validate complete offer', () => {
         const validOffer = {
@@ -340,53 +139,11 @@ describe('Schema Validation', () => {
         });
       });
     });
-
-    describe('inventoryLocationSchema', () => {
-      it('validate inventory location', () => {
-        const validLocation = {
-          location: {
-            address: {
-              addressLine1: '123 Main St',
-              city: 'San Jose',
-              stateOrProvince: 'CA',
-              postalCode: '95110',
-              country: 'US',
-            },
-          },
-          locationInstructions: 'Loading dock at rear',
-          name: 'Main Warehouse',
-          merchantLocationStatus: 'ENABLED',
-          locationTypes: ['WAREHOUSE'],
-        };
-
-        const result = decodeResult(inventoryLocationSchema, validLocation);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow missing location object (all fields optional)', () => {
-        const missingLocation = {
-          name: 'Test Location',
-          merchantLocationStatus: 'ENABLED',
-        };
-
-        const result = decodeResult(inventoryLocationSchema, missingLocation);
-        expect(result.success).toBe(true);
-      });
-    });
   });
 
   describe('Schema Edge Cases', () => {
-    it('handle empty objects gracefully', () => {
-      const schemas = [regionSchema, regionSetSchema];
-
-      schemas.forEach((schema) => {
-        const result = decodeResult(schema, {});
-        expect(result.success).toBe(true);
-      });
-    });
-
     it('reject non-object values', () => {
-      const schemas = [amountSchema, timeDurationSchema, regionSchema];
+      const schemas = [amountSchema, timeDurationSchema];
 
       const invalidValues = [null, undefined, 'string', 123, [], true];
 

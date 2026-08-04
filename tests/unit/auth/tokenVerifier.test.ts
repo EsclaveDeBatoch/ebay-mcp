@@ -19,6 +19,12 @@ const initializeVerifier = (verifier: TokenVerifier): Promise<void> =>
 const verifyToken = (verifier: TokenVerifier, token: string) =>
   Effect.runPromise(verifier.verifyToken(token));
 
+const jwtVerifyResult = (payload: jose.JWTPayload): jose.JWTVerifyResult & jose.ResolvedKey => ({
+  payload,
+  protectedHeader: { alg: 'RS256' },
+  key: new Uint8Array(),
+});
+
 const expectVerifierFailure = async (
   effect: Effect.Effect<unknown, TokenVerifierError>,
   expected: {
@@ -46,6 +52,7 @@ describe('TokenVerifier', () => {
     token_endpoint: 'http://localhost:8080/realms/master/protocol/openid-connect/token',
     jwks_uri: 'http://localhost:8080/realms/master/protocol/openid-connect/certs',
     introspection_endpoint: `${ORIGIN}${INTROSPECT_PATH}`,
+    response_types_supported: ['code'],
   };
 
   beforeEach(() => {
@@ -295,6 +302,7 @@ describe('TokenVerifier', () => {
         authorization_endpoint: 'http://localhost:8080/realms/master/protocol/openid-connect/auth',
         token_endpoint: 'http://localhost:8080/realms/master/protocol/openid-connect/token',
         jwks_uri: 'http://localhost:8080/realms/master/protocol/openid-connect/certs',
+        response_types_supported: ['code'],
       };
 
       const verifier = new TokenVerifier({
@@ -326,10 +334,7 @@ describe('TokenVerifier', () => {
       };
 
       vi.mocked(jose.createRemoteJWKSet).mockReturnValue(invalidInput(mockJWKS));
-      vi.mocked(jose.jwtVerify).mockResolvedValue({
-        payload: mockPayload,
-        protectedHeader: invalidInput({}),
-      });
+      vi.mocked(jose.jwtVerify).mockResolvedValue(jwtVerifyResult(mockPayload));
 
       const verifier = new TokenVerifier({
         authServerMetadata: mockMetadata,
@@ -365,10 +370,7 @@ describe('TokenVerifier', () => {
       };
 
       vi.mocked(jose.createRemoteJWKSet).mockReturnValue(invalidInput(mockJWKS));
-      vi.mocked(jose.jwtVerify).mockResolvedValue({
-        payload: mockPayload,
-        protectedHeader: invalidInput({}),
-      });
+      vi.mocked(jose.jwtVerify).mockResolvedValue(jwtVerifyResult(mockPayload));
 
       const verifier = new TokenVerifier({
         authServerMetadata: mockMetadata,
@@ -393,10 +395,7 @@ describe('TokenVerifier', () => {
       };
 
       vi.mocked(jose.createRemoteJWKSet).mockReturnValue(invalidInput(mockJWKS));
-      vi.mocked(jose.jwtVerify).mockResolvedValue({
-        payload: mockPayload,
-        protectedHeader: invalidInput({}),
-      });
+      vi.mocked(jose.jwtVerify).mockResolvedValue(jwtVerifyResult(mockPayload));
 
       const verifier = new TokenVerifier({
         authServerMetadata: mockMetadata,
@@ -466,10 +465,7 @@ describe('TokenVerifier', () => {
       };
 
       vi.mocked(jose.createRemoteJWKSet).mockReturnValue(invalidInput(mockJWKS));
-      vi.mocked(jose.jwtVerify).mockResolvedValue({
-        payload: mockPayload,
-        protectedHeader: invalidInput({}),
-      });
+      vi.mocked(jose.jwtVerify).mockResolvedValue(jwtVerifyResult(mockPayload));
 
       const verifier = new TokenVerifier({
         authServerMetadata: mockMetadata,

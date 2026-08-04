@@ -6,7 +6,7 @@ import type {
   SkillTarget,
   WritePlan,
 } from '@/skills/types.js';
-import { buildRegistrySnapshot } from '@/skills/registrySnapshot.js';
+import { captureRegistrySnapshot } from '@/skills/registrySnapshot.js';
 import { buildContributingDoc, buildUsingDoc } from '@/skills/content.js';
 import { renderSkill } from '@/skills/render.js';
 import { resolveTargets } from '@/skills/targets.js';
@@ -14,7 +14,7 @@ import { planWrite } from '@/skills/install.js';
 import type { RegistrySnapshot } from '@/skills/types.js';
 
 export * from '@/skills/types.js';
-export { buildRegistrySnapshot } from '@/skills/registrySnapshot.js';
+export { captureRegistrySnapshot } from '@/skills/registrySnapshot.js';
 export { buildUsingDoc, buildContributingDoc } from '@/skills/content.js';
 export {
   renderSkill,
@@ -45,7 +45,7 @@ export { planWrite, applyWrite, type ApplyResult } from '@/skills/install.js';
  */
 export const buildSkillDoc = (
   layer: SkillLayer,
-  snapshot: RegistrySnapshot = buildRegistrySnapshot(),
+  snapshot: RegistrySnapshot = captureRegistrySnapshot(),
 ): SkillDoc => (layer === 'using' ? buildUsingDoc(snapshot) : buildContributingDoc(snapshot));
 
 /** Inputs for {@link buildSkillPlans}. */
@@ -86,7 +86,7 @@ export interface RenderedTarget {
  * ```
  */
 export const renderSkillTargets = (options: BuildPlansOptions): RenderedTarget[] => {
-  const snapshot = options.snapshot ?? buildRegistrySnapshot();
+  const snapshot = options.snapshot ?? captureRegistrySnapshot();
   const docByLayer: Record<SkillLayer, SkillDoc> = {
     using: buildUsingDoc(snapshot),
     contributing: buildContributingDoc(snapshot),

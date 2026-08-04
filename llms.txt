@@ -1,8 +1,8 @@
 # ebay-mcp
 
-> Local MCP server that exposes 298 tools covering 100% of the eBay Sell APIs to AI coding assistants (Claude, Cursor, Windsurf, and any MCP-compatible client). Runs entirely on your machine with no cloud relay.
+> Local MCP server that exposes 292 tools covering 100% of the eBay Sell APIs to AI coding assistants (Claude, Cursor, Windsurf, and any MCP-compatible client). Runs entirely on your machine with no cloud relay.
 
-Built with TypeScript/Node.js, the MCP SDK, Effect-backed validation with a Zod-compatible MCP adapter, and OpenAPI-generated eBay types. Supports OAuth 2.0, configurable tool exposure, MCP Apps read-only views, and the eBay Trading API (legacy XML).
+Built with TypeScript/Node.js, the MCP SDK, direct Zod 4 resource contracts, native promises, and OpenAPI-generated eBay types. Remaining legacy operations are migrating off Effect and the repository schema adapter. Supports OAuth 2.0, configurable tool exposure, MCP Apps read-only views, and the eBay Trading API (legacy XML).
 
 ## Getting Started
 
@@ -14,19 +14,29 @@ Built with TypeScript/Node.js, the MCP SDK, Effect-backed validation with a Zod-
 
 ## API Coverage
 
-Tool definitions and handlers are co-located per family in `src/tools/categories/`:
+Tool definitions and handlers are co-located in their owning legacy family or migrated resource module:
 
-- [Account](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/account.ts): Business, fulfillment, payment, and return policies; programs; subscriptions; sales tax
-- [Inventory](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/inventory.ts): Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping
-- [Fulfillment](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/fulfillment.ts): Orders, shipping, refunds, disputes, payment-dispute evidence
+- [Sell Account](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/account): Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies under `sell.account`
+- [Inventory](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/inventory.ts): Legacy inventory items, offers, and bulk operations
+- [Sell Inventory](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/inventory): Item groups, vehicle compatibility, SKU location mappings, and inventory locations under `sell.inventory`
+- [Fulfillment](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/sell/fulfillment/): Orders, shipping, refunds, disputes, payment-dispute evidence
 - [Marketing](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/marketing.ts): Promoted-listings campaigns, ads, promotions, bidding, reports
-- [Analytics](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/analytics.ts): Seller standards, traffic reports, customer-service metrics
-- [Communication](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/communication.ts): Buyer–seller messaging, negotiations, notifications, feedback
-- [Taxonomy](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/taxonomy.ts): Category trees, item aspects, item conditions
-- [Metadata](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/metadata.ts): Return policies, sales-tax jurisdictions, automotive compatibility
-- [Other](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/other.ts): Identity, compliance, VeRO, translation, and international shipping support APIs
-- [Developer](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/developer.ts): Rate limits, signing keys, client registration
-- [Trading](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/trading.ts): Legacy XML API — fixed-price listing management (create, revise, relist, end)
+- [Commerce Feedback](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/feedback): Pending tasks, feedback history, submissions, replies, and user rating metrics
+- [Commerce Identity](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/identity): Authenticated eBay account profile information
+- [Commerce Message](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/message): Buyer-seller conversation lookup and messaging
+- [Commerce Notification](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/notification): Alert configuration, notification delivery destinations, topics, subscriptions, filters, and validation keys
+- [Commerce Taxonomy](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/commerce/taxonomy/categoryTree.ts): Category trees, category suggestions, and required listing aspects
+- [Commerce Translation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/translation): Listing-title and description translation between supported languages
+- [Commerce VeRO](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/commerce/vero): Intellectual-property infringement reports and VeRO reason codes
+- [Developer Analytics](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/developer/analytics/rateLimit.ts): Application and user API quota utilization
+- [Developer Key Management](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/developer/keyManagement/signingKey.ts): Application signing-key creation and public-key retrieval
+- [Developer Status](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/developer/status/incident.ts): Current incidents from the public eBay developer status feed
+- [Sell Analytics](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/analytics): Seller standards, traffic reports, customer-service metrics
+- [Sell Negotiation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/negotiation): Listings eligible for seller offers and seller-initiated discounted offers
+- [Sell Recommendation](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/recommendation): Promoted Listings recommendations for active listings
+- [Sell Metadata](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/metadata): Marketplace policies, item conditions, sales-tax jurisdictions, and automotive compatibility under `sell.metadata`
+- [Sell eDelivery](https://github.com/YosefHayim/ebay-mcp/tree/main/src/ebay/sell/edelivery): International shipment creation, management, labels, and tracking under `sell.edelivery` for Greater-China sellers with active eDIS
+- [Trading](https://github.com/YosefHayim/ebay-mcp/blob/main/src/ebay/trading/fixedPriceListing.ts): Legacy XML API — fixed-price listing retrieval, creation, revision, relisting, and ending under `trading`
 - [Token Management](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/tokenManagement.ts): OAuth token retrieval, refresh, and diagnostics
 - [Connector](https://github.com/YosefHayim/ebay-mcp/blob/main/src/tools/categories/connector.ts): ChatGPT connector search/fetch tools over the eBay MCP catalogue
 
@@ -47,7 +57,7 @@ Tool definitions and handlers are co-located per family in `src/tools/categories
 ## Build and Contribution
 
 - [CONTRIBUTING.md](https://github.com/YosefHayim/ebay-mcp/blob/main/CONTRIBUTING.md): How to add tools, run tests, and open PRs
-- [CODE-STYLE.md](https://github.com/YosefHayim/ebay-mcp/blob/main/CODE-STYLE.md): TypeScript, Effect, schema, TSDoc, file naming, and endpoint implementation rules
+- [CODE-STYLE.md](https://github.com/YosefHayim/ebay-mcp/blob/main/CODE-STYLE.md): TypeScript, direct Zod and promise contracts, TSDoc, file naming, and resource implementation rules
 - [ARCHITECTURE.md](https://github.com/YosefHayim/ebay-mcp/blob/main/ARCHITECTURE.md): Current module map and architecture overview
 - [Current ADRs](https://github.com/YosefHayim/ebay-mcp/tree/main/docs/adr/current): Accepted decisions for formatter, CLI, dependency, CI, layout, and style backlog rules
 - [AGENTS.md](https://github.com/YosefHayim/ebay-mcp/blob/main/AGENTS.md): Shared agent contract, validation commands, module ownership, and add-an-endpoint workflow
@@ -57,7 +67,7 @@ Tool definitions and handlers are co-located per family in `src/tools/categories
 ## Optional
 
 - [API_STATUS.md](https://github.com/YosefHayim/ebay-mcp/blob/main/docs/API_STATUS.md): Live eBay API endpoint health snapshot (auto-updated weekly)
-- [Sell Apps OpenAPI specs](https://github.com/YosefHayim/ebay-mcp/tree/main/docs/sell-apps): Checked-in eBay OpenAPI specs used by sync and type generation
+- [eBay OpenAPI specs](https://github.com/YosefHayim/ebay-mcp/tree/main/specs/ebay): Checked-in eBay OpenAPI specs used by sync and type generation
 - [Docker](https://github.com/YosefHayim/ebay-mcp/blob/main/Dockerfile): Container setup for running the server
 - [Translated READMEs](https://github.com/YosefHayim/ebay-mcp#readme): Available in 简体中文, Español, Português (BR), 日本語, 한국어, Français, Deutsch, and Русский
 
@@ -65,7 +75,7 @@ Tool definitions and handlers are co-located per family in `src/tools/categories
 
 ### What is the eBay MCP server?
 
-A local Model Context Protocol (MCP) server that exposes 298 tools covering 100% of eBay's Sell APIs (270 endpoints) to AI assistants such as Claude, Cursor, and Cline.
+A local Model Context Protocol (MCP) server that exposes 292 tools covering 100% of eBay's Sell APIs (266 endpoints) to AI assistants such as Claude, Cursor, and Cline.
 
 ### Is this an official eBay product?
 
@@ -81,7 +91,7 @@ Yes. It works with Claude Desktop and Claude Code out of the box, with Cursor an
 
 ### How many eBay APIs and tools does it cover?
 
-298 tools across 270 unique endpoints — 100% of eBay's Sell APIs.
+292 tools across 266 unique endpoints — 100% of eBay's Sell APIs.
 
 ### Is it free and open source?
 
@@ -93,7 +103,7 @@ Entirely locally over STDIO or local HTTP. There is no cloud relay; eBay credent
 
 ### What do I need to get started?
 
-Node.js >= 20, a free eBay Developer account (Client ID and Client Secret), then run `npm run setup`.
+Node.js >= 22.12, a free eBay Developer account (Client ID and Client Secret), then run `npm run setup`.
 
 ### What are the eBay API rate limits?
 
@@ -109,7 +119,7 @@ Credentials are stored locally in your .env file and used only to call eBay dire
 
 ### How is this different from calling the eBay API directly?
 
-You interact in natural language through your AI assistant; OAuth token management, automatic retries with backoff, configurable tool exposure, generated eBay DTO types, and type-safe Effect-backed validation are built in.
+You interact in natural language through your AI assistant; OAuth token management, automatic retries with backoff, configurable tool exposure, generated eBay DTO types, and strict runtime validation are built in.
 
 ### Can I expose only some tools?
 
@@ -125,7 +135,7 @@ Complete the OAuth flow with `npm run setup` to authenticate with a user token (
 
 ### What is it built with?
 
-TypeScript and Node.js (ESM), using the official MCP SDK, Effect-backed validation with a Zod-compatible MCP adapter, and OpenAPI-generated types.
+TypeScript and Node.js (ESM), using the official MCP SDK, direct Zod 4 resource contracts, native promises, and OpenAPI-generated types. Remaining legacy operations are being migrated off Effect and the repository schema adapter.
 
 ### How do I update to the latest version?
 

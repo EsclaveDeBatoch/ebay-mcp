@@ -1,6 +1,6 @@
 import { Effect, Schema } from 'effect';
-import { z as zod } from 'zod';
-import type { z as zodTypes } from 'zod';
+import { z as zod } from 'zod/v3';
+import type { z as zodTypes } from 'zod/v3';
 import {
   attachEffectSchema,
   enumValues,

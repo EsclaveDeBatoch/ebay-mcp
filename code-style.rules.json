@@ -1,0 +1,230 @@
+{
+  "version": 3,
+  "guide": "CODE-STYLE.md",
+  "migration": {
+    "status": "approved-target",
+    "note": "Judgment rules become blocking commands only after existing violations are removed and a planted violation proves the detector."
+  },
+  "rules": [
+    {
+      "id": "function.public-arrow",
+      "statement": "New and migrated exported functions use named arrow constants, while private top-level helpers may use declarations when hoisting improves reading.",
+      "verify": "judgment"
+    },
+    {
+      "id": "function.domain-name",
+      "statement": "Repository-authored function names state the domain action and never begin with `build`, `to`, or `resolve`.",
+      "verify": "judgment"
+    },
+    {
+      "id": "react.component-contract",
+      "statement": "React components are named arrow constants with named readonly prop type aliases and never use `React.FC`.",
+      "verify": "judgment"
+    },
+    {
+      "id": "class.stateful-lifecycle",
+      "statement": "A class exists only when it owns a genuine stateful lifecycle with identity across calls.",
+      "verify": "judgment"
+    },
+    {
+      "id": "name.domain-specific",
+      "statement": "Authored identifiers name their domain job and never use a forbidden generic token as a standalone local, parameter, or generic type name.",
+      "verify": "judgment"
+    },
+    {
+      "id": "path.camelcase-files",
+      "statement": "Handwritten TypeScript and TSX basenames use camelCase while generated and upstream filenames remain unchanged.",
+      "verify": "npm run check:ci"
+    },
+    {
+      "id": "import.direct-owner",
+      "statement": "Imports use `./` for same-folder siblings, `@/` across modules, `node:` for built-ins, and never traverse through `../` or a handwritten barrel.",
+      "verify": "judgment"
+    },
+    {
+      "id": "module.named-exports",
+      "statement": "Authored modules use named exports and never preserve an old path through an alias or compatibility re-export.",
+      "verify": "npm run check:ci"
+    },
+    {
+      "id": "control.explicit-branches",
+      "statement": "Authored control flow uses explicit guards and contains no `??`, `||`, ternary expression, non-null assertion, or deep optional chain.",
+      "verify": "judgment"
+    },
+    {
+      "id": "mutation.const-bindings",
+      "statement": "Authored bindings use `const`, with mutation limited to a clearly named accumulator held by a constant reference.",
+      "verify": "judgment"
+    },
+    {
+      "id": "control.guards-switches",
+      "statement": "Failed prerequisites return early and genuine closed variants use an exhaustive switch.",
+      "verify": "judgment"
+    },
+    {
+      "id": "collection.intent",
+      "statement": "Collections use one direct transformation or an explicit `for...of` loop and never use `reduce` or `forEach`.",
+      "verify": "judgment"
+    },
+    {
+      "id": "async.promise-zod",
+      "statement": "Fallible asynchronous work uses native promises and direct Zod 4 schemas without Effect or a repository-owned schema adapter.",
+      "verify": "judgment"
+    },
+    {
+      "id": "validation.decode-once",
+      "statement": "Each external boundary decodes through one strict Zod schema and downstream typed code does not validate the same fields again.",
+      "verify": "judgment"
+    },
+    {
+      "id": "failure.ebay-completion",
+      "statement": "Fallible eBay operations return `EbayRequestCompletion<EbayDocument>` and the MCP boundary translates its failure branch once.",
+      "verify": "judgment"
+    },
+    {
+      "id": "type.alias-contracts",
+      "statement": "Repository-authored contracts use type aliases while interfaces are reserved for third-party module augmentation.",
+      "verify": "judgment"
+    },
+    {
+      "id": "ebay.exact-wire-keys",
+      "statement": "Inbound MCP arguments use the exact field names documented by eBay and are never renamed for local taste.",
+      "verify": "judgment"
+    },
+    {
+      "id": "ebay.generated-documents",
+      "statement": "Resource operations return generated eBay documents unchanged and create presentation shapes only inside the UI boundary.",
+      "verify": "judgment"
+    },
+    {
+      "id": "path.ebay-resource-layout",
+      "statement": "An eBay resource module lives at `src/ebay/<namespace>/<api>/<resource>.ts` and owns its argument schemas, generated aliases, operations, and MCP definitions.",
+      "verify": "judgment"
+    },
+    {
+      "id": "path.machine-owned-roots",
+      "statement": "OpenAPI inputs live under `specs/ebay` and generated TypeScript lives under `src/generated/ebay` with upstream names preserved.",
+      "verify": "judgment"
+    },
+    {
+      "id": "architecture.purpose-folders",
+      "statement": "Authored folders name a concrete responsibility and never use `utils`, `helpers`, `common`, `shared`, or `misc` as a destination.",
+      "verify": "judgment"
+    },
+    {
+      "id": "architecture.earned-abstraction",
+      "statement": "An abstraction exists only when it names a domain concept, owns a side-effect boundary, or serves a second real caller.",
+      "verify": "judgment"
+    },
+    {
+      "id": "architecture.no-indirection",
+      "statement": "Repository-owned wrappers and facades remain only when they enforce policy that callers would otherwise repeat.",
+      "verify": "judgment"
+    },
+    {
+      "id": "config.entry-ownership",
+      "statement": "Each process entry parses `process.env` once with Zod and passes the typed configuration to every downstream owner.",
+      "verify": "judgment"
+    },
+    {
+      "id": "http.seller-session",
+      "statement": "Resource operations receive `EbaySellerSession` explicitly while the session alone owns authentication, omission, and wire serialization.",
+      "verify": "judgment"
+    },
+    {
+      "id": "mcp.thin-tool",
+      "statement": "An endpoint-backed MCP tool validates once, invokes one resource operation, and returns its generated eBay document without reshaping.",
+      "verify": "judgment"
+    },
+    {
+      "id": "mcp.explicit-catalogue",
+      "statement": "The explicit `src/mcp/ebayToolCatalogue.ts` catalogue imports every named tool definition directly and never discovers files or consumes resource-level tool arrays.",
+      "verify": "judgment"
+    },
+    {
+      "id": "mcp.hierarchical-names",
+      "statement": "eBay tools and exposure gates mirror official namespaces while protocol-required connector tools keep the exact names `search` and `fetch`.",
+      "verify": "judgment"
+    },
+    {
+      "id": "logging.structured-stderr",
+      "statement": "Runtime code emits redacted structured logs to stderr through one logger controlled only by `LOG_LEVEL`.",
+      "verify": "judgment"
+    },
+    {
+      "id": "ui.presentation-boundary",
+      "statement": "Browser-facing view models are created only in `src/ui/presentation` and browser network work calls the server through `callServerTool`.",
+      "verify": "judgment"
+    },
+    {
+      "id": "ui.state-ownership",
+      "statement": "Props remain the source of truth, local state records user actions only, and effects synchronize only real external systems.",
+      "verify": "judgment"
+    },
+    {
+      "id": "ui.accessible-classnames",
+      "statement": "Visual styling uses `className` with finite typed variants and interactive behavior uses semantic keyboard-accessible elements with stable domain keys.",
+      "verify": "judgment"
+    },
+    {
+      "id": "test.both-boundaries",
+      "statement": "Every eBay operation is written red-first with complete resource-contract coverage and the same validation and failure depth through the real MCP server.",
+      "verify": "judgment"
+    },
+    {
+      "id": "test.ownership-fixtures",
+      "statement": "Product tests are colocated, integration tests mirror the official API tree, and shared fixtures appear only after a second use with real eBay examples.",
+      "verify": "judgment"
+    },
+    {
+      "id": "docs.intent-and-sync",
+      "statement": "Documentation explains public eBay contracts, official references, vendor quirks, and non-obvious decisions while changing in the same pull request as the behavior.",
+      "verify": "judgment"
+    },
+    {
+      "id": "docs.rule-card-parity",
+      "statement": "Every rule card matches one machine-mirror rule in the same order with byte-identical assertion and verification text.",
+      "verify": "npm run style:guide"
+    },
+    {
+      "id": "tooling.biome",
+      "statement": "Biome alone formats authored files with two spaces, width 100, single quotes, semicolons, trailing commas, and LF endings.",
+      "verify": "npm run check:ci"
+    },
+    {
+      "id": "tooling.organized-imports",
+      "statement": "Biome organizes imports after the existing import-order drift is cleaned and a planted violation proves the blocking rule.",
+      "verify": "judgment"
+    },
+    {
+      "id": "cli.deterministic-surface",
+      "statement": "The shipped CLI uses `parseArgs`, opens a menu only for a bare TTY invocation, never prompts for explicit or non-TTY commands, and returns `CommandCompletion` to the entry boundary.",
+      "verify": "judgment"
+    },
+    {
+      "id": "cli.json-output",
+      "statement": "JSON mode writes exactly one document to stdout, sends logs to stderr, and uses exit codes 0, 1, 2, and 130 for success, operation failure, usage failure, and interruption.",
+      "verify": "judgment"
+    },
+    {
+      "id": "tooling.tool-first-scripts",
+      "statement": "Shipped commands live in `src/cli`, repository development glue lives in `scripts/dev`, production glue lives in `scripts/production`, and installed CLIs are called directly.",
+      "verify": "judgment"
+    },
+    {
+      "id": "tooling.exact-dependencies",
+      "statement": "Every direct dependency uses an exact reviewed version and remains only while it owns a named runtime, UI, generation, or test responsibility.",
+      "verify": "judgment"
+    },
+    {
+      "id": "file.cohesive-size",
+      "statement": "Files and functions split when they mix responsibilities, with 300 file lines and 60 function lines acting as review signals rather than hard caps.",
+      "verify": "judgment"
+    },
+    {
+      "id": "delivery.green-slices",
+      "statement": "Repository-wide migration ships as conventional focused purpose-branch pull requests that remain independently green and add no backward-compatibility surface.",
+      "verify": "judgment"
+    }
+  ]
+}

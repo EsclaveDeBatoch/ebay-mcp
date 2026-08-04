@@ -202,7 +202,6 @@ devSyncReport.json
 # Project docs — kept out of version control per maintainer preference.
 # Files already committed stay tracked; new files under docs/ are ignored.
 /docs/
-
 # Bun lock file (project uses pnpm)
 bun.lock
 
@@ -222,12 +221,10 @@ Taskfile.yml
 # hide (those rules target local agent scratch files, not project config/docs).
 !/.github/
 !/.github/**
-# Releases are changeset-driven, so an ignored .changeset/ silently drops release
-# notes: the file is written, committed without complaint, and never lands.
-!/.changeset/
-!/.changeset/**
 !/biome.json
+!/code-style.rules.json
 !/tsconfig.base.json
+!/tsconfig.test.json
 !/ui/tsconfig.json
 !/ARCHITECTURE.md
 !/CODE-STYLE.md
@@ -235,6 +232,22 @@ Taskfile.yml
 !/LANGUAGE.md
 !/PROJECT.md
 
+# Official eBay specifications are reproducible build inputs, not documentation.
+!/specs/
+!/specs/**
+
+# Approved architecture records created during the repository migration.
+# Keep the rest of docs/ ignored unless it already belongs to the repository.
+!/docs/
+/docs/*
+!/docs/adr/
+/docs/adr/*
+!/docs/adr/current/
+/docs/adr/current/*
+!/docs/adr/current/0007-promise-zod-resource-architecture.md
+!/docs/adr/current/0008-cli-command-surface-v2.md
+!/docs/adr/current/0009-dependency-baseline-2026.md
+!/docs/adr/current/0010-golden-resource-test-depth.md
 # Kiro CLI agent config (local)
 .kiro
 

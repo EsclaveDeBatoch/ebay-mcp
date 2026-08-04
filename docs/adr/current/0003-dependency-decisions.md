@@ -1,6 +1,7 @@
 # 0003 — Dependency decisions
 
-**Status:** Accepted · 2026-07-02 · refreshed 2026-07-06
+**Status:** Superseded by [0007](0007-promise-zod-resource-architecture.md) and
+[0009](0009-dependency-baseline-2026.md) · 2026-08-03
 
 ## Context
 

@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>eBay MCP サーバー — Claude、Cursor、そしてあらゆる AI アシスタントに eBay の Sell API への完全なアクセスを。在庫・注文・マーケティング・分析向けの 298 ツールを、自分の鍵でローカル実行。</strong>
+  <strong>eBay MCP サーバー — Claude、Cursor、そしてあらゆる AI アシスタントに eBay の Sell API への完全なアクセスを。在庫・注文・マーケティング・分析向けの 292 ツールを、自分の鍵でローカル実行。</strong>
 </p>
 
 <p align="center"><sub>非公式のオープンソースプロジェクト — eBay Inc. との提携・認可・承認はありません。</sub></p>
@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/tools-298-8957e5?logo=ebay&logoColor=white" alt="298 個の eBay API ツール" />
+  <img src="https://img.shields.io/badge/tools-292-8957e5?logo=ebay&logoColor=white" alt="292 個の eBay API ツール" />
   <img src="https://img.shields.io/badge/Sell%20API%20coverage-100%25-success" alt="eBay Sell API を 100% カバー" />
   <img src="https://img.shields.io/badge/Model%20Context%20Protocol-compatible-000000" alt="Model Context Protocol 対応" />
   <img src="https://img.shields.io/badge/tests-1%2C000%2B%20passing-3fb950?logo=vitest&logoColor=white" alt="1000 件以上のテストに合格" />
@@ -47,7 +47,7 @@
 
 > **注意:** 最新の製品情報（ツールファミリー、API 廃止、バージョン注記）の正本は英語の [README.md](README.md) です。この翻訳は遅れている場合があります。
 
-**eBay MCP** は、AI アシスタント —Claude Desktop、Claude Code、Cursor、Cline、Windsurf、Zed、Continue.dev、Roo Code、Amazon Q— を **eBay の Sell API** に直接接続するローカルの [Model Context Protocol](https://modelcontextprotocol.io) サーバーです。**eBay Sell API の全面（270 の固有エンドポイント）の 100%** をカバーする **298 個のツール** を提供し、在庫管理、注文処理、プロモーション広告のマーケティング、分析、開発者向けツールに対応します。すべては STDIO またはローカル HTTP 経由であなたのマシン上で動作し、**クラウド中継はありません**。eBay の認証情報がコンピューターから外に出ることは決してありません。
+**eBay MCP** は、AI アシスタント —Claude Desktop、Claude Code、Cursor、Cline、Windsurf、Zed、Continue.dev、Roo Code、Amazon Q— を **eBay の Sell API** に直接接続するローカルの [Model Context Protocol](https://modelcontextprotocol.io) サーバーです。**eBay Sell API の全面（266 の固有エンドポイント）の 100%** をカバーする **292 個のツール** を提供し、在庫管理、注文処理、プロモーション広告のマーケティング、分析、開発者向けツールに対応します。すべては STDIO またはローカル HTTP 経由であなたのマシン上で動作し、**クラウド中継はありません**。eBay の認証情報がコンピューターから外に出ることは決してありません。
 
 > **免責事項：** 非公式のサードパーティ製プロジェクトであり、**eBay Inc. との提携・承認はありません。** 「現状のまま」提供され、いかなる保証もありません。[eBay API ライセンス契約](https://developer.ebay.com/join/api-license-agreement) と [データ取り扱い要件](https://developer.ebay.com/api-docs/static/data-handling-update.html) の遵守、認証情報の安全な保管、レート制限の遵守はご自身の責任です。本番前にサンドボックスでテストしてください。[LICENSE](LICENSE)、[SECURITY.md](SECURITY.md)、[EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md) を参照してください。
 
@@ -71,7 +71,7 @@
 
 ## 機能
 
-- **298 個の eBay API ツール** — 在庫、注文、マーケティング、分析、メタデータ、タクソノミー、開発者向けツールにわたり eBay Sell API を 100% カバー。
+- **292 個の eBay API ツール** — 在庫、注文、マーケティング、分析、メタデータ、タクソノミー、開発者向けツールにわたり eBay Sell API を 100% カバー。
 - **9 つの AI クライアントを自動設定** — Claude Desktop、Cursor、Zed、Cline、Continue.dev、Windsurf、Roo Code、Claude Code CLI、Amazon Q Developer。
 - **OAuth 2.0 を内蔵** — ユーザートークンの完全な管理と自動更新に加え、ユーザートークン（1 日 1 万〜5 万リクエスト）からクライアント認証情報（1 日 1 千リクエスト）へのスマートなフォールバック。
 - **既定で堅牢** — `429` レート制限時に指数バックオフで自動リトライし、一貫した明確なエラー表示を行います。
@@ -93,7 +93,7 @@
 | 入力検証 | すべてのツールに Zod スキーマ + TypeScript 型 | なし — 自分でペイロードを検証 |
 | セットアップ | 1 つのウィザード（`npm run setup`） | 呼び出しごとに認証・ヘッダー・マーケットプレイス |
 | AI クライアント対応 | 9 クライアントを自動設定 | 該当なし |
-| API カバレッジ | Sell API の 100% にわたる 298 ツール、すぐ呼び出し可能 | ドキュメントから各リクエストを構築 |
+| API カバレッジ | Sell API の 100% にわたる 292 ツール、すぐ呼び出し可能 | ドキュメントから各リクエストを構築 |
 | ホスティング | ローカル動作、クラウド中継なし | 自前のインフラ |
 
 ## AI ワンクリック設定
@@ -220,7 +220,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 
 ### MCP クライアント互換性
 
-`npm run setup` により自動設定されます。Node.js ≥ 20 と、STDIO（既定）または HTTP 経由の MCP プロトコル 1.0+ が必要です。
+`npm run setup` により自動設定されます。Node.js ≥ 22.12 と、STDIO（既定）または HTTP 経由の MCP プロトコル 1.0+ が必要です。
 
 | クライアント           | プラットフォーム      | 設定パス                                                                    |
 | ---------------------- | --------------------- | --------------------------------------------------------------------------- |
@@ -236,26 +236,26 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 
 ## 利用可能なツール
 
-**298 ツール**、Sell API を 100% カバー、カテゴリ別に整理。各リンクは [`src/tools/categories/`](src/tools/categories/) 内のツール定義とそのハンドラーを指します：
+**292 ツール**、Sell API を 100% カバー、カテゴリ別に整理。各リンクは [`src/tools/categories/`](src/tools/categories/) 内のツール定義とそのハンドラーを指します：
 
 | カテゴリ | できること |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | eBay MCP カタログ向け ChatGPT コネクタの search/fetch |
-| [Account](src/tools/categories/account.ts) | ビジネス・配送・支払い・返品ポリシー、プログラム、サブスクリプション、販売税 |
-| [Inventory](src/tools/categories/inventory.ts) | 在庫アイテム、オファー、ロケーション、アイテムグループ、一括操作、SKU/ロケーションのマッピング |
-| [Fulfillment](src/tools/categories/fulfillment.ts) | 注文、配送、返金、係争、支払い係争の証拠 |
-| [Marketing](src/tools/categories/marketing.ts) | プロモーション広告キャンペーン、広告、プロモーション、入札、一括操作 |
-| [Analytics](src/tools/categories/analytics.ts) | トラフィックレポート、出品者基準、カスタマーサービス指標 |
+| [Sell Account](src/ebay/sell/account/) | 出品者の状態、プログラム登録、販売税、サブスクリプション、料金表、広告利用資格、廃止予定の支払いプログラム状態、ビジネスポリシー |
+| [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` のアイテムグループ、車両互換性、SKU ロケーションマッピング、在庫ロケーション |
+| [Fulfillment](src/ebay/sell/fulfillment/) | 注文、配送、返金、係争、支払い係争の証拠 |
+| [Marketing](src/ebay/sell/marketing/) | プロモーション広告キャンペーン、広告、プロモーション、入札、一括操作 |
+| [Analytics](src/ebay/sell/analytics/trafficReport.ts) | トラフィックレポート、出品者基準、カスタマーサービス指標 |
 | [Communication](src/tools/categories/communication.ts) | 購入者と出品者のメッセージ、交渉、通知、評価 |
-| [Metadata](src/tools/categories/metadata.ts) | 返品ポリシー、販売税の管轄、自動車適合性 |
+| [Metadata](src/ebay/sell/metadata/) | 返品ポリシー、販売税の管轄、自動車適合性 |
 | [Taxonomy](src/tools/categories/taxonomy.ts) | カテゴリツリー、アイテムの特性、アイテムのコンディション |
-| [Browse](src/tools/categories/browse.ts) | 価格比較のための売約済み/完了リスティング検索（Finding API） |
-| [Other](src/tools/categories/other.ts) | Identity、VeRO、翻訳、国際配送サポート API（Compliance ツールは eBay の 2026-03-30 廃止を報告） |
-| [Trading（レガシー XML）](src/tools/categories/trading.ts) | 固定価格出品の作成・修正・再出品・終了 |
-| [Developer](src/tools/categories/developer.ts) | レート制限、署名キー、クライアント登録 |
+| [Commerce VeRO](src/ebay/commerce/vero/) | 知的財産権侵害の報告と VeRO 理由コード |
+| [Sell eDelivery](src/ebay/sell/edelivery/) | eDelivery API による国際配送 |
+| [Trading（レガシー XML）](src/ebay/trading/fixedPriceListing.ts) | 固定価格出品の作成・修正・再出品・終了 |
+| [Developer](src/ebay/developer) | レート制限、署名キー、API ステータス |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL の生成とトークン管理 |
 
-**ツール例：** `ebay_get_inventory_items`、`ebay_get_orders`、`ebay_create_offer`、`ebay_get_campaigns`、`ebay_get_oauth_url`。
+**ツール例：** `ebay_sell_inventory_get_inventory_items`、`ebay_sell_fulfillment_get_orders`、`ebay_sell_inventory_create_offer`、`ebay_sell_marketing_get_campaigns`、`ebay_get_oauth_url`。
 
 完全な機械可読インデックスは [llms.txt](llms.txt) を参照してください。
 
@@ -274,9 +274,9 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 
 | タイプ | ツール |
 | --- | --- |
-| **テーブル** | `ebay_get_orders`、`ebay_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_get_inventory_locations`、`ebay_get_payment_dispute_summaries` |
-| **カード** | `ebay_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_get_payment_dispute`、`ebay_get_seller_standards_profile` |
-| **チャート** | `ebay_get_traffic_report`、`ebay_get_customer_service_metric` |
+| **テーブル** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_sell_inventory_get_offers`、`ebay_sell_inventory_get_inventory_items`、`ebay_sell_inventory_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **カード** | `ebay_sell_fulfillment_get_order`、`ebay_sell_inventory_get_offer`、`ebay_sell_inventory_get_inventory_item`、`ebay_sell_fulfillment_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
+| **チャート** | `ebay_sell_analytics_get_traffic_report`、`ebay_sell_analytics_get_customer_service_metric` |
 
 これらの表示は `npm run build`（または `npm run build:ui`）で自己完結型の HTML にビルドされ、公開パッケージに同梱されて、それ自体は一切のネットワークアクセスなしで読み込まれます。
 
@@ -285,10 +285,10 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 AI アシスタントに尋ねるように表現した一般的なタスク：
 
 - **OAuth を設定** — *「eBay アカウントの OAuth を設定するのを手伝って。」* → `ebay_get_oauth_url` で認可 URL を生成し、リフレッシュトークンを設定します。1 日 1 万〜5 万リクエストを解放。
-- **在庫を管理** — *「アクティブな出品をすべて見せて。」* → `ebay_get_inventory_items` が SKU、数量、ステータスを返します。
-- **注文を処理** — *「過去 7 日間の未処理注文をすべて取得して。」* → 日付と履行ステータスのフィルター付き `ebay_get_orders`。
-- **キャンペーンを作成** — *「電子機器向けのプロモーション広告キャンペーンを作成して。」* → `ebay_create_campaign` と関連するマーケティングツール。
-- **一括操作** — *「『ヴィンテージ時計』のすべての商品に 10% 割引を適用して。」* → 一致した項目に `ebay_get_inventory_items` + `ebay_update_offer`。
+- **在庫を管理** — *「アクティブな出品をすべて見せて。」* → `ebay_sell_inventory_get_inventory_items` が SKU、数量、ステータスを返します。
+- **注文を処理** — *「過去 7 日間の未処理注文をすべて取得して。」* → 日付と履行ステータスのフィルター付き `ebay_sell_fulfillment_get_orders`。
+- **キャンペーンを作成** — *「電子機器向けのプロモーション広告キャンペーンを作成して。」* → `ebay_sell_marketing_create_campaign` と関連するマーケティングツール。
+- **一括操作** — *「『ヴィンテージ時計』のすべての商品に 10% 割引を適用して。」* → 一致した項目に `ebay_sell_inventory_get_inventory_items` + `ebay_sell_inventory_update_offer`。
 
 ## ログとトラブルシューティング
 
@@ -299,7 +299,7 @@ AI アシスタントに尋ねるように表現した一般的なタスク：
 
 ### eBay MCP サーバーとは何ですか？
 
-AI アシスタントに **eBay Sell API の 100%**（270 エンドポイント）をカバーする **298 個のツール** を公開するローカルの [Model Context Protocol](https://modelcontextprotocol.io) サーバーです — 在庫、注文処理、マーケティング、分析、開発者向けツール。
+AI アシスタントに **eBay Sell API の 100%**（266 エンドポイント）をカバーする **292 個のツール** を公開するローカルの [Model Context Protocol](https://modelcontextprotocol.io) サーバーです — 在庫、注文処理、マーケティング、分析、開発者向けツール。
 
 ### これは eBay の公式製品ですか？
 
@@ -319,7 +319,7 @@ AI アシスタントに **eBay Sell API の 100%**（270 エンドポイント�
 
 ### eBay の API とツールはどれくらいカバーしていますか？
 
-270 の固有エンドポイントにわたる 298 ツール — eBay Sell API の 100% です。
+266 の固有エンドポイントにわたる 292 ツール — eBay Sell API の 100% です。
 
 ### 無料でオープンソースですか？
 
@@ -331,7 +331,7 @@ STDIO（またはローカル HTTP）経由で完全にあなたのマシン上�
 
 ### 始めるには何が必要ですか？
 
-Node.js ≥ 20、無料の [eBay 開発者アカウント](https://developer.ebay.com/)（Client ID + Client Secret）、そして `npm run setup` の実行です。
+Node.js ≥ 22.12、無料の [eBay 開発者アカウント](https://developer.ebay.com/)（Client ID + Client Secret）、そして `npm run setup` の実行です。
 
 ### eBay API のレート制限はどれくらいですか？
 
@@ -383,7 +383,7 @@ TypeScript と Node.js（ESM）で、公式の MCP SDK、検証用の Zod、Open
 - [eBay データ取り扱い要件](https://developer.ebay.com/api-docs/static/data-handling-update.html) — データ保護とプライバシー
 - [MCP ドキュメント](https://modelcontextprotocol.io/) — Model Context Protocol の仕様
 - [OAuth クイックリファレンス](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes、トラブルシューティング、例
-- [eBay API ステータス](https://developer.ebay.com/support/api-status) — 公式ステータスページ（`ebay_get_api_status` ツールおよび[リポジトリ内スナップショット](docs/API_STATUS.md)経由でも）
+- [eBay API ステータス](https://developer.ebay.com/support/api-status) — 公式ステータスページ（`ebay_developer_status_get_incidents` ツールおよび[リポジトリ内スナップショット](docs/API_STATUS.md)経由でも）
 - [CHANGELOG.md](CHANGELOG.md) · [SECURITY.md](SECURITY.md) · [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - [課題トラッカー](https://github.com/YosefHayim/ebay-mcp/issues) — バグ報告と機能リクエスト
 

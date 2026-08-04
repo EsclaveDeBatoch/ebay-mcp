@@ -1,43 +1,35 @@
 #!/usr/bin/env node
 
+import { execSync } from 'node:child_process';
+import {
+  type Dirent,
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from 'node:fs';
+import { basename, dirname, join } from 'node:path';
+import process from 'node:process';
+import { fileURLToPath } from 'node:url';
+
 import chalk from 'chalk';
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'fs';
-import { join, dirname, basename } from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
 import { Effect, Either } from 'effect';
+
+import { getSpecFolder } from '@/scripts/specFolderMap.js';
 import { getErrorMessage } from '@/utils/errors.js';
 import { httpRequest } from '@/utils/http.js';
-import process from 'node:process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const PROJECT_ROOT = join(__dirname, '../..');
 const DOCS_DIR = join(PROJECT_ROOT, 'docs');
-const TYPES_DIR = join(PROJECT_ROOT, 'src/types');
-const TOOLS_DIRS = [join(PROJECT_ROOT, 'src/tools/categories')];
-
-/** Repo-specific OpenAPI namespace aliases preserved after type regeneration. */
-const GENERATED_TYPE_ALIASES: Record<
-  string,
-  { readonly components: string; readonly operations: string }
-> = {
-  developerAnalyticsV1BetaOas3: {
-    components: 'DeveloperAnalyticsComponents',
-    operations: 'DeveloperAnalyticsOperations',
-  },
-  developerClientRegistrationV1Oas3: {
-    components: 'DeveloperClientRegistrationComponents',
-    operations: 'DeveloperClientRegistrationOperations',
-  },
-  developerKeyManagementV1Oas3: {
-    components: 'DeveloperKeyManagementComponents',
-    operations: 'DeveloperKeyManagementOperations',
-  },
-  sellComplianceV1Oas3: {
-    components: 'SellComplianceComponents',
-    operations: 'SellComplianceOperations',
-  },
+const SPEC_DIR = join(PROJECT_ROOT, 'specs/ebay');
+const GENERATED_TYPES_DIR = join(PROJECT_ROOT, 'src/generated/ebay');
+const TOOLS_DIRS = [join(PROJECT_ROOT, 'src/tools/categories'), join(PROJECT_ROOT, 'src/ebay')];
+const SPEC_GENERATION_BLOCKERS: Readonly<Record<string, string>> = {
+  'sell_account_v2_oas3.json':
+    'eBay references components.schemas.SetUserPreferencesRequest without defining it',
 };
 
 const ui = {
@@ -47,70 +39,6 @@ const ui = {
   info: chalk.cyan,
   dim: chalk.dim,
   bold: chalk.bold,
-};
-
-/**
- * Checks whether an openapi-typescript output exposes a generated namespace.
- *
- * @param content - Generated TypeScript declaration content to inspect.
- * @param exportName - Namespace export that must exist before adding an alias.
- * @returns True when the generated output exposes the requested namespace.
- *
- * @example
- * ```ts
- * hasGeneratedExport(content, 'components');
- * ```
- */
-const hasGeneratedExport = (content: string, exportName: 'components' | 'operations'): boolean =>
-  content.includes(`export interface ${exportName}`) ||
-  content.includes(`export type ${exportName}`);
-
-/**
- * Appends repo-specific generated type aliases after openapi-typescript rewrites a file.
- *
- * @param outputPath - Generated TypeScript declaration file path.
- * @param camelCaseName - OpenAPI spec basename used as the generated type file name.
- * @returns Nothing; the generated file is updated in place when aliases are needed.
- *
- * @example
- * ```ts
- * preserveGeneratedTypeAliases(outputPath, 'sellComplianceV1Oas3');
- * ```
- */
-const preserveGeneratedTypeAliases = (outputPath: string, camelCaseName: string): void => {
-  const aliases = GENERATED_TYPE_ALIASES[camelCaseName];
-  if (!aliases) {
-    return;
-  }
-
-  const content = readFileSync(outputPath, 'utf-8');
-  const aliasLines: string[] = [];
-
-  if (
-    hasGeneratedExport(content, 'components') &&
-    !content.includes(`export type ${aliases.components}`)
-  ) {
-    aliasLines.push(
-      '/** Repo-specific alias for generated OpenAPI components. */',
-      `export type ${aliases.components} = components;`,
-    );
-  }
-
-  if (
-    hasGeneratedExport(content, 'operations') &&
-    !content.includes(`export type ${aliases.operations}`)
-  ) {
-    aliasLines.push(
-      '/** Repo-specific alias for generated OpenAPI operations. */',
-      `export type ${aliases.operations} = operations;`,
-    );
-  }
-
-  if (aliasLines.length === 0) {
-    return;
-  }
-
-  writeFileSync(outputPath, `${content.trimEnd()}\n\n${aliasLines.join('\n')}\n`);
 };
 
 function showSpinner(message: string): () => void {
@@ -126,44 +54,6 @@ function showSpinner(message: string): () => void {
     process.stdout.write('\r' + ' '.repeat(message.length + 10) + '\r');
   };
 }
-
-const SPEC_FOLDER_MAP: Record<string, string> = {
-  'developer_analytics_v1_beta_oas3.json': 'application-settings',
-  'developer_key_management_v1_oas3.json': 'application-settings',
-  'developer_client_registration_v1_oas3.json': 'application-settings',
-  'sell_inventory_v1_oas3.json': 'sell-apps/listing-management',
-  'sell_feed_v1_oas3.json': 'sell-apps/listing-management',
-  'commerce_media_v1_beta_oas3.json': 'sell-apps/listing-management',
-  'sell_stores_v1_oas3.json': 'sell-apps/listing-management',
-  'sell_metadata_v1_oas3.json': 'sell-apps/listing-metadata',
-  'commerce_taxonomy_v1_oas3.json': 'sell-apps/listing-metadata',
-  'commerce_charity_v1_oas3.json': 'sell-apps/listing-metadata',
-  'sell_account_v1_oas3.json': 'sell-apps/account-management',
-  'sell_account_v2_oas3.json': 'sell-apps/account-management',
-  'sell_finances_v1_oas3.json': 'sell-apps/account-management',
-  'commerce_message_v1_oas3.json': 'sell-apps/communication',
-  'commerce_notification_v1_oas3.json': 'sell-apps/communication',
-  'sell_negotiation_v1_oas3.json': 'sell-apps/communication',
-  'commerce_feedback_v1_beta_oas3.json': 'sell-apps/communication',
-  'sell_fulfillment_v1_oas3.json': 'sell-apps/order-management',
-  'sell_logistics_v1_oas3.json': 'sell-apps/order-management',
-  'sell_marketing_v1_oas3.json': 'sell-apps/marketing-and-promotions',
-  'sell_recommendation_v1_oas3.json': 'sell-apps/marketing-and-promotions',
-  'sell_analytics_v1_oas3.json': 'sell-apps/analytics-and-report',
-  'commerce_translation_v1_beta_oas3.json': 'sell-apps/other-apis',
-  'sell_compliance_v1_oas3.json': 'sell-apps/other-apis',
-  'commerce_identity_v1_oas3.json': 'sell-apps/other-apis',
-  'sell_edelivery_international_shipping_oas3.json': 'sell-apps/other-apis',
-  'commerce_vero_v1_oas3.json': 'sell-apps/other-apis',
-  'buy_browse_v1_oas3.json': 'buy-apps/inventory-discovery',
-  'buy_feed_v1_beta_oas3.json': 'buy-apps/inventory-discovery',
-  'buy_feed_v1_oas3.json': 'buy-apps/inventory-discovery',
-  'buy_deal_v1_oas3.json': 'buy-apps/marketing-and-discounts',
-  'buy_marketing_v1_beta_oas3.json': 'buy-apps/marketing-and-discounts',
-  'commerce_catalog_v1_beta_oas3.json': 'buy-apps/marketplace-metadata',
-  'buy_order_v2_oas3.json': 'buy-apps/checkout-and-bidding',
-  'buy_offer_v1_beta_oas3.json': 'buy-apps/checkout-and-bidding',
-};
 
 interface OpenAPISpec {
   openapi?: string;
@@ -212,8 +102,8 @@ async function downloadSpecs(): Promise<number> {
   let failed = 0;
   for (const url of urls) {
     const fileName = basename(url);
-    const folderName = SPEC_FOLDER_MAP[fileName] || 'other-apis';
-    const folderPath = join(DOCS_DIR, folderName);
+    const folderName = getSpecFolder(fileName);
+    const folderPath = join(SPEC_DIR, folderName);
     const filePath = join(folderPath, fileName);
 
     const stopSpinner = showSpinner(`Downloading ${fileName}...`);
@@ -268,9 +158,13 @@ function generateTypes(): number {
 
     for (const entry of entries) {
       const fullPath = join(dir, entry.name);
+      const generationBlocker = SPEC_GENERATION_BLOCKERS[entry.name];
 
       if (entry.isDirectory()) {
         processDirectory(fullPath);
+      } else if (generationBlocker !== undefined) {
+        console.log(`  ${ui.warning('⚠')} ${entry.name}: ${generationBlocker}`);
+        skipped++;
       } else if (entry.name.endsWith('.json')) {
         const fileContent = Effect.runSync(
           Effect.either(
@@ -292,8 +186,8 @@ function generateTypes(): number {
           continue;
         }
 
-        const relativePath = fullPath.replace(DOCS_DIR + '/', '');
-        const outputDir = join(TYPES_DIR, dirname(relativePath));
+        const relativePath = fullPath.replace(`${SPEC_DIR}/`, '');
+        const outputDir = join(GENERATED_TYPES_DIR, dirname(relativePath));
 
         mkdirSync(outputDir, { recursive: true });
 
@@ -313,7 +207,7 @@ function generateTypes(): number {
           Effect.either(
             Effect.try({
               try: () => {
-                execSync(`npx openapi-typescript "${fullPath}" -o "${outputPath}" --silent`, {
+                execSync(`pnpm exec openapi-typescript "${fullPath}" -o "${outputPath}" --silent`, {
                   stdio: 'pipe',
                   cwd: PROJECT_ROOT,
                 });
@@ -324,7 +218,6 @@ function generateTypes(): number {
         );
 
         if (Either.isRight(generatedFile)) {
-          preserveGeneratedTypeAliases(outputPath, camelCaseName);
           console.log(`  ${ui.success('✓')} ${camelCaseName}.ts`);
           generated++;
         } else {
@@ -334,7 +227,7 @@ function generateTypes(): number {
     }
   }
 
-  processDirectory(DOCS_DIR);
+  processDirectory(SPEC_DIR);
 
   console.log(ui.dim(`\n  Generated: ${generated}, Skipped: ${skipped}`));
   return generated;
@@ -386,25 +279,45 @@ function extractEndpointsFromSpecs(): EndpointInfo[] {
     }
   }
 
-  processDirectory(DOCS_DIR);
+  processDirectory(SPEC_DIR);
   return endpoints;
 }
 
-function collectToolNames(dir: string, tools: Set<string>): void {
-  if (!existsSync(dir)) return;
+function collectToolNamesFromDirectoryMember(
+  sourceDirectory: string,
+  directoryMember: Dirent,
+  toolNames: Set<string>,
+): void {
+  const sourcePath = join(sourceDirectory, directoryMember.name);
 
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const fullPath = join(dir, entry.name);
+  if (directoryMember.isDirectory()) {
+    collectToolNames(sourcePath, toolNames);
+    return;
+  }
+  if (!directoryMember.isFile()) {
+    return;
+  }
+  if (!directoryMember.name.endsWith('.ts')) {
+    return;
+  }
+  if (directoryMember.name.endsWith('.test.ts')) {
+    return;
+  }
 
-    if (entry.isDirectory()) {
-      collectToolNames(fullPath, tools);
-    } else if (entry.isFile() && entry.name.endsWith('.ts')) {
-      const content = readFileSync(fullPath, 'utf-8');
-      const nameMatches = content.matchAll(/name:\s*['"`]([^'"`]+)['"`]/g);
-      for (const match of nameMatches) {
-        tools.add(match[1]);
-      }
-    }
+  const sourceText = readFileSync(sourcePath, 'utf-8');
+  const toolNameMatches = sourceText.matchAll(/name:\s*['"`]([^'"`]+)['"`]/g);
+  for (const toolNameMatch of toolNameMatches) {
+    toolNames.add(toolNameMatch[1]);
+  }
+}
+
+function collectToolNames(sourceDirectory: string, toolNames: Set<string>): void {
+  if (!existsSync(sourceDirectory)) {
+    return;
+  }
+
+  for (const directoryMember of readdirSync(sourceDirectory, { withFileTypes: true })) {
+    collectToolNamesFromDirectoryMember(sourceDirectory, directoryMember, toolNames);
   }
 }
 
@@ -433,34 +346,47 @@ function normalizeForMatching(name: string): string {
  */
 const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   // Feedback API
-  getitemsawaitingfeedback: ['ebay_get_awaiting_feedback'],
-  leavefeedback: ['ebay_leave_feedback_for_buyer'],
 
-  // Notification API — tools use the ebay_*_notification_* naming convention
-  getconfig: ['ebay_get_notification_config'],
-  updateconfig: ['ebay_update_notification_config'],
-  getdestinations: ['ebay_get_notification_destinations'],
-  createdestination: ['ebay_create_notification_destination'],
-  getdestination: ['ebay_get_notification_destination'],
-  updatedestination: ['ebay_update_notification_destination'],
-  deletedestination: ['ebay_delete_notification_destination'],
-  getsubscriptions: ['ebay_get_notification_subscriptions'],
-  createsubscription: ['ebay_create_notification_subscription'],
-  getsubscription: ['ebay_get_notification_subscription'],
-  updatesubscription: ['ebay_update_notification_subscription'],
-  deletesubscription: ['ebay_delete_notification_subscription'],
-  disablesubscription: ['ebay_disable_notification_subscription'],
-  enablesubscription: ['ebay_enable_notification_subscription'],
-  testsubscription: ['ebay_test_notification_subscription'],
-  createsubscriptionfilter: ['ebay_create_notification_subscription_filter'],
-  getsubscriptionfilter: ['ebay_get_notification_subscription_filter'],
-  deletesubscriptionfilter: ['ebay_delete_notification_subscription_filter'],
-  gettopic: ['ebay_get_notification_topic'],
-  gettopics: ['ebay_get_notification_topics'],
-  getpublickey: ['ebay_get_notification_public_key'],
+  // Developer Analytics API
+  getratelimits: ['ebay_developer_analytics_get_rate_limits'],
+  getuserratelimits: ['ebay_developer_analytics_get_user_rate_limits'],
 
-  // Negotiation API
-  findeligibleitems: ['ebay_find_eligible_items'],
+  // Developer Key Management API
+  getsigningkeys: ['ebay_developer_key_management_get_signing_keys'],
+  createsigningkey: ['ebay_developer_key_management_create_signing_key'],
+  getsigningkey: ['ebay_developer_key_management_get_signing_key'],
+
+  // Taxonomy API
+  getdefaultcategorytreeid: ['ebay_commerce_taxonomy_get_default_category_tree_id'],
+  getcategorytree: ['ebay_commerce_taxonomy_get_category_tree'],
+  getcategorysuggestions: ['ebay_commerce_taxonomy_get_category_suggestions'],
+  getitemaspectsforcategory: ['ebay_commerce_taxonomy_get_item_aspects_for_category'],
+
+  // Notification API
+  getconfig: ['ebay_commerce_notification_get_config'],
+  updateconfig: ['ebay_commerce_notification_update_config'],
+  getdestinations: ['ebay_commerce_notification_get_destinations'],
+  createdestination: ['ebay_commerce_notification_create_destination'],
+  getdestination: ['ebay_commerce_notification_get_destination'],
+  updatedestination: ['ebay_commerce_notification_update_destination'],
+  deletedestination: ['ebay_commerce_notification_delete_destination'],
+  getsubscriptions: ['ebay_commerce_notification_get_subscriptions'],
+  createsubscription: ['ebay_commerce_notification_create_subscription'],
+  getsubscription: [
+    'ebay_commerce_notification_get_subscription',
+    'ebay_sell_account_get_subscription',
+  ],
+  updatesubscription: ['ebay_commerce_notification_update_subscription'],
+  deletesubscription: ['ebay_commerce_notification_delete_subscription'],
+  disablesubscription: ['ebay_commerce_notification_disable_subscription'],
+  enablesubscription: ['ebay_commerce_notification_enable_subscription'],
+  testsubscription: ['ebay_commerce_notification_test_subscription'],
+  createsubscriptionfilter: ['ebay_commerce_notification_create_subscription_filter'],
+  getsubscriptionfilter: ['ebay_commerce_notification_get_subscription_filter'],
+  deletesubscriptionfilter: ['ebay_commerce_notification_delete_subscription_filter'],
+  gettopic: ['ebay_commerce_notification_get_topic'],
+  gettopics: ['ebay_commerce_notification_get_topics'],
+  getpublickey: ['ebay_commerce_notification_get_public_key'],
 
   // Marketing API
   createadbylistingid: ['ebay_create_ad_by_listing_id'],
@@ -478,60 +404,162 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getpromotionreports: ['ebay_get_promotion_reports'],
   getaudiences: ['ebay_get_audiences'],
 
+  // Sell Account API
+  getcustompolicies: ['ebay_sell_account_get_custom_policies'],
+  createcustompolicy: ['ebay_sell_account_create_custom_policy'],
+  getcustompolicy: ['ebay_sell_account_get_custom_policy'],
+  updatecustompolicy: ['ebay_sell_account_update_custom_policy'],
+  getfulfillmentpolicies: ['ebay_sell_account_get_fulfillment_policies'],
+  createfulfillmentpolicy: ['ebay_sell_account_create_fulfillment_policy'],
+  getfulfillmentpolicy: ['ebay_sell_account_get_fulfillment_policy'],
+  getfulfillmentpolicybyname: ['ebay_sell_account_get_fulfillment_policy_by_name'],
+  updatefulfillmentpolicy: ['ebay_sell_account_update_fulfillment_policy'],
+  deletefulfillmentpolicy: ['ebay_sell_account_delete_fulfillment_policy'],
+  getpaymentpolicies: ['ebay_sell_account_get_payment_policies'],
+  createpaymentpolicy: ['ebay_sell_account_create_payment_policy'],
+  getpaymentpolicy: ['ebay_sell_account_get_payment_policy'],
+  getpaymentpolicybyname: ['ebay_sell_account_get_payment_policy_by_name'],
+  updatepaymentpolicy: ['ebay_sell_account_update_payment_policy'],
+  deletepaymentpolicy: ['ebay_sell_account_delete_payment_policy'],
+  getreturnpolicies: ['ebay_sell_account_get_return_policies'],
+  createreturnpolicy: ['ebay_sell_account_create_return_policy'],
+  getreturnpolicy: ['ebay_sell_account_get_return_policy'],
+  getreturnpolicybyname: ['ebay_sell_account_get_return_policy_by_name'],
+  updatereturnpolicy: ['ebay_sell_account_update_return_policy'],
+  deletereturnpolicy: ['ebay_sell_account_delete_return_policy'],
+  getprivileges: ['ebay_sell_account_get_privileges'],
+  getratetables: ['ebay_sell_account_get_rate_tables'],
+  getkyc: ['ebay_sell_account_get_kyc'],
+  getadvertisingeligibility: ['ebay_sell_account_get_advertising_eligibility'],
+  getoptedinprograms: ['ebay_sell_account_get_opted_in_programs'],
+  optintoprogram: ['ebay_sell_account_opt_in_to_program'],
+  optoutofprogram: ['ebay_sell_account_opt_out_of_program'],
+  createorreplacesalestax: ['ebay_sell_account_create_or_replace_sales_tax'],
+  bulkcreateorreplacesalestax: ['ebay_sell_account_bulk_create_or_replace_sales_tax'],
+  deletesalestax: ['ebay_sell_account_delete_sales_tax'],
+  getsalestax: ['ebay_sell_account_get_sales_tax'],
+  getsalestaxes: ['ebay_sell_account_get_sales_taxes'],
+  getpaymentsprogram: ['ebay_sell_account_get_payments_program'],
+  getpaymentsprogramonboarding: ['ebay_sell_account_get_payments_program_onboarding'],
+
+  // Sell Inventory API
+  getinventoryitems: ['ebay_sell_inventory_get_inventory_items'],
+  getinventoryitem: ['ebay_sell_inventory_get_inventory_item'],
+  createorreplaceinventoryitem: ['ebay_sell_inventory_create_or_replace_inventory_item'],
+  deleteinventoryitem: ['ebay_sell_inventory_delete_inventory_item'],
+  bulkcreateorreplaceinventoryitem: ['ebay_sell_inventory_bulk_create_or_replace_inventory_item'],
+  bulkgetinventoryitem: ['ebay_sell_inventory_bulk_get_inventory_item'],
+  bulkupdatepricequantity: ['ebay_sell_inventory_bulk_update_price_quantity'],
+  bulkmigratelisting: ['ebay_sell_inventory_bulk_migrate_listing'],
+  getoffers: ['ebay_sell_inventory_get_offers'],
+  getoffer: ['ebay_sell_inventory_get_offer'],
+  createoffer: ['ebay_sell_inventory_create_offer'],
+  updateoffer: ['ebay_sell_inventory_update_offer'],
+  deleteoffer: ['ebay_sell_inventory_delete_offer'],
+  publishoffer: ['ebay_sell_inventory_publish_offer'],
+  withdrawoffer: ['ebay_sell_inventory_withdraw_offer'],
+  bulkcreateoffer: ['ebay_sell_inventory_bulk_create_offer'],
+  bulkpublishoffer: ['ebay_sell_inventory_bulk_publish_offer'],
+  getlistingfees: ['ebay_sell_inventory_get_listing_fees'],
+  publishofferbyinventoryitemgroup: ['ebay_sell_inventory_publish_offer_by_inventory_item_group'],
+  withdrawofferbyinventoryitemgroup: ['ebay_sell_inventory_withdraw_offer_by_inventory_item_group'],
+  getinventoryitemgroup: ['ebay_sell_inventory_get_inventory_item_group'],
+  createorreplaceinventoryitemgroup: ['ebay_sell_inventory_create_or_replace_inventory_item_group'],
+  deleteinventoryitemgroup: ['ebay_sell_inventory_delete_inventory_item_group'],
+  getproductcompatibility: ['ebay_sell_inventory_get_product_compatibility'],
+  createorreplaceproductcompatibility: [
+    'ebay_sell_inventory_create_or_replace_product_compatibility',
+  ],
+  deleteproductcompatibility: ['ebay_sell_inventory_delete_product_compatibility'],
+  getskulocationmapping: ['ebay_sell_inventory_get_sku_location_mapping'],
+  createorreplaceskulocationmapping: ['ebay_sell_inventory_create_or_replace_sku_location_mapping'],
+  deleteskulocationmapping: ['ebay_sell_inventory_delete_sku_location_mapping'],
+  getinventorylocations: ['ebay_sell_inventory_get_inventory_locations'],
+  getinventorylocation: ['ebay_sell_inventory_get_inventory_location'],
+  createinventorylocation: ['ebay_sell_inventory_create_inventory_location'],
+  deleteinventorylocation: ['ebay_sell_inventory_delete_inventory_location'],
+  disableinventorylocation: ['ebay_sell_inventory_disable_inventory_location'],
+  enableinventorylocation: ['ebay_sell_inventory_enable_inventory_location'],
+  updateinventorylocation: ['ebay_sell_inventory_update_inventory_location'],
+
   // Dispute/Fulfillment API
-  fetchevidencecontent: ['ebay_fetch_evidence_content'],
-  getactivities: ['ebay_get_payment_dispute_activities', 'ebay_get_activities'],
-  uploadevidencefile: ['ebay_upload_evidence_file'],
-  addevidence: ['ebay_add_evidence'],
-  updateevidence: ['ebay_update_evidence'],
+  getorders: ['ebay_sell_fulfillment_get_orders'],
+  getorder: ['ebay_sell_fulfillment_get_order'],
+  issuerefund: ['ebay_sell_fulfillment_issue_refund'],
+  getshippingfulfillments: ['ebay_sell_fulfillment_get_shipping_fulfillments'],
+  createshippingfulfillment: ['ebay_sell_fulfillment_create_shipping_fulfillment'],
+  getshippingfulfillment: ['ebay_sell_fulfillment_get_shipping_fulfillment'],
+  getpaymentdispute: ['ebay_sell_fulfillment_get_payment_dispute'],
+  fetchevidencecontent: ['ebay_sell_fulfillment_fetch_evidence_content'],
+  getactivities: ['ebay_sell_fulfillment_get_activities'],
+  getpaymentdisputesummaries: ['ebay_sell_fulfillment_get_payment_dispute_summaries'],
+  contestpaymentdispute: ['ebay_sell_fulfillment_contest_payment_dispute'],
+  acceptpaymentdispute: ['ebay_sell_fulfillment_accept_payment_dispute'],
+  uploadevidencefile: ['ebay_sell_fulfillment_upload_evidence_file'],
+  addevidence: ['ebay_sell_fulfillment_add_evidence'],
+  updateevidence: ['ebay_sell_fulfillment_update_evidence'],
 };
 
 /**
  * Get all implemented API methods from source files
  */
-function getImplementedApiMethods(): Set<string> {
-  const methods = new Set<string>();
-  const apiDir = join(PROJECT_ROOT, 'src/api');
+function collectOperationNamesFromDirectoryMember(
+  sourceDirectory: string,
+  directoryMember: Dirent,
+  operationNames: Set<string>,
+): void {
+  const sourcePath = join(sourceDirectory, directoryMember.name);
 
-  function processDirectory(dir: string): void {
-    if (!existsSync(dir)) return;
-
-    const entries = readdirSync(dir, { withFileTypes: true });
-
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name);
-
-      if (entry.isDirectory()) {
-        processDirectory(fullPath);
-      } else if (entry.name.endsWith('.ts')) {
-        const source = Effect.runSync(
-          Effect.either(
-            Effect.try({
-              try: () => readFileSync(fullPath, 'utf-8'),
-              catch: (error) => error,
-            }),
-          ),
-        );
-
-        if (Either.isRight(source)) {
-          // Match async methods and class-field arrow endpoints (`name = (` / `public name = (`).
-          // Many area classes omit the `public` keyword (notification, trading, feedback, …).
-          const methodMatches = source.right.matchAll(
-            /(?:async\s+(\w+)\s*\(|(?:public\s+)?(\w+)\s*=\s*(?:async\s*)?\()/g,
-          );
-          for (const match of methodMatches) {
-            const name = match[1] ?? match[2];
-            // Skip common non-method bindings that the broader regex can catch.
-            if (!name || name === 'const' || name === 'let' || name === 'var') continue;
-            methods.add(normalizeForMatching(name));
-          }
-        }
-      }
-    }
+  if (directoryMember.isDirectory()) {
+    collectOperationNames(sourcePath, operationNames);
+    return;
+  }
+  if (!directoryMember.isFile()) {
+    return;
+  }
+  if (!directoryMember.name.endsWith('.ts')) {
+    return;
+  }
+  if (directoryMember.name.endsWith('.test.ts')) {
+    return;
   }
 
-  processDirectory(apiDir);
-  return methods;
+  const sourceText = readFileSync(sourcePath, 'utf-8');
+  const operationMatches = sourceText.matchAll(
+    /(?:async\s+(\w+)\s*\(|(?:public\s+)?(\w+)\s*=\s*(?:async\s*)?\()/g,
+  );
+  for (const [, asyncMethodName, arrowMethodName] of operationMatches) {
+    if (asyncMethodName !== undefined) {
+      operationNames.add(normalizeForMatching(asyncMethodName));
+    }
+    if (arrowMethodName !== undefined) {
+      operationNames.add(normalizeForMatching(arrowMethodName));
+    }
+  }
+}
+
+function collectOperationNames(sourceDirectory: string, operationNames: Set<string>): void {
+  if (!existsSync(sourceDirectory)) {
+    return;
+  }
+
+  const directoryMembers = readdirSync(sourceDirectory, { withFileTypes: true });
+  for (const directoryMember of directoryMembers) {
+    collectOperationNamesFromDirectoryMember(sourceDirectory, directoryMember, operationNames);
+  }
+}
+
+function getImplementedApiMethods(): Set<string> {
+  const operationNames = new Set<string>();
+  const operationSourceDirectories = [
+    join(PROJECT_ROOT, 'src/api'),
+    join(PROJECT_ROOT, 'src/ebay'),
+  ];
+
+  for (const operationSourceDirectory of operationSourceDirectories) {
+    collectOperationNames(operationSourceDirectory, operationNames);
+  }
+  return operationNames;
 }
 
 /**

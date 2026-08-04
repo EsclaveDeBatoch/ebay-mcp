@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import type { EbayConfig } from '@/types/ebay.js';
 import type { Implementation } from '@modelcontextprotocol/sdk/types.js';
-import { getToolGatingConfigError } from '@/config/toolFamilies.js';
+import { getToolGatingConfigError } from '@/config/toolExposure.js';
 import { getErrorMessage } from '@/utils/errors.js';
 import { getVersion } from '@/utils/version.js';
 import { Effect, Either } from 'effect';
@@ -389,24 +389,24 @@ export const getBaseUrl = (environment: EbayEnvironment, overrideBaseUrl?: strin
 };
 
 /**
- * Get base URL for Identity API (uses apiz subdomain).
+ * Get the eBay `apiz` base URL used by APIs such as Identity and Key Management.
  *
  * @param environment eBay environment used when no override is configured.
  * @param overrideBaseUrl Base URL override from `EBAY_MCP_API_BASE_URL`.
- * @returns Identity API base URL for direct eBay or proxy traffic.
+ * @returns `apiz` API base URL for direct eBay or proxy traffic.
  * @example
  * ```ts
- * const identityBaseUrl = getIdentityBaseUrl('production');
+ * const apizBaseUrl = getApizBaseUrl('production');
  * ```
  */
-export const getIdentityBaseUrl = (
-  environment: EbayEnvironment,
-  overrideBaseUrl?: string,
-): string => {
-  if (overrideBaseUrl) {
+export const getApizBaseUrl = (environment: EbayEnvironment, overrideBaseUrl?: string): string => {
+  if (overrideBaseUrl !== undefined) {
     return overrideBaseUrl;
   }
-  return environment === 'production' ? 'https://apiz.ebay.com' : 'https://apiz.sandbox.ebay.com';
+  if (environment === 'production') {
+    return 'https://apiz.ebay.com';
+  }
+  return 'https://apiz.sandbox.ebay.com';
 };
 
 /** Hosts treated as loopback when deciding whether a cleartext base URL is safe. */

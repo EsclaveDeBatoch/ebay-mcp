@@ -6,25 +6,14 @@ This directory contains comprehensive Effect-backed schemas for eBay API endpoin
 
 ```
 src/schemas/
-├── account-management/    # Account, policies, programs
-│   └── account.ts
 ├── inventory-management/  # Inventory items, offers, locations
 │   └── inventory.ts
-├── communication/         # Messages, feedback, notifications
-│   └── messages.ts
 ├── fulfillment/          # Orders, shipping, refunds
 │   └── orders.ts
 ├── marketing/            # Campaigns, ads, keywords, promotions
 │   └── marketing.ts
 ├── metadata/             # Marketplace policies, compatibility
 │   └── metadata.ts
-├── analytics/            # Reports, metrics, seller standards
-│   └── analytics.ts
-├── taxonomy/             # Categories, suggestions, aspects
-│   └── taxonomy.ts
-├── other/                # Identity, compliance, VERO, translation, eDelivery
-│   └── otherApis.ts
-├── index.ts              # Central export point
 └── README.md             # This file
 ```
 
@@ -34,7 +23,7 @@ src/schemas/
 | --- | --- |
 | `src/tools/schemas.ts` | Shared primitives reused across families |
 | `src/schemas/<family>/` | Endpoint/tool input (and optional response) schemas for that family |
-| `src/types/**` | Generated eBay DTOs — regenerate with `pnpm run sync`; never hand-edit |
+| `src/generated/ebay/**` | Generated eBay DTOs — regenerate with `pnpm run sync`; never hand-edit |
 
 See [ARCHITECTURE.md](../../ARCHITECTURE.md#schema-ownership) for the family map.
 
@@ -53,54 +42,39 @@ The schemas in this directory serve multiple purposes:
 ### Basic Import
 
 ```typescript
-import {
-  getAccountManagementJsonSchemas,
-  getInventoryManagementJsonSchemas,
-  getCommunicationJsonSchemas,
-  getFulfillmentJsonSchemas,
-  getMarketingJsonSchemas,
-  getMetadataJsonSchemas,
-  getAnalyticsJsonSchemas,
-  getTaxonomyJsonSchemas,
-  getOtherApisJsonSchemas,
-  getAllJsonSchemas, // Gets all schemas at once
-} from '@/schemas';
+import { getInventoryItemInputSchema } from '@/schemas/inventory-management/inventory.js';
 
-// Get all JSON schemas for a specific category
-const accountSchemas = getAccountManagementJsonSchemas();
-
-// Access specific schemas
-const inputSchema = accountSchemas.getFulfillmentPoliciesInput;
-const outputSchema = accountSchemas.getFulfillmentPoliciesOutput;
-
-// Or get all schemas at once
-const allSchemas = getAllJsonSchemas();
-const marketingCampaignSchema = allSchemas.marketing.createCampaignInput;
+const inventoryItemArguments = getInventoryItemInputSchema.parse({ sku: 'ABC123' });
 ```
 
 ### Using Effect-Backed Schemas for Validation
 
 ```typescript
 import { Effect } from 'effect';
-import { getInventoryItemInputSchema, getInventoryItemOutputSchema } from '@/schemas';
+import {
+  getInventoryItemInputSchema,
+  getInventoryItemOutputSchema,
+} from '@/schemas/inventory-management/inventory.js';
 import { decodeEffectSchema } from '@/utils/effectSchema.js';
 
 // Validate input
-const input = await Effect.runPromise(
+const inventoryItemArguments = await Effect.runPromise(
   decodeEffectSchema(getInventoryItemInputSchema, { sku: 'ABC123' }),
 );
 
 // Validate output
-const response = await Effect.runPromise(api.inventory.getInventoryItem(input));
+const inventoryItemDocument = await Effect.runPromise(
+  api.inventory.getInventoryItem(inventoryItemArguments),
+);
 const validatedOutput = await Effect.runPromise(
-  decodeEffectSchema(getInventoryItemOutputSchema, response),
+  decodeEffectSchema(getInventoryItemOutputSchema, inventoryItemDocument),
 );
 ```
 
 ### Using JSON Schemas with MCP Tools
 
 ```typescript
-import { getInventoryManagementJsonSchemas } from '@/schemas';
+import { getInventoryManagementJsonSchemas } from '@/schemas/inventory-management/inventory.js';
 
 const schemas = getInventoryManagementJsonSchemas();
 
@@ -115,38 +89,14 @@ const tool = {
 
 ## 📚 Available Schema Categories
 
-### 1. Account Management (`account-management/account.ts`)
+### 1. Inventory Management (`inventory-management/inventory.ts`)
 
-Schemas for managing seller account settings, business policies, and programs.
-
-**Endpoints Covered:**
-
-- Custom Policies (PRODUCT_COMPLIANCE, TAKE_BACK)
-- Fulfillment Policies (shipping rules, handling time)
-- Payment Policies (payment methods, immediate pay)
-- Return Policies (return period, refund method)
-- Sales Tax (jurisdiction-based tax rules)
-- Programs (opt-in/opt-out programs)
-- KYC (seller verification status)
-- Privileges (selling limits and permissions)
-
-**Key Schemas:**
-
-- `getFulfillmentPoliciesInputSchema` / `getFulfillmentPoliciesOutputSchema`
-- `createPaymentPolicyInputSchema` / `createPaymentPolicyOutputSchema`
-- `getReturnPoliciesInputSchema` / `getReturnPoliciesOutputSchema`
-
-### 2. Inventory Management (`inventory-management/inventory.ts`)
-
-Schemas for inventory items, offers, locations, and product compatibility.
+Schemas for the remaining legacy inventory items, offers, and bulk operations.
 
 **Endpoints Covered:**
 
 - Inventory Items (create, read, update, delete)
 - Offers (pricing, availability, publishing)
-- Inventory Locations (warehouses, stores)
-- Product Compatibility (vehicle parts)
-- Inventory Item Groups (variations)
 - Bulk Operations (batch processing)
 
 **Key Schemas:**
@@ -156,25 +106,7 @@ Schemas for inventory items, offers, locations, and product compatibility.
 - `publishOfferInputSchema` / `publishOfferOutputSchema`
 - `bulkInventoryItemRequestSchema` / `bulkInventoryItemResponseSchema`
 
-### 3. Communication (`communication/messages.ts`)
-
-Schemas for messages, feedback, notifications, and negotiations.
-
-**Endpoints Covered:**
-
-- Message API (conversations, messages)
-- Feedback API (leave feedback, respond to feedback)
-- Notification API (destinations, subscriptions, topics)
-- Negotiation API (offers to buyers)
-
-**Key Schemas:**
-
-- `sendMessageInputSchema` / `sendMessageOutputSchema`
-- `leaveFeedbackInputSchema` / `leaveFeedbackOutputSchema`
-- `createNotificationSubscriptionInputSchema` / `createNotificationSubscriptionOutputSchema`
-- `sendOfferToInterestedBuyersInputSchema` / `sendOfferToInterestedBuyersOutputSchema`
-
-### 4. Fulfillment (`fulfillment/orders.ts`)
+### 2. Fulfillment (`fulfillment/orders.ts`)
 
 Schemas for order management, shipping, refunds, and payment disputes.
 
@@ -192,7 +124,7 @@ Schemas for order management, shipping, refunds, and payment disputes.
 - `issueRefundInputSchema` / `issueRefundOutputSchema`
 - `getPaymentDisputeSummariesInputSchema` / `getPaymentDisputeSummariesOutputSchema`
 
-### 5. Marketing & Promotions (`marketing/marketing.ts`)
+### 3. Marketing & Promotions (`marketing/marketing.ts`)
 
 Schemas for advertising campaigns, ads, keywords, promotions, and recommendations.
 
@@ -218,7 +150,7 @@ Schemas for advertising campaigns, ads, keywords, promotions, and recommendation
 - `createItemPromotionInputSchema` / `createItemPromotionOutputSchema`
 - `suggestBidsOutputSchema` / `suggestKeywordsOutputSchema`
 
-### 6. Metadata (`metadata/metadata.ts`)
+### 4. Metadata (`metadata/metadata.ts`)
 
 Schemas for marketplace policies and product compatibility.
 
@@ -235,60 +167,6 @@ Schemas for marketplace policies and product compatibility.
 - `getCompatibilityPropertyNamesOutputSchema`
 - `getProductCompatibilitiesOutputSchema`
 - `getSalesTaxJurisdictionsOutputSchema`
-
-### 7. Analytics (`analytics/analytics.ts`)
-
-Schemas for reports, metrics, and seller performance tracking.
-
-**Endpoints Covered (4 total):**
-
-- Traffic Reports (analyze listing views and search impressions)
-- Seller Standards Profiles (monitor seller performance)
-- Customer Service Metrics (track customer service quality)
-
-**Key Schemas:**
-
-- `getTrafficReportInputSchema` / `getTrafficReportOutputSchema`
-- `getSellerStandardsProfileOutputSchema`
-- `getCustomerServiceMetricOutputSchema`
-
-### 8. Taxonomy (`taxonomy/taxonomy.ts`)
-
-Schemas for category navigation, suggestions, and product aspects.
-
-**Endpoints Covered (4 total):**
-
-- Category Tree (get category hierarchy)
-- Category Suggestions (find appropriate categories for items)
-- Item Aspects (get required/recommended aspects for categories)
-
-**Key Schemas:**
-
-- `getCategoryTreeOutputSchema`
-- `getCategorySuggestionsInputSchema` / `getCategorySuggestionsOutputSchema`
-- `getItemAspectsForCategoryOutputSchema`
-
-### 9. Other APIs (`other/otherApis.ts`)
-
-Schemas for identity, compliance, VERO, translation, and international shipping.
-
-**Endpoints Covered (40 total):**
-
-- Commerce Identity API (user information)
-- Sell Compliance API (listing violations, suppression)
-- Commerce VERO API (intellectual property rights reporting)
-- Commerce Translation API (content translation)
-- Sell eDelivery International Shipping API (actual costs, services, bundles, packages, labels, tracking)
-
-**Key Schemas:**
-
-- `getUserOutputSchema`
-- `getListingViolationsOutputSchema`
-- `createVeroReportInputSchema` / `createVeroReportOutputSchema`
-- `translateInputSchema` / `translateOutputSchema`
-- `getActualCostsInputSchema` / `getActualCostsOutputSchema`
-- `createPackageInputSchema` / `createPackageOutputSchema`
-- `getTrackingInputSchema` / `getTrackingOutputSchema`
 
 ## 🔧 Schema Naming Convention
 
@@ -359,7 +237,7 @@ To test schema validation:
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { Effect } from 'effect';
-import { getInventoryItemInputSchema } from '@/schemas';
+import { getInventoryItemInputSchema } from '@/schemas/inventory-management/inventory.js';
 import { decodeEffectSchema } from '@/utils/effectSchema.js';
 
 describe('Inventory Schemas', () => {
@@ -392,22 +270,6 @@ describe('Inventory Schemas', () => {
 4. **Optional by Default**: Make fields optional unless they're truly required
 5. **Passthrough**: Use `.passthrough()` to allow additional properties from eBay
 6. **Enum Support**: Use native enums from `@/types/ebayEnums.js`
-
-## ✅ Completion Status
-
-All eBay API endpoints now have comprehensive Effect-backed schemas!
-
-- [x] **Account Management** - 21 endpoints ✅
-- [x] **Inventory Management** - 30 endpoints ✅
-- [x] **Communication** - 11 endpoints ✅
-- [x] **Fulfillment** - 16 endpoints ✅
-- [x] **Marketing & Promotions** - 71 endpoints ✅
-- [x] **Metadata** - 23 endpoints ✅
-- [x] **Analytics** - 4 endpoints ✅
-- [x] **Taxonomy** - 4 endpoints ✅
-- [x] **Other APIs** - 40 endpoints ✅
-
-**Total: 220 eBay API endpoints with full input/output schemas**
 
 ## 🚧 Future Enhancements
 

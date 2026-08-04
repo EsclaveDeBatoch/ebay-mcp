@@ -3,37 +3,37 @@ import { fileURLToPath } from 'node:url';
 import { EXTENSION_ID, RESOURCE_MIME_TYPE } from '@modelcontextprotocol/ext-apps/server';
 import { describe, expect, it } from 'vitest';
 import {
-  buildUiToolResult,
+  builtUiDirectoryFor,
+  type McpUiBinding,
+  uiToolCompletion,
   findRepoRoot,
-  resolveBuiltUiDir,
-  resolveUiEnabled,
+  shouldRenderUi,
   summarizeView,
 } from '@/mcp/uiBridge.js';
-import type { ResolvedToolUi } from '@/tools/registry.js';
 import type {
   CardViewModel,
   ChartViewModel,
   StatViewModel,
   TableViewModel,
-} from '@/tools/ui/viewModels.js';
+} from '@/ui/viewModels.js';
 
 /** Client capabilities advertising MCP Apps support for the given MIME types. */
 function uiCapabilities(mimeTypes: string[]): Record<string, unknown> {
   return { extensions: { [EXTENSION_ID]: { mimeTypes } } };
 }
 
-describe('resolveUiEnabled', () => {
+describe('shouldRenderUi', () => {
   it('enables UI when the client advertises the MCP Apps MIME type', () => {
-    expect(resolveUiEnabled(uiCapabilities([RESOURCE_MIME_TYPE]), true)).toBe(true);
+    expect(shouldRenderUi(uiCapabilities([RESOURCE_MIME_TYPE]), true)).toBe(true);
   });
 
   it('stays disabled when the client lacks the MCP Apps capability', () => {
-    expect(resolveUiEnabled({}, true)).toBe(false);
-    expect(resolveUiEnabled(uiCapabilities(['text/plain']), true)).toBe(false);
+    expect(shouldRenderUi({}, true)).toBe(false);
+    expect(shouldRenderUi(uiCapabilities(['text/plain']), true)).toBe(false);
   });
 
   it('is force-disabled by the EBAY_MCP_UI=off kill-switch even when supported', () => {
-    expect(resolveUiEnabled(uiCapabilities([RESOURCE_MIME_TYPE]), false)).toBe(false);
+    expect(shouldRenderUi(uiCapabilities([RESOURCE_MIME_TYPE]), false)).toBe(false);
   });
 });
 
@@ -134,9 +134,9 @@ describe('summarizeView', () => {
   });
 });
 
-describe('buildUiToolResult', () => {
+describe('uiToolCompletion', () => {
   it('projects a result into a summary line, structuredContent, and resource meta', () => {
-    const ui: ResolvedToolUi = {
+    const ui: McpUiBinding = {
       archetype: 'card',
       resourceUri: 'ui://ebay/card.html',
       map: () => ({
@@ -146,22 +146,24 @@ describe('buildUiToolResult', () => {
       }),
     };
 
-    const result = buildUiToolResult(ui, { orderId: '1' });
+    const mcpCompletion = uiToolCompletion(ui, { orderId: '1' });
 
-    expect(result.content).toEqual([
+    expect(mcpCompletion.content).toEqual([
       { type: 'text', text: 'Order 1: 1 field. Rendered as an interactive detail card.' },
     ]);
-    expect(result.structuredContent).toMatchObject({ archetype: 'card', title: 'Order 1' });
-    expect(result._meta).toEqual({ ui: { resourceUri: 'ui://ebay/card.html' } });
+    expect(mcpCompletion.structuredContent).toMatchObject({ archetype: 'card', title: 'Order 1' });
+    expect(mcpCompletion._meta).toEqual({ ui: { resourceUri: 'ui://ebay/card.html' } });
   });
 });
 
 describe('repo-root resolution', () => {
   it('walks up to the directory containing package.json', () => {
     const here = fileURLToPath(import.meta.url);
-    const root = findRepoRoot(here);
-    expect(root).toBeDefined();
-    expect(root && resolveBuiltUiDir(import.meta.url)).toBe(join(root!, 'build', 'ui'));
+    const repositoryRoot = findRepoRoot(here);
+    if (repositoryRoot === undefined) {
+      throw new Error('Expected the repository root');
+    }
+    expect(builtUiDirectoryFor(import.meta.url)).toBe(join(repositoryRoot, 'build', 'ui'));
   });
 
   it('returns undefined when no package.json is found above the start dir', () => {

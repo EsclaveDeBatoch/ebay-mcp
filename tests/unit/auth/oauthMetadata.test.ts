@@ -42,6 +42,7 @@ describe('OAuth Metadata', () => {
             'http://localhost:8080/realms/master/protocol/openid-connect/auth',
           token_endpoint: 'http://localhost:8080/realms/master/protocol/openid-connect/token',
           jwks_uri: 'http://localhost:8080/realms/master/protocol/openid-connect/certs',
+          response_types_supported: ['code'],
         },
         scopesSupported: ['mcp:tools'],
       });

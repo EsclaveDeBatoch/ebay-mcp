@@ -37,3 +37,6 @@ jobs:
 
       - name: Type check (ui)
         run: pnpm typecheck:ui
+
+      - name: Type check (tests)
+        run: pnpm typecheck:tests

@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { Effect } from 'effect';
 import { getToolDefinitions } from '@/tools/index.js';
+import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
+import { sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 
 const mcpMock = vi.hoisted(() => ({
   close: vi.fn(),
@@ -32,20 +34,27 @@ vi.mock('@modelcontextprotocol/sdk/server/mcp.js', () => ({
 describe('MCP runtime', () => {
   it('registers the shared tool registry on server construction', async () => {
     const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
-    const api = {
+    const fakeEbaySellerApi = {
       initialize: vi.fn(() => Effect.succeed(undefined)),
     };
+    const { sellerSession } = sellerSessionReturning<unknown>({
+      kind: 'ebayRequestSucceeded',
+      ebayDocument: {},
+    });
 
     const runtime = createEbayMcpRuntime({
-      api: api as never,
+      ebaySellerApi: fakeEbaySellerApi as never,
+      sellerSession,
       serverConfig: { name: 'test-mcp', version: '0.0.0' },
     });
 
-    expect(runtime.api).toBe(api);
+    expect(runtime.ebaySellerApi).toBe(fakeEbaySellerApi);
     expect(mcpMock.constructor).toHaveBeenCalledWith({ name: 'test-mcp', version: '0.0.0' });
-    expect(mcpMock.registerTool).toHaveBeenCalledTimes(getToolDefinitions().length);
+    expect(mcpMock.registerTool).toHaveBeenCalledTimes(
+      getToolDefinitions().length + ebayToolCatalogue.length,
+    );
 
-    await runtime.initializeApi();
-    expect(api.initialize).toHaveBeenCalledOnce();
+    await runtime.initializeEbaySellerApi();
+    expect(fakeEbaySellerApi.initialize).toHaveBeenCalledOnce();
   });
 });

@@ -1,4 +1,5 @@
 import { toolCategories } from '@/tools/categories/index.js';
+import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import type { RegistrySnapshot, ToolFamily } from '@/skills/types.js';
 
 /**
@@ -10,21 +11,71 @@ const FAMILY_BLURBS: Record<string, string> = {
   connector:
     'ChatGPT connector protocol tools (`search`/`fetch`) — not used when driving the API directly',
   'token-management': 'OAuth URL, token status, refresh, and credential diagnostics',
-  account:
-    'Business policies (payment, return, fulfillment), privileges, program opt-in, sales tax',
   inventory:
     'Inventory items, offers, locations, inventory groups, bulk publish — the REST listing model',
-  fulfillment: 'Orders, shipping fulfillments, refunds, and payment disputes',
-  marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
-  analytics: 'Seller standards, traffic reports, and customer-service metrics',
-  metadata: 'Marketplace policies, item conditions, listing constraints, automotive compatibility',
-  taxonomy: 'Category trees, category suggestions, and required item aspects',
-  communication: 'Buyer messages, member messages, and notification settings',
-  browse: 'Sold/completed listing search (Finding API) for pricing comps',
-  other: 'Feedback, recommendations, and assorted Sell-API helpers',
-  developer: 'API status, rate limits, client registration, and signing keys',
-  trading: 'Legacy Trading API (XML) — create / revise / relist / end fixed-price listings',
+  'sell.marketing':
+    'Promoted Listings campaigns, ads, keywords, promotions, email campaigns, and marketing reports from Sell Marketing',
+  'commerce.feedback':
+    'Pending tasks, feedback history, submissions, replies, and rating metrics from Commerce Feedback',
+  'commerce.identity': 'Authenticated eBay account profile information',
+  'commerce.message': 'Buyer-seller conversation lookup and messaging from Commerce Message',
+  'commerce.notification':
+    'Alert configuration, delivery destinations, topics, subscriptions, filters, and validation keys from Commerce Notification',
+  'commerce.taxonomy': 'Category trees, category suggestions, and required listing aspects',
+  'commerce.translation': 'Listing-title and description translation between supported languages',
+  'commerce.vero': 'Intellectual-property infringement reports and reason codes from Commerce VeRO',
+  'developer.analytics': 'Application and user API quota utilization from Developer Analytics',
+  'developer.key-management':
+    'Application signing-key creation and public-key retrieval from Developer Key Management',
+  'developer.status': 'Current incidents from the public eBay developer status feed',
+  'sell.account':
+    'Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies from Sell Account',
+  'sell.analytics':
+    'Traffic reports, seller standards, and customer-service metrics from Sell Analytics',
+  'sell.edelivery':
+    'International package creation, consolidation, shipping documents, and tracking for Greater-China sellers',
+  'sell.fulfillment': 'Orders, shipping fulfillments, refunds, and payment disputes',
+  'sell.inventory':
+    'Inventory items, bulk inventory changes, item groups, vehicle compatibility, SKU location mappings, and inventory locations from Sell Inventory',
+  'sell.negotiation': 'Listings eligible for seller offers and seller-initiated discounted offers',
+  'sell.recommendation':
+    'Promoted Listings recommendations for active listings from Sell Recommendation',
+  'sell.metadata':
+    'Marketplace policies, item conditions, listing constraints, automotive compatibility, and sales-tax jurisdictions',
+  trading:
+    'Legacy Trading API (XML) — retrieve, create, revise, relist, and end fixed-price listings',
 };
+
+const MIGRATED_NAMESPACE_TITLES = [
+  { namespace: 'commerce.feedback', title: 'Commerce Feedback' },
+  { namespace: 'commerce.identity', title: 'Commerce Identity' },
+  { namespace: 'commerce.message', title: 'Commerce Message' },
+  { namespace: 'commerce.notification', title: 'Commerce Notification' },
+  { namespace: 'commerce.taxonomy', title: 'Commerce Taxonomy' },
+  { namespace: 'commerce.translation', title: 'Commerce Translation' },
+  { namespace: 'commerce.vero', title: 'Commerce VeRO' },
+  { namespace: 'developer.analytics', title: 'Developer Analytics' },
+  { namespace: 'developer.key-management', title: 'Developer Key Management' },
+  { namespace: 'developer.status', title: 'Developer Status' },
+  { namespace: 'sell.account', title: 'Sell Account' },
+  { namespace: 'sell.analytics', title: 'Sell Analytics' },
+  { namespace: 'sell.edelivery', title: 'Sell eDelivery' },
+  { namespace: 'sell.fulfillment', title: 'Sell Fulfillment' },
+  { namespace: 'sell.inventory', title: 'Sell Inventory' },
+  { namespace: 'sell.marketing', title: 'Sell Marketing' },
+  { namespace: 'sell.metadata', title: 'Sell Metadata' },
+  { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
+  { namespace: 'sell.recommendation', title: 'Sell Recommendation' },
+  { namespace: 'trading', title: 'Trading' },
+] as const;
+
+function familyBlurbFor(familyPath: string, familyTitle: string): string {
+  const familyBlurb = FAMILY_BLURBS[familyPath];
+  if (familyBlurb === undefined) {
+    return familyTitle;
+  }
+  return familyBlurb;
+}
 
 /**
  * Builds a {@link RegistrySnapshot} from the live tool registry so a rendered
@@ -35,18 +86,34 @@ const FAMILY_BLURBS: Record<string, string> = {
  *
  * @example
  * ```ts
- * const snapshot = buildRegistrySnapshot();
+ * const snapshot = captureRegistrySnapshot();
  * ```
  */
-export const buildRegistrySnapshot = (): RegistrySnapshot => {
+export const captureRegistrySnapshot = (): RegistrySnapshot => {
   const families: ToolFamily[] = toolCategories.map((category) => ({
     key: category.key,
     title: category.title,
     count: category.entries.length,
-    blurb: FAMILY_BLURBS[category.key] ?? category.title,
+    blurb: familyBlurbFor(category.key, category.title),
   }));
+  for (const migratedNamespace of MIGRATED_NAMESPACE_TITLES) {
+    const namespaceToolCount = ebayToolCatalogue.filter(
+      (ebayTool) => ebayTool.namespace === migratedNamespace.namespace,
+    ).length;
+    if (namespaceToolCount > 0) {
+      families.push({
+        key: migratedNamespace.namespace,
+        title: migratedNamespace.title,
+        count: namespaceToolCount,
+        blurb: FAMILY_BLURBS[migratedNamespace.namespace],
+      });
+    }
+  }
 
-  const toolCount = families.reduce((sum, family) => sum + family.count, 0);
+  const countAccumulator = { toolCount: 0 };
+  for (const family of families) {
+    countAccumulator.toolCount += family.count;
+  }
 
-  return { toolCount, families };
+  return { toolCount: countAccumulator.toolCount, families };
 };

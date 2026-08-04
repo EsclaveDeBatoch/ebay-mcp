@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>The eBay MCP server — give Claude, Cursor, and any AI assistant full access to eBay's Sell APIs. 298 tools for inventory, orders, marketing, and analytics, running locally with your own keys.</strong>
+  <strong>The eBay MCP server — give Claude, Cursor, and any AI assistant full access to eBay's Sell APIs. 292 tools for inventory, orders, marketing, and analytics, running locally with your own keys.</strong>
 </p>
 
 <p align="center"><sub>Unofficial, open-source project — not affiliated with, authorized, or endorsed by eBay Inc.</sub></p>
@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/tools-298-8957e5?logo=ebay&logoColor=white" alt="298 eBay API tools" />
+  <img src="https://img.shields.io/badge/tools-292-8957e5?logo=ebay&logoColor=white" alt="292 eBay API tools" />
   <img src="https://img.shields.io/badge/Sell%20API%20coverage-100%25-success" alt="100% eBay Sell API coverage" />
   <img src="https://img.shields.io/badge/Model%20Context%20Protocol-compatible-000000" alt="Model Context Protocol compatible" />
   <img src="https://img.shields.io/badge/tests-1%2C000%2B%20passing-3fb950?logo=vitest&logoColor=white" alt="Over 1,000 passing tests" />
@@ -45,7 +45,7 @@
 
 ---
 
-**eBay MCP** is a local [Model Context Protocol](https://modelcontextprotocol.io) server that connects AI assistants — [Claude Desktop](https://claude.ai/download), [Claude Code](https://code.claude.com/docs/en/overview), [Cursor](https://cursor.com/), [Cline](https://cline.bot/), [Windsurf](https://windsurf.com/), [Zed](https://zed.dev/), [Continue.dev](https://docs.continue.dev/), [Roo Code](https://roocode.com/), and [Amazon Q Developer](https://aws.amazon.com/q/developer/) — directly to **[eBay's Sell APIs](https://developer.ebay.com/api-docs/sell/static/overview.html)**. It exposes **298 tools** spanning **100% of eBay's Sell API surface** (270 unique endpoints) for inventory management, order fulfillment, promoted-listings marketing, analytics, and developer tooling. Everything runs on your machine over STDIO or local HTTP — **no cloud relay**, and your eBay credentials never leave your computer.
+**eBay MCP** is a local [Model Context Protocol](https://modelcontextprotocol.io) server that connects AI assistants — [Claude Desktop](https://claude.ai/download), [Claude Code](https://code.claude.com/docs/en/overview), [Cursor](https://cursor.com/), [Cline](https://cline.bot/), [Windsurf](https://windsurf.com/), [Zed](https://zed.dev/), [Continue.dev](https://docs.continue.dev/), [Roo Code](https://roocode.com/), and [Amazon Q Developer](https://aws.amazon.com/q/developer/) — directly to **[eBay's Sell APIs](https://developer.ebay.com/api-docs/sell/static/overview.html)**. It exposes **292 tools** spanning **100% of eBay's Sell API surface** (266 unique endpoints) for inventory management, order fulfillment, promoted-listings marketing, analytics, and developer tooling. Everything runs on your machine over STDIO or local HTTP — **no cloud relay**, and your eBay credentials never leave your computer.
 
 > **Disclaimer:** Unofficial, third-party project — **not affiliated with or endorsed by eBay Inc.** Provided "as is" without warranty. You are responsible for complying with [eBay's API License Agreement](https://developer.ebay.com/join/api-license-agreement) and [data-handling requirements](https://developer.ebay.com/api-docs/static/data-handling-update.html), keeping your credentials secure, and staying within rate limits. Test in sandbox before production. See [LICENSE](LICENSE), [SECURITY.md](SECURITY.md), and [EBAY_COMPLIANCE.md](EBAY_COMPLIANCE.md).
 
@@ -71,11 +71,11 @@
 
 ## Features
 
-- **298 eBay API tools** — 100% coverage of the eBay Sell APIs across inventory, orders, marketing, analytics, metadata, taxonomy, and developer tooling.
+- **292 eBay API tools** — 100% coverage of the eBay Sell APIs across inventory, orders, marketing, analytics, metadata, taxonomy, and developer tooling.
 - **9 AI clients, auto-configured** — Claude Desktop, Cursor, Zed, Cline, Continue.dev, Windsurf, Roo Code, Claude Code CLI, and Amazon Q Developer.
 - **OAuth 2.0 built in** — full user-token management with automatic refresh, and smart fallback from user tokens (10k–50k req/day) to client credentials (1k req/day).
 - **Resilient by default** — automatic retry with exponential backoff on `429` rate limits, and consistent, loud error surfacing.
-- **Type-safe** — [TypeScript](https://www.typescriptlang.org/) end to end, [Effect](https://effect.website/docs)-backed tool input validation, and [OpenAPI](https://www.openapis.org/)-generated types.
+- **Type-safe** — [TypeScript](https://www.typescriptlang.org/) end to end, [Zod](https://zod.dev/)-validated tool inputs, and [OpenAPI](https://www.openapis.org/)-generated eBay types.
 - **Local-first & private** — runs over STDIO or local HTTP; your credentials and data never leave your machine.
 - **Sandbox and production** — switch environments with a single variable.
 - **One-command setup** — `npm run setup` configures credentials, OAuth, and your MCP client, with a browser auto-opened for the OAuth flow.
@@ -87,16 +87,27 @@ Use this map when deciding which tool family to expose, or when asking an assist
 
 | Family | What it unlocks | Good first request |
 | --- | --- | --- |
-| `account` | Business policies, fulfillment policies, payment policies, return policies, sales tax, subscriptions, and programs | "Show my eBay fulfillment policies." |
-| `inventory` | Inventory items, offers, inventory locations, item groups, bulk offer flows, and SKU/location mapping | "List my active inventory items and their available quantity." |
-| `fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
-| `browse` | Sold/completed listing search (Finding API) for pricing comps | "What have similar items sold for recently?" |
-| `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
-| `analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
-| `communication` | Buyer-seller messaging, negotiations, notifications, and feedback | "Show recent buyer messages that need a response." |
-| `metadata` / `taxonomy` | Category trees, aspects, item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Find required item aspects for this category." |
-| `other` | Identity, VeRO, translation, and international shipping support APIs (Compliance tools remain but report eBay's 2026-03-30 decommission) | "Show my current seller identity details." |
-| `developer` / `token-management` | Rate limits, signing keys, OAuth URLs, token refresh, and diagnostics | "Check my eBay API rate limits." |
+| `sell.account` | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies | "Show my eBay sales-tax settings." |
+| `inventory` | Remaining legacy offer and publish flows | "List my offers and their publication status." |
+| `sell.inventory` | Item groups, vehicle compatibility, SKU location mappings, and inventory locations | "Show the fulfillment locations mapped to this SKU." |
+| `sell.fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
+| `sell.marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
+| `commerce.feedback` | Pending tasks, feedback history, submissions, replies, and rating metrics | "Show feedback received by my seller account." |
+| `commerce.identity` | Authenticated eBay account profile information | "Show my authenticated eBay account profile." |
+| `commerce.message` | Buyer-seller conversation lookup and messaging | "Send this update to the buyer." |
+| `commerce.notification` | Alert configuration, delivery destinations, topics, subscriptions, filters, and validation keys | "Show my notification subscriptions." |
+| `commerce.taxonomy` | Category trees, category suggestions, and required listing aspects | "Find required item aspects for this category." |
+| `commerce.translation` | Listing-title and description translation between supported languages | "Translate this listing title from English to Spanish." |
+| `commerce.vero` | Intellectual-property infringement reports and VeRO reason codes | "Show the available VeRO reason codes." |
+| `developer.analytics` | Application and user API quota utilization | "Check my eBay API rate limits." |
+| `developer.key-management` | Application signing-key creation and public-key retrieval | "Create an ED25519 signing keypair." |
+| `developer.status` | Current incidents from the public eBay developer status feed | "Is eBay reporting an API outage?" |
+| `sell.analytics` | Traffic reports, seller standards, and customer-service metrics | "Show my seller standards profile." |
+| `sell.negotiation` | Listings eligible for seller offers and seller-initiated discounted offers | "Find listings with interested buyers." |
+| `sell.recommendation` | Promoted Listings recommendations for active listings | "Which active listings should I promote?" |
+| `sell.metadata` | Item conditions, return-policy metadata, tax jurisdictions, and vehicle compatibility | "Show the listing policies for this marketplace." |
+| `sell.edelivery` | eDelivery international shipment creation, management, labels, and tracking for Greater-China sellers with active eDIS | "Track this eDelivery package." |
+| `developer.status` / `token-management` | API status, OAuth URLs, token refresh, and diagnostics | "Check whether eBay APIs and my token are healthy." |
 | `trading` | Legacy XML fixed-price listing create, revise, relist, and end operations | "Create a fixed-price listing draft from this SKU." |
 | `connector` | ChatGPT connector search/fetch tools over the eBay MCP catalogue | "Search the eBay tool catalogue for order tools." |
 
@@ -109,10 +120,10 @@ Both talk to the same eBay endpoints — the difference is everything you'd othe
 | Interface | Natural language through your AI assistant | Hand-written HTTP requests and JSON parsing |
 | OAuth & token refresh | Built in, with automatic refresh | You implement and maintain it |
 | Rate-limit handling | Automatic retry with exponential backoff | Manual `429` handling and backoff |
-| Input validation | Effect-backed schemas + TypeScript types on every tool | None — you validate your own payloads |
+| Input validation | Strict runtime schemas + generated TypeScript types on every tool | None — you validate your own payloads |
 | Setup | One wizard (`npm run setup`) | Per-call auth, headers, and marketplace wiring |
 | AI client support | 9 clients auto-configured | Not applicable |
-| API coverage | 298 tools across 100% of the Sell APIs, ready to call | Build each request from the docs |
+| API coverage | 292 tools across 100% of the Sell APIs, ready to call | Build each request from the docs |
 | Hosting | Runs locally, no cloud relay | Your own infrastructure |
 
 ## One-click AI setup
@@ -182,7 +193,7 @@ Restart your MCP client and ask:
 
 > "Check my eBay API rate limits."
 
-That should call `ebay_get_rate_limits` or `ebay_get_user_rate_limits` and confirms the server, credentials, and MCP client wiring without changing seller data.
+That should call `ebay_developer_analytics_get_rate_limits` or `ebay_developer_analytics_get_user_rate_limits` and confirms the server, credentials, and MCP client wiring without changing seller data.
 
 ### 5. Use
 
@@ -238,7 +249,7 @@ EBAY_MARKETPLACE_ID=EBAY_US         # default marketplace (overridable per tool)
 EBAY_CONTENT_LANGUAGE=en-US         # default request content language
 EBAY_USER_REFRESH_TOKEN=your_token  # for higher rate limits
 EBAY_MCP_UI=on                      # interactive MCP Apps views (beta); "off" forces plain JSON
-EBAY_MCP_TOOLS=all                  # tool exposure: "all", "dynamic", or a family list (see below)
+EBAY_MCP_TOOLS=all                  # "all", "dynamic", or an exposure-path list (see below)
 EBAY_READ_ONLY=false                # when true, only register read-only tools (gets/lists/searches)
 # HTTP deploy (optional — Docker / Railway / self-hosted):
 # MCP_HOST=0.0.0.0                  # default is 0.0.0.0 when PORT is set
@@ -254,9 +265,9 @@ By default all tools are advertised to the agent at once. On a long conversation
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
 | `all` _(default, or unset)_ | Every tool advertised at startup.                                                                                                                      | every host                              |
 | `dynamic`                   | Only three discovery tools are visible (`list_ebay_tools`, `enable_ebay_tools`, `disable_ebay_tools`). The agent searches the catalogue and loads only the tools it needs; they then appear natively. | hosts that honor `tools/listChanged` (e.g. Claude) |
-| `inventory,fulfillment,…`   | Registers **only** the named families (listed below), frozen for the session.                                                                          | every host (incl. ChatGPT, Cursor)      |
+| `sell.analytics,inventory,…` | Registers **only** the named exposure paths (listed below), frozen for the session.                                                                    | every host (incl. ChatGPT, Cursor)      |
 
-The family list is literal — you get exactly what you name. ChatGPT connectors need the `connector` family (its `search`/`fetch` tools); add it explicitly, e.g. `EBAY_MCP_TOOLS=connector,inventory`. An unknown family name fails fast at startup with the valid list. Valid families: `connector`, `token-management`, `account`, `inventory`, `fulfillment`, `marketing`, `analytics`, `metadata`, `taxonomy`, `communication`, `browse`, `other`, `developer`, `trading`.
+The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.account`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.inventory`, `sell.marketing`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`, and `trading`; remaining legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.fulfillment`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.account`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.inventory`, `sell.marketing`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`.
 
 ### Authentication & rate limits
 
@@ -269,7 +280,7 @@ User-token limits vary by account tier (Individual 10k · Commercial 25k · Ente
 
 ### MCP client compatibility
 
-Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) ≥ 20 and MCP protocol 1.0+ over STDIO (default) or HTTP.
+Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) ≥ 22.12 and MCP protocol 1.0+ over STDIO (default) or HTTP.
 
 | Client                 | Platform              | Config path                                                                  |
 | ---------------------- | --------------------- | ---------------------------------------------------------------------------- |
@@ -288,27 +299,36 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 ## Available tools
 
 <details open>
-<summary><strong>298 tools by category (100% Sell API coverage)</strong></summary>
+<summary><strong>292 tools by category (100% Sell API coverage)</strong></summary>
 
-**298 tools**, 100% Sell API coverage, organized by category. Each link points to the tool definitions and handlers in [`src/tools/categories/`](src/tools/categories/):
+**292 tools**, 100% Sell API coverage, organized by category. Each link points to the module that owns its definitions and handlers:
 
 | Category | What you can do |
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
-| [Account](src/tools/categories/account.ts) | Business, fulfillment, payment, and return policies; programs; subscriptions; sales tax |
-| [Inventory](src/tools/categories/inventory.ts) | Inventory items, offers, locations, item groups, bulk operations, SKU/location mapping |
-| [Fulfillment](src/tools/categories/fulfillment.ts) | Orders, shipping, refunds, disputes, payment-dispute evidence |
-| [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
-| [Analytics](src/tools/categories/analytics.ts) | Traffic reports, seller standards, customer-service metrics |
-| [Communication](src/tools/categories/communication.ts) | Buyer–seller messaging, negotiations, notifications, feedback |
-| [Metadata](src/tools/categories/metadata.ts) | Return policies, sales-tax jurisdictions, automotive compatibility |
-| [Taxonomy](src/tools/categories/taxonomy.ts) | Category trees, item aspects, item conditions |
-| [Other](src/tools/categories/other.ts) | Identity, VeRO, translation, and international shipping support APIs (Compliance tools report eBay decommission) |
-| [Trading (legacy XML)](src/tools/categories/trading.ts) | Fixed-price listing create, revise, relist, end |
-| [Developer](src/tools/categories/developer.ts) | Rate limits, signing keys, client registration |
+| [Sell Account](src/ebay/sell/account/) | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies under `sell.account` |
+| [Sell Inventory](src/ebay/sell/inventory/) | Inventory items and batches, offers, publish and listing fees, item groups, vehicle compatibility, SKU location mappings, and inventory locations under `sell.inventory` |
+| [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |
+| [Marketing](src/ebay/sell/marketing/) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
+| [Commerce Feedback](src/ebay/commerce/feedback/) | Pending tasks, feedback history, submissions, replies, and rating metrics under `commerce.feedback` |
+| [Commerce Identity](src/ebay/commerce/identity/user.ts) | Authenticated eBay account profiles under `commerce.identity` |
+| [Commerce Message](src/ebay/commerce/message/) | Buyer-seller conversation lookup and messaging under `commerce.message` |
+| [Commerce Notification](src/ebay/commerce/notification/) | Alert configuration, delivery destinations, topics, subscriptions, filters, and validation keys under `commerce.notification` |
+| [Commerce Taxonomy](src/ebay/commerce/taxonomy/categoryTree.ts) | Category trees, suggestions, and required listing aspects under `commerce.taxonomy` |
+| [Commerce Translation](src/ebay/commerce/translation/language.ts) | Listing-title and description translation under `commerce.translation` |
+| [Commerce VeRO](src/ebay/commerce/vero/) | Intellectual-property infringement reports and reason codes under `commerce.vero` |
+| [Developer Analytics](src/ebay/developer/analytics/rateLimit.ts) | Application and user API quota utilization under `developer.analytics` |
+| [Developer Key Management](src/ebay/developer/keyManagement/signingKey.ts) | Application signing keys under `developer.key-management` |
+| [Developer Status](src/ebay/developer/status/incident.ts) | Current incidents from the public status feed under `developer.status` |
+| [Sell Analytics](src/ebay/sell/analytics/trafficReport.ts) | Traffic reports, seller standards, and customer-service metrics under `sell.analytics` |
+| [Sell eDelivery](src/ebay/sell/edelivery/) | International shipment creation, management, labels, and tracking under `sell.edelivery` for Greater-China sellers with active eDIS |
+| [Sell Negotiation](src/ebay/sell/negotiation/offer.ts) | Eligible listings and seller-initiated discounted offers under `sell.negotiation` |
+| [Sell Recommendation](src/ebay/sell/recommendation/listingRecommendation.ts) | Promoted Listings recommendations under `sell.recommendation` |
+| [Sell Metadata](src/ebay/sell/metadata/) | Marketplace policies, item conditions, sales-tax jurisdictions, and automotive compatibility under `sell.metadata` |
+| [Trading (legacy XML)](src/ebay/trading/fixedPriceListing.ts) | Fixed-price listing retrieval, create, revise, relist, and end under `trading` |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |
 
-**Example tools:** `ebay_get_inventory_items`, `ebay_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_commerce_vero_get_reason_codes`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_developer_status_get_incidents`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_edelivery_create_package`, `ebay_sell_inventory_get_inventory_item_group`, `ebay_sell_metadata_get_category_policies`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_trading_get_active_listings`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_sell_marketing_get_campaigns`, `ebay_get_oauth_url`.
 
 For the complete machine-readable index, see [llms.txt](llms.txt).
 
@@ -332,10 +352,10 @@ On hosts that support [MCP Apps](https://modelcontextprotocol.io), common read t
 
 | Archetype | Tools |
 | --- | --- |
-| **Table** | `ebay_get_orders`, `ebay_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_get_inventory_locations`, `ebay_get_payment_dispute_summaries` |
-| **Card** | `ebay_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_get_payment_dispute`, `ebay_get_seller_standards_profile` |
-| **Chart** | `ebay_get_traffic_report`, `ebay_get_customer_service_metric` |
-| **Stat** | `ebay_get_rate_limits`, `ebay_get_user_rate_limits` |
+| **Table** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_sell_inventory_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Card** | `ebay_sell_fulfillment_get_order`, `ebay_sell_inventory_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Chart** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
+| **Stat** | `ebay_developer_analytics_get_rate_limits`, `ebay_developer_analytics_get_user_rate_limits` |
 
 The views build into self-contained HTML with `npm run build` (or `npm run build:ui`); they ship in the published package and load with no network access of their own.
 
@@ -346,17 +366,17 @@ The views build into self-contained HTML with `npm run build` (or `npm run build
 Common tasks, phrased as you'd ask your AI assistant:
 
 - **Set up OAuth** — *"Help me set up OAuth for my eBay account."* → generates an authorization URL via `ebay_get_oauth_url`, then configures the refresh token. Unlocks 10k–50k req/day.
-- **Manage inventory** — *"Show me all my active listings."* → `ebay_get_inventory_items` returns SKUs, quantities, and status.
-- **Process orders** — *"Get all unfulfilled orders from the last 7 days."* → `ebay_get_orders` with date and fulfillment-status filters.
-- **Create campaigns** — *"Create a promoted-listing campaign for electronics."* → `ebay_create_campaign` and related marketing tools.
-- **Bulk operations** — *"Apply a 10% discount to all 'Vintage Watches' items."* → `ebay_get_inventory_items` + `ebay_update_offer` across matches.
+- **Manage inventory** — *"Show me all my active listings."* → `ebay_sell_inventory_get_inventory_items` returns SKUs, quantities, and status.
+- **Process orders** — *"Get all unfulfilled orders from the last 7 days."* → `ebay_sell_fulfillment_get_orders` with date and fulfillment-status filters.
+- **Create campaigns** — *"Create a promoted-listing campaign for electronics."* → `ebay_sell_marketing_create_campaign` and related marketing tools.
+- **Bulk operations** — *"Apply a 10% discount to all 'Vintage Watches' items."* → `ebay_sell_inventory_get_inventory_items` + `ebay_sell_inventory_update_offer` across matches.
 
 ## Scope and safety
 
 - **Unofficial project.** This is not an eBay product and does not grant any additional API rights beyond your own eBay Developer account.
 - **Local server, live APIs.** The MCP server runs on your machine, but tools still call eBay's sandbox or production APIs over the internet.
 - **Mutating tools can change seller data.** Inventory, fulfillment, marketing, and Trading tools may create, revise, refund, end, or otherwise update eBay records. Test in sandbox first.
-- **Tool exposure is configurable.** Use `EBAY_MCP_TOOLS=dynamic` or a family list when you want a smaller, workflow-specific tool surface.
+- **Tool exposure is configurable.** Use `EBAY_MCP_TOOLS=dynamic` or an exposure-path list when you want a smaller, workflow-specific tool surface.
 - **Interactive views are read-only.** MCP Apps views can page, refresh, and drill into read tools, but they do not mutate eBay data.
 - **Compliance remains yours.** Keep credentials secure, monitor rate limits, and follow eBay's API terms and data-handling rules.
 
@@ -370,7 +390,7 @@ Common tasks, phrased as you'd ask your AI assistant:
 <details>
 <summary><strong>What is the eBay MCP server?</strong></summary>
 
-A local [Model Context Protocol](https://modelcontextprotocol.io) server that exposes **298 tools** covering **100% of eBay's Sell APIs** (270 endpoints) to AI assistants — inventory, order fulfillment, marketing, analytics, and developer tools.
+A local [Model Context Protocol](https://modelcontextprotocol.io) server that exposes **292 tools** covering **100% of eBay's Sell APIs** (266 endpoints) to AI assistants — inventory, order fulfillment, marketing, analytics, and developer tools.
 
 </details>
 
@@ -405,7 +425,7 @@ Interactive [MCP Apps](#interactive-ui-mcp-apps) views only appear on hosts that
 <details>
 <summary><strong>How many eBay APIs and tools does it cover?</strong></summary>
 
-298 tools across 270 unique endpoints — 100% of eBay's Sell APIs.
+292 tools across 266 unique endpoints — 100% of eBay's Sell APIs.
 
 </details>
 
@@ -426,7 +446,7 @@ It runs entirely on your machine over STDIO (or local HTTP). There is no cloud r
 <details>
 <summary><strong>What do I need to get started?</strong></summary>
 
-Node.js ≥ 20, a free [eBay Developer Account](https://developer.ebay.com/) (Client ID + Client Secret), then run `npm run setup`.
+Node.js ≥ 22.12, a free [eBay Developer Account](https://developer.ebay.com/) (Client ID + Client Secret), then run `npm run setup`.
 
 </details>
 
@@ -454,7 +474,7 @@ Credentials are stored locally in your `.env` file and used only to call eBay di
 <details>
 <summary><strong>How is this different from calling the eBay API directly?</strong></summary>
 
-You interact in natural language through your AI assistant. OAuth token management, automatic retries with backoff, and type-safe Effect-backed validation are built in. See the [comparison table](#ebay-mcp-vs-the-raw-ebay-api) above.
+You interact in natural language through your AI assistant. OAuth token management, automatic retries with backoff, and strict runtime validation are built in. See the [comparison table](#ebay-mcp-vs-the-raw-ebay-api) above.
 
 </details>
 
@@ -475,7 +495,7 @@ Complete the OAuth flow with `npm run setup` to authenticate with a user token (
 <details>
 <summary><strong>What is it built with?</strong></summary>
 
-TypeScript and Node.js (ESM), using the official MCP SDK, Effect-backed validation with a Zod-compatible MCP adapter, and OpenAPI-generated types.
+TypeScript and Node.js (ESM), using the official MCP SDK, direct Zod 4 resource contracts, and OpenAPI-generated types. Remaining legacy operations are being migrated off Effect and the repository schema adapter.
 
 </details>
 

@@ -1,5 +1,5 @@
-import path from 'node:path';
-import { defineConfig } from 'vitest/config';
+const path = require('node:path');
+const { defineConfig } = require('vitest/config');
 
 const vitestConfig = defineConfig({
   resolve: {
@@ -28,9 +28,6 @@ const vitestConfig = defineConfig({
         // Exclude server entry points (tested via integration)
         'src/index.ts',
         'src/serverHttp.ts',
-        // Exclude simple template generators
-        'src/tools/token-template.ts',
-        'src/tools/tool-definitions.ts',
         // Exclude script files
         'src/scripts/**',
       ],
@@ -44,7 +41,7 @@ const vitestConfig = defineConfig({
     },
     // Unit suite only. The hermetic integration suite runs via its own config —
     // `pnpm run test:integration` (vitest.integration.config.cts) and CI's test.yml.
-    include: ['tests/unit/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'tests/unit/**/*.test.ts', 'scripts/dev/**/*.test.ts'],
     exclude: ['node_modules', 'build', 'dist', 'tests/integration/**'],
     testTimeout: 10_000,
     hookTimeout: 10_000,

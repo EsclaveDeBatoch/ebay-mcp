@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   executeTool,
   getToolContracts,
@@ -7,10 +7,6 @@ import {
   validateToolContracts,
   validateToolRegistry,
 } from '@/tools/index.js';
-import { Effect } from 'effect';
-
-const DECOMMISSIONED_LABEL = /DECOMMISSIONED/i;
-const ISSUE_RESOLUTION_CENTER = /Issue Resolution Center/;
 
 describe('tool registry', () => {
   it('keeps registered definitions unique and executable', () => {
@@ -39,21 +35,6 @@ describe('tool registry', () => {
     expect(contracts.some((contract) => contract.outputSchema)).toBe(true);
   });
 
-  it('executes public handlers added by the registry instead of falling through', async () => {
-    const api = {
-      feedback: {
-        getFeedbackRatingSummary: vi.fn().mockReturnValue(Effect.succeed({ positive: 1 })),
-      },
-    };
-
-    await executeTool(api as never, 'ebay_get_feedback_rating_summary', {
-      userId: 'seller',
-      filter: 'ratingType:ALL',
-    });
-
-    expect(api.feedback.getFeedbackRatingSummary).toHaveBeenCalledOnce();
-  });
-
   it('returns the current unknown-tool error', async () => {
     await expect(executeTool({} as never, 'unknown_tool', {})).rejects.toThrow(
       'Unknown tool: unknown_tool',
@@ -63,19 +44,5 @@ describe('tool registry', () => {
   it('does not expose the nonexistent Negotiation getOffersToBuyers tool (#136)', () => {
     const names = getToolDefinitions().map((definition) => definition.name);
     expect(names).not.toContain('ebay_get_offers_to_buyers');
-  });
-
-  it('marks Compliance tools as decommissioned so agents do not treat 404 as a wrapper bug (#137)', () => {
-    const complianceTools = getToolDefinitions().filter((definition) =>
-      ['ebay_get_listing_violations', 'ebay_get_listing_violations_summary'].includes(
-        definition.name,
-      ),
-    );
-
-    expect(complianceTools).toHaveLength(2);
-    for (const tool of complianceTools) {
-      expect(tool.description).toMatch(DECOMMISSIONED_LABEL);
-      expect(tool.description).toMatch(ISSUE_RESOLUTION_CENTER);
-    }
   });
 });

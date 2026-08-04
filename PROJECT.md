@@ -1,61 +1,58 @@
 # PROJECT.md
 
-Purpose & direction for **ebay-mcp**. Orientation is in [CONTEXT.md](CONTEXT.md);
-how to work here is [AGENTS.md](AGENTS.md).
+Purpose and direction for **ebay-mcp**. Read [CONTEXT.md](CONTEXT.md) for the runtime
+shape and [AGENTS.md](AGENTS.md) before changing code.
 
 ## Problem
 
-AI assistants can reason about selling on eBay but can't _act_ on it: eBay's Sell
-APIs are broad (inventory, fulfilment, marketing, analytics, metadata, developer),
-split across modern REST and a legacy XML Trading API, and gated behind OAuth.
-Wiring that up per-agent is repetitive and error-prone.
+AI assistants can reason about selling on eBay but cannot act on the complete Sell API
+without substantial authentication, schema, transport, and tool-wiring work. eBay splits
+that surface across modern REST APIs and the legacy Trading XML API.
 
 ## Purpose
 
-Give any MCP-capable assistant a **complete, typed, authenticated** interface to
-eBay's Sell APIs through one local server — so an agent can list, fulfil, market,
-and analyse on eBay without bespoke integration code.
+Give any MCP-capable assistant a complete, typed, authenticated local interface to eBay's
+selling APIs so an agent can list, fulfil, market, and analyse without bespoke integration
+code.
 
 ## Users
 
-- **Developers** embedding eBay actions into an agent (Claude, Cursor, Cline, or
-  any MCP host).
-- **Sellers/ops** driving eBay workflows through an assistant.
-- **Contributors** extending coverage as eBay's APIs evolve.
+- Developers connecting eBay operations to an MCP host.
+- Sellers and operators driving eBay workflows through an assistant.
+- Contributors keeping tool coverage aligned with eBay's changing specifications.
 
-## What it does
+## Product boundaries
 
-- Exposes **298 tools across ~270 endpoints** (100% of the Sell surface) over MCP.
-- Handles **OAuth** (setup wizard, refresh-token flow, JWT verification).
-- Speaks both **STDIO** and **HTTP** transports.
-- Lets operators **gate** the exposed tool set (`EBAY_MCP_TOOLS`: all / dynamic /
-  family list) to control an agent's context budget.
-- Ships an interactive **setup**, **skills** installer, and **diagnose** tooling.
-
-## What it is not
-
-- Not a hosted/multi-tenant service — it runs locally, per user.
-- Not a UI product — the tool surface _is_ the product (a small MCP-Apps view
-  layer aside).
-- Not a general eBay Buy/Browse client — the focus is the **Sell** side.
+- The repository exposes 292 tools covering the current Sell surface.
+- OAuth, token refresh, STDIO, HTTP, setup, diagnostics, and agent-skill installation are
+  part of the product.
+- The service runs locally or in a user-controlled container; it is not a hosted
+  multi-tenant platform.
+- The MCP tool surface is the product. The MCP Apps browser layer is a focused
+  presentation surface, not a second application architecture.
 
 ## Direction
 
-- **Stay at 100% Sell coverage** as eBay ships/changes endpoints — the `sync`
-  workflow exists to catch drift and file it.
-- **Keep agent context lean** — dynamic toolGating is the lever; grow it rather
-  than exposing all 298 tools by default.
-- **Harden the contributor gate** — this change set adds a real CI gate (Biome +
-  typecheck + test + build across an OS×Node matrix) and codified docs so
-  coverage can grow without regressions.
-- **Keep the CLI hand-router lean** — a framework (commander) was evaluated and
-  dropped as unused; add one only when a real need justifies the dependency
-  (ADR 0002 → 0006).
+- Keep 100% operation coverage while eBay specifications change.
+- Make repository navigation match eBay's official namespace, API, and resource topology.
+- Replace the current Effect and schema-adapter stack with native promises and direct Zod
+  4 boundary validation.
+- Preserve generated eBay documents exactly through the operation boundary; presentation
+  code alone may project them for the browser.
+- Keep agent context lean through official namespace exposure gates and dynamic discovery.
+- Ship the cleanup as independently green resource slices with no compatibility exports or
+  legacy aliases.
+- Keep only dependencies that own a named product, generation, or test responsibility.
+
+The approved migration architecture is recorded in
+[ADR 0007](docs/adr/current/0007-promise-zod-resource-architecture.md); the ordered target
+tree is in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Constraints
 
-- **Node ≥ 20**, ESM (`Node16`), pnpm. TypeScript strict; `src/types/` is
-  generated (never hand-edited).
-- **stdout is the MCP channel** — all logging goes to stderr.
-- Releases are changeset/tag-driven and publish to npm via OIDC trusted
-  publishing (`publish.yml`).
+- ESM TypeScript, pnpm, strict typechecking, and named exports.
+- Node 22.12 is the minimum runtime; CI tests maintained Node 22 and 24.
+- STDOUT is the MCP protocol channel in server mode; runtime logs use structured STDERR.
+- Specifications and generated TypeScript are machine-owned and never hand-edited.
+- Releases are tag-driven. The merged pull request's `major` or `minor` label chooses the
+  release bump; an unlabelled pull request produces a patch.

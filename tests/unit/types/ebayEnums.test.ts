@@ -9,13 +9,8 @@ import {
   FormatType,
   OrderPaymentStatus,
   CampaignStatus,
-  RefundMethod,
-  ReturnMethod,
-  ReturnShippingCostPayer,
   ShippingCostType,
   ShippingOptionType,
-  CategoryType,
-  PaymentMethodType,
   LineItemFulfillmentStatus,
   OfferStatus,
   ListingStatus,
@@ -26,7 +21,6 @@ import {
   LanguageCode,
   CurrencyCode,
   RegionType,
-  DepositType,
   PricingVisibility,
   LocationType,
   MerchantLocationStatus,
@@ -115,27 +109,6 @@ describe('eBay Enums', () => {
     });
   });
 
-  describe('RefundMethod', () => {
-    it('have refund method values', () => {
-      expect(RefundMethod.MONEY_BACK).toBe('MONEY_BACK');
-      expect(RefundMethod.MERCHANDISE_CREDIT).toBe('MERCHANDISE_CREDIT');
-    });
-  });
-
-  describe('ReturnMethod', () => {
-    it('have return method values', () => {
-      expect(ReturnMethod.REPLACEMENT).toBe('REPLACEMENT');
-      expect(ReturnMethod.EXCHANGE).toBe('EXCHANGE');
-    });
-  });
-
-  describe('ReturnShippingCostPayer', () => {
-    it('have shipping cost payer values', () => {
-      expect(ReturnShippingCostPayer.BUYER).toBe('BUYER');
-      expect(ReturnShippingCostPayer.SELLER).toBe('SELLER');
-    });
-  });
-
   describe('ShippingCostType', () => {
     it('have shipping cost type values', () => {
       expect(ShippingCostType.CALCULATED).toBe('CALCULATED');
@@ -148,29 +121,6 @@ describe('eBay Enums', () => {
     it('have shipping option type values', () => {
       expect(ShippingOptionType.DOMESTIC).toBe('DOMESTIC');
       expect(ShippingOptionType.INTERNATIONAL).toBe('INTERNATIONAL');
-    });
-  });
-
-  describe('CategoryType', () => {
-    it('have category type values', () => {
-      expect(CategoryType.ALL_EXCLUDING_MOTORS_VEHICLES).toBe('ALL_EXCLUDING_MOTORS_VEHICLES');
-      expect(CategoryType.MOTORS_VEHICLES).toBe('MOTORS_VEHICLES');
-    });
-  });
-
-  describe('PaymentMethodType', () => {
-    it('have payment method values', () => {
-      expect(PaymentMethodType.PAYPAL).toBe('PAYPAL');
-      expect(PaymentMethodType.CREDIT_CARD).toBe('CREDIT_CARD');
-      expect(PaymentMethodType.PERSONAL_CHECK).toBe('PERSONAL_CHECK');
-      expect(PaymentMethodType.MONEY_ORDER_CASHIERS_CHECK).toBe('MONEY_ORDER_CASHIERS_CHECK');
-      expect(PaymentMethodType.CASH_ON_DELIVERY).toBe('CASH_ON_DELIVERY');
-      expect(PaymentMethodType.CASH_ON_PICKUP).toBe('CASH_ON_PICKUP');
-    });
-
-    it('contain 6 payment method values', () => {
-      const values = Object.values(PaymentMethodType);
-      expect(values).toHaveLength(15);
     });
   });
 
@@ -290,13 +240,6 @@ describe('eBay Enums', () => {
     it('contain 5 region type values', () => {
       const values = Object.values(RegionType);
       expect(values).toHaveLength(5);
-    });
-  });
-
-  describe('DepositType', () => {
-    it('have deposit type values', () => {
-      expect(DepositType.PERCENTAGE).toBe('PERCENTAGE');
-      expect(DepositType.FIXED_AMOUNT).toBe('FIXED_AMOUNT');
     });
   });
 
@@ -431,7 +374,7 @@ describe('eBay Enums', () => {
   });
 
   describe('Enum Completeness', () => {
-    it('have all 33 implemented enums', () => {
+    it('have all 26 implemented enums', () => {
       // Verify we have the expected number of enum types
       const enumTypes = [
         MarketplaceId,
@@ -439,13 +382,8 @@ describe('eBay Enums', () => {
         FormatType,
         OrderPaymentStatus,
         CampaignStatus,
-        RefundMethod,
-        ReturnMethod,
-        ReturnShippingCostPayer,
         ShippingCostType,
         ShippingOptionType,
-        CategoryType,
-        PaymentMethodType,
         LineItemFulfillmentStatus,
         OfferStatus,
         ListingStatus,
@@ -456,7 +394,6 @@ describe('eBay Enums', () => {
         LanguageCode,
         CurrencyCode,
         RegionType,
-        DepositType,
         PricingVisibility,
         LocationType,
         MerchantLocationStatus,
@@ -468,7 +405,7 @@ describe('eBay Enums', () => {
         ReportedItemType,
       ];
 
-      expect(enumTypes).toHaveLength(32);
+      expect(enumTypes).toHaveLength(26);
     });
   });
 });
