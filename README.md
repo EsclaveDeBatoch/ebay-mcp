@@ -305,7 +305,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 
 | Category | What you can do |
 | --- | --- |
-| [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
+| [Connector](src/mcp/connector/) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
 | [Sell Account](src/ebay/sell/account/) | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies under `sell.account` |
 | [Sell Inventory](src/ebay/sell/inventory/) | Inventory items and batches, offers, publish and listing fees, item groups, vehicle compatibility, SKU location mappings, and inventory locations under `sell.inventory` |
 | [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |

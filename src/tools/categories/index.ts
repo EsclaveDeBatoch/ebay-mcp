@@ -1,13 +1,12 @@
 import type { ToolEntry } from '@/tools/registry.js';
-import { connectorEntries } from './connector.js';
 import { tokenManagementEntries } from './tokenManagement.js';
 
 /**
- * A named group of registered tool entries, owned by one eBay API area (or the
- * ChatGPT connector). This is the single source of truth for both the registry
- * order and any feature that needs the tool catalogue grouped by family — e.g.
- * the skills generator's live family index. `key` is the stable identifier;
- * `title` is a short human label.
+ * A named group of registered tool entries, owned by one eBay API area (or
+ * remaining local tooling). This is the single source of truth for both the
+ * registry order and any feature that needs the tool catalogue grouped by
+ * family — e.g. the skills generator's live family index. `key` is the stable
+ * identifier; `title` is a short human label.
  */
 export interface ToolCategory {
   key: string;
@@ -16,13 +15,11 @@ export interface ToolCategory {
 }
 
 /**
- * Registered tool families in registry execution order. Connector tools
- * (`search`/`fetch`) are registered ahead of the eBay API tools, matching the
- * prior registry. {@link registeredEntries} is derived from this list, so adding
- * a family here both registers its tools and surfaces it in the family index.
+ * Remaining legacy tool families in registry execution order. ChatGPT connector
+ * tools (`search`/`fetch`) live in the migrated MCP catalogue under namespace
+ * `connector`. {@link registeredEntries} is derived from this list.
  */
 export const toolCategories: ToolCategory[] = [
-  { key: 'connector', title: 'Connector', entries: connectorEntries },
   { key: 'token-management', title: 'Token Management', entries: tokenManagementEntries },
 ];
 

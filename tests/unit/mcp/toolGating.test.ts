@@ -51,6 +51,11 @@ describe('toolNamesInExposurePaths', () => {
     expect(names.has(sampleTool)).toBe(true);
   });
 
+  it('returns ChatGPT connector search and fetch under the connector path', () => {
+    const names = toolNamesInExposurePaths(['connector']);
+    expect([...names].sort()).toEqual(['fetch', 'search']);
+  });
+
   it('returns the complete migrated Sell Analytics namespace under its official path', () => {
     const names = toolNamesInExposurePaths(['sell.analytics']);
     expect([...names]).toEqual([

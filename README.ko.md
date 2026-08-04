@@ -240,7 +240,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 
 | 카테고리 | 할 수 있는 일 |
 | --- | --- |
-| [Connector](src/tools/categories/connector.ts) | eBay MCP 카탈로그용 ChatGPT 커넥터 search/fetch 도구 |
+| [Connector](src/mcp/connector/) | eBay MCP 카탈로그용 ChatGPT 커넥터 search/fetch 도구 |
 | [Sell Account](src/ebay/sell/account/) | 판매자 상태, 프로그램 등록, 판매세, 구독, 요금표, 광고 자격, 지원 중단 예정 결제 프로그램 상태, 비즈니스 정책 |
 | [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory`의 항목 그룹, 차량 호환성, SKU 위치 매핑 및 재고 위치 |
 | [Fulfillment](src/ebay/sell/fulfillment/) | 주문, 배송, 환불, 분쟁, 결제 분쟁 증거 |

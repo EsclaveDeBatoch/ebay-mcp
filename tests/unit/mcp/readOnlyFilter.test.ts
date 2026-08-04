@@ -4,6 +4,7 @@ import {
   isReadOnlyTool,
   type ReadOnlyToolDefinition,
 } from '@/mcp/readOnlyFilter.js';
+import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import { getToolDefinitions } from '@/tools/index.js';
 
 describe('isReadOnlyModeEnabled', () => {
@@ -100,9 +101,10 @@ describe('isReadOnlyTool', () => {
 
 describe('isReadOnlyTool against full registry', () => {
   it('keeps every annotated readOnlyHint=true tool', () => {
-    const annotatedReadOnly = getToolDefinitions().filter(
-      (d) => d.annotations?.readOnlyHint === true,
-    );
+    const annotatedReadOnly = [
+      ...getToolDefinitions().filter((definition) => definition.annotations?.readOnlyHint === true),
+      ...ebayToolCatalogue.filter((ebayTool) => ebayTool.annotations.readOnlyHint === true),
+    ];
     expect(annotatedReadOnly.length).toBeGreaterThan(0);
     for (const definition of annotatedReadOnly) {
       expect(isReadOnlyTool(definition)).toBe(true);
@@ -110,10 +112,13 @@ describe('isReadOnlyTool against full registry', () => {
   });
 
   it('excludes every annotated readOnlyHint=false tool', () => {
-    const annotatedWrite = getToolDefinitions().filter(
-      (d) => d.annotations?.readOnlyHint === false,
-    );
-    // Legacy registry may only retain connector/token-management reads after migrations.
+    const annotatedWrite = [
+      ...getToolDefinitions().filter(
+        (definition) => definition.annotations?.readOnlyHint === false,
+      ),
+      ...ebayToolCatalogue.filter((ebayTool) => ebayTool.annotations.readOnlyHint === false),
+    ];
+    // Legacy registry may only retain token-management after connector migration.
     for (const definition of annotatedWrite) {
       expect(isReadOnlyTool(definition)).toBe(false);
     }

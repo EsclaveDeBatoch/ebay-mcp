@@ -47,6 +47,7 @@ const FAMILY_BLURBS: Record<string, string> = {
 };
 
 const MIGRATED_NAMESPACE_TITLES = [
+  { namespace: 'connector', title: 'Connector' },
   { namespace: 'commerce.feedback', title: 'Commerce Feedback' },
   { namespace: 'commerce.identity', title: 'Commerce Identity' },
   { namespace: 'commerce.message', title: 'Commerce Message' },
