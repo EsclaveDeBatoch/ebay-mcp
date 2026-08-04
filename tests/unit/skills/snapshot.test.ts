@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { captureRegistrySnapshot } from '@/skills/index.js';
 import { getToolDefinitions } from '@/tools/index.js';
+import { credentialToolCatalogue } from '@/mcp/credentialToolCatalogue.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 
 describe('skills registry snapshot', () => {
   it('matches the live advertised tool count', () => {
     const snapshot = captureRegistrySnapshot();
-    expect(snapshot.toolCount).toBe(getToolDefinitions().length + ebayToolCatalogue.length);
+    expect(snapshot.toolCount).toBe(
+      getToolDefinitions().length + ebayToolCatalogue.length + credentialToolCatalogue.length,
+    );
   });
 
   it('lists every family with positive counts that sum to the total', () => {

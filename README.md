@@ -326,7 +326,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) â‰
 | [Sell Recommendation](src/ebay/sell/recommendation/listingRecommendation.ts) | Promoted Listings recommendations under `sell.recommendation` |
 | [Sell Metadata](src/ebay/sell/metadata/) | Marketplace policies, item conditions, sales-tax jurisdictions, and automotive compatibility under `sell.metadata` |
 | [Trading (legacy XML)](src/ebay/trading/fixedPriceListing.ts) | Fixed-price listing retrieval, create, revise, relist, and end under `trading` |
-| [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |
+| [Token Management](src/auth/tokenManagement/tokenManagement.ts) | OAuth URL generation and token management |
 
 **Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_commerce_vero_get_reason_codes`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_developer_status_get_incidents`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_edelivery_create_package`, `ebay_sell_inventory_get_inventory_item_group`, `ebay_sell_metadata_get_category_policies`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_trading_get_active_listings`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_sell_marketing_get_campaigns`, `ebay_get_oauth_url`.
 

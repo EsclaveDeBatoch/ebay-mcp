@@ -1,6 +1,5 @@
 import type { ToolEntry } from '@/tools/registry.js';
 import { connectorEntries } from './connector.js';
-import { tokenManagementEntries } from './tokenManagement.js';
 
 /**
  * A named group of registered tool entries, owned by one eBay API area (or the
@@ -20,10 +19,12 @@ export interface ToolCategory {
  * (`search`/`fetch`) are registered ahead of the eBay API tools, matching the
  * prior registry. {@link registeredEntries} is derived from this list, so adding
  * a family here both registers its tools and surfaces it in the family index.
+ *
+ * Token-management tools live in the credential catalogue (`src/auth/tokenManagement`
+ * via `src/mcp/credentialToolCatalogue.ts`), not the legacy registry.
  */
 export const toolCategories: ToolCategory[] = [
   { key: 'connector', title: 'Connector', entries: connectorEntries },
-  { key: 'token-management', title: 'Token Management', entries: tokenManagementEntries },
 ];
 
 /**

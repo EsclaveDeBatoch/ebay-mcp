@@ -11,6 +11,7 @@ describe('toolExposure', () => {
     it('contains legacy categories and migrated official exposure paths', () => {
       expect([...EBAY_TOOL_EXPOSURE_PATHS]).toEqual([
         ...toolCategories.map((category) => category.key),
+        'token-management',
         'trading',
         'commerce.feedback',
         'commerce.identity',

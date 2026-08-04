@@ -253,7 +253,7 @@ Autoconfigurados pelo `npm run setup`. Requer Node.js ≥ 22.12 e o protocolo MC
 | [Sell eDelivery](src/ebay/sell/edelivery/) | Envio internacional pela API eDelivery |
 | [Trading (XML legado)](src/ebay/trading/fixedPriceListing.ts) | Criar, revisar, republicar e encerrar anúncios de preço fixo |
 | [Developer](src/ebay/developer) | Limites de taxa, chaves de assinatura e status da API |
-| [Token Management](src/tools/categories/tokenManagement.ts) | Geração de URL de OAuth e gestão de tokens |
+| [Token Management](src/auth/tokenManagement/tokenManagement.ts) | Geração de URL de OAuth e gestão de tokens |
 
 **Ferramentas de exemplo:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_sell_marketing_get_campaigns`, `ebay_get_oauth_url`.
 

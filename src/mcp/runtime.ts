@@ -4,7 +4,9 @@ import { EbaySellerApi } from '@/api/index.js';
 import { getEbayConfig, mcpConfig } from '@/config/environment.js';
 import { parseToolGatingMode } from '@/config/toolExposure.js';
 import { createEbaySellerSession, type EbaySellerSession } from '@/ebay/ebaySellerSession.js';
+import type { CredentialTool } from '@/mcp/defineCredentialTool.js';
 import type { EbayTool } from '@/mcp/defineTool.js';
+import { credentialToolCatalogue } from '@/mcp/credentialToolCatalogue.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import { isReadOnlyModeEnabled, isReadOnlyTool } from '@/mcp/readOnlyFilter.js';
 import {
@@ -35,6 +37,13 @@ type EbayResourceToolRegistration = {
   readonly ebayTool: EbayTool;
   readonly logToolExecution: boolean;
   readonly uiBridge: UiBridge;
+};
+
+type CredentialToolRegistration = {
+  readonly server: McpServer;
+  readonly ebaySellerApi: EbaySellerApi;
+  readonly credentialTool: CredentialTool;
+  readonly logToolExecution: boolean;
 };
 
 /**
@@ -179,6 +188,33 @@ function registerEbayResourceTool(
   return registeredTool;
 }
 
+function registerCredentialTool(
+  credentialRegistration: CredentialToolRegistration,
+): RegisteredTool {
+  const { server, ebaySellerApi, credentialTool, logToolExecution } = credentialRegistration;
+  return server.registerTool(
+    credentialTool.name,
+    {
+      description: credentialTool.description,
+      inputSchema: credentialTool.argumentsSchema,
+      annotations: credentialTool.annotations,
+    },
+    async (validatedArguments) => {
+      if (logToolExecution) {
+        toolLogger.debug(`Executing tool: ${credentialTool.name}`, { validatedArguments });
+      }
+      const toolCompletion = await credentialTool.completeMcpCall(
+        ebaySellerApi,
+        validatedArguments,
+      );
+      if (logToolExecution) {
+        toolLogger.debug(`Tool ${credentialTool.name} completed`);
+      }
+      return toolCompletion;
+    },
+  );
+}
+
 function ebaySellerApiFor(runtimeDependencies: EbayMcpRuntimeDependencies): EbaySellerApi {
   if (runtimeDependencies.ebaySellerApi !== undefined) {
     return runtimeDependencies.ebaySellerApi;
@@ -234,6 +270,24 @@ function ebayResourceToolsFor(
       return false;
     }
     if (readOnlyMode && !isReadOnlyTool(ebayTool)) {
+      return false;
+    }
+    return true;
+  });
+}
+
+function credentialToolsFor(
+  toolGatingMode: ReturnType<typeof parseToolGatingMode>,
+  readOnlyMode: boolean,
+): CredentialTool[] {
+  return credentialToolCatalogue.filter((credentialTool) => {
+    if (
+      toolGatingMode.kind === 'static' &&
+      !toolGatingMode.exposurePaths.includes(credentialTool.namespace)
+    ) {
+      return false;
+    }
+    if (readOnlyMode && !isReadOnlyTool(credentialTool)) {
       return false;
     }
     return true;
@@ -300,6 +354,19 @@ export const createEbayMcpRuntime = (
         ebayTool,
         logToolExecution,
         uiBridge,
+      }),
+    );
+  }
+
+  const credentialTools = credentialToolsFor(toolGatingMode, readOnlyMode);
+  for (const credentialTool of credentialTools) {
+    registeredTools.set(
+      credentialTool.name,
+      registerCredentialTool({
+        server,
+        ebaySellerApi,
+        credentialTool,
+        logToolExecution,
       }),
     );
   }

@@ -45,7 +45,9 @@ src/
 ├── logging/                        # four-level structured STDERR logger
 ├── mcp/
 │   ├── defineTool.ts               # strict Zod/session/completion boundary
-│   ├── ebayToolCatalogue.ts        # explicit named imports for every tool
+│   ├── defineCredentialTool.ts     # credential tools bound to EbaySellerApi
+│   ├── ebayToolCatalogue.ts        # explicit named imports for every eBay tool
+│   ├── credentialToolCatalogue.ts  # explicit named imports for token tools
 │   └── runtime.ts                  # transport-independent MCP composition
 └── ui/
     ├── presentation/<api>.ts       # browser-only projections
@@ -89,9 +91,21 @@ MCP call
   -> optional presentation projection produces browser fields
 ```
 
-Operation functions take two parameters: `sellerSession` and a precisely named eBay query
-or document. A one-use options wrapper, API facade, endpoint class, handler map, or response
-reshaper adds no architectural value.
+Credential and local token-management tools use a parallel boundary:
+
+```text
+MCP call
+  -> runtime chooses an explicitly catalogued credential tool
+  -> defineCredentialTool decodes one strict Zod object
+  -> defineCredentialTool injects EbaySellerApi
+  -> one auth operation returns CredentialToolCompletion<Document>
+  -> defineCredentialTool translates success or failure once
+```
+
+Resource operation functions take two parameters: `sellerSession` and a precisely named eBay
+query or document. Credential operations take `ebaySellerApi` plus tool arguments. A one-use
+options wrapper, API facade, endpoint class, handler map, or response reshaper adds no
+architectural value.
 
 ## Machine-owned boundaries
 
