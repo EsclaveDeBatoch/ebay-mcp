@@ -679,8 +679,8 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       description: 'Requires write access to inventory locations',
     },
 
-    // Marketing Tools
-    ebay_get_campaigns: {
+    // Sell Marketing Tools
+    ebay_sell_marketing_get_campaigns: {
       requiredScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.marketing.readonly',
         'https://api.ebay.com/oauth/api_scope/sell.marketing',
@@ -688,7 +688,7 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.marketing.readonly',
       description: 'Requires read access to marketing campaigns',
     },
-    ebay_create_campaign: {
+    ebay_sell_marketing_create_campaign: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.marketing'],
       optionalScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory.readonly'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.marketing',

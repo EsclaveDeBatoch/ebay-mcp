@@ -27,6 +27,7 @@ describe('toolExposure', () => {
         'sell.edelivery',
         'sell.fulfillment',
         'sell.inventory',
+        'sell.marketing',
         'sell.metadata',
         'sell.negotiation',
         'sell.recommendation',
@@ -48,9 +49,11 @@ describe('toolExposure', () => {
     });
 
     it('parses a comma list into trimmed, lowercased exposure paths', () => {
-      expect(parseToolGatingMode({ EBAY_MCP_TOOLS: ' Marketing , sell.fulfillment ' })).toEqual({
+      expect(
+        parseToolGatingMode({ EBAY_MCP_TOOLS: ' sell.marketing , sell.fulfillment ' }),
+      ).toEqual({
         kind: 'static',
-        exposurePaths: ['marketing', 'sell.fulfillment'],
+        exposurePaths: ['sell.marketing', 'sell.fulfillment'],
       });
     });
   });
@@ -64,7 +67,7 @@ describe('toolExposure', () => {
 
     it('accepts valid legacy and official exposure paths', () => {
       expect(
-        getToolGatingConfigError({ EBAY_MCP_TOOLS: 'marketing,sell.fulfillment' }),
+        getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.marketing,sell.fulfillment' }),
       ).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.feedback' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'commerce.identity' })).toBeUndefined();
@@ -81,6 +84,7 @@ describe('toolExposure', () => {
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.analytics' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.edelivery' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.inventory' })).toBeUndefined();
+      expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.marketing' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.metadata' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.negotiation' })).toBeUndefined();
       expect(getToolGatingConfigError({ EBAY_MCP_TOOLS: 'sell.recommendation' })).toBeUndefined();

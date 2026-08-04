@@ -1,25 +1,19 @@
 import { EbayApiClient } from '@/api/client.js';
-import { MarketingApi } from '@/api/marketing-and-promotions/marketing.js';
 import type { EbayOAuthError } from '@/auth/oauth.js';
 import type { EbayConfig } from '@/types/ebay.js';
 import type { Effect } from 'effect';
 
 /**
- * Main API facade providing access to all eBay APIs
+ * Main API facade providing access to shared eBay client operations.
+ * Migrated eBay resources use EbaySellerSession instead of category facades.
  */
 export class EbaySellerApi {
   private client: EbayApiClient;
   private readonly config: EbayConfig;
 
-  // API categories
-  public marketing: MarketingApi;
-
   constructor(config: EbayConfig) {
     this.config = config;
     this.client = new EbayApiClient(config);
-
-    // Initialize API category handlers
-    this.marketing = new MarketingApi(this.client);
   }
 
   /**
@@ -82,4 +76,3 @@ export class EbaySellerApi {
 }
 
 export * from '@/api/client.js';
-export * from '@/api/marketing-and-promotions/marketing.js';

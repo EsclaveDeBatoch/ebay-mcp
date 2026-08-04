@@ -13,7 +13,8 @@ const FAMILY_BLURBS: Record<string, string> = {
   'token-management': 'OAuth URL, token status, refresh, and credential diagnostics',
   inventory:
     'Inventory items, offers, locations, inventory groups, bulk publish — the REST listing model',
-  marketing: 'Promoted Listings campaigns, ads, promotions, and marketing reports',
+  'sell.marketing':
+    'Promoted Listings campaigns, ads, keywords, promotions, email campaigns, and marketing reports from Sell Marketing',
   'commerce.feedback':
     'Pending tasks, feedback history, submissions, replies, and rating metrics from Commerce Feedback',
   'commerce.identity': 'Authenticated eBay account profile information',
@@ -61,6 +62,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'sell.edelivery', title: 'Sell eDelivery' },
   { namespace: 'sell.fulfillment', title: 'Sell Fulfillment' },
   { namespace: 'sell.inventory', title: 'Sell Inventory' },
+  { namespace: 'sell.marketing', title: 'Sell Marketing' },
   { namespace: 'sell.metadata', title: 'Sell Metadata' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },

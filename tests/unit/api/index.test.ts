@@ -55,8 +55,9 @@ describe('EbaySellerApi', () => {
       await expect(Effect.runPromise(newApi.initialize())).resolves.not.toThrow();
     });
 
-    it('have all API modules', () => {
-      expect(api.marketing).toBeDefined();
+    it('exposes the authenticated client boundary', () => {
+      expect(api.getAuthClient()).toBeDefined();
+      expect(api.getConfig()).toEqual(config);
     });
   });
 

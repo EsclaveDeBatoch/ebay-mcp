@@ -6,19 +6,12 @@ import { describe, expect, it } from 'vitest';
 /**
  * API base-path guard.
  *
- * Every area class prefixes its endpoints with a hand-written base-path literal,
- * while the authoritative value ships in the eBay OpenAPI spec this repo already
- * downloads and commits (`servers[0].variables.basePath.default`). Nothing tied the
- * two together, so three literals had drifted onto paths that belong to a different
- * API — or to no API at all:
- *
- * - Translation dropped the `_beta` suffix the still-beta API requires.
- * - Client Registration used the SDK's folder name (`client_registration`) rather
- *   than eBay's route (`registration`).
- *
- * Unit tests mocked the facade rather than the URL, so nothing caught it; the tests
- * that did assert URLs simply encoded the wrong ones. This guard inverts that: the
- * spec is the expectation, and the source literal has to match it.
+ * Every remaining legacy area class prefixes its endpoints with a hand-written
+ * base-path literal, while the authoritative value ships in the eBay OpenAPI
+ * spec this repo already downloads and commits
+ * (`servers[0].variables.basePath.default`). This guard ties the two together.
+ * Migrated resources encode their official base path in resource modules under
+ * `src/ebay/` and are out of scope for this `src/api` inventory check.
  */
 const repoRoot = fileURLToPath(new URL('../../../', import.meta.url));
 
@@ -33,17 +26,11 @@ type BasePathBinding = {
 };
 
 /**
- * Every base-path literal in `src/api`. A completeness check below fails when a new
- * one appears without being bound here, so a new API cannot ship an unverified path.
- *
+ * Every base-path literal remaining in `src/api`. Empty while the last legacy
+ * facades have been deleted. A completeness check fails when a new literal
+ * appears without being bound here.
  */
-const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [
-  {
-    file: 'src/api/marketing-and-promotions/shared.ts',
-    constant: 'MARKETING_BASE_PATH',
-    spec: 'specs/ebay/sell-apps/marketing-and-promotions/sell_marketing_v1_oas3.json',
-  },
-];
+const BASE_PATH_BINDINGS: readonly BasePathBinding[] = [];
 
 /** Minimal view of an OpenAPI document — only the server variable this guard reads. */
 type SpecDocument = {
@@ -97,9 +84,11 @@ const declaredBasePathKeys = (): string[] =>
     });
 
 describe('api base paths', () => {
-  it.each(BASE_PATH_BINDINGS)('$file $constant matches $spec', (binding) => {
-    expect(readDeclaredBasePath(binding)).toBe(readSpecBasePath(binding.spec));
-  });
+  if (BASE_PATH_BINDINGS.length > 0) {
+    it.each(BASE_PATH_BINDINGS)('$file $constant matches $spec', (binding) => {
+      expect(readDeclaredBasePath(binding)).toBe(readSpecBasePath(binding.spec));
+    });
+  }
 
   it('binds every base-path literal declared under src/api', () => {
     const bound = BASE_PATH_BINDINGS.map((binding) => `${binding.file}#${binding.constant}`);

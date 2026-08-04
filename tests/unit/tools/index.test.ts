@@ -54,17 +54,6 @@ describe('Tools Layer', () => {
 
     // Create comprehensive mock API
     mockApi = {
-      // Marketing API
-      marketing: {
-        getCampaigns: vi.fn(),
-        getCampaign: vi.fn(),
-        pauseCampaign: vi.fn(),
-        resumeCampaign: vi.fn(),
-        endCampaign: vi.fn(),
-        updateCampaignIdentification: vi.fn(),
-        cloneCampaign: vi.fn(),
-        getPromotions: vi.fn(),
-      },
       setUserTokens: vi.fn().mockReturnValue(Effect.succeed(undefined)),
       getTokenInfo: vi.fn().mockReturnValue({
         hasUserToken: false,
@@ -110,7 +99,6 @@ describe('Tools Layer', () => {
       // Check for tools from each remaining legacy category
       expect(toolNames).toContain('search'); // connector
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-      expect(toolNames).toContain('ebay_get_campaigns'); // marketing
     });
   });
 
@@ -480,46 +468,6 @@ describe('Tools Layer', () => {
           code: 'some-code',
         }),
       ).rejects.toThrow('Failed to exchange authorization code: String error message');
-    });
-  });
-
-  describe('executeTool - Marketing', () => {
-    it('get campaigns', async () => {
-      const mockResponse = { campaigns: [] };
-      vi.mocked(mockApi.marketing.getCampaigns).mockReturnValue(Effect.succeed(mockResponse));
-      const input = {
-        campaignStatus: 'RUNNING',
-        limit: 10,
-      };
-
-      const result = await executeTool(mockApi, 'ebay_get_campaigns', input);
-
-      expect(mockApi.marketing.getCampaigns).toHaveBeenCalledWith(input);
-      expect(result).toBe(mockResponse);
-    });
-
-    it('pause campaign', async () => {
-      vi.mocked(mockApi.marketing.pauseCampaign).mockReturnValue(Effect.succeed(undefined));
-
-      const input = {
-        campaignId: 'CAMP123',
-      };
-      await executeTool(mockApi, 'ebay_pause_campaign', input);
-
-      expect(mockApi.marketing.pauseCampaign).toHaveBeenCalledWith(input);
-    });
-
-    it('clone campaign', async () => {
-      const request = { campaignName: 'Cloned Campaign' };
-      vi.mocked(mockApi.marketing.cloneCampaign).mockReturnValue(Effect.succeed({}));
-
-      const input = {
-        campaignId: 'CAMP123',
-        request,
-      };
-      await executeTool(mockApi, 'ebay_clone_campaign', input);
-
-      expect(mockApi.marketing.cloneCampaign).toHaveBeenCalledWith(input);
     });
   });
 
