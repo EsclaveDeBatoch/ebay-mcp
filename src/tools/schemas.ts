@@ -1,9 +1,6 @@
 import { z } from '@/utils/effectSchema.js';
 import {
   TimeDurationUnit,
-  Condition,
-  LengthUnit,
-  WeightUnit,
   PricingVisibility,
   FormatType,
   ReasonForRefund,
@@ -37,70 +34,6 @@ export const amountSchema = z
   .object({
     currency: z.string(),
     value: z.string(),
-  })
-  .passthrough();
-
-// ============================================================================
-// Inventory Management Schemas
-// ============================================================================
-
-/** Inventory availability payload for ship-to-location and pickup quantities. */
-export const availabilitySchema = z
-  .object({
-    shipToLocationAvailability: z
-      .object({
-        quantity: z.number().optional(),
-      })
-      .passthrough()
-      .optional(),
-  })
-  .passthrough();
-
-/** Product details payload used inside inventory item requests. */
-export const productSchema = z
-  .object({
-    title: z.string().optional(),
-    aspects: z.record(z.array(z.string())).optional(),
-    brand: z.string().optional(),
-    description: z.string().optional(),
-    imageUrls: z.array(z.string()).optional(),
-    mpn: z.string().optional(),
-    ean: z.array(z.string()).optional(),
-    isbn: z.array(z.string()).optional(),
-    upc: z.array(z.string()).optional(),
-    epid: z.string().optional(),
-  })
-  .passthrough();
-
-/** Inventory item payload for create, replace, and bulk inventory item tools. */
-export const inventoryItemSchema = z
-  .object({
-    availability: availabilitySchema.optional(),
-    condition: z.nativeEnum(Condition).optional(),
-    conditionDescription: z.string().optional(),
-    packageWeightAndSize: z
-      .object({
-        dimensions: z
-          .object({
-            height: z.number().optional(),
-            length: z.number().optional(),
-            width: z.number().optional(),
-            unit: z.nativeEnum(LengthUnit).optional(),
-          })
-          .passthrough()
-          .optional(),
-        packageType: z.string().optional(),
-        weight: z
-          .object({
-            value: z.number().optional(),
-            unit: z.nativeEnum(WeightUnit).optional(),
-          })
-          .passthrough()
-          .optional(),
-      })
-      .passthrough()
-      .optional(),
-    product: productSchema.optional(),
   })
   .passthrough();
 
@@ -335,38 +268,6 @@ export const infringementDataSchema = z
 // ============================================================================
 // Bulk Operation Schemas
 // ============================================================================
-
-/** Bulk inventory item request payload for batch create and update operations. */
-export const bulkInventoryItemRequestSchema = z
-  .object({
-    requests: z.array(
-      z
-        .object({
-          sku: z.string(),
-          product: productSchema.optional(),
-          availability: availabilitySchema.optional(),
-          condition: z.string().optional(),
-          conditionDescription: z.string().optional(),
-        })
-        .passthrough(),
-    ),
-  })
-  .passthrough();
-
-/** Bulk price and quantity request payload for batch offer revisions. */
-export const bulkPriceQuantityRequestSchema = z
-  .object({
-    requests: z.array(
-      z
-        .object({
-          offerId: z.string(),
-          pricingSummary: pricingSchema.optional(),
-          availableQuantity: z.number().optional(),
-        })
-        .passthrough(),
-    ),
-  })
-  .passthrough();
 
 /** Bulk offer request payload for batch offer creation. */
 export const bulkOfferRequestSchema = z

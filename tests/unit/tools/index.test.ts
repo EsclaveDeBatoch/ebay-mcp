@@ -56,12 +56,6 @@ describe('Tools Layer', () => {
     mockApi = {
       // Inventory API
       inventory: {
-        getInventoryItems: vi.fn(),
-        getInventoryItem: vi.fn(),
-        createOrReplaceInventoryItem: vi.fn(),
-        bulkCreateOrReplaceInventoryItem: vi.fn(),
-        bulkGetInventoryItem: vi.fn(),
-        bulkUpdatePriceQuantity: vi.fn(),
         getOffers: vi.fn(),
         getOffer: vi.fn(),
         createOffer: vi.fn(),
@@ -72,7 +66,6 @@ describe('Tools Layer', () => {
         bulkCreateOffer: vi.fn(),
         bulkPublishOffer: vi.fn(),
         getListingFees: vi.fn(),
-        bulkMigrateListing: vi.fn(),
         publishOfferByInventoryItemGroup: vi.fn(),
         withdrawOfferByInventoryItemGroup: vi.fn(),
       },
@@ -96,6 +89,8 @@ describe('Tools Layer', () => {
       isAuthenticated: vi.fn().mockReturnValue(true),
       getConfig: vi.fn(() => mockConfig),
       getAuthClient: vi.fn().mockReturnValue({
+        get: vi.fn(),
+        getConfig: vi.fn(() => mockConfig),
         getOAuthClient: vi.fn().mockReturnValue({
           getUserTokens: vi.fn().mockReturnValue(null),
           getCachedAppAccessToken: vi.fn().mockReturnValue(null),
@@ -129,30 +124,37 @@ describe('Tools Layer', () => {
 
       // Check for tools from each category
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-      expect(toolNames).toContain('ebay_get_inventory_items'); // inventoryTools
+      expect(toolNames).toContain('ebay_get_offers'); // remaining legacy inventory tools
       expect(toolNames).toContain('ebay_get_campaigns');
     });
   });
 
   describe('executeTool - ChatGPT Connector Tools', () => {
     it('execute search tool', async () => {
-      const mockResponse = {
+      const inventoryItemCollection = {
         inventoryItems: [
-          { product: { title: 'Test Product' } },
-          { product: { title: 'Another Product' } },
+          { sku: 'SKU-1', product: { title: 'Test Product' } },
+          { sku: 'SKU-2', product: { title: 'Another Product' } },
         ],
       };
-      vi.mocked(mockApi.inventory.getInventoryItems).mockReturnValue(Effect.succeed(mockResponse));
+      vi.mocked(mockApi.getAuthClient().get).mockResolvedValue(inventoryItemCollection);
 
       const result = await executeTool(mockApi, 'search', { query: '', limit: 10 });
 
-      expect(mockApi.inventory.getInventoryItems).toHaveBeenCalledWith({ limit: 10, offset: 0 });
+      expect(mockApi.getAuthClient().get).toHaveBeenCalledWith(
+        '/sell/inventory/v1/inventory_item',
+        {
+          limit: '10',
+          offset: '0',
+        },
+      );
       expect(result).toHaveProperty('content');
       expect(Array.isArray((result as TextContentToolResult).content)).toBe(true);
     });
 
     it('execute fetch tool', async () => {
-      const mockItem = {
+      const inventoryItem = {
+        sku: 'TEST-SKU',
         product: {
           title: 'Test Product',
           description: 'Test Description',
@@ -160,11 +162,14 @@ describe('Tools Layer', () => {
         },
         condition: 'NEW',
       };
-      vi.mocked(mockApi.inventory.getInventoryItem).mockReturnValue(Effect.succeed(mockItem));
+      vi.mocked(mockApi.getAuthClient().get).mockResolvedValue(inventoryItem);
 
       const result = await executeTool(mockApi, 'fetch', { id: 'TEST-SKU' });
 
-      expect(mockApi.inventory.getInventoryItem).toHaveBeenCalledWith({ sku: 'TEST-SKU' });
+      expect(mockApi.getAuthClient().get).toHaveBeenCalledWith(
+        '/sell/inventory/v1/inventory_item/TEST-SKU',
+        undefined,
+      );
       expect(result).toHaveProperty('content');
     });
   });
@@ -494,45 +499,6 @@ describe('Tools Layer', () => {
   });
 
   describe('executeTool - Inventory Management', () => {
-    it('get inventory items', async () => {
-      const mockResponse = { inventoryItems: [] };
-      const input = {
-        limit: 10,
-        offset: 5,
-      };
-      vi.mocked(mockApi.inventory.getInventoryItems).mockReturnValue(Effect.succeed(mockResponse));
-
-      const result = await executeTool(mockApi, 'ebay_get_inventory_items', input);
-
-      expect(mockApi.inventory.getInventoryItems).toHaveBeenCalledWith(input);
-      expect(result).toBe(mockResponse);
-    });
-
-    it('get inventory item', async () => {
-      const mockItem = { sku: 'TEST-SKU' };
-      const input = {
-        sku: 'TEST-SKU',
-      };
-      vi.mocked(mockApi.inventory.getInventoryItem).mockReturnValue(Effect.succeed(mockItem));
-
-      const result = await executeTool(mockApi, 'ebay_get_inventory_item', input);
-
-      expect(mockApi.inventory.getInventoryItem).toHaveBeenCalledWith(input);
-      expect(result).toBe(mockItem);
-    });
-
-    it('create inventory item', async () => {
-      const input = {
-        sku: 'TEST-SKU',
-        body: { product: { title: 'Test' } },
-      };
-      vi.mocked(mockApi.inventory.createOrReplaceInventoryItem).mockReturnValue(Effect.succeed({}));
-
-      await executeTool(mockApi, 'ebay_create_or_replace_inventory_item', input);
-
-      expect(mockApi.inventory.createOrReplaceInventoryItem).toHaveBeenCalledWith(input);
-    });
-
     it('publish offer', async () => {
       const mockResponse = { listingId: 'LISTING123' };
       const input = {

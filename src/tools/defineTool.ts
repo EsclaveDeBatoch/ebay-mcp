@@ -112,10 +112,10 @@ function publicToolDefinition<Shape extends EffectBackedRawShape, Result>(
  * @example
  * ```ts
  * const entry = defineTool({
- *   name: 'ebay_get_inventory_item',
- *   description: 'Retrieve one inventory item',
- *   inputSchema: getInventoryItemInputSchema.shape,
- *   handler: (api, args) => Effect.runPromise(api.inventory.getInventoryItem(args)),
+ *   name: 'ebay_get_offer',
+ *   description: 'Retrieve one inventory offer',
+ *   inputSchema: getOfferInputSchema.shape,
+ *   handler: (api, args) => Effect.runPromise(api.inventory.getOffer(args)),
  * });
  * ```
  */

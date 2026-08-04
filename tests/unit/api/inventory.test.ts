@@ -2,22 +2,6 @@ import { Effect } from 'effect';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createInventoryApi, type InventoryApi } from '@/api/listing-management/inventory.js';
 import type { EbayApiClient } from '@/api/client.js';
-import type { EbayApiError, EndpointInputError } from '@/api/shared/request.js';
-import { invalidInput } from '@tests/helpers/invalidInput.js';
-
-type InventoryFailure = EbayApiError | EndpointInputError;
-
-const expectEndpointInputError = async (
-  program: Effect.Effect<unknown, InventoryFailure>,
-  parameter: string,
-): Promise<void> => {
-  const error = await Effect.runPromise(Effect.flip(program));
-
-  expect(error._tag).toBe('EndpointInputError');
-  if (error._tag === 'EndpointInputError') {
-    expect(error.parameter).toBe(parameter);
-  }
-};
 
 describe('InventoryApi', () => {
   let client: EbayApiClient;
@@ -31,112 +15,6 @@ describe('InventoryApi', () => {
       delete: vi.fn(),
     } as unknown as EbayApiClient;
     api = createInventoryApi(client);
-  });
-
-  describe('inventory items', () => {
-    it('gets inventory items without query params', async () => {
-      const response = { inventoryItems: [] };
-      vi.mocked(client.get).mockResolvedValue(response);
-
-      const result = await Effect.runPromise(api.getInventoryItems());
-
-      expect(client.get).toHaveBeenCalledWith('/sell/inventory/v1/inventory_item');
-      expect(result).toBe(response);
-    });
-
-    it('gets inventory items with validated pagination query params', async () => {
-      vi.mocked(client.get).mockResolvedValue({ inventoryItems: [] });
-
-      await Effect.runPromise(api.getInventoryItems({ limit: 10, offset: 5 }));
-
-      expect(client.get).toHaveBeenCalledWith('/sell/inventory/v1/inventory_item', {
-        limit: '10',
-        offset: '5',
-      });
-    });
-
-    it('rejects invalid inventory item pagination before calling eBay', async () => {
-      await expectEndpointInputError(api.getInventoryItems({ limit: 0 }), 'limit');
-      await expectEndpointInputError(api.getInventoryItems({ limit: 10, offset: -1 }), 'offset');
-
-      expect(client.get).not.toHaveBeenCalled();
-    });
-
-    it('gets one inventory item by SKU', async () => {
-      const response = { sku: 'SKU-1' };
-      vi.mocked(client.get).mockResolvedValue(response);
-
-      const result = await Effect.runPromise(api.getInventoryItem({ sku: 'SKU-1' }));
-
-      expect(client.get).toHaveBeenCalledWith('/sell/inventory/v1/inventory_item/SKU-1');
-      expect(result).toBe(response);
-    });
-
-    it('creates or replaces one inventory item by SKU', async () => {
-      const body = { product: { title: 'Test Product' }, condition: 'NEW' };
-      vi.mocked(client.put).mockResolvedValue({ warnings: [] });
-
-      await Effect.runPromise(api.createOrReplaceInventoryItem({ sku: 'SKU-1', body }));
-
-      expect(client.put).toHaveBeenCalledWith('/sell/inventory/v1/inventory_item/SKU-1', body);
-    });
-
-    it('deletes one inventory item by SKU', async () => {
-      vi.mocked(client.delete).mockResolvedValue(undefined);
-
-      await Effect.runPromise(api.deleteInventoryItem({ sku: 'SKU-1' }));
-
-      expect(client.delete).toHaveBeenCalledWith('/sell/inventory/v1/inventory_item/SKU-1');
-    });
-
-    it('rejects missing inventory item fields before calling eBay', async () => {
-      await expectEndpointInputError(api.getInventoryItem({ sku: '' }), 'sku');
-      await expectEndpointInputError(
-        api.createOrReplaceInventoryItem({
-          sku: 'SKU-1',
-          body: invalidInput(undefined),
-        }),
-        'body',
-      );
-
-      expect(client.get).not.toHaveBeenCalled();
-      expect(client.put).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('bulk inventory and compatibility', () => {
-    it('posts bulk inventory item requests', async () => {
-      const body = { requests: [{ sku: 'SKU-1' }] };
-      vi.mocked(client.post).mockResolvedValue({ responses: [] });
-
-      await Effect.runPromise(api.bulkCreateOrReplaceInventoryItem({ body }));
-      await Effect.runPromise(api.bulkGetInventoryItem({ body }));
-
-      expect(client.post).toHaveBeenNthCalledWith(
-        1,
-        '/sell/inventory/v1/bulk_create_or_replace_inventory_item',
-        body,
-      );
-      expect(client.post).toHaveBeenNthCalledWith(
-        2,
-        '/sell/inventory/v1/bulk_get_inventory_item',
-        body,
-      );
-    });
-
-    it('posts bulk price and quantity requests', async () => {
-      const body = {
-        requests: [{ sku: 'SKU-1', offers: [{ offerId: 'OFFER-1', availableQuantity: 3 }] }],
-      };
-      vi.mocked(client.post).mockResolvedValue({ responses: [] });
-
-      await Effect.runPromise(api.bulkUpdatePriceQuantity({ body }));
-
-      expect(client.post).toHaveBeenCalledWith(
-        '/sell/inventory/v1/bulk_update_price_quantity',
-        body,
-      );
-    });
   });
 
   describe('offers', () => {
@@ -240,29 +118,6 @@ describe('InventoryApi', () => {
         '/sell/inventory/v1/offer/withdraw_by_inventory_item_group',
         body,
       );
-    });
-  });
-
-  describe('listing migration and request failures', () => {
-    it('posts bulk migrate listing request bodies', async () => {
-      const body = { requests: [{ listingId: 'LISTING-1' }] };
-      vi.mocked(client.post).mockResolvedValue({ responses: [] });
-
-      await Effect.runPromise(api.bulkMigrateListing({ body }));
-
-      expect(client.post).toHaveBeenCalledWith('/sell/inventory/v1/bulk_migrate_listing', body);
-    });
-
-    it('returns tagged API errors for transport failures', async () => {
-      vi.mocked(client.get).mockRejectedValue(new Error('Not Found'));
-
-      const error = await Effect.runPromise(Effect.flip(api.getInventoryItem({ sku: 'SKU-1' })));
-
-      expect(error._tag).toBe('EbayApiError');
-      if (error._tag === 'EbayApiError') {
-        expect(error.method).toBe('GET');
-        expect(error.path).toBe('/sell/inventory/v1/inventory_item/SKU-1');
-      }
     });
   });
 });

@@ -4,35 +4,21 @@ import { zodToJsonSchema } from 'zod-to-json-schema';
 import { defineTool } from '@/tools/defineTool.js';
 import type { OutputArgs } from '@/tools/types.js';
 import type { ToolEntry } from '@/tools/registry.js';
-import {
-  mapInventoryItemsToTable,
-  mapInventoryItemToCard,
-  mapOffersToTable,
-  mapOfferToCard,
-} from '@/tools/ui/maps.js';
+import { mapOffersToTable, mapOfferToCard } from '@/tools/ui/maps.js';
 import { MarketplaceId } from '@/types/ebayEnums.js';
 import type {
   BulkCreateOfferRequest,
-  BulkCreateOrReplaceInventoryItemRequest,
-  BulkGetInventoryItemRequest,
-  BulkMigrateListingRequest,
   BulkPublishOfferRequest,
-  BulkUpdatePriceQuantityRequest,
   CreateOfferRequest,
   GetListingFeesRequest,
-  InventoryItem,
   PublishOfferByInventoryItemGroupRequest,
   UpdateOfferRequest,
   WithdrawOfferByInventoryItemGroupRequest,
 } from '@/api/listing-management/inventory.js';
 import {
-  bulkInventoryItemResponseSchema,
   bulkOfferResponseSchema,
   bulkPublishResponseSchema,
-  createInventoryItemOutputSchema,
   createOfferOutputSchema,
-  getInventoryItemOutputSchema,
-  getInventoryItemsOutputSchema,
   getOffersOutputSchema,
   offerResponseSchema,
   publishOfferOutputSchema,
@@ -50,37 +36,6 @@ const generatedBodySchema = <Body>(description: string) =>
       message: description,
     })
     .describe(description);
-
-const skuInputSchema = z.object({
-  sku: z.string().describe('The seller-defined SKU'),
-});
-
-const inventoryPaginationInputSchema = z.object({
-  limit: z.number().optional().describe('Number of records to return'),
-  offset: z.number().optional().describe('Number of records to skip'),
-});
-
-const createOrReplaceInventoryItemInputSchema = skuInputSchema.extend({
-  body: generatedBodySchema<InventoryItem>('Generated InventoryItem request body'),
-});
-
-const bulkCreateOrReplaceInventoryItemInputSchema = z.object({
-  body: generatedBodySchema<BulkCreateOrReplaceInventoryItemRequest>(
-    'Generated BulkInventoryItem request body',
-  ),
-});
-
-const bulkGetInventoryItemInputSchema = z.object({
-  body: generatedBodySchema<BulkGetInventoryItemRequest>(
-    'Generated BulkGetInventoryItem request body',
-  ),
-});
-
-const bulkUpdatePriceQuantityInputSchema = z.object({
-  body: generatedBodySchema<BulkUpdatePriceQuantityRequest>(
-    'Generated BulkPriceQuantity request body',
-  ),
-});
 
 const getOffersInputSchema = z.object({
   format: z.string().optional().describe('Filter by listing format'),
@@ -116,10 +71,6 @@ const getListingFeesInputSchema = z.object({
   body: generatedBodySchema<GetListingFeesRequest>('Generated OfferKeysWithId request body'),
 });
 
-const bulkMigrateListingInputSchema = z.object({
-  body: generatedBodySchema<BulkMigrateListingRequest>('Generated BulkMigrateListing request body'),
-});
-
 const publishOfferByInventoryItemGroupInputSchema = z.object({
   body: generatedBodySchema<PublishOfferByInventoryItemGroupRequest>(
     'Generated PublishByInventoryItemGroup body',
@@ -139,81 +90,8 @@ const listingFeesOutputSchema = z
   })
   .passthrough();
 
-/** Legacy Inventory API tools for seller inventory items, offers, and bulk operations. */
+/** Legacy Inventory API tools for seller offers. */
 export const inventoryEntries: ToolEntry[] = [
-  defineTool({
-    name: 'ebay_get_inventory_items',
-    description:
-      'Retrieve all inventory items for the seller.\n\nRequired OAuth Scope: sell.inventory.readonly or sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
-    inputSchema: inventoryPaginationInputSchema.shape,
-    outputSchema: zodToJsonSchema(getInventoryItemsOutputSchema, {
-      name: 'GetInventoryItemsResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.getInventoryItems(args)),
-    ui: { archetype: 'table', map: mapInventoryItemsToTable },
-  }),
-  defineTool({
-    name: 'ebay_get_inventory_item',
-    description:
-      'Get a specific inventory item by SKU.\n\nRequired OAuth Scope: sell.inventory.readonly or sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
-    inputSchema: skuInputSchema.shape,
-    outputSchema: zodToJsonSchema(getInventoryItemOutputSchema, {
-      name: 'GetInventoryItemResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.getInventoryItem(args)),
-    ui: { archetype: 'card', map: mapInventoryItemToCard },
-  }),
-  defineTool({
-    name: 'ebay_create_or_replace_inventory_item',
-    description:
-      'Create or replace an inventory item.\n\nRequired OAuth Scope: sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory',
-    inputSchema: createOrReplaceInventoryItemInputSchema.shape,
-    outputSchema: zodToJsonSchema(createInventoryItemOutputSchema, {
-      name: 'CreateOrReplaceInventoryItemResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.createOrReplaceInventoryItem(args)),
-  }),
-  defineTool({
-    name: 'ebay_delete_inventory_item',
-    description:
-      'Delete an inventory item by SKU.\n\nRequired OAuth Scope: sell.inventory\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.inventory',
-    inputSchema: skuInputSchema.shape,
-    outputSchema: emptyOutputSchema,
-    handler: (api, args) => Effect.runPromise(api.inventory.deleteInventoryItem(args)),
-  }),
-  defineTool({
-    name: 'ebay_bulk_create_or_replace_inventory_item',
-    description: 'Bulk create or replace multiple inventory items',
-    inputSchema: bulkCreateOrReplaceInventoryItemInputSchema.shape,
-    outputSchema: zodToJsonSchema(bulkInventoryItemResponseSchema, {
-      name: 'BulkInventoryItemResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.bulkCreateOrReplaceInventoryItem(args)),
-  }),
-  defineTool({
-    name: 'ebay_bulk_get_inventory_item',
-    description: 'Bulk get multiple inventory items',
-    inputSchema: bulkGetInventoryItemInputSchema.shape,
-    outputSchema: zodToJsonSchema(bulkInventoryItemResponseSchema, {
-      name: 'BulkGetInventoryItemResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.bulkGetInventoryItem(args)),
-  }),
-  defineTool({
-    name: 'ebay_bulk_update_price_quantity',
-    description: 'Bulk update price and quantity for multiple offers',
-    inputSchema: bulkUpdatePriceQuantityInputSchema.shape,
-    outputSchema: zodToJsonSchema(bulkOfferResponseSchema, {
-      name: 'BulkUpdatePriceQuantityResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.bulkUpdatePriceQuantity(args)),
-  }),
   defineTool({
     name: 'ebay_get_offers',
     description: 'Get all offers for the seller',
@@ -312,16 +190,6 @@ export const inventoryEntries: ToolEntry[] = [
       $refStrategy: 'none',
     }) as OutputArgs,
     handler: (api, args) => Effect.runPromise(api.inventory.getListingFees(args)),
-  }),
-  defineTool({
-    name: 'ebay_bulk_migrate_listing',
-    description: 'Bulk migrate listings to the inventory model',
-    inputSchema: bulkMigrateListingInputSchema.shape,
-    outputSchema: zodToJsonSchema(bulkOfferResponseSchema, {
-      name: 'BulkMigrateListingResponse',
-      $refStrategy: 'none',
-    }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.bulkMigrateListing(args)),
   }),
   defineTool({
     name: 'ebay_publish_offer_by_inventory_item_group',

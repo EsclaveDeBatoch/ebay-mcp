@@ -1,11 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Effect, Either } from 'effect';
-import {
-  timeDurationSchema,
-  amountSchema,
-  inventoryItemSchema,
-  offerSchema,
-} from '@/tools/schemas.js';
+import { timeDurationSchema, amountSchema, offerSchema } from '@/tools/schemas.js';
 import { decodeEffectSchema } from '@/utils/effectSchema.js';
 import type { EffectBackedSchema, InferEffectSchema } from '@/utils/effectSchemaTypes.js';
 
@@ -100,58 +95,6 @@ describe('Schema Validation', () => {
   });
 
   describe('Inventory Management Schemas', () => {
-    describe('inventoryItemSchema', () => {
-      it('validate complete inventory item', () => {
-        const validItem = {
-          availability: {
-            shipToLocationAvailability: {
-              quantity: 10,
-            },
-          },
-          condition: 'NEW',
-          product: {
-            title: 'Test Product',
-            description: 'A test product description',
-            aspects: {
-              Brand: ['Test Brand'],
-              Color: ['Blue'],
-            },
-            imageUrls: ['https://example.com/image.jpg'],
-          },
-        };
-
-        const result = decodeResult(inventoryItemSchema, validItem);
-        expect(result.success).toBe(true);
-      });
-
-      it('allow missing availability (all fields optional)', () => {
-        const missingAvailability = {
-          condition: 'NEW',
-          product: {
-            title: 'Test',
-            description: 'Test',
-          },
-        };
-
-        const result = decodeResult(inventoryItemSchema, missingAvailability);
-        expect(result.success).toBe(true);
-      });
-
-      it('accept different conditions', () => {
-        const conditions = ['NEW', 'LIKE_NEW', 'NEW_OTHER', 'USED_EXCELLENT', 'USED_GOOD'];
-
-        conditions.forEach((condition) => {
-          const item = {
-            availability: { shipToLocationAvailability: { quantity: 1 } },
-            condition,
-            product: { title: 'Test' },
-          };
-          const result = decodeResult(inventoryItemSchema, item);
-          expect(result.success).toBe(true);
-        });
-      });
-    });
-
     describe('offerSchema', () => {
       it('validate complete offer', () => {
         const validOffer = {

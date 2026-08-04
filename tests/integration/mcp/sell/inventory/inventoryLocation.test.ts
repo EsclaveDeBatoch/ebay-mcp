@@ -18,6 +18,14 @@ const inventoryLocationToolNames = [
 ] as const;
 
 const sellInventoryToolNames = [
+  'ebay_sell_inventory_get_inventory_items',
+  'ebay_sell_inventory_get_inventory_item',
+  'ebay_sell_inventory_create_or_replace_inventory_item',
+  'ebay_sell_inventory_delete_inventory_item',
+  'ebay_sell_inventory_bulk_create_or_replace_inventory_item',
+  'ebay_sell_inventory_bulk_get_inventory_item',
+  'ebay_sell_inventory_bulk_update_price_quantity',
+  'ebay_sell_inventory_bulk_migrate_listing',
   'ebay_sell_inventory_get_inventory_item_group',
   'ebay_sell_inventory_create_or_replace_inventory_item_group',
   'ebay_sell_inventory_delete_inventory_item_group',
@@ -118,7 +126,7 @@ describe('Sell Inventory location MCP exposure', () => {
     await mcpClient.close();
   });
 
-  it('keeps only the five resource reads in read-only mode', async () => {
+  it('keeps only the resource reads in read-only mode', async () => {
     vi.stubEnv('EBAY_MCP_TOOLS', 'sell.inventory');
     vi.stubEnv('EBAY_MCP_UI', 'off');
     vi.stubEnv('EBAY_READ_ONLY', 'true');
@@ -129,6 +137,9 @@ describe('Sell Inventory location MCP exposure', () => {
     const { mcpClient, listedTools } = await listEbayTools(sellerSession);
 
     expect(listedTools.tools.map((ebayTool) => ebayTool.name)).toEqual([
+      'ebay_sell_inventory_get_inventory_items',
+      'ebay_sell_inventory_get_inventory_item',
+      'ebay_sell_inventory_bulk_get_inventory_item',
       'ebay_sell_inventory_get_inventory_item_group',
       'ebay_sell_inventory_get_product_compatibility',
       'ebay_sell_inventory_get_sku_location_mapping',

@@ -57,7 +57,7 @@ describe('Scope Utils', () => {
 
   describe('getRequiredScopesForTool', () => {
     it('return scopes for inventory tools', () => {
-      const requirement = getRequiredScopesForTool('ebay_get_inventory_items');
+      const requirement = getRequiredScopesForTool('ebay_sell_inventory_get_inventory_items');
 
       expect(requirement).toBeDefined();
       expect(requirement?.requiredScopes).toContain(
@@ -66,6 +66,56 @@ describe('Scope Utils', () => {
       expect(requirement?.minimumScope).toBe(
         'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
       );
+    });
+
+    it.each([
+      'ebay_sell_inventory_get_inventory_items',
+      'ebay_sell_inventory_get_inventory_item',
+      'ebay_sell_inventory_bulk_get_inventory_item',
+    ])('returns either inventory scope for the hierarchical %s read', (inventoryReadToolName) => {
+      const inventoryScopeRequirement = getRequiredScopesForTool(inventoryReadToolName);
+
+      expect(inventoryScopeRequirement).toEqual({
+        requiredScopes: [
+          'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+          'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        ],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        description: 'Requires read access to inventory',
+      });
+    });
+
+    it.each([
+      'ebay_sell_inventory_create_or_replace_inventory_item',
+      'ebay_sell_inventory_delete_inventory_item',
+      'ebay_sell_inventory_bulk_create_or_replace_inventory_item',
+    ])(
+      'returns the inventory write scope for the hierarchical %s tool',
+      (inventoryWriteToolName) => {
+        const inventoryScopeRequirement = getRequiredScopesForTool(inventoryWriteToolName);
+
+        expect(inventoryScopeRequirement).toEqual({
+          requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+          minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+          description: 'Requires write access to inventory items',
+        });
+      },
+    );
+
+    it('returns the inventory write scope for bulk price and quantity changes', () => {
+      expect(getRequiredScopesForTool('ebay_sell_inventory_bulk_update_price_quantity')).toEqual({
+        requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        description: 'Requires write access to inventory items and offers',
+      });
+    });
+
+    it('returns the inventory write scope for listing migration', () => {
+      expect(getRequiredScopesForTool('ebay_sell_inventory_bulk_migrate_listing')).toEqual({
+        requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+        minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+        description: 'Requires write access to migrate listings into inventory',
+      });
     });
 
     it('return scopes for order management tools', () => {
@@ -703,16 +753,6 @@ describe('Scope Utils', () => {
         'ebay_sell_negotiation_send_offer_to_interested_buyers',
       );
 
-      expect(requirement?.requiredScopes).toEqual([
-        'https://api.ebay.com/oauth/api_scope/sell.inventory',
-      ]);
-      expect(requirement?.minimumScope).toBe('https://api.ebay.com/oauth/api_scope/sell.inventory');
-    });
-
-    it('return scopes for create/write operations', () => {
-      const requirement = getRequiredScopesForTool('ebay_create_or_replace_inventory_item');
-
-      expect(requirement).toBeDefined();
       expect(requirement?.requiredScopes).toEqual([
         'https://api.ebay.com/oauth/api_scope/sell.inventory',
       ]);

@@ -1,13 +1,6 @@
 import { z } from '@/utils/effectSchema.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
-import {
-  Condition,
-  LengthUnit,
-  WeightUnit,
-  PricingVisibility,
-  FormatType,
-  MarketplaceId,
-} from '@/types/ebayEnums.js';
+import { PricingVisibility, FormatType, MarketplaceId } from '@/types/ebayEnums.js';
 
 /**
  * Inventory Management API Schemas
@@ -39,156 +32,6 @@ const errorSchema = z.object({
 const amountSchema = z.object({
   currency: z.string(),
   value: z.string(),
-});
-
-// ============================================================================
-// Inventory Item Schemas
-// ============================================================================
-
-const availabilitySchema = z.object({
-  shipToLocationAvailability: z
-    .object({
-      quantity: z.number().optional(),
-      availabilityDistributions: z
-        .array(
-          z.object({
-            fulfillmentTime: z
-              .object({
-                unit: z.string().optional(),
-                value: z.number().optional(),
-              })
-              .optional(),
-            merchantLocationKey: z.string().optional(),
-            quantity: z.number().optional(),
-          }),
-        )
-        .optional(),
-    })
-    .optional(),
-});
-
-const productIdentifierSchema = z.object({
-  epid: z.string().optional(),
-  gtin: z.string().optional(),
-  ktype: z.string().optional(),
-});
-
-const productSchema = z.object({
-  title: z.string().optional(),
-  aspects: z.record(z.array(z.string())).optional(),
-  brand: z.string().optional(),
-  description: z.string().optional(),
-  imageUrls: z.array(z.string()).optional(),
-  mpn: z.string().optional(),
-  ean: z.array(z.string()).optional(),
-  isbn: z.array(z.string()).optional(),
-  upc: z.array(z.string()).optional(),
-  epid: z.string().optional(),
-  subtitle: z.string().optional(),
-  videoIds: z.array(z.string()).optional(),
-});
-
-const dimensionsSchema = z.object({
-  height: z.number().optional(),
-  length: z.number().optional(),
-  width: z.number().optional(),
-  unit: z.nativeEnum(LengthUnit).optional(),
-});
-
-const weightSchema = z.object({
-  value: z.number().optional(),
-  unit: z.nativeEnum(WeightUnit).optional(),
-});
-
-const packageWeightAndSizeSchema = z.object({
-  dimensions: dimensionsSchema.optional(),
-  packageType: z.string().optional(),
-  weight: weightSchema.optional(),
-});
-
-/**
- * Validates the Inventory Management API inventory item model.
- */
-export const inventoryItemSchema = z.object({
-  availability: availabilitySchema.optional(),
-  condition: z.nativeEnum(Condition).optional(),
-  conditionDescription: z.string().optional(),
-  conditionDescriptors: z
-    .array(
-      z.object({
-        name: z.string().optional(),
-        values: z.array(z.string()).optional(),
-      }),
-    )
-    .optional(),
-  packageWeightAndSize: packageWeightAndSizeSchema.optional(),
-  product: productSchema.optional(),
-  locale: z.string().optional(),
-});
-
-/**
- * Validates the Inventory Management API get inventory items request payload.
- */
-export const getInventoryItemsInputSchema = z.object({
-  limit: z.number().optional().describe('Number of items to return per page'),
-  offset: z.number().optional().describe('Number of items to skip for pagination'),
-});
-
-/**
- * Validates the Inventory Management API get inventory items response payload.
- */
-export const getInventoryItemsOutputSchema = z.object({
-  inventoryItems: z
-    .array(
-      z.object({
-        sku: z.string().optional(),
-        locale: z.string().optional(),
-        availability: availabilitySchema.optional(),
-        condition: z.string().optional(),
-        conditionDescription: z.string().optional(),
-        packageWeightAndSize: packageWeightAndSizeSchema.optional(),
-        product: productSchema.optional(),
-      }),
-    )
-    .optional(),
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional(),
-  offset: z.number().optional(),
-  prev: z.string().optional(),
-  size: z.number().optional(),
-  total: z.number().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Inventory Management API get inventory item request payload.
- */
-export const getInventoryItemInputSchema = z.object({
-  sku: z.string().describe('The seller-defined SKU value for the inventory item'),
-});
-
-/**
- * Validates the Inventory Management API get inventory item response payload.
- */
-export const getInventoryItemOutputSchema = inventoryItemSchema.extend({
-  sku: z.string().optional(),
-  warnings: z.array(errorSchema).optional(),
-});
-
-/**
- * Validates the Inventory Management API create inventory item request payload.
- */
-export const createInventoryItemInputSchema = z.object({
-  sku: z.string().describe('The seller-defined SKU value for the inventory item'),
-  body: inventoryItemSchema,
-});
-
-/**
- * Validates the Inventory Management API create inventory item response payload.
- */
-export const createInventoryItemOutputSchema = z.object({
-  warnings: z.array(errorSchema).optional(),
 });
 
 // ============================================================================
@@ -340,37 +183,6 @@ export const publishOfferOutputSchema = z.object({
 // ============================================================================
 
 /**
- * Validates the Inventory Management API bulk inventory item request model.
- */
-export const bulkInventoryItemRequestSchema = z.object({
-  requests: z.array(
-    z.object({
-      sku: z.string(),
-      product: productSchema.optional(),
-      availability: availabilitySchema.optional(),
-      condition: z.nativeEnum(Condition).optional(),
-      conditionDescription: z.string().optional(),
-    }),
-  ),
-});
-
-/**
- * Validates the Inventory Management API bulk inventory item response payload.
- */
-export const bulkInventoryItemResponseSchema = z.object({
-  responses: z
-    .array(
-      z.object({
-        sku: z.string().optional(),
-        statusCode: z.number().optional(),
-        errors: z.array(errorSchema).optional(),
-        warnings: z.array(errorSchema).optional(),
-      }),
-    )
-    .optional(),
-});
-
-/**
  * Validates the Inventory Management API bulk offer request model.
  */
 export const bulkOfferRequestSchema = z.object({
@@ -436,23 +248,6 @@ export const bulkPublishResponseSchema = z.object({
  */
 export const getInventoryManagementJsonSchemas = () => {
   return {
-    // Inventory Items
-    getInventoryItemsInput: zodToJsonSchema(getInventoryItemsInputSchema, 'getInventoryItemsInput'),
-    getInventoryItemsOutput: zodToJsonSchema(
-      getInventoryItemsOutputSchema,
-      'getInventoryItemsOutput',
-    ),
-    getInventoryItemInput: zodToJsonSchema(getInventoryItemInputSchema, 'getInventoryItemInput'),
-    getInventoryItemOutput: zodToJsonSchema(getInventoryItemOutputSchema, 'getInventoryItemOutput'),
-    createInventoryItemInput: zodToJsonSchema(
-      createInventoryItemInputSchema,
-      'createInventoryItemInput',
-    ),
-    createInventoryItemOutput: zodToJsonSchema(
-      createInventoryItemOutputSchema,
-      'createInventoryItemOutput',
-    ),
-
     // Offers
     getOffersInput: zodToJsonSchema(getOffersInputSchema, 'getOffersInput'),
     getOffersOutput: zodToJsonSchema(getOffersOutputSchema, 'getOffersOutput'),
@@ -463,14 +258,6 @@ export const getInventoryManagementJsonSchemas = () => {
     offerDetails: zodToJsonSchema(offerResponseSchema, 'offerDetails'),
 
     // Bulk Operations
-    bulkInventoryItemRequest: zodToJsonSchema(
-      bulkInventoryItemRequestSchema,
-      'bulkInventoryItemRequest',
-    ),
-    bulkInventoryItemResponse: zodToJsonSchema(
-      bulkInventoryItemResponseSchema,
-      'bulkInventoryItemResponse',
-    ),
     bulkOfferRequest: zodToJsonSchema(bulkOfferRequestSchema, 'bulkOfferRequest'),
     bulkOfferResponse: zodToJsonSchema(bulkOfferResponseSchema, 'bulkOfferResponse'),
     bulkPublishRequest: zodToJsonSchema(bulkPublishRequestSchema, 'bulkPublishRequest'),

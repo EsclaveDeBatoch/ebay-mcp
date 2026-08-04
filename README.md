@@ -88,7 +88,7 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | Family | What it unlocks | Good first request |
 | --- | --- | --- |
 | `sell.account` | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies | "Show my eBay sales-tax settings." |
-| `inventory` | Legacy inventory items, offers, and bulk offer flows | "List my active inventory items and their available quantity." |
+| `inventory` | Remaining legacy offer and publish flows | "List my offers and their publication status." |
 | `sell.inventory` | Item groups, vehicle compatibility, SKU location mappings, and inventory locations | "Show the fulfillment locations mapped to this SKU." |
 | `sell.fulfillment` | Orders, shipping fulfillments, refunds, payment disputes, and dispute evidence | "Show unfulfilled orders from the last 7 days." |
 | `marketing` | Promoted Listings campaigns, ads, promotions, bidding, and marketing reports | "List my active promoted listing campaigns." |
@@ -307,8 +307,8 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
 | [Sell Account](src/ebay/sell/account/) | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies under `sell.account` |
-| [Inventory](src/tools/categories/inventory.ts) | Legacy inventory items, offers, and bulk operations |
-| [Sell Inventory](src/ebay/sell/inventory/) | Item groups, vehicle compatibility, SKU location mappings, and inventory locations under `sell.inventory` |
+| [Inventory](src/tools/categories/inventory.ts) | Remaining legacy offer, publish, and listing-fee operations |
+| [Sell Inventory](src/ebay/sell/inventory/) | Inventory items and batches, item groups, vehicle compatibility, SKU location mappings, and inventory locations under `sell.inventory` |
 | [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
 | [Commerce Feedback](src/ebay/commerce/feedback/) | Pending tasks, feedback history, submissions, replies, and rating metrics under `commerce.feedback` |
@@ -329,7 +329,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | [Trading (legacy XML)](src/ebay/trading/fixedPriceListing.ts) | Fixed-price listing retrieval, create, revise, relist, and end under `trading` |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |
 
-**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_commerce_vero_get_reason_codes`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_developer_status_get_incidents`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_edelivery_create_package`, `ebay_sell_inventory_get_inventory_item_group`, `ebay_sell_metadata_get_category_policies`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_trading_get_active_listings`, `ebay_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_commerce_vero_get_reason_codes`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_developer_status_get_incidents`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_edelivery_create_package`, `ebay_sell_inventory_get_inventory_item_group`, `ebay_sell_metadata_get_category_policies`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_trading_get_active_listings`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 For the complete machine-readable index, see [llms.txt](llms.txt).
 
@@ -353,8 +353,8 @@ On hosts that support [MCP Apps](https://modelcontextprotocol.io), common read t
 
 | Archetype | Tools |
 | --- | --- |
-| **Table** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
-| **Card** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Table** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Card** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Chart** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 | **Stat** | `ebay_developer_analytics_get_rate_limits`, `ebay_developer_analytics_get_user_rate_limits` |
 
@@ -367,10 +367,10 @@ The views build into self-contained HTML with `npm run build` (or `npm run build
 Common tasks, phrased as you'd ask your AI assistant:
 
 - **Set up OAuth** — *"Help me set up OAuth for my eBay account."* → generates an authorization URL via `ebay_get_oauth_url`, then configures the refresh token. Unlocks 10k–50k req/day.
-- **Manage inventory** — *"Show me all my active listings."* → `ebay_get_inventory_items` returns SKUs, quantities, and status.
+- **Manage inventory** — *"Show me all my active listings."* → `ebay_sell_inventory_get_inventory_items` returns SKUs, quantities, and status.
 - **Process orders** — *"Get all unfulfilled orders from the last 7 days."* → `ebay_sell_fulfillment_get_orders` with date and fulfillment-status filters.
 - **Create campaigns** — *"Create a promoted-listing campaign for electronics."* → `ebay_create_campaign` and related marketing tools.
-- **Bulk operations** — *"Apply a 10% discount to all 'Vintage Watches' items."* → `ebay_get_inventory_items` + `ebay_update_offer` across matches.
+- **Bulk operations** — *"Apply a 10% discount to all 'Vintage Watches' items."* → `ebay_sell_inventory_get_inventory_items` + `ebay_update_offer` across matches.
 
 ## Scope and safety
 

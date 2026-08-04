@@ -6,7 +6,6 @@ import { describe, it, expect } from 'vitest';
 import { Effect, Either } from 'effect';
 import {
   timeDurationSchema,
-  inventoryItemSchema,
   pricingSchema,
   offerSchema,
   refundDataSchema,
@@ -18,9 +17,6 @@ import {
 } from '@/tools/schemas.js';
 import {
   TimeDurationUnit,
-  Condition,
-  LengthUnit,
-  WeightUnit,
   PricingVisibility,
   FormatType,
   ReasonForRefund,
@@ -84,80 +80,6 @@ describe('Effect-backed schema enum validation', () => {
         value: 30,
       };
       expect(() => decode(timeDurationSchema, invalidData)).toThrow();
-    });
-  });
-
-  describe('inventoryItemSchema', () => {
-    it('accept valid Condition enum', () => {
-      const validData = {
-        availability: {
-          shipToLocationAvailability: {
-            quantity: 10,
-          },
-        },
-        condition: Condition.NEW,
-        product: {
-          title: 'Test Product',
-          description: 'Test Description',
-        },
-      };
-      expect(() => decode(inventoryItemSchema, validData)).not.toThrow();
-    });
-
-    it('accept all Condition values', () => {
-      const conditions = [
-        Condition.NEW,
-        Condition.LIKE_NEW,
-        Condition.NEW_OTHER,
-        Condition.NEW_WITH_DEFECTS,
-        Condition.MANUFACTURER_REFURBISHED,
-        Condition.CERTIFIED_REFURBISHED,
-        Condition.USED_EXCELLENT,
-        Condition.USED_VERY_GOOD,
-        Condition.USED_GOOD,
-        Condition.USED_ACCEPTABLE,
-        Condition.FOR_PARTS_OR_NOT_WORKING,
-      ];
-
-      conditions.forEach((condition) => {
-        const data = {
-          availability: {
-            shipToLocationAvailability: { quantity: 10 },
-          },
-          condition,
-          product: {
-            title: 'Test Product',
-            description: 'Test Description',
-          },
-        };
-        expect(() => decode(inventoryItemSchema, data)).not.toThrow();
-      });
-    });
-
-    it('accept valid LengthUnit and WeightUnit', () => {
-      const data = {
-        availability: {
-          shipToLocationAvailability: { quantity: 10 },
-        },
-        condition: Condition.NEW,
-        product: {
-          title: 'Test Product',
-          description: 'Test Description',
-        },
-        packageWeightAndSize: {
-          dimensions: {
-            length: 10,
-            width: 5,
-            height: 3,
-            unit: LengthUnit.INCH,
-          },
-          weight: {
-            value: 2,
-            unit: WeightUnit.POUND,
-          },
-        },
-      };
-      expect(() => decode(inventoryItemSchema, data)).not.toThrow();
     });
   });
 

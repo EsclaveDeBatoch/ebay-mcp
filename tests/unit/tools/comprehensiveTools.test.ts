@@ -14,13 +14,6 @@ describe('Comprehensive Tools Coverage', () => {
     // Create comprehensive mock API
     mockApi = {
       inventory: {
-        getInventoryItems: vi.fn(),
-        getInventoryItem: vi.fn(),
-        createOrReplaceInventoryItem: vi.fn(),
-        deleteInventoryItem: vi.fn(),
-        bulkCreateOrReplaceInventoryItem: vi.fn(),
-        bulkGetInventoryItem: vi.fn(),
-        bulkUpdatePriceQuantity: vi.fn(),
         getOffers: vi.fn(),
         getOffer: vi.fn(),
         createOffer: vi.fn(),
@@ -31,7 +24,6 @@ describe('Comprehensive Tools Coverage', () => {
         bulkCreateOffer: vi.fn(),
         bulkPublishOffer: vi.fn(),
         getListingFees: vi.fn(),
-        bulkMigrateListing: vi.fn(),
         publishOfferByInventoryItemGroup: vi.fn(),
         withdrawOfferByInventoryItemGroup: vi.fn(),
       },
@@ -68,70 +60,6 @@ describe('Comprehensive Tools Coverage', () => {
 
   // ===== INVENTORY TOOLS =====
   describe('Inventory Management Tools', () => {
-    it('ebay_get_inventory_items', async () => {
-      const mockResponse = { inventoryItems: [] };
-      const input = { limit: 10, offset: 0 };
-      vi.mocked(mockApi.inventory.getInventoryItems).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_inventory_items', input);
-      expect(mockApi.inventory.getInventoryItems).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_get_inventory_item', async () => {
-      const mockResponse = { sku: 'SKU123' };
-      const input = { sku: 'SKU123' };
-      vi.mocked(mockApi.inventory.getInventoryItem).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_get_inventory_item', input);
-      expect(mockApi.inventory.getInventoryItem).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_create_or_replace_inventory_item', async () => {
-      vi.mocked(mockApi.inventory.createOrReplaceInventoryItem).mockReturnValue(Effect.succeed({}));
-      const body = { product: { title: 'Test' }, condition: 'NEW' };
-      const input = {
-        sku: 'SKU123',
-        body,
-      };
-      await executeTool(mockApi, 'ebay_create_or_replace_inventory_item', input);
-      expect(mockApi.inventory.createOrReplaceInventoryItem).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_delete_inventory_item', async () => {
-      const input = { sku: 'SKU123' };
-      vi.mocked(mockApi.inventory.deleteInventoryItem).mockReturnValue(Effect.succeed(undefined));
-      await executeTool(mockApi, 'ebay_delete_inventory_item', input);
-      expect(mockApi.inventory.deleteInventoryItem).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_bulk_create_or_replace_inventory_item', async () => {
-      const mockResponse = { responses: [] };
-      const input = { body: { requests: [] } };
-      vi.mocked(mockApi.inventory.bulkCreateOrReplaceInventoryItem).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_bulk_create_or_replace_inventory_item', input);
-      expect(mockApi.inventory.bulkCreateOrReplaceInventoryItem).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_bulk_get_inventory_item', async () => {
-      const mockResponse = { responses: [] };
-      const input = { body: { requests: [] } };
-      vi.mocked(mockApi.inventory.bulkGetInventoryItem).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_bulk_get_inventory_item', input);
-      expect(mockApi.inventory.bulkGetInventoryItem).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_bulk_update_price_quantity', async () => {
-      const mockResponse = { responses: [] };
-      const input = { body: { requests: [] } };
-      vi.mocked(mockApi.inventory.bulkUpdatePriceQuantity).mockReturnValue(
-        Effect.succeed(mockResponse),
-      );
-      await executeTool(mockApi, 'ebay_bulk_update_price_quantity', input);
-      expect(mockApi.inventory.bulkUpdatePriceQuantity).toHaveBeenCalledWith(input);
-    });
-
     it('ebay_get_offers', async () => {
       const mockResponse = { offers: [] };
       const input = { sku: 'SKU123' };
@@ -214,14 +142,6 @@ describe('Comprehensive Tools Coverage', () => {
       vi.mocked(mockApi.inventory.getListingFees).mockReturnValue(Effect.succeed(mockResponse));
       await executeTool(mockApi, 'ebay_get_listing_fees', input);
       expect(mockApi.inventory.getListingFees).toHaveBeenCalledWith(input);
-    });
-
-    it('ebay_bulk_migrate_listing', async () => {
-      const mockResponse = { responses: [] };
-      const input = { body: { requests: [] } };
-      vi.mocked(mockApi.inventory.bulkMigrateListing).mockReturnValue(Effect.succeed(mockResponse));
-      await executeTool(mockApi, 'ebay_bulk_migrate_listing', input);
-      expect(mockApi.inventory.bulkMigrateListing).toHaveBeenCalledWith(input);
     });
 
     it('ebay_publish_offer_by_inventory_item_group', async () => {

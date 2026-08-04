@@ -256,7 +256,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | [Developer](src/ebay/developer) | 속도 제한, 서명 키, API 상태 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 생성 및 토큰 관리 |
 
-**예시 도구:** `ebay_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**예시 도구:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 전체 기계 판독 인덱스는 [llms.txt](llms.txt)를 참조하세요.
 
@@ -275,8 +275,8 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 
 | 원형 | 도구 |
 | --- | --- |
-| **테이블** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
-| **카드** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **테이블** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **카드** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **차트** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 보기는 `npm run build`(또는 `npm run build:ui`)로 자체 완결형 HTML로 빌드되며, 게시된 패키지에 포함되어 자체적인 네트워크 접근 없이 로드됩니다.
@@ -286,10 +286,10 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 AI 어시스턴트에게 묻듯이 표현한 일반적인 작업:
 
 - **OAuth 설정** — *"내 eBay 계정의 OAuth 설정을 도와줘."* → `ebay_get_oauth_url`로 인증 URL을 생성한 뒤 리프레시 토큰을 구성합니다. 일 1만~5만 요청을 해제합니다.
-- **재고 관리** — *"내 활성 리스팅을 모두 보여줘."* → `ebay_get_inventory_items`가 SKU, 수량, 상태를 반환합니다.
+- **재고 관리** — *"내 활성 리스팅을 모두 보여줘."* → `ebay_sell_inventory_get_inventory_items`가 SKU, 수량, 상태를 반환합니다.
 - **주문 처리** — *"지난 7일간 미처리 주문을 모두 가져와줘."* → 날짜와 처리 상태 필터를 적용한 `ebay_sell_fulfillment_get_orders`.
 - **캠페인 생성** — *"전자제품용 프로모션 광고 캠페인을 만들어줘."* → `ebay_create_campaign` 및 관련 마케팅 도구.
-- **일괄 작업** — *"'빈티지 시계' 항목 전체에 10% 할인을 적용해줘."* → 일치 항목에 `ebay_get_inventory_items` + `ebay_update_offer`.
+- **일괄 작업** — *"'빈티지 시계' 항목 전체에 10% 할인을 적용해줘."* → 일치 항목에 `ebay_sell_inventory_get_inventory_items` + `ebay_update_offer`.
 
 ## 로깅 및 문제 해결
 

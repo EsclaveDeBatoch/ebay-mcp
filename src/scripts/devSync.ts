@@ -443,6 +443,14 @@ const KNOWN_OPERATION_MAPPINGS: Record<string, string[]> = {
   getpaymentsprogramonboarding: ['ebay_sell_account_get_payments_program_onboarding'],
 
   // Sell Inventory API
+  getinventoryitems: ['ebay_sell_inventory_get_inventory_items'],
+  getinventoryitem: ['ebay_sell_inventory_get_inventory_item'],
+  createorreplaceinventoryitem: ['ebay_sell_inventory_create_or_replace_inventory_item'],
+  deleteinventoryitem: ['ebay_sell_inventory_delete_inventory_item'],
+  bulkcreateorreplaceinventoryitem: ['ebay_sell_inventory_bulk_create_or_replace_inventory_item'],
+  bulkgetinventoryitem: ['ebay_sell_inventory_bulk_get_inventory_item'],
+  bulkupdatepricequantity: ['ebay_sell_inventory_bulk_update_price_quantity'],
+  bulkmigratelisting: ['ebay_sell_inventory_bulk_migrate_listing'],
   getinventoryitemgroup: ['ebay_sell_inventory_get_inventory_item_group'],
   createorreplaceinventoryitemgroup: ['ebay_sell_inventory_create_or_replace_inventory_item_group'],
   deleteinventoryitemgroup: ['ebay_sell_inventory_delete_inventory_item_group'],

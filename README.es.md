@@ -256,7 +256,7 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | [Developer](src/ebay/developer) | Límites de tasa, claves de firma y estado de la API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Generación de URL de OAuth y gestión de tokens |
 
-**Herramientas de ejemplo:** `ebay_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Herramientas de ejemplo:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 Para el índice completo legible por máquina, consulta [llms.txt](llms.txt).
 
@@ -275,8 +275,8 @@ Hoy se acogen 13 herramientas de flujos de trabajo esenciales, repartidas en tre
 
 | Arquetipo | Herramientas |
 | --- | --- |
-| **Tabla** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
-| **Ficha** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Tabla** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Ficha** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 Las vistas se compilan en HTML autónomo con `npm run build` (o `npm run build:ui`); se incluyen en el paquete publicado y se cargan sin acceso de red propio.
@@ -286,10 +286,10 @@ Las vistas se compilan en HTML autónomo con `npm run build` (o `npm run build:u
 Tareas comunes, formuladas como se las pedirías a tu asistente de IA:
 
 - **Configurar OAuth** — *"Ayúdame a configurar OAuth para mi cuenta de eBay."* → genera una URL de autorización mediante `ebay_get_oauth_url` y luego configura el token de renovación. Desbloquea 10k–50k solicitudes/día.
-- **Gestionar inventario** — *"Muéstrame todos mis anuncios activos."* → `ebay_get_inventory_items` devuelve SKUs, cantidades y estado.
+- **Gestionar inventario** — *"Muéstrame todos mis anuncios activos."* → `ebay_sell_inventory_get_inventory_items` devuelve SKUs, cantidades y estado.
 - **Procesar pedidos** — *"Obtén todos los pedidos sin completar de los últimos 7 días."* → `ebay_sell_fulfillment_get_orders` con filtros de fecha y estado de envío.
 - **Crear campañas** — *"Crea una campaña de anuncios promocionados para electrónica."* → `ebay_create_campaign` y herramientas de marketing relacionadas.
-- **Operaciones masivas** — *"Aplica un 10% de descuento a todos los artículos de 'Relojes Vintage'."* → `ebay_get_inventory_items` + `ebay_update_offer` en las coincidencias.
+- **Operaciones masivas** — *"Aplica un 10% de descuento a todos los artículos de 'Relojes Vintage'."* → `ebay_sell_inventory_get_inventory_items` + `ebay_update_offer` en las coincidencias.
 
 ## Registro y solución de problemas
 

@@ -40,6 +40,13 @@ const inventoryLocationColumns = [
   { key: 'phone', label: 'Phone' },
 ];
 
+const inventoryItemColumns = [
+  { key: 'sku', label: 'SKU' },
+  { key: 'title', label: 'Title' },
+  { key: 'condition', label: 'Condition' },
+  { key: 'quantity', label: 'Qty', align: 'right' as const },
+];
+
 const displayedLocationText = (locationText: string | undefined): string | null => {
   if (locationText === undefined) {
     return null;
@@ -54,22 +61,97 @@ const joinedLocationTypes = (locationTypes: string[] | undefined): string | null
   return locationTypes.join(', ');
 };
 
+const displayedInventoryText = (inventoryText: string | undefined): string | null => {
+  if (inventoryText === undefined) {
+    return null;
+  }
+  return inventoryText;
+};
+
+const inventoryProductTitle = (inventoryItem: InventoryItemWithSkuLocaleGroupid): string | null => {
+  if (inventoryItem.product === undefined) {
+    return null;
+  }
+  if (inventoryItem.product.title === undefined) {
+    return null;
+  }
+  return truncate(inventoryItem.product.title, 60);
+};
+
+const inventoryProductDescription = (
+  inventoryItem: InventoryItemWithSkuLocaleGroupid,
+): string | null => {
+  if (inventoryItem.product === undefined) {
+    return null;
+  }
+  const shortenedDescription = truncate(inventoryItem.product.description, 120);
+  if (shortenedDescription === '') {
+    return null;
+  }
+  return shortenedDescription;
+};
+
+const inventoryShipQuantity = (inventoryItem: InventoryItemWithSkuLocaleGroupid): number | null => {
+  if (inventoryItem.availability === undefined) {
+    return null;
+  }
+  if (inventoryItem.availability.shipToLocationAvailability === undefined) {
+    return null;
+  }
+  const shipQuantity = inventoryItem.availability.shipToLocationAvailability.quantity;
+  if (shipQuantity === undefined) {
+    return null;
+  }
+  return shipQuantity;
+};
+
+const inventoryCardTitle = (sku: string | undefined): string => {
+  if (sku === undefined) {
+    return 'Inventory item';
+  }
+  return `SKU ${sku}`;
+};
+
+const inventoryCardSubtitle = (
+  inventoryItem: InventoryItemWithSkuLocaleGroupid,
+): string | undefined => {
+  const productTitle = inventoryProductTitle(inventoryItem);
+  if (productTitle === null) {
+    return;
+  }
+  return truncate(productTitle, 80);
+};
+
+const inventoryConditionBadges = (condition: string | undefined): CardBadge[] | undefined => {
+  const conditionBadge = statusBadge(condition);
+  if (conditionBadge === undefined) {
+    return;
+  }
+  return [conditionBadge];
+};
+
 /**
  * Builds a table's contextual footnote from how many rows are shown versus the
  * server's reported total, e.g. `"Showing 25 of 240"`. Returns `undefined` when
  * the response carries no total so the table renders without a footnote.
  */
 const footnoteFor = (shown: number, total: number | undefined): string | undefined => {
-  if (total == null) {
+  if (total === undefined) {
     return;
   }
-  return total > shown ? `Showing ${shown} of ${total}` : `${total} total`;
+  if (total > shown) {
+    return `Showing ${shown} of ${total}`;
+  }
+  return `${total} total`;
 };
 
 /** Builds a status badge only when eBay returned a status value to display. */
 const statusBadge = (status: string | undefined): CardBadge | undefined => {
   const label = humanizeStatus(status);
-  return label ? { label, tone: statusTone(status) } : undefined;
+  if (label === null) {
+    return;
+  }
+  return { label, tone: statusTone(status) };
 };
 
 /**
@@ -202,7 +284,7 @@ export const mapOffersToTable = (result: Offers): TableViewModel => {
 /**
  * Projects inventory items into a table; rows drill into a single-item card.
  *
- * @param result - Generated inventory item collection from eBay.
+ * @param inventoryItemCollection - Generated inventory item collection from eBay.
  * @returns A table view model with one row per inventory item.
  *
  * @example
@@ -210,30 +292,51 @@ export const mapOffersToTable = (result: Offers): TableViewModel => {
  * const view = mapInventoryItemsToTable({ inventoryItems: [{ sku: 'SKU-1' }] });
  * ```
  */
-export const mapInventoryItemsToTable = (result: InventoryItems): TableViewModel => {
-  const items = result.inventoryItems ?? [];
+export const mapInventoryItemsToTable = (
+  inventoryItemCollection: InventoryItems,
+): TableViewModel => {
+  const inventoryItems = inventoryItemCollection.inventoryItems;
+  if (inventoryItems === undefined) {
+    return {
+      archetype: 'table',
+      title: 'Inventory items',
+      columns: inventoryItemColumns,
+      rows: [],
+      footnote: footnoteFor(0, inventoryItemCollection.total),
+    };
+  }
+
+  const inventoryItemRows = inventoryItems.map((inventoryItem, index) => {
+    const sku = inventoryItem.sku;
+    const inventoryItemCells = {
+      sku: displayedInventoryText(sku),
+      title: inventoryProductTitle(inventoryItem),
+      condition: humanizeStatus(inventoryItem.condition),
+      quantity: inventoryShipQuantity(inventoryItem),
+    };
+    if (sku === undefined) {
+      return {
+        id: `inventory-item-${index}`,
+        cells: inventoryItemCells,
+      };
+    }
+    return {
+      id: sku,
+      cells: inventoryItemCells,
+      drill: {
+        tool: 'ebay_sell_inventory_get_inventory_item',
+        arguments: { sku },
+        label: 'View item',
+      },
+    };
+  });
+
   return {
     archetype: 'table',
     title: 'Inventory items',
-    columns: [
-      { key: 'sku', label: 'SKU' },
-      { key: 'title', label: 'Title' },
-      { key: 'condition', label: 'Condition' },
-      { key: 'quantity', label: 'Qty', align: 'right' },
-    ],
-    rows: items.map((item, index) => ({
-      id: item.sku ?? `item-${index}`,
-      cells: {
-        sku: item.sku ?? null,
-        title: truncate(item.product?.title, 60) || null,
-        condition: humanizeStatus(item.condition),
-        quantity: item.availability?.shipToLocationAvailability?.quantity ?? null,
-      },
-      drill: item.sku
-        ? { tool: 'ebay_get_inventory_item', arguments: { sku: item.sku }, label: 'View item' }
-        : undefined,
-    })),
-    footnote: footnoteFor(items.length, result.total),
+    columns: inventoryItemColumns,
+    rows: inventoryItemRows,
+    footnote: footnoteFor(inventoryItems.length, inventoryItemCollection.total),
   };
 };
 
@@ -445,7 +548,7 @@ export const mapOfferToCard = (result: EbayOfferDetailsWithAll): CardViewModel =
 /**
  * Projects a single inventory item into a detail card (product + availability).
  *
- * @param result - Generated inventory item detail response from eBay.
+ * @param inventoryItem - Generated inventory item detail response from eBay.
  * @returns A card view model with product and availability sections.
  *
  * @example
@@ -453,37 +556,57 @@ export const mapOfferToCard = (result: EbayOfferDetailsWithAll): CardViewModel =
  * const view = mapInventoryItemToCard({ sku: 'SKU-1' });
  * ```
  */
-export const mapInventoryItemToCard = (
-  result: InventoryItemWithSkuLocaleGroupid,
-): CardViewModel => {
-  const product = result.product;
-  const conditionBadge = statusBadge(result.condition);
-  return {
-    archetype: 'card',
-    title: result.sku ? `SKU ${result.sku}` : 'Inventory item',
-    subtitle: product?.title ? truncate(product.title, 80) : undefined,
-    badges: conditionBadge ? [conditionBadge] : undefined,
-    sections: [
-      {
-        heading: 'Product',
-        fields: [
-          { label: 'Brand', value: product?.brand ?? null },
-          { label: 'MPN', value: product?.mpn ?? null },
-          { label: 'Description', value: truncate(product?.description, 120) || null },
-        ],
-      },
-      {
-        heading: 'Availability',
-        fields: [
-          {
-            label: 'Quantity',
-            value: result.availability?.shipToLocationAvailability?.quantity ?? null,
-          },
-        ],
-      },
-    ],
-  };
+const inventoryProductBrand = (
+  inventoryItem: InventoryItemWithSkuLocaleGroupid,
+): string | undefined => {
+  if (inventoryItem.product === undefined) {
+    return;
+  }
+  return inventoryItem.product.brand;
 };
+
+const inventoryProductManufacturerPartNumber = (
+  inventoryItem: InventoryItemWithSkuLocaleGroupid,
+): string | undefined => {
+  if (inventoryItem.product === undefined) {
+    return;
+  }
+  return inventoryItem.product.mpn;
+};
+
+export const mapInventoryItemToCard = (
+  inventoryItem: InventoryItemWithSkuLocaleGroupid,
+): CardViewModel => ({
+  archetype: 'card',
+  title: inventoryCardTitle(inventoryItem.sku),
+  subtitle: inventoryCardSubtitle(inventoryItem),
+  badges: inventoryConditionBadges(inventoryItem.condition),
+  sections: [
+    {
+      heading: 'Product',
+      fields: [
+        {
+          label: 'Brand',
+          value: displayedInventoryText(inventoryProductBrand(inventoryItem)),
+        },
+        {
+          label: 'MPN',
+          value: displayedInventoryText(inventoryProductManufacturerPartNumber(inventoryItem)),
+        },
+        { label: 'Description', value: inventoryProductDescription(inventoryItem) },
+      ],
+    },
+    {
+      heading: 'Availability',
+      fields: [
+        {
+          label: 'Quantity',
+          value: inventoryShipQuantity(inventoryItem),
+        },
+      ],
+    },
+  ],
+});
 
 /**
  * Projects a single payment dispute into a detail card, listing available actions.

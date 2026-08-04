@@ -127,6 +127,16 @@ import {
   getShippingFulfillmentsTool,
 } from '@/ebay/sell/fulfillment/shippingFulfillment.js';
 import {
+  bulkCreateOrReplaceInventoryItemTool,
+  bulkGetInventoryItemTool,
+  bulkMigrateListingTool,
+  bulkUpdatePriceQuantityTool,
+  createOrReplaceInventoryItemTool,
+  deleteInventoryItemTool,
+  getInventoryItemsTool,
+  getInventoryItemTool,
+} from '@/ebay/sell/inventory/inventoryItem.js';
+import {
   createOrReplaceInventoryItemGroupTool,
   deleteInventoryItemGroupTool,
   getInventoryItemGroupTool,
@@ -312,6 +322,14 @@ export const ebayToolCatalogue: readonly EbayTool[] = [
   getSalesTaxesTool,
   getPaymentsProgramTool,
   getPaymentsProgramOnboardingTool,
+  getInventoryItemsTool,
+  getInventoryItemTool,
+  createOrReplaceInventoryItemTool,
+  deleteInventoryItemTool,
+  bulkCreateOrReplaceInventoryItemTool,
+  bulkGetInventoryItemTool,
+  bulkUpdatePriceQuantityTool,
+  bulkMigrateListingTool,
   getInventoryItemGroupTool,
   createOrReplaceInventoryItemGroupTool,
   deleteInventoryItemGroupTool,

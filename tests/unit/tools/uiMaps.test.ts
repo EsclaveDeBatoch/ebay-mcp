@@ -188,6 +188,7 @@ describe('table mappers', () => {
     expect(view.rows[0].cells.quantity).toBe(3);
     expect(String(view.rows[0].cells.title)).toHaveLength(60);
     expect(view.rows[0].drill?.arguments).toEqual({ sku: 'SKU-1' });
+    expect(view.rows[0].drill?.tool).toBe('ebay_sell_inventory_get_inventory_item');
   });
 
   it('maps inventory locations, joining location types', () => {

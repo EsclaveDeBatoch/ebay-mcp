@@ -256,7 +256,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Developer](src/ebay/developer) | レート制限、署名キー、API ステータス |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL の生成とトークン管理 |
 
-**ツール例：** `ebay_get_inventory_items`、`ebay_sell_fulfillment_get_orders`、`ebay_create_offer`、`ebay_get_campaigns`、`ebay_get_oauth_url`。
+**ツール例：** `ebay_sell_inventory_get_inventory_items`、`ebay_sell_fulfillment_get_orders`、`ebay_create_offer`、`ebay_get_campaigns`、`ebay_get_oauth_url`。
 
 完全な機械可読インデックスは [llms.txt](llms.txt) を参照してください。
 
@@ -275,8 +275,8 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 
 | タイプ | ツール |
 | --- | --- |
-| **テーブル** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_get_inventory_items`、`ebay_sell_inventory_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
-| **カード** | `ebay_sell_fulfillment_get_order`、`ebay_get_offer`、`ebay_get_inventory_item`、`ebay_sell_fulfillment_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
+| **テーブル** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_sell_inventory_get_inventory_items`、`ebay_sell_inventory_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **カード** | `ebay_sell_fulfillment_get_order`、`ebay_get_offer`、`ebay_sell_inventory_get_inventory_item`、`ebay_sell_fulfillment_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
 | **チャート** | `ebay_sell_analytics_get_traffic_report`、`ebay_sell_analytics_get_customer_service_metric` |
 
 これらの表示は `npm run build`（または `npm run build:ui`）で自己完結型の HTML にビルドされ、公開パッケージに同梱されて、それ自体は一切のネットワークアクセスなしで読み込まれます。
@@ -286,10 +286,10 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 AI アシスタントに尋ねるように表現した一般的なタスク：
 
 - **OAuth を設定** — *「eBay アカウントの OAuth を設定するのを手伝って。」* → `ebay_get_oauth_url` で認可 URL を生成し、リフレッシュトークンを設定します。1 日 1 万〜5 万リクエストを解放。
-- **在庫を管理** — *「アクティブな出品をすべて見せて。」* → `ebay_get_inventory_items` が SKU、数量、ステータスを返します。
+- **在庫を管理** — *「アクティブな出品をすべて見せて。」* → `ebay_sell_inventory_get_inventory_items` が SKU、数量、ステータスを返します。
 - **注文を処理** — *「過去 7 日間の未処理注文をすべて取得して。」* → 日付と履行ステータスのフィルター付き `ebay_sell_fulfillment_get_orders`。
 - **キャンペーンを作成** — *「電子機器向けのプロモーション広告キャンペーンを作成して。」* → `ebay_create_campaign` と関連するマーケティングツール。
-- **一括操作** — *「『ヴィンテージ時計』のすべての商品に 10% 割引を適用して。」* → 一致した項目に `ebay_get_inventory_items` + `ebay_update_offer`。
+- **一括操作** — *「『ヴィンテージ時計』のすべての商品に 10% 割引を適用して。」* → 一致した項目に `ebay_sell_inventory_get_inventory_items` + `ebay_update_offer`。
 
 ## ログとトラブルシューティング
 

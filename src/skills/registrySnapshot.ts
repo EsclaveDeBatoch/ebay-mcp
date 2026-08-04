@@ -35,7 +35,7 @@ const FAMILY_BLURBS: Record<string, string> = {
     'International package creation, consolidation, shipping documents, and tracking for Greater-China sellers',
   'sell.fulfillment': 'Orders, shipping fulfillments, refunds, and payment disputes',
   'sell.inventory':
-    'Seller-defined item groups, vehicle compatibility, SKU location mappings, and inventory locations from Sell Inventory',
+    'Inventory items, bulk inventory changes, item groups, vehicle compatibility, SKU location mappings, and inventory locations from Sell Inventory',
   'sell.negotiation': 'Listings eligible for seller offers and seller-initiated discounted offers',
   'sell.recommendation':
     'Promoted Listings recommendations for active listings from Sell Recommendation',

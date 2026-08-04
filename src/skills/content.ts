@@ -43,7 +43,7 @@ export const buildUsingDoc = (snapshot: RegistrySnapshot): SkillDoc => ({
       body: [
         '**Publish a fixed-price listing (REST Inventory model).**',
         '1. One-time account setup: `ebay_sell_account_opt_in_to_program` (business-policy management), then `ebay_sell_account_create_payment_policy`, `ebay_sell_account_create_return_policy`, `ebay_sell_account_create_fulfillment_policy` for reusable policy IDs, and `ebay_sell_inventory_create_inventory_location` for a `merchantLocationKey`.',
-        '2. `ebay_create_or_replace_inventory_item` (SKU + product details + availability).',
+        '2. `ebay_sell_inventory_create_or_replace_inventory_item` (SKU + `Content-Language` + direct product and availability fields).',
         '3. `ebay_create_offer` (SKU, marketplace, price, the policy IDs, location).',
         '4. `ebay_publish_offer` (offerId) → a live `listingId`. Use `ebay_bulk_publish_offer` for many at once.',
         '',

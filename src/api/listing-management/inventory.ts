@@ -1,32 +1,9 @@
 import type { EbayApiClient } from '@/api/client.js';
-import { createInventoryItemsMethods } from './items.js';
 import { createInventoryOffersMethods } from './offers.js';
 
-type InventoryItemsMethods = ReturnType<typeof createInventoryItemsMethods>;
 type InventoryOffersMethods = ReturnType<typeof createInventoryOffersMethods>;
 
 export type { InventoryPaginationInput } from './shared.js';
-export type {
-  SkuInput,
-  CreateOrReplaceInventoryItemInput,
-  BulkInventoryItemInput,
-  BulkGetInventoryItemInput,
-  BulkUpdatePriceQuantityInput,
-  BulkMigrateListingInput,
-  BulkCreateOrReplaceInventoryItemRequest,
-  BulkCreateOrReplaceInventoryItemResponse,
-  BulkGetInventoryItemRequest,
-  BulkGetInventoryItemResponse,
-  BulkUpdatePriceQuantityRequest,
-  BulkUpdatePriceQuantityResponse,
-  GetInventoryItemResponse,
-  InventoryItem,
-  BaseResponse,
-  DeleteInventoryItemResponse,
-  GetInventoryItemsResponse,
-  BulkMigrateListingRequest,
-  BulkMigrateListingResponse,
-} from './items.js';
 export type {
   GetOffersInput,
   OfferIdInput,
@@ -56,18 +33,15 @@ export type {
   WithdrawOfferByInventoryItemGroupResponse,
 } from './offers.js';
 /**
- * Inventory API surface for legacy items and offers.
- * Implementation is split by the two remaining legacy subdomains.
+ * Remaining legacy Inventory API surface for offers.
  */
-export type InventoryApi = InventoryItemsMethods & InventoryOffersMethods;
+export type InventoryApi = InventoryOffersMethods;
 
 /**
  * Creates the remaining legacy Inventory API method collection.
  *
  * @param ebayApiClient - Shared authenticated eBay API transport.
- * @returns Inventory-item and offer operations on one typed collection.
+ * @returns Offer operations on one typed collection.
  */
-export const createInventoryApi = (ebayApiClient: EbayApiClient): InventoryApi => ({
-  ...createInventoryItemsMethods(ebayApiClient),
-  ...createInventoryOffersMethods(ebayApiClient),
-});
+export const createInventoryApi = (ebayApiClient: EbayApiClient): InventoryApi =>
+  createInventoryOffersMethods(ebayApiClient);
