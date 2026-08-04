@@ -25,14 +25,17 @@ describe('tool registry', () => {
   it('keeps tool contracts local to registered definitions', () => {
     const validation = validateToolContracts();
     const contracts = getToolContracts();
+    const definitions = getToolDefinitions();
 
     expect(validation.duplicateContracts).toEqual([]);
     expect(validation.invalidInputSchemaFields).toEqual([]);
     expect(validation.malformedOutputSchemas).toEqual([]);
     expect(validation.missingDescriptions).toEqual([]);
     expect(validation.missingInputSchemas).toEqual([]);
-    expect(contracts).toHaveLength(getToolDefinitions().length);
-    expect(contracts.some((contract) => contract.outputSchema)).toBe(true);
+    expect(contracts).toHaveLength(definitions.length);
+    if (definitions.length > 0) {
+      expect(contracts.some((contract) => contract.outputSchema)).toBe(true);
+    }
   });
 
   it('returns the current unknown-tool error', async () => {

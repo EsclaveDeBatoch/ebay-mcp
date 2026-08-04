@@ -3,8 +3,8 @@
  *
  * This module is deliberately free of any import from the tool tree
  * (`@/tools/*`). `config/environment.ts` validates `EBAY_MCP_TOOLS` and is itself
- * imported by tool handlers (e.g. `tools/categories/tokenManagement.ts`), so
- * pulling the registry in here would create an import cycle. The heavier pieces
+ * imported by credential tool operations (e.g. `auth/tokenManagement/tokenManagement.ts`),
+ * so pulling the registry in here would create an import cycle. The heavier pieces
  * that genuinely need the registry — the discovery catalogue and the meta-tools —
  * live in `@/mcp/toolGating.ts`, which imports these primitives.
  *

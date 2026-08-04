@@ -12,6 +12,7 @@ describe('toolExposure', () => {
       expect([...EBAY_TOOL_EXPOSURE_PATHS]).toEqual([
         'connector',
         ...toolCategories.map((category) => category.key),
+        'token-management',
         'trading',
         'commerce.feedback',
         'commerce.identity',

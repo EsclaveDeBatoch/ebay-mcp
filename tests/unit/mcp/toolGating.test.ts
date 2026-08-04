@@ -6,8 +6,9 @@ import {
   registerMetaTools,
   toolNamesInExposurePaths,
 } from '@/mcp/toolGating.js';
-import { toolCategories } from '@/tools/categories/index.js';
+import { credentialToolCatalogue } from '@/mcp/credentialToolCatalogue.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
+import { toolCategories } from '@/tools/categories/index.js';
 
 /** Minimal RegisteredTool stand-in exposing just the enabled flag the controller toggles. */
 function fakeHandle(enabled = false): RegisteredTool {
@@ -35,6 +36,9 @@ function fakeToolHandles(): Map<string, RegisteredTool> {
   }
   for (const ebayTool of ebayToolCatalogue) {
     handles.set(ebayTool.name, fakeHandle(false));
+  }
+  for (const credentialTool of credentialToolCatalogue) {
+    handles.set(credentialTool.name, fakeHandle(false));
   }
   return handles;
 }

@@ -253,7 +253,7 @@ EBAY_MCP_UI=on                      # 대화형 MCP Apps 보기(베타); 일반 
 | [Sell eDelivery](src/ebay/sell/edelivery/) | eDelivery API를 통한 국제 배송 |
 | [Trading(레거시 XML)](src/ebay/trading/fixedPriceListing.ts) | 고정 가격 리스팅 생성, 수정, 재등록, 종료 |
 | [Developer](src/ebay/developer) | 속도 제한, 서명 키, API 상태 |
-| [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 생성 및 토큰 관리 |
+| [Token Management](src/auth/tokenManagement/tokenManagement.ts) | OAuth URL 생성 및 토큰 관리 |
 
 **예시 도구:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_sell_marketing_get_campaigns`, `ebay_get_oauth_url`.
 

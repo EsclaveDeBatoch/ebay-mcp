@@ -1,4 +1,5 @@
 import { toolCategories } from '@/tools/categories/index.js';
+import { credentialToolCatalogue } from '@/mcp/credentialToolCatalogue.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import type { RegistrySnapshot, ToolFamily } from '@/skills/types.js';
 
@@ -67,6 +68,7 @@ const MIGRATED_NAMESPACE_TITLES = [
   { namespace: 'sell.metadata', title: 'Sell Metadata' },
   { namespace: 'sell.negotiation', title: 'Sell Negotiation' },
   { namespace: 'sell.recommendation', title: 'Sell Recommendation' },
+  { namespace: 'token-management', title: 'Token Management' },
   { namespace: 'trading', title: 'Trading' },
 ] as const;
 
@@ -98,9 +100,13 @@ export const captureRegistrySnapshot = (): RegistrySnapshot => {
     blurb: familyBlurbFor(category.key, category.title),
   }));
   for (const migratedNamespace of MIGRATED_NAMESPACE_TITLES) {
-    const namespaceToolCount = ebayToolCatalogue.filter(
+    const ebayNamespaceToolCount = ebayToolCatalogue.filter(
       (ebayTool) => ebayTool.namespace === migratedNamespace.namespace,
     ).length;
+    const credentialNamespaceToolCount = credentialToolCatalogue.filter(
+      (credentialTool) => credentialTool.namespace === migratedNamespace.namespace,
+    ).length;
+    const namespaceToolCount = ebayNamespaceToolCount + credentialNamespaceToolCount;
     if (namespaceToolCount > 0) {
       families.push({
         key: migratedNamespace.namespace,

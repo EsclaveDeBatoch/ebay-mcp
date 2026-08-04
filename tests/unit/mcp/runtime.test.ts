@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { Effect } from 'effect';
 import { getToolDefinitions } from '@/tools/index.js';
+import { credentialToolCatalogue } from '@/mcp/credentialToolCatalogue.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import { sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 
@@ -51,7 +52,7 @@ describe('MCP runtime', () => {
     expect(runtime.ebaySellerApi).toBe(fakeEbaySellerApi);
     expect(mcpMock.constructor).toHaveBeenCalledWith({ name: 'test-mcp', version: '0.0.0' });
     expect(mcpMock.registerTool).toHaveBeenCalledTimes(
-      getToolDefinitions().length + ebayToolCatalogue.length,
+      getToolDefinitions().length + ebayToolCatalogue.length + credentialToolCatalogue.length,
     );
 
     await runtime.initializeEbaySellerApi();

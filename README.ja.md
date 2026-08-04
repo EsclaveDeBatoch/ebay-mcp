@@ -253,7 +253,7 @@ EBAY_MCP_UI=on                      # インタラクティブな MCP Apps 表�
 | [Sell eDelivery](src/ebay/sell/edelivery/) | eDelivery API による国際配送 |
 | [Trading（レガシー XML）](src/ebay/trading/fixedPriceListing.ts) | 固定価格出品の作成・修正・再出品・終了 |
 | [Developer](src/ebay/developer) | レート制限、署名キー、API ステータス |
-| [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL の生成とトークン管理 |
+| [Token Management](src/auth/tokenManagement/tokenManagement.ts) | OAuth URL の生成とトークン管理 |
 
 **ツール例：** `ebay_sell_inventory_get_inventory_items`、`ebay_sell_fulfillment_get_orders`、`ebay_sell_inventory_create_offer`、`ebay_sell_marketing_get_campaigns`、`ebay_get_oauth_url`。
 

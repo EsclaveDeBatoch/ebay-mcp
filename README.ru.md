@@ -253,7 +253,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | [Sell eDelivery](src/ebay/sell/edelivery/) | Международная доставка через API eDelivery |
 | [Trading (устаревший XML)](src/ebay/trading/fixedPriceListing.ts) | Создание, изменение, повторное размещение и завершение объявлений с фиксированной ценой |
 | [Developer](src/ebay/developer) | Лимиты запросов, ключи подписи и статус API |
-| [Token Management](src/tools/categories/tokenManagement.ts) | Генерация URL OAuth и управление токенами |
+| [Token Management](src/auth/tokenManagement/tokenManagement.ts) | Генерация URL OAuth и управление токенами |
 
 **Примеры инструментов:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_sell_marketing_get_campaigns`, `ebay_get_oauth_url`.
 

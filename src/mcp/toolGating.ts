@@ -2,6 +2,7 @@ import { decodeEffectSchemaSync, z } from '@/utils/effectSchema.js';
 import type { McpServer, RegisteredTool } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { EBAY_TOOL_EXPOSURE_PATHS } from '@/config/toolExposure.js';
+import { credentialToolCatalogue } from '@/mcp/credentialToolCatalogue.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import { toolCategories } from '@/tools/categories/index.js';
 
@@ -96,6 +97,27 @@ const catalogueTools = (): ToolCatalog => {
       summary: summarizeTool(ebayTool.description),
     });
     familyByToolName.set(ebayTool.name, ebayTool.namespace);
+  }
+
+  for (const credentialTool of credentialToolCatalogue) {
+    const namespaceOverview = families.find(
+      (familyOverview) => familyOverview.key === credentialTool.namespace,
+    );
+    if (namespaceOverview === undefined) {
+      families.push({
+        key: credentialTool.namespace,
+        title: credentialTool.namespace,
+        count: 1,
+      });
+    } else {
+      namespaceOverview.count += 1;
+    }
+    rows.push({
+      name: credentialTool.name,
+      family: credentialTool.namespace,
+      summary: summarizeTool(credentialTool.description),
+    });
+    familyByToolName.set(credentialTool.name, credentialTool.namespace);
   }
 
   return { rows, families, familyByToolName };
@@ -212,9 +234,7 @@ export const createToolGatingController = (
 
     for (const name of names) {
       const handle = handles.get(name);
-      if (!handle) {
-        unknown.push(name);
-      } else {
+      if (handle) {
         if (handle.enabled !== enable) {
           if (enable) {
             handle.enable();
@@ -223,6 +243,8 @@ export const createToolGatingController = (
           }
         }
         changed.push(name);
+      } else {
+        unknown.push(name);
       }
     }
 

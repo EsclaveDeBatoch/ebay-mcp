@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getToolDefinitions } from '@/tools/index.js';
+import { credentialToolCatalogue } from '@/mcp/credentialToolCatalogue.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import { sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 
@@ -94,7 +95,7 @@ describe('createEbayMcpRuntime — tool gating', () => {
     });
 
     expect(mcpMock.registerTool).toHaveBeenCalledTimes(
-      getToolDefinitions().length + ebayToolCatalogue.length,
+      getToolDefinitions().length + ebayToolCatalogue.length + credentialToolCatalogue.length,
     );
     expect(mcpMock.state.handles.every((handle) => handle.enabled)).toBe(true);
     expect(mcpMock.state.constructorArgs[0]).toEqual([serverConfig, undefined]);
@@ -109,7 +110,8 @@ describe('createEbayMcpRuntime — tool gating', () => {
       serverConfig,
     });
 
-    const total = getToolDefinitions().length + ebayToolCatalogue.length;
+    const total =
+      getToolDefinitions().length + ebayToolCatalogue.length + credentialToolCatalogue.length;
     expect(mcpMock.registerTool).toHaveBeenCalledTimes(total + META_TOOL_NAMES.length);
 
     // Classify by name, not registration order, so a registration-order refactor
@@ -148,9 +150,12 @@ describe('createEbayMcpRuntime — tool gating', () => {
     const expected = [
       ...getToolDefinitions().filter((definition) => isReadOnlyTool(definition)),
       ...ebayToolCatalogue.filter((ebayTool) => isReadOnlyTool(ebayTool)),
+      ...credentialToolCatalogue.filter((credentialTool) => isReadOnlyTool(credentialTool)),
     ];
     expect(expected.length).toBeGreaterThan(0);
-    expect(expected.length).toBeLessThan(getToolDefinitions().length + ebayToolCatalogue.length);
+    expect(expected.length).toBeLessThan(
+      getToolDefinitions().length + ebayToolCatalogue.length + credentialToolCatalogue.length,
+    );
 
     vi.stubEnv('EBAY_READ_ONLY', 'true');
     const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
