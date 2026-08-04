@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getToolDefinitions } from '@/tools/index.js';
-import { toolCategories } from '@/tools/categories/index.js';
 import { ebayToolCatalogue } from '@/mcp/ebayToolCatalogue.js';
 import { sellerSessionReturning } from '@tests/fixtures/ebaySellerSession.js';
 
@@ -67,8 +66,9 @@ const { sellerSession: fakeSellerSession } = sellerSessionReturning<unknown>({
   ebayDocument: {},
 });
 const serverConfig = { name: 'test-mcp', version: '0.0.0' };
-const inventoryCount = toolCategories.find((category) => category.key === 'inventory')!.entries
-  .length;
+const sellInventoryCount = ebayToolCatalogue.filter(
+  (ebayTool) => ebayTool.namespace === 'sell.inventory',
+).length;
 const META_TOOL_NAMES = ['list_ebay_tools', 'enable_ebay_tools', 'disable_ebay_tools'];
 
 describe('createEbayMcpRuntime — tool gating', () => {
@@ -130,7 +130,7 @@ describe('createEbayMcpRuntime — tool gating', () => {
   });
 
   it('static mode registers only the named families, frozen', async () => {
-    vi.stubEnv('EBAY_MCP_TOOLS', 'inventory');
+    vi.stubEnv('EBAY_MCP_TOOLS', 'sell.inventory');
     const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
     createEbayMcpRuntime({
       ebaySellerApi: fakeEbaySellerApi,
@@ -138,7 +138,7 @@ describe('createEbayMcpRuntime — tool gating', () => {
       serverConfig,
     });
 
-    expect(mcpMock.registerTool).toHaveBeenCalledTimes(inventoryCount);
+    expect(mcpMock.registerTool).toHaveBeenCalledTimes(sellInventoryCount);
     expect(mcpMock.state.handles.every((handle) => handle.enabled)).toBe(true);
     expect(mcpMock.state.constructorArgs[0]).toEqual([serverConfig, undefined]);
   });
@@ -170,12 +170,12 @@ describe('createEbayMcpRuntime — tool gating', () => {
 
   it('EBAY_READ_ONLY composes with static family gating', async () => {
     const { isReadOnlyTool } = await import('@/mcp/readOnlyFilter.js');
-    const inventoryDefs = toolCategories
-      .find((category) => category.key === 'inventory')!
-      .entries.map((entry) => entry.definition);
-    const expected = inventoryDefs.filter((definition) => isReadOnlyTool(definition));
+    const sellInventoryTools = ebayToolCatalogue.filter(
+      (ebayTool) => ebayTool.namespace === 'sell.inventory',
+    );
+    const expected = sellInventoryTools.filter((ebayTool) => isReadOnlyTool(ebayTool));
 
-    vi.stubEnv('EBAY_MCP_TOOLS', 'inventory');
+    vi.stubEnv('EBAY_MCP_TOOLS', 'sell.inventory');
     vi.stubEnv('EBAY_READ_ONLY', 'yes');
     const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
     createEbayMcpRuntime({
@@ -185,6 +185,6 @@ describe('createEbayMcpRuntime — tool gating', () => {
     });
 
     expect(mcpMock.registerTool).toHaveBeenCalledTimes(expected.length);
-    expect(expected.length).toBeLessThan(inventoryCount);
+    expect(expected.length).toBeLessThan(sellInventoryCount);
   });
 });

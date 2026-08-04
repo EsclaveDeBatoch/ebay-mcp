@@ -242,7 +242,6 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | 面向 eBay MCP 目录的 ChatGPT 连接器 search/fetch 工具 |
 | [Sell Account](src/ebay/sell/account/) | 卖家状态、计划注册、销售税、订阅、费率表、广告资格、已弃用的付款计划状态和业务政策 |
-| [Inventory](src/tools/categories/inventory.ts) | 旧版库存商品、报价与批量操作 |
 | [Sell Inventory](src/ebay/sell/inventory/) | `sell.inventory` 下的商品分组、车辆兼容性、SKU 库存地点映射与库存地点 |
 | [Fulfillment](src/ebay/sell/fulfillment/) | 订单、配送、退款、纠纷、付款纠纷证据 |
 | [Marketing](src/tools/categories/marketing.ts) | 推广刊登广告活动、广告、促销、出价、批量操作 |
@@ -256,7 +255,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 | [Developer](src/ebay/developer) | 速率限制、签名密钥和 API 状态 |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL 生成与令牌管理 |
 
-**示例工具：** `ebay_sell_inventory_get_inventory_items`、`ebay_sell_fulfillment_get_orders`、`ebay_create_offer`、`ebay_get_campaigns`、`ebay_get_oauth_url`。
+**示例工具：** `ebay_sell_inventory_get_inventory_items`、`ebay_sell_fulfillment_get_orders`、`ebay_sell_inventory_create_offer`、`ebay_get_campaigns`、`ebay_get_oauth_url`。
 
 完整的机器可读索引见 [llms.txt](llms.txt)。
 
@@ -275,8 +274,8 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 
 | 类型 | 工具 |
 | --- | --- |
-| **表格** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_get_offers`、`ebay_sell_inventory_get_inventory_items`、`ebay_sell_inventory_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
-| **卡片** | `ebay_sell_fulfillment_get_order`、`ebay_get_offer`、`ebay_sell_inventory_get_inventory_item`、`ebay_sell_fulfillment_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
+| **表格** | `ebay_sell_fulfillment_get_orders`、`ebay_sell_fulfillment_get_shipping_fulfillments`、`ebay_sell_inventory_get_offers`、`ebay_sell_inventory_get_inventory_items`、`ebay_sell_inventory_get_inventory_locations`、`ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **卡片** | `ebay_sell_fulfillment_get_order`、`ebay_sell_inventory_get_offer`、`ebay_sell_inventory_get_inventory_item`、`ebay_sell_fulfillment_get_payment_dispute`、`ebay_sell_analytics_get_seller_standards_profile` |
 | **图表** | `ebay_sell_analytics_get_traffic_report`、`ebay_sell_analytics_get_customer_service_metric` |
 
 这些视图通过 `npm run build`（或 `npm run build:ui`）构建为自包含的 HTML；它们随发布的包一同分发，加载时无需自身的任何网络访问。
@@ -289,7 +288,7 @@ EBAY_MCP_UI=on                      # 交互式 MCP Apps 视图（测试版）�
 - **管理库存** — *"显示我所有的在售刊登。"* → `ebay_sell_inventory_get_inventory_items` 返回 SKU、数量和状态。
 - **处理订单** — *"获取过去 7 天所有未履行的订单。"* → 带日期和履行状态筛选的 `ebay_sell_fulfillment_get_orders`。
 - **创建广告活动** — *"为电子产品创建一个推广刊登广告活动。"* → `ebay_create_campaign` 及相关营销工具。
-- **批量操作** — *"为所有'复古手表'商品应用 10% 折扣。"* → 在匹配项上使用 `ebay_sell_inventory_get_inventory_items` + `ebay_update_offer`。
+- **批量操作** — *"为所有'复古手表'商品应用 10% 折扣。"* → 在匹配项上使用 `ebay_sell_inventory_get_inventory_items` + `ebay_sell_inventory_update_offer`。
 
 ## 日志与故障排查
 

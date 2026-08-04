@@ -147,19 +147,86 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
       description: 'Requires write access to migrate listings into inventory',
     },
-    ebay_create_offer: {
+    ebay_sell_inventory_get_offers: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory offers',
+    },
+    ebay_sell_inventory_get_offer: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory offers',
+    },
+    ebay_sell_inventory_get_listing_fees: {
+      requiredScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+        'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory.readonly',
+      description: 'Requires read access to inventory offer listing fees',
+    },
+    ebay_sell_inventory_create_offer: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
-      description: 'Requires write access to inventory',
+      description: 'Requires write access to inventory offers',
     },
-    ebay_publish_offer: {
+    ebay_sell_inventory_update_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_delete_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_bulk_create_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_publish_offer: {
       requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
       optionalScopes: [
         'https://api.ebay.com/oauth/api_scope/sell.account',
         'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
       ],
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
-      description: 'Requires write access to inventory; policies must exist (sell.account)',
+      description: 'Requires write access to inventory offers; policies must exist (sell.account)',
+    },
+    ebay_sell_inventory_withdraw_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
+    },
+    ebay_sell_inventory_bulk_publish_offer: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      optionalScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers; policies must exist (sell.account)',
+    },
+    ebay_sell_inventory_publish_offer_by_inventory_item_group: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      optionalScopes: [
+        'https://api.ebay.com/oauth/api_scope/sell.account',
+        'https://api.ebay.com/oauth/api_scope/sell.fulfillment',
+      ],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers; policies must exist (sell.account)',
+    },
+    ebay_sell_inventory_withdraw_offer_by_inventory_item_group: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.inventory'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.inventory',
+      description: 'Requires write access to inventory offers',
     },
 
     // Order Management Tools

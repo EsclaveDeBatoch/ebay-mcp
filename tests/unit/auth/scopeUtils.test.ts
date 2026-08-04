@@ -765,7 +765,7 @@ describe('Scope Utils', () => {
     });
 
     it('include optional scopes when applicable', () => {
-      const requirement = getRequiredScopesForTool('ebay_publish_offer');
+      const requirement = getRequiredScopesForTool('ebay_sell_inventory_publish_offer');
 
       expect(requirement).toBeDefined();
       expect(requirement?.optionalScopes).toBeDefined();

@@ -39,13 +39,15 @@ function fakeToolHandles(): Map<string, RegisteredTool> {
   return handles;
 }
 
-const inventory = toolCategories.find((category) => category.key === 'inventory')!;
-const sampleTool = inventory.entries[0].definition.name;
+const sellInventoryToolNames = ebayToolCatalogue
+  .filter((ebayTool) => ebayTool.namespace === 'sell.inventory')
+  .map((ebayTool) => ebayTool.name);
+const sampleTool = sellInventoryToolNames[0];
 
 describe('toolNamesInExposurePaths', () => {
   it('returns exactly the tools of the named families', () => {
-    const names = toolNamesInExposurePaths(['inventory']);
-    expect(names.size).toBe(inventory.entries.length);
+    const names = toolNamesInExposurePaths(['sell.inventory']);
+    expect(names.size).toBe(sellInventoryToolNames.length);
     expect(names.has(sampleTool)).toBe(true);
   });
 
@@ -260,18 +262,18 @@ describe('ToolGatingController', () => {
         families: { key: string; count: number }[];
       };
       expect(result.families).toHaveLength(EBAY_TOOL_EXPOSURE_PATHS.length);
-      const inventoryRow = result.families.find((row) => row.key === 'inventory');
-      expect(inventoryRow?.count).toBe(inventory.entries.length);
+      const sellInventoryRow = result.families.find((row) => row.key === 'sell.inventory');
+      expect(sellInventoryRow?.count).toBe(sellInventoryToolNames.length);
     });
 
     it('lists the tools of a family', () => {
       const controller = createToolGatingController(fakeToolHandles());
-      const result = controller.list({ family: 'inventory' }) as {
+      const result = controller.list({ family: 'sell.inventory' }) as {
         tools: { name: string; family: string }[];
         total: number;
       };
-      expect(result.total).toBe(inventory.entries.length);
-      expect(result.tools.every((tool) => tool.family === 'inventory')).toBe(true);
+      expect(result.total).toBe(sellInventoryToolNames.length);
+      expect(result.tools.every((tool) => tool.family === 'sell.inventory')).toBe(true);
     });
 
     it('rejects an unknown family with the valid list', () => {
@@ -281,7 +283,7 @@ describe('ToolGatingController', () => {
         validFamilies: readonly string[];
       };
       expect(result.error).toContain('nope');
-      expect(result.validFamilies).toContain('inventory');
+      expect(result.validFamilies).toContain('sell.inventory');
     });
 
     it('keyword-searches across all tools by name', () => {
@@ -294,7 +296,7 @@ describe('ToolGatingController', () => {
 
     it('paginates with an opaque cursor', () => {
       const controller = createToolGatingController(fakeToolHandles());
-      const first = controller.list({ family: 'inventory', limit: 2 }) as {
+      const first = controller.list({ family: 'sell.inventory', limit: 2 }) as {
         tools: { name: string }[];
         nextCursor?: string;
       };
@@ -302,7 +304,7 @@ describe('ToolGatingController', () => {
       expect(first.nextCursor).toBeDefined();
 
       const second = controller.list({
-        family: 'inventory',
+        family: 'sell.inventory',
         limit: 2,
         cursor: first.nextCursor,
       }) as {

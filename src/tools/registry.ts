@@ -136,7 +136,7 @@ export const getToolDefinitions = (): ToolDefinition[] =>
  *
  * @example
  * ```ts
- * const handler = getToolHandler('ebay_get_offer');
+ * const handler = getToolHandler('ebay_sell_inventory_get_offer');
  * ```
  */
 export const getToolHandler = (toolName: string): ToolHandler | undefined =>
@@ -152,7 +152,7 @@ export const getToolHandler = (toolName: string): ToolHandler | undefined =>
  *
  * @example
  * ```ts
- * const inventoryOffer = await executeTool(api, 'ebay_get_offer', {
+ * const inventoryOffer = await executeTool(api, 'ebay_sell_inventory_get_offer', {
  *   offerId: 'OFFER-1',
  * });
  * ```

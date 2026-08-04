@@ -54,21 +54,6 @@ describe('Tools Layer', () => {
 
     // Create comprehensive mock API
     mockApi = {
-      // Inventory API
-      inventory: {
-        getOffers: vi.fn(),
-        getOffer: vi.fn(),
-        createOffer: vi.fn(),
-        updateOffer: vi.fn(),
-        deleteOffer: vi.fn(),
-        publishOffer: vi.fn(),
-        withdrawOffer: vi.fn(),
-        bulkCreateOffer: vi.fn(),
-        bulkPublishOffer: vi.fn(),
-        getListingFees: vi.fn(),
-        publishOfferByInventoryItemGroup: vi.fn(),
-        withdrawOfferByInventoryItemGroup: vi.fn(),
-      },
       // Marketing API
       marketing: {
         getCampaigns: vi.fn(),
@@ -122,10 +107,10 @@ describe('Tools Layer', () => {
       const tools = getToolDefinitions();
       const toolNames = tools.map((t) => t.name);
 
-      // Check for tools from each category
+      // Check for tools from each remaining legacy category
+      expect(toolNames).toContain('search'); // connector
       expect(toolNames).toContain('ebay_get_oauth_url'); // tokenManagementTools
-      expect(toolNames).toContain('ebay_get_offers'); // remaining legacy inventory tools
-      expect(toolNames).toContain('ebay_get_campaigns');
+      expect(toolNames).toContain('ebay_get_campaigns'); // marketing
     });
   });
 
@@ -495,21 +480,6 @@ describe('Tools Layer', () => {
           code: 'some-code',
         }),
       ).rejects.toThrow('Failed to exchange authorization code: String error message');
-    });
-  });
-
-  describe('executeTool - Inventory Management', () => {
-    it('publish offer', async () => {
-      const mockResponse = { listingId: 'LISTING123' };
-      const input = {
-        offerId: 'OFFER123',
-      };
-      vi.mocked(mockApi.inventory.publishOffer).mockReturnValue(Effect.succeed(mockResponse));
-
-      const result = await executeTool(mockApi, 'ebay_publish_offer', input);
-
-      expect(mockApi.inventory.publishOffer).toHaveBeenCalledWith(input);
-      expect(result).toBe(mockResponse);
     });
   });
 

@@ -1,5 +1,4 @@
 import { EbayApiClient } from '@/api/client.js';
-import { createInventoryApi, type InventoryApi } from '@/api/listing-management/inventory.js';
 import { MarketingApi } from '@/api/marketing-and-promotions/marketing.js';
 import type { EbayOAuthError } from '@/auth/oauth.js';
 import type { EbayConfig } from '@/types/ebay.js';
@@ -13,7 +12,6 @@ export class EbaySellerApi {
   private readonly config: EbayConfig;
 
   // API categories
-  public inventory: InventoryApi;
   public marketing: MarketingApi;
 
   constructor(config: EbayConfig) {
@@ -21,7 +19,6 @@ export class EbaySellerApi {
     this.client = new EbayApiClient(config);
 
     // Initialize API category handlers
-    this.inventory = createInventoryApi(this.client);
     this.marketing = new MarketingApi(this.client);
   }
 
@@ -85,5 +82,4 @@ export class EbaySellerApi {
 }
 
 export * from '@/api/client.js';
-export * from '@/api/listing-management/inventory.js';
 export * from '@/api/marketing-and-promotions/marketing.js';

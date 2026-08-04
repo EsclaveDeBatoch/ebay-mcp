@@ -242,7 +242,6 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | Инструменты search/fetch коннектора ChatGPT по каталогу eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Статус продавца, участие в программах, налог с продаж, подписки, таблицы тарифов, право на рекламу, устаревший статус платёжной программы и бизнес-политики |
-| [Inventory](src/tools/categories/inventory.ts) | Устаревшие товары инвентаря, предложения и массовые операции |
 | [Sell Inventory](src/ebay/sell/inventory/) | Группы товаров, совместимость автомобилей, сопоставления местоположений SKU и локации инвентаря в `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Заказы, доставка, возвраты средств, споры, доказательства по платёжным спорам |
 | [Marketing](src/tools/categories/marketing.ts) | Кампании продвигаемых объявлений, реклама, акции, ставки, массовые операции |
@@ -256,7 +255,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 | [Developer](src/ebay/developer) | Лимиты запросов, ключи подписи и статус API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Генерация URL OAuth и управление токенами |
 
-**Примеры инструментов:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Примеры инструментов:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 Полный машиночитаемый индекс см. в [llms.txt](llms.txt).
 
@@ -275,8 +274,8 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 
 | Архетип | Инструменты |
 | --- | --- |
-| **Таблица** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
-| **Карточка** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Таблица** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_sell_inventory_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Карточка** | `ebay_sell_fulfillment_get_order`, `ebay_sell_inventory_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **График** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 Представления собираются в самодостаточный HTML командой `npm run build` (или `npm run build:ui`); они входят в опубликованный пакет и загружаются без собственного доступа к сети.
@@ -289,7 +288,7 @@ EBAY_MCP_UI=on                      # интерактивные предста�
 - **Управлять инвентарём** — *«Покажи все мои активные объявления.»* → `ebay_sell_inventory_get_inventory_items` возвращает SKU, количества и статусы.
 - **Обрабатывать заказы** — *«Получи все невыполненные заказы за последние 7 дней.»* → `ebay_sell_fulfillment_get_orders` с фильтрами по дате и статусу выполнения.
 - **Создавать кампании** — *«Создай кампанию продвигаемых объявлений для электроники.»* → `ebay_create_campaign` и связанные маркетинговые инструменты.
-- **Массовые операции** — *«Примени скидку 10% ко всем товарам 'Винтажные часы'.»* → `ebay_sell_inventory_get_inventory_items` + `ebay_update_offer` по совпадениям.
+- **Массовые операции** — *«Примени скидку 10% ко всем товарам 'Винтажные часы'.»* → `ebay_sell_inventory_get_inventory_items` + `ebay_sell_inventory_update_offer` по совпадениям.
 
 ## Логирование и устранение неполадок
 

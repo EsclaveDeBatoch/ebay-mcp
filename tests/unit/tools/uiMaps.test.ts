@@ -168,7 +168,7 @@ describe('table mappers', () => {
     });
     expect(view.rows[0].cells.format).toBe('Fixed price');
     expect(view.rows[0].cells.price).toBe('9.99 USD');
-    expect(view.rows[0].drill?.tool).toBe('ebay_get_offer');
+    expect(view.rows[0].drill?.tool).toBe('ebay_sell_inventory_get_offer');
     expect(view.footnote).toBe('1 total');
   });
 

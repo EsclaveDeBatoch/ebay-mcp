@@ -242,7 +242,6 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | Herramientas search/fetch del conector de ChatGPT sobre el catálogo eBay MCP |
 | [Sell Account](src/ebay/sell/account/) | Estado del vendedor, inscripción en programas, impuesto sobre ventas, suscripciones, tablas de tarifas, elegibilidad publicitaria, estado obsoleto del programa de pagos y políticas comerciales |
-| [Inventory](src/tools/categories/inventory.ts) | Artículos de inventario heredados, ofertas y operaciones masivas |
 | [Sell Inventory](src/ebay/sell/inventory/) | Grupos de artículos, compatibilidad de vehículos, asignaciones de ubicaciones de SKU y ubicaciones de inventario bajo `sell.inventory` |
 | [Fulfillment](src/ebay/sell/fulfillment/) | Pedidos, envíos, reembolsos, disputas, evidencias de disputas de pago |
 | [Marketing](src/tools/categories/marketing.ts) | Campañas de anuncios promocionados, anuncios, promociones, pujas, operaciones masivas |
@@ -256,7 +255,7 @@ Autoconfigurados por `npm run setup`. Requiere Node.js ≥ 22.12 y el protocolo 
 | [Developer](src/ebay/developer) | Límites de tasa, claves de firma y estado de la API |
 | [Token Management](src/tools/categories/tokenManagement.ts) | Generación de URL de OAuth y gestión de tokens |
 
-**Herramientas de ejemplo:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Herramientas de ejemplo:** `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 Para el índice completo legible por máquina, consulta [llms.txt](llms.txt).
 
@@ -275,8 +274,8 @@ Hoy se acogen 13 herramientas de flujos de trabajo esenciales, repartidas en tre
 
 | Arquetipo | Herramientas |
 | --- | --- |
-| **Tabla** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
-| **Ficha** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Tabla** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_sell_inventory_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Ficha** | `ebay_sell_fulfillment_get_order`, `ebay_sell_inventory_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Gráfico** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 
 Las vistas se compilan en HTML autónomo con `npm run build` (o `npm run build:ui`); se incluyen en el paquete publicado y se cargan sin acceso de red propio.
@@ -289,7 +288,7 @@ Tareas comunes, formuladas como se las pedirías a tu asistente de IA:
 - **Gestionar inventario** — *"Muéstrame todos mis anuncios activos."* → `ebay_sell_inventory_get_inventory_items` devuelve SKUs, cantidades y estado.
 - **Procesar pedidos** — *"Obtén todos los pedidos sin completar de los últimos 7 días."* → `ebay_sell_fulfillment_get_orders` con filtros de fecha y estado de envío.
 - **Crear campañas** — *"Crea una campaña de anuncios promocionados para electrónica."* → `ebay_create_campaign` y herramientas de marketing relacionadas.
-- **Operaciones masivas** — *"Aplica un 10% de descuento a todos los artículos de 'Relojes Vintage'."* → `ebay_sell_inventory_get_inventory_items` + `ebay_update_offer` en las coincidencias.
+- **Operaciones masivas** — *"Aplica un 10% de descuento a todos los artículos de 'Relojes Vintage'."* → `ebay_sell_inventory_get_inventory_items` + `ebay_sell_inventory_update_offer` en las coincidencias.
 
 ## Registro y solución de problemas
 

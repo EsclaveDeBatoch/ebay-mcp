@@ -267,7 +267,7 @@ By default all tools are advertised to the agent at once. On a long conversation
 | `dynamic`                   | Only three discovery tools are visible (`list_ebay_tools`, `enable_ebay_tools`, `disable_ebay_tools`). The agent searches the catalogue and loads only the tools it needs; they then appear natively. | hosts that honor `tools/listChanged` (e.g. Claude) |
 | `sell.analytics,inventory,…` | Registers **only** the named exposure paths (listed below), frozen for the session.                                                                    | every host (incl. ChatGPT, Cursor)      |
 
-The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.account`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.inventory`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`, and `trading`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.fulfillment`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `inventory`, `marketing`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.account`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.inventory`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`.
+The exposure list is literal — you get exactly what you name. Migrated resources use official paths such as `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.account`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.inventory`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`, and `trading`; legacy families retain their short key until they migrate. ChatGPT connectors need `connector` for `search`/`fetch`, for example `EBAY_MCP_TOOLS=connector,sell.fulfillment`. An unknown path fails fast at startup. Valid paths: `connector`, `token-management`, `marketing`, `trading`, `commerce.feedback`, `commerce.identity`, `commerce.message`, `commerce.notification`, `commerce.taxonomy`, `commerce.translation`, `commerce.vero`, `developer.analytics`, `developer.key-management`, `developer.status`, `sell.account`, `sell.analytics`, `sell.edelivery`, `sell.fulfillment`, `sell.inventory`, `sell.metadata`, `sell.negotiation`, `sell.recommendation`.
 
 ### Authentication & rate limits
 
@@ -307,8 +307,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | --- | --- |
 | [Connector](src/tools/categories/connector.ts) | ChatGPT connector search/fetch tools over the eBay MCP catalogue |
 | [Sell Account](src/ebay/sell/account/) | Seller status, program enrollment, sales tax, subscriptions, rate tables, advertising eligibility, deprecated payments-program status, and business policies under `sell.account` |
-| [Inventory](src/tools/categories/inventory.ts) | Remaining legacy offer, publish, and listing-fee operations |
-| [Sell Inventory](src/ebay/sell/inventory/) | Inventory items and batches, item groups, vehicle compatibility, SKU location mappings, and inventory locations under `sell.inventory` |
+| [Sell Inventory](src/ebay/sell/inventory/) | Inventory items and batches, offers, publish and listing fees, item groups, vehicle compatibility, SKU location mappings, and inventory locations under `sell.inventory` |
 | [Sell Fulfillment](src/ebay/sell/fulfillment/) | Orders, shipping, refunds, disputes, payment-dispute evidence under `sell.fulfillment` |
 | [Marketing](src/tools/categories/marketing.ts) | Promoted-listings campaigns, ads, promotions, bidding, bulk operations |
 | [Commerce Feedback](src/ebay/commerce/feedback/) | Pending tasks, feedback history, submissions, replies, and rating metrics under `commerce.feedback` |
@@ -329,7 +328,7 @@ Auto-configured by `npm run setup`. Requires [Node.js](https://nodejs.org/en) �
 | [Trading (legacy XML)](src/ebay/trading/fixedPriceListing.ts) | Fixed-price listing retrieval, create, revise, relist, and end under `trading` |
 | [Token Management](src/tools/categories/tokenManagement.ts) | OAuth URL generation and token management |
 
-**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_commerce_vero_get_reason_codes`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_developer_status_get_incidents`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_edelivery_create_package`, `ebay_sell_inventory_get_inventory_item_group`, `ebay_sell_metadata_get_category_policies`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_trading_get_active_listings`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
+**Example tools:** `ebay_commerce_feedback_get_feedback`, `ebay_commerce_feedback_leave_feedback`, `ebay_commerce_identity_get_user`, `ebay_commerce_message_get_conversations`, `ebay_commerce_message_send_message`, `ebay_commerce_translation_translate`, `ebay_commerce_vero_get_reason_codes`, `ebay_developer_analytics_get_rate_limits`, `ebay_developer_key_management_create_signing_key`, `ebay_developer_status_get_incidents`, `ebay_sell_analytics_get_traffic_report`, `ebay_sell_edelivery_create_package`, `ebay_sell_inventory_get_inventory_item_group`, `ebay_sell_metadata_get_category_policies`, `ebay_sell_negotiation_find_eligible_items`, `ebay_sell_negotiation_send_offer_to_interested_buyers`, `ebay_sell_recommendation_find_listing_recommendations`, `ebay_trading_get_active_listings`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_fulfillment_get_orders`, `ebay_sell_inventory_create_offer`, `ebay_get_campaigns`, `ebay_get_oauth_url`.
 
 For the complete machine-readable index, see [llms.txt](llms.txt).
 
@@ -353,8 +352,8 @@ On hosts that support [MCP Apps](https://modelcontextprotocol.io), common read t
 
 | Archetype | Tools |
 | --- | --- |
-| **Table** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
-| **Card** | `ebay_sell_fulfillment_get_order`, `ebay_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
+| **Table** | `ebay_sell_fulfillment_get_orders`, `ebay_sell_fulfillment_get_shipping_fulfillments`, `ebay_sell_inventory_get_offers`, `ebay_sell_inventory_get_inventory_items`, `ebay_sell_inventory_get_inventory_locations`, `ebay_sell_fulfillment_get_payment_dispute_summaries` |
+| **Card** | `ebay_sell_fulfillment_get_order`, `ebay_sell_inventory_get_offer`, `ebay_sell_inventory_get_inventory_item`, `ebay_sell_fulfillment_get_payment_dispute`, `ebay_sell_analytics_get_seller_standards_profile` |
 | **Chart** | `ebay_sell_analytics_get_traffic_report`, `ebay_sell_analytics_get_customer_service_metric` |
 | **Stat** | `ebay_developer_analytics_get_rate_limits`, `ebay_developer_analytics_get_user_rate_limits` |
 
@@ -370,7 +369,7 @@ Common tasks, phrased as you'd ask your AI assistant:
 - **Manage inventory** — *"Show me all my active listings."* → `ebay_sell_inventory_get_inventory_items` returns SKUs, quantities, and status.
 - **Process orders** — *"Get all unfulfilled orders from the last 7 days."* → `ebay_sell_fulfillment_get_orders` with date and fulfillment-status filters.
 - **Create campaigns** — *"Create a promoted-listing campaign for electronics."* → `ebay_create_campaign` and related marketing tools.
-- **Bulk operations** — *"Apply a 10% discount to all 'Vintage Watches' items."* → `ebay_sell_inventory_get_inventory_items` + `ebay_update_offer` across matches.
+- **Bulk operations** — *"Apply a 10% discount to all 'Vintage Watches' items."* → `ebay_sell_inventory_get_inventory_items` + `ebay_sell_inventory_update_offer` across matches.
 
 ## Scope and safety
 

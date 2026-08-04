@@ -77,7 +77,11 @@ describe('Sell Inventory item-group MCP exposure', () => {
     expect(
       listedTools.tools
         .map((ebayTool) => ebayTool.name)
-        .filter((listedToolName) => listedToolName.includes('inventory_item_group')),
+        .filter((listedToolName) =>
+          inventoryItemGroupToolNames.some(
+            (inventoryItemGroupToolName) => inventoryItemGroupToolName === listedToolName,
+          ),
+        ),
     ).toEqual(inventoryItemGroupToolNames);
     await mcpClient.close();
   });
@@ -95,7 +99,11 @@ describe('Sell Inventory item-group MCP exposure', () => {
     expect(
       listedTools.tools
         .map((ebayTool) => ebayTool.name)
-        .filter((listedToolName) => listedToolName.includes('inventory_item_group')),
+        .filter((listedToolName) =>
+          inventoryItemGroupToolNames.some(
+            (inventoryItemGroupToolName) => inventoryItemGroupToolName === listedToolName,
+          ),
+        ),
     ).toEqual(['ebay_sell_inventory_get_inventory_item_group']);
     await mcpClient.close();
   });

@@ -1,7 +1,6 @@
 import type { ToolEntry } from '@/tools/registry.js';
 import { connectorEntries } from './connector.js';
 import { tokenManagementEntries } from './tokenManagement.js';
-import { inventoryEntries } from './inventory.js';
 import { marketingEntries } from './marketing.js';
 
 /**
@@ -26,7 +25,6 @@ export interface ToolCategory {
 export const toolCategories: ToolCategory[] = [
   { key: 'connector', title: 'Connector', entries: connectorEntries },
   { key: 'token-management', title: 'Token Management', entries: tokenManagementEntries },
-  { key: 'inventory', title: 'Inventory', entries: inventoryEntries },
   { key: 'marketing', title: 'Marketing', entries: marketingEntries },
 ];
 

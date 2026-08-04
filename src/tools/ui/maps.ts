@@ -274,7 +274,11 @@ export const mapOffersToTable = (result: Offers): TableViewModel => {
         status: humanizeStatus(offer.status),
       },
       drill: offer.offerId
-        ? { tool: 'ebay_get_offer', arguments: { offerId: offer.offerId }, label: 'View offer' }
+        ? {
+            tool: 'ebay_sell_inventory_get_offer',
+            arguments: { offerId: offer.offerId },
+            label: 'View offer',
+          }
         : undefined,
     })),
     footnote: footnoteFor(offers.length, result.total),
