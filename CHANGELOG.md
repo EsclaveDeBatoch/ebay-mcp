@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.14.3] - 2026-08-07
+
+### Fixed
+
+- **Empty-body MCP results (#151)** — eBay 201/204 responses with no body no longer produce invalid MCP content (`JSON.stringify(undefined)`). Hosts receive a valid `{ status: "success" }` text block.
+- **Published `diagnose` / setup / skills (#153)** — npm scripts run built `node build/scripts/*.js` entrypoints; `ebay-mcp diagnose` works on global installs without `tsx` or `src/`.
+- **Refresh token persistence (#154)** — serialize concurrent `.env` credential writes, best-effort fsync, and fail OAuth exchange when eBay omits `refresh_token` so tools never claim a false save.
+- **Fulfillment policy shipping codes (#152)** — document marketplace-valid `shippingServiceCode` discovery and a known-good FLAT_RATE sketch (eBay dual-index errors are remote validation, not client array duplication).
+
 ## [1.14.2] - 2026-07-28
 
 ### Fixed
