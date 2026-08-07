@@ -49,6 +49,35 @@ describe('credential session', () => {
     });
   });
 
+  it('preserves both keys under concurrent dual writes (issue #154)', async () => {
+    tempDir = mkdtempSync(path.join(tmpdir(), 'ebay-credential-store-concurrent-'));
+    const envPath = path.join(tempDir, '.env');
+    writeFileSync(envPath, 'EBAY_CLIENT_ID=client\n', 'utf-8');
+
+    const store = new DotEnvCredentialStore(() => envPath);
+
+    await Effect.runPromise(
+      Effect.all(
+        [
+          store.write({ EBAY_APP_ACCESS_TOKEN: 'app-token-value' }),
+          store.write({
+            EBAY_USER_ACCESS_TOKEN: 'user-access-value',
+            EBAY_USER_REFRESH_TOKEN: 'user-refresh-value',
+          }),
+        ],
+        { concurrency: 2 },
+      ),
+    );
+
+    const parsed = dotenv.parse(readFileSync(envPath, 'utf-8'));
+    expect(parsed).toMatchObject({
+      EBAY_CLIENT_ID: 'client',
+      EBAY_APP_ACCESS_TOKEN: 'app-token-value',
+      EBAY_USER_ACCESS_TOKEN: 'user-access-value',
+      EBAY_USER_REFRESH_TOKEN: 'user-refresh-value',
+    });
+  });
+
   it('centralizes default token expiry calculations', () => {
     const now = Date.UTC(2026, 0, 1);
 

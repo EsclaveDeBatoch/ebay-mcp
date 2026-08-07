@@ -2,6 +2,7 @@
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { validateEnvironmentConfig } from '@/config/environment.js';
 import { createEbayMcpRuntime, type EbayMcpRuntime } from '@/mcp/runtime.js';
+import { runDiagnostics } from '@/scripts/diagnostics.js';
 import { runSetup } from '@/scripts/setup.js';
 import { runSkillsWizard } from '@/scripts/skills.js';
 import { getErrorMessage } from '@/utils/errors.js';
@@ -38,6 +39,11 @@ if (args.includes('setup')) {
 
 if (args.includes('skills')) {
   await runCliCommand('Skills install', runSkillsWizard);
+}
+
+if (args.includes('diagnose')) {
+  const exportReport = args.includes('--export') || args.includes('-e');
+  await runCliCommand('Diagnostics', () => runDiagnostics(exportReport));
 }
 
 /**

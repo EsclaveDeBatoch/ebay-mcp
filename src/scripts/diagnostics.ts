@@ -3,12 +3,13 @@
  *
  * Usage:
  *   npm run diagnose
- *   npx ebay-mcp --diagnose
+ *   ebay-mcp diagnose
+ *   ebay-mcp diagnose --export
  */
 
 import chalk from 'chalk';
 import { writeFileSync } from 'fs';
-import { join, dirname } from 'path';
+import { join, dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { runSecurityChecks, displaySecurityResults } from '@/scripts/securityChecker.js';
 import { validateSetup, displayRecommendations } from '@/scripts/setupValidator.js';
@@ -318,7 +319,7 @@ async function generateDiagnosticReport(exportPath?: string): Promise<Diagnostic
 /**
  * Main diagnostics function
  */
-async function runDiagnostics(exportReport = false): Promise<void> {
+export const runDiagnostics = async (exportReport = false): Promise<void> => {
   displayHeader();
   displaySystemInfo();
   await displayUpdateStatus();
@@ -392,22 +393,27 @@ async function runDiagnostics(exportReport = false): Promise<void> {
   console.log(chalk.bold.green('✅ Diagnostics complete!\n'));
   console.log(chalk.gray('For more help, visit:'));
   console.log(chalk.blue.underline('  https://github.com/YosefHayim/ebay-mcp#troubleshooting\n'));
+};
+
+// Direct script entry (`node build/scripts/diagnostics.js` / `npm run diagnose`).
+// Guarded so importing from the bin does not auto-run diagnostics.
+const entryPath = process.argv[1] ? resolve(process.argv[1]) : undefined;
+const modulePath = resolve(fileURLToPath(import.meta.url));
+if (entryPath && modulePath === entryPath) {
+  const cliArgs = process.argv.slice(2);
+  const exportReport = cliArgs.includes('--export') || cliArgs.includes('-e');
+
+  void Effect.runPromise(
+    Effect.either(
+      Effect.tryPromise({
+        try: () => runDiagnostics(exportReport),
+        catch: (error) => error,
+      }),
+    ),
+  ).then((result) => {
+    if (Either.isLeft(result)) {
+      console.error(chalk.red('\n❌ Diagnostics failed:'), getErrorMessage(result.left));
+      process.exitCode = 1;
+    }
+  });
 }
-
-// CLI handler
-const args = process.argv.slice(2);
-const exportReport = args.includes('--export') || args.includes('-e');
-
-void Effect.runPromise(
-  Effect.either(
-    Effect.tryPromise({
-      try: () => runDiagnostics(exportReport),
-      catch: (error) => error,
-    }),
-  ),
-).then((result) => {
-  if (Either.isLeft(result)) {
-    console.error(chalk.red('\n❌ Diagnostics failed:'), getErrorMessage(result.left));
-    process.exitCode = 1;
-  }
-});
