@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Effect } from 'effect';
 import { getToolDefinitions } from '@/tools/index.js';
 
@@ -30,6 +30,15 @@ vi.mock('@modelcontextprotocol/sdk/server/mcp.js', () => ({
 }));
 
 describe('MCP runtime', () => {
+  beforeEach(() => {
+    mcpMock.constructor.mockClear();
+    mcpMock.registerTool.mockClear();
+    mcpMock.close.mockClear();
+    mcpMock.connect.mockClear();
+    mcpMock.registerResource.mockClear();
+    mcpMock.getClientCapabilities.mockClear();
+  });
+
   it('registers the shared tool registry on server construction', async () => {
     const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
     const api = {
@@ -47,5 +56,51 @@ describe('MCP runtime', () => {
 
     await runtime.initializeApi();
     expect(api.initialize).toHaveBeenCalledOnce();
+  });
+
+  it('formats empty-body success as non-empty MCP text (issue #151)', async () => {
+    // JSON.stringify(undefined) is not a string; MCP clients reject that content block.
+    expect(JSON.stringify(undefined, null, 2)).toBeUndefined();
+
+    const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
+    const createInventoryLocation = vi.fn(() => Effect.succeed(undefined));
+    const api = {
+      initialize: vi.fn(() => Effect.succeed(undefined)),
+      inventory: { createInventoryLocation },
+    };
+
+    createEbayMcpRuntime({
+      api: api as never,
+      serverConfig: { name: 'test-mcp', version: '0.0.0' },
+    });
+
+    const createLocationCall = [...mcpMock.registerTool.mock.calls]
+      .reverse()
+      .find(([name]) => name === 'ebay_create_inventory_location');
+    expect(createLocationCall).toBeDefined();
+    const handler = createLocationCall?.[2] as (args: Record<string, unknown>) => Promise<{
+      content: Array<{ type: string; text: string }>;
+    }>;
+
+    const result = await handler({
+      merchantLocationKey: 'WH1',
+      body: {
+        location: {
+          address: {
+            addressLine1: '1 Main',
+            city: 'San Jose',
+            stateOrProvince: 'CA',
+            postalCode: '95125',
+            country: 'US',
+          },
+        },
+      },
+    });
+
+    expect(result.content).toHaveLength(1);
+    expect(result.content[0]?.type).toBe('text');
+    expect(typeof result.content[0]?.text).toBe('string');
+    expect(result).not.toMatchObject({ isError: true });
+    expect(JSON.parse(result.content[0]!.text)).toEqual({ status: 'success' });
   });
 });

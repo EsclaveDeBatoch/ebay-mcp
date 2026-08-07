@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import stringify from 'dotenv-stringify';
-import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { closeSync, existsSync, fsyncSync, openSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import type { EbayConfig, EbayUserToken, StoredTokenData } from '@/types/ebay.js';
 import { Data, Effect } from 'effect';
@@ -56,13 +56,38 @@ export interface CredentialStore {
 }
 
 /**
+ * Process-wide write mutexes keyed by absolute `.env` path so concurrent
+ * DotEnvCredentialStore instances cannot interleave read-modify-write on the
+ * same file (e.g. user-token write racing app-token write).
+ */
+const writeLocksByEnvPath = new Map<string, Effect.Semaphore>();
+
+const writeLockForEnvPath = (envPath: string): Effect.Semaphore => {
+  const existing = writeLocksByEnvPath.get(envPath);
+  if (existing) {
+    return existing;
+  }
+
+  const created = Effect.runSync(Effect.makeSemaphore(1));
+  writeLocksByEnvPath.set(envPath, created);
+  return created;
+};
+
+/**
  * Credential store that merges token updates into the project .env file.
+ *
+ * Writes are serialized through a one-permit semaphore so concurrent Effect
+ * callers cannot interleave read-modify-write on the same `.env` path.
  */
 export class DotEnvCredentialStore implements CredentialStore {
   constructor(private readonly getEnvPath: () => string = () => join(process.cwd(), '.env')) {}
 
   /**
    * Merges credential updates into the project `.env` file.
+   *
+   * Concurrent writes are serialized so one call cannot overwrite another
+   * caller's keys. After the file is written, the store fsyncs the file
+   * descriptor when the path exists so crash/kill is less likely to drop tokens.
    *
    * @param updates - Environment variable names and values to persist.
    * @returns An Effect that succeeds after `.env` is written.
@@ -74,21 +99,45 @@ export class DotEnvCredentialStore implements CredentialStore {
    */
   write(updates: Record<string, string>): Effect.Effect<void, CredentialStoreError> {
     const envPath = this.getEnvPath();
+    const writeLock = writeLockForEnvPath(envPath);
 
-    return Effect.try({
-      try: () => {
-        const existingEnv = existsSync(envPath) ? dotenv.parse(readFileSync(envPath, 'utf-8')) : {};
-        const safeEnvContent = stringify({ ...existingEnv, ...updates });
+    return writeLock.withPermits(1)(
+      Effect.try({
+        try: () => {
+          // Drop non-string values so a missing refresh_token cannot persist as empty.
+          const sanitizedUpdates: Record<string, string> = {};
+          for (const [key, value] of Object.entries(updates)) {
+            if (typeof value === 'string') {
+              sanitizedUpdates[key] = value;
+            }
+          }
 
-        writeFileSync(envPath, safeEnvContent, 'utf-8');
-      },
-      catch: (cause) =>
-        new CredentialStoreError({
-          envPath,
-          message: `Failed to write credential updates to ${envPath}`,
-          cause,
-        }),
-    });
+          const existingEnv = existsSync(envPath)
+            ? dotenv.parse(readFileSync(envPath, 'utf-8'))
+            : {};
+          const safeEnvContent = stringify({ ...existingEnv, ...sanitizedUpdates });
+
+          writeFileSync(envPath, safeEnvContent, 'utf-8');
+
+          // Durability: flush kernel page cache for this file when practical.
+          // Skip when the path is missing (e.g. tests that mock writeFileSync).
+          if (existsSync(envPath)) {
+            const fd = openSync(envPath, 'r');
+            try {
+              fsyncSync(fd);
+            } finally {
+              closeSync(fd);
+            }
+          }
+        },
+        catch: (cause) =>
+          new CredentialStoreError({
+            envPath,
+            message: `Failed to write credential updates to ${envPath}`,
+            cause,
+          }),
+      }),
+    );
   }
 }
 

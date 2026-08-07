@@ -401,6 +401,19 @@ export class EbayOAuthClient {
         },
       );
 
+      // Authorization-code exchange must return a refresh token; without it we
+      // cannot persist durable user credentials and must not claim success.
+      const refreshToken = tokenData.refresh_token;
+      if (typeof refreshToken !== 'string' || refreshToken.length === 0) {
+        return yield* Effect.fail(
+          new EbayOAuthError({
+            operation: 'exchangeCodeForToken',
+            message:
+              'eBay token response did not include a non-empty refresh_token; cannot complete authorization code exchange',
+          }),
+        );
+      }
+
       this.userTokens = createStoredUserTokensFromResponse({
         config: this.config,
         tokenData,
@@ -410,7 +423,7 @@ export class EbayOAuthClient {
       yield* this.credentialStore
         .write({
           EBAY_USER_ACCESS_TOKEN: tokenData.access_token,
-          EBAY_USER_REFRESH_TOKEN: tokenData.refresh_token,
+          EBAY_USER_REFRESH_TOKEN: refreshToken,
         })
         .pipe(
           Effect.mapError((cause) =>
@@ -424,7 +437,7 @@ export class EbayOAuthClient {
       this.config = {
         ...this.config,
         accessToken: tokenData.access_token,
-        refreshToken: tokenData.refresh_token,
+        refreshToken: refreshToken,
       };
 
       return tokenData;

@@ -426,6 +426,24 @@ describe('EbayOAuthClient', () => {
       expect(envWrite.content).toContain('EBAY_USER_REFRESH_TOKEN=RT1');
     });
 
+    it('exchangeCodeForToken does not persist when refresh_token is missing (issue #154)', async () => {
+      mockOAuthTokenEndpoint('sandbox', {
+        access_token: 'AT_only',
+        token_type: 'Bearer',
+        expires_in: 7200,
+      });
+
+      await expectOAuthFailure(oauthClient.exchangeCodeForToken('auth_code'), {
+        operation: 'exchangeCodeForToken',
+        message: 'did not include a non-empty refresh_token',
+      });
+
+      const envWrite = [...writeFileSyncMock.mock.calls].find(([filePath]) =>
+        String(filePath).endsWith(`${path.sep}.env`),
+      );
+      expect(envWrite).toBeUndefined();
+    });
+
     it('refreshUserToken persists in-memory refresh token to .env even when eBay omits refresh_token (issue #114)', async () => {
       oauthClient = new EbayOAuthClient({ ...config, refreshToken: 'stale_env_refresh' });
       await setUserTokens(oauthClient, 'old_access_token', 'in_memory_refresh');

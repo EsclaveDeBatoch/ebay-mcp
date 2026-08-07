@@ -123,7 +123,16 @@ export const accountEntries: ToolEntry[] = [
   defineTool({
     name: 'ebay_create_fulfillment_policy',
     description:
-      'Create a new fulfillment policy.\n\nRequired OAuth Scope: sell.account\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.account',
+      'Create a new fulfillment policy.\n\n' +
+      'shippingServiceCode must be a marketplace-valid eBay service enum (not a free-form carrier nickname). ' +
+      'Invalid codes return "Please select a valid shipping service". eBay may cite DomesticItemShippingService[0] ' +
+      'and [1] for a single bad entry — that is remote validation, not client array duplication. ' +
+      'Discover valid codes via Trading GeteBayDetails (ShippingServiceDetails). ' +
+      'Known-good EBAY_US FLAT_RATE sketch: policy.name, policy.marketplaceId=EBAY_US, ' +
+      'policy.categoryTypes=[{name:ALL_EXCLUDING_MOTORS_VEHICLES}], policy.handlingTime={unit:DAY,value:1}, ' +
+      'policy.shippingOptions=[{costType:FLAT_RATE,optionType:DOMESTIC,shippingServices:[{shippingServiceCode:USPSPriority,shippingCost:{currency:USD,value:"5.99"}}]}]. ' +
+      'Avoid invented codes like USPSPriorityMail. Sandbox may accept a smaller code set than production.\n\n' +
+      'Required OAuth Scope: sell.account\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.account',
     inputSchema: createFulfillmentPolicyInputSchema.shape,
     outputSchema: zodToJsonSchema(createFulfillmentPolicyOutputSchema, {
       name: 'CreateFulfillmentPolicyResponse',
