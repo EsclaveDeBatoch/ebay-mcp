@@ -45,8 +45,7 @@ export interface EbayMcpRuntime {
 function formatToolSuccess(result: unknown) {
   // JSON.stringify(undefined) returns undefined (not a string), which produces an
   // invalid MCP content block and triggers client -32602 on empty-body 201/204s.
-  const successDocument =
-    result === undefined || result === null ? { status: 'success' } : result;
+  const successDocument = result === undefined || result === null ? { status: 'success' } : result;
 
   return {
     content: [

@@ -119,14 +119,18 @@ export class DotEnvCredentialStore implements CredentialStore {
 
           writeFileSync(envPath, safeEnvContent, 'utf-8');
 
-          // Durability: flush kernel page cache for this file when practical.
-          // Skip when the path is missing (e.g. tests that mock writeFileSync).
+          // Durability: best-effort fsync. Windows and mocked FS may reject fsync
+          // on a read-only open; never fail the write after a successful writeFileSync.
           if (existsSync(envPath)) {
-            const fd = openSync(envPath, 'r');
             try {
-              fsyncSync(fd);
-            } finally {
-              closeSync(fd);
+              const fd = openSync(envPath, 'r+');
+              try {
+                fsyncSync(fd);
+              } finally {
+                closeSync(fd);
+              }
+            } catch {
+              // Ignore fsync failures — tokens are already on disk for the write path.
             }
           }
         },
