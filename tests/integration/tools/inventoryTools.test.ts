@@ -275,7 +275,7 @@ describe('Inventory Tools Integration Tests', () => {
       };
 
       mockEbayApiEndpoint(
-        '/sell/inventory/v1/offer?marketplace_id=EBAY_US',
+        '/sell/inventory/v1/offer?marketplace_id=EBAY_US&sku=TEST-001',
         'get',
         'sandbox',
         mockResponse,
@@ -283,6 +283,7 @@ describe('Inventory Tools Integration Tests', () => {
 
       const result = await executeTool(api, 'ebay_get_offers', {
         marketplaceId: 'EBAY_US',
+        sku: 'TEST-001',
       });
 
       expect(result.offers[0].marketplaceId).toBe('EBAY_US');

@@ -30,8 +30,8 @@ export interface GetOffersInput {
   readonly marketplaceId?: string;
   /** Offer page offset. */
   readonly offset?: number;
-  /** Seller-defined SKU filter. */
-  readonly sku?: string;
+  /** Seller-defined SKU whose offers to return. */
+  readonly sku: string;
 }
 
 /** Input accepted by offer ID endpoints. */
@@ -260,9 +260,9 @@ export const createInventoryOffersMethods = (client: EbayApiClient) => ({
   },
 
   /**
-   * Retrieves offers with optional filters.
+   * Retrieves offers for one seller-defined SKU.
    *
-   * @param input - Optional offer filters and pagination controls.
+   * @param input - Required SKU plus optional offer filters and pagination controls.
    * @returns An Effect that succeeds with eBay's Offers response.
    *
    * @example
@@ -275,7 +275,7 @@ export const createInventoryOffersMethods = (client: EbayApiClient) => ({
    * @see https://developer.ebay.com/api-docs/sell/inventory/resources/offer/methods/getOffers
    */
   getOffers: (
-    input: GetOffersInput = {},
+    input: GetOffersInput,
   ): Effect.Effect<GetOffersResponse, EbayApiError | EndpointInputError> => {
     const path = `${INVENTORY_BASE_PATH}/offer`;
 
@@ -288,7 +288,7 @@ export const createInventoryOffersMethods = (client: EbayApiClient) => ({
         'marketplaceId',
       );
       const offset = yield* optionalNonNegativeNumberEffect(validatedInput.offset, 'offset');
-      const sku = yield* optionalStringEffect(validatedInput.sku, 'sku');
+      const sku = yield* requireStringEffect(validatedInput.sku, 'sku');
       const params = buildEndpointParams({
         format: { wireName: 'format', value: format },
         limit: { wireName: 'limit', value: limit === undefined ? undefined : String(limit) },
