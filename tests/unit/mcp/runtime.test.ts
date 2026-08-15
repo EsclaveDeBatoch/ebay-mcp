@@ -103,4 +103,52 @@ describe('MCP runtime', () => {
     expect(result).not.toMatchObject({ isError: true });
     expect(JSON.parse(result.content[0]!.text)).toEqual({ status: 'success' });
   });
+
+  it('preserves structured eBay details for a failed registered tool call', async () => {
+    const { createEbayMcpRuntime } = await import('@/mcp/runtime.js');
+    const { EbayApiError } = await import('@/api/shared/request.js');
+    const eBayErrors = [
+      {
+        errorId: 25_709,
+        message: 'Invalid header',
+        longMessage: 'Invalid value for header Accept-Language',
+        parameters: [{ name: 'Accept-Language', value: '*' }],
+      },
+    ];
+    const createInventoryLocation = vi.fn(() =>
+      Effect.fail(
+        new EbayApiError({
+          method: 'POST',
+          path: '/sell/inventory/v1/location/WH1',
+          cause: { status: 400, data: { errors: eBayErrors } },
+        }),
+      ),
+    );
+    const api = {
+      initialize: vi.fn(() => Effect.succeed(undefined)),
+      inventory: { createInventoryLocation },
+    };
+
+    createEbayMcpRuntime({
+      api: api as never,
+      serverConfig: { name: 'test-mcp', version: '0.0.0' },
+    });
+
+    const createLocationCall = [...mcpMock.registerTool.mock.calls]
+      .reverse()
+      .find(([name]) => name === 'ebay_create_inventory_location');
+    const handler = createLocationCall?.[2] as (args: Record<string, unknown>) => Promise<{
+      content: Array<{ type: string; text: string }>;
+      isError?: boolean;
+    }>;
+    const result = await handler({ merchantLocationKey: 'WH1', body: {} });
+    const payload = JSON.parse(result.content[0]?.text ?? '{}');
+
+    expect(result.isError).toBe(true);
+    expect(payload).toEqual({
+      error: 'Invalid value for header Accept-Language',
+      status: 400,
+      details: eBayErrors,
+    });
+  });
 });
