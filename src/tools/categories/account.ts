@@ -165,7 +165,8 @@ export const accountEntries: ToolEntry[] = [
   }),
   defineTool({
     name: 'ebay_update_fulfillment_policy',
-    description: 'Update an existing fulfillment policy',
+    description:
+      'Update an existing fulfillment policy.\n\nRequired OAuth Scope: sell.account\nMinimum Scope: https://api.ebay.com/oauth/api_scope/sell.account',
     inputSchema: updateFulfillmentPolicyInputSchema.shape,
     outputSchema: zodToJsonSchema(createFulfillmentPolicyOutputSchema, {
       name: 'UpdateFulfillmentPolicyResponse',

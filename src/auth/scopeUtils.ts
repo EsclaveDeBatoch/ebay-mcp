@@ -176,6 +176,11 @@ export const getRequiredScopesForTool = (toolName: string): ScopeRequirement | n
       minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
       description: 'Requires write access to account settings',
     },
+    ebay_update_fulfillment_policy: {
+      requiredScopes: ['https://api.ebay.com/oauth/api_scope/sell.account'],
+      minimumScope: 'https://api.ebay.com/oauth/api_scope/sell.account',
+      description: 'Requires write access to account settings',
+    },
 
     // Marketing Tools
     ebay_get_campaigns: {
