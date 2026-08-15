@@ -360,6 +360,7 @@ Common tasks, phrased as you'd ask your AI assistant:
 
 - **Set up OAuth** — *"Help me set up OAuth for my eBay account."* → generates an authorization URL via `ebay_get_oauth_url`, then configures the refresh token. Unlocks 10k–50k req/day.
 - **Manage inventory** — *"Show me all my active listings."* → `ebay_get_inventory_items` returns SKUs, quantities, and status.
+- **Manage fulfillment policies** — *"Create a shipping policy, then update its handling time."* → `ebay_create_fulfillment_policy` creates the reusable policy ID and `ebay_update_fulfillment_policy` replaces its settings.
 - **Process orders** — *"Get all unfulfilled orders from the last 7 days."* → `ebay_get_orders` with date and fulfillment-status filters.
 - **Create campaigns** — *"Create a promoted-listing campaign for electronics."* → `ebay_create_campaign` and related marketing tools.
 - **Bulk operations** — *"Apply a 10% discount to all 'Vintage Watches' items."* → `ebay_get_inventory_items` + `ebay_update_offer` across matches.
