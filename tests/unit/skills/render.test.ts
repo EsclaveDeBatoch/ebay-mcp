@@ -41,6 +41,19 @@ describe('skill rendering', () => {
     expect(renderCodexSection(usingDoc)).toMatch(/\d+ tools/);
   });
 
+  it('puts category aspect discovery before inventory and offer creation', () => {
+    const rendered = renderCodexSection(usingDoc);
+    const aspectLookup = rendered.indexOf('`ebay_get_item_aspects_for_category`');
+    const inventoryCreation = rendered.indexOf('`ebay_create_or_replace_inventory_item`');
+    const offerCreation = rendered.indexOf('`ebay_create_offer`');
+
+    expect(aspectLookup).toBeGreaterThan(-1);
+    expect(aspectLookup).toBeLessThan(inventoryCreation);
+    expect(aspectLookup).toBeLessThan(offerCreation);
+    expect(rendered).toContain('before `ebay_get_listing_fees`');
+    expect(rendered).toContain('Requirements vary by category and marketplace');
+  });
+
   it('dispatches renderSkill by provider', () => {
     expect(renderSkill('claude', usingDoc, 'using')).toBe(renderClaudeSkill(usingDoc, 'using'));
     expect(renderSkill('cursor', usingDoc, 'using')).toBe(renderCursorRule(usingDoc, 'using'));
