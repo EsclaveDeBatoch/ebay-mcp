@@ -1,10 +1,9 @@
 import dotenv from 'dotenv';
 import stringify from 'dotenv-stringify';
 import { closeSync, existsSync, fsyncSync, openSync, readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { CREDENTIAL_ENV_PATH } from '@/config/credentialFile.js';
 import type { EbayConfig, EbayUserToken, StoredTokenData } from '@/types/ebay.js';
 import { Data, Effect } from 'effect';
-import process from 'node:process';
 
 /**
  * Default lifetime for stored eBay user access tokens when eBay omits an expiry.
@@ -80,7 +79,7 @@ const writeLockForEnvPath = (envPath: string): Effect.Semaphore => {
  * callers cannot interleave read-modify-write on the same `.env` path.
  */
 export class DotEnvCredentialStore implements CredentialStore {
-  constructor(private readonly getEnvPath: () => string = () => join(process.cwd(), '.env')) {}
+  constructor(private readonly getEnvPath: () => string = () => CREDENTIAL_ENV_PATH) {}
 
   /**
    * Merges credential updates into the project `.env` file.
