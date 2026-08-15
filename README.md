@@ -100,6 +100,19 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `trading` | Legacy XML fixed-price listing create, revise, relist, and end operations | "Create a fixed-price listing draft from this SKU." |
 | `connector` | ChatGPT connector search/fetch tools over the eBay MCP catalogue | "Search the eBay tool catalogue for order tools." |
 
+### Listing preflight: required item specifics
+
+Before calling `ebay_create_or_replace_inventory_item`, `ebay_create_offer`, or
+`ebay_get_listing_fees`, fetch the live requirements for the selected category:
+
+`ebay_get_default_category_tree_id` → `ebay_get_category_suggestions` →
+`ebay_get_item_aspects_for_category`
+
+The aspects response identifies required and recommended item specifics. Put every
+required aspect on the inventory item before creating its offer. Requirements vary by
+category and marketplace, so re-run the lookup when either changes; do not rely on
+examples or a fixed global fallback value.
+
 ## eBay MCP vs. the raw eBay API
 
 Both talk to the same eBay endpoints — the difference is everything you'd otherwise build yourself.

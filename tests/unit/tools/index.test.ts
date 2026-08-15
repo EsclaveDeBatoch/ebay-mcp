@@ -343,6 +343,17 @@ describe('Tools Layer', () => {
       expect(toolNames).toContain('ebay_send_message'); // communicationTools
       expect(toolNames).toContain('ebay_get_user'); // otherApiTools
     });
+
+    it('advertises required and recommended item specifics in the taxonomy tool', () => {
+      const tool = getToolDefinitions().find(
+        (definition) => definition.name === 'ebay_get_item_aspects_for_category',
+      );
+
+      expect(tool?.description).toContain('required and recommended item specifics');
+      expect(tool?.description).toContain(
+        'before creating an inventory item or checking listing fees',
+      );
+    });
   });
 
   describe('executeTool - ChatGPT Connector Tools', () => {
