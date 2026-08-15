@@ -7,6 +7,11 @@ import { mkdtempSync, promises as fsPromises, rmSync } from 'fs';
 import { tmpdir } from 'os';
 import path from 'path';
 import { EbayOAuthClient, type EbayOAuthError } from '@/auth/oauth.js';
+import {
+  CredentialStoreError,
+  DotEnvCredentialStore,
+  type CredentialStore,
+} from '@/auth/credentialSession.js';
 import type { EbayConfig } from '@/types/ebay.js';
 import { mockOAuthTokenEndpoint, cleanupMocks } from '@tests/helpers/mockHttp.js';
 import process from 'node:process';
@@ -141,6 +146,36 @@ describe('EbayOAuthClient', () => {
 
       expect(oauthClient.hasUserTokens()).toBe(false);
     });
+
+    it('keeps a successfully refreshed user token when persistence fails (issue #157)', async () => {
+      const credentialStore: CredentialStore = {
+        write: () =>
+          Effect.fail(
+            new CredentialStoreError({
+              envPath: '/read-only/.env',
+              message: 'Failed to write credential updates to /read-only/.env',
+              cause: new Error('EACCES'),
+            }),
+          ),
+      };
+      config = { ...config, refreshToken: 'valid_refresh_token' };
+      oauthClient = new EbayOAuthClient(config, credentialStore);
+
+      mockOAuthTokenEndpoint('sandbox', {
+        access_token: 'refreshed_access_token',
+        token_type: 'Bearer',
+        expires_in: 7200,
+        refresh_token: 'valid_refresh_token',
+        refresh_token_expires_in: 47_304_000,
+      });
+
+      await initializeOAuthClient(oauthClient);
+
+      expect(oauthClient.hasUserTokens()).toBe(true);
+      await expect(Effect.runPromise(oauthClient.getAccessToken())).resolves.toBe(
+        'refreshed_access_token',
+      );
+    });
   });
 
   describe('hasUserTokens', () => {
@@ -196,6 +231,42 @@ describe('EbayOAuthClient', () => {
       const token = await getAccessToken(oauthClient);
 
       expect(token).toBe(newAccessToken);
+    });
+
+    it('uses a refreshed access token when only its persistence fails (issue #157)', async () => {
+      const credentialStore: CredentialStore = {
+        write: () =>
+          Effect.fail(
+            new CredentialStoreError({
+              envPath: '/read-only/.env',
+              message: 'Failed to write credential updates to /read-only/.env',
+              cause: new Error('EACCES'),
+            }),
+          ),
+      };
+      oauthClient = new EbayOAuthClient(config, credentialStore);
+      const expiredAccessToken = Date.now() - 1;
+      const validRefreshToken = Date.now() + 60_000;
+      await Effect.runPromise(
+        Effect.either(
+          oauthClient.setUserTokens(
+            'expired_access_token',
+            'valid_refresh_token',
+            expiredAccessToken,
+            validRefreshToken,
+          ),
+        ),
+      );
+      mockOAuthTokenEndpoint('sandbox', {
+        access_token: 'refreshed_access_token',
+        token_type: 'Bearer',
+        expires_in: 7200,
+      });
+
+      await expect(Effect.runPromise(oauthClient.getAccessToken())).resolves.toBe(
+        'refreshed_access_token',
+      );
+      expect(oauthClient.hasUserTokens()).toBe(true);
     });
 
     it('returns tagged error when both access and refresh tokens are expired', async () => {
@@ -401,6 +472,10 @@ describe('EbayOAuthClient', () => {
       originalCwd = process.cwd();
       tempDir = mkdtempSync(path.join(tmpdir(), 'ebay-oauth-persistence-'));
       process.chdir(tempDir);
+      oauthClient = new EbayOAuthClient(
+        config,
+        new DotEnvCredentialStore(() => path.join(tempDir, '.env')),
+      );
       writeFileSyncMock.mockClear();
     });
 
@@ -445,7 +520,10 @@ describe('EbayOAuthClient', () => {
     });
 
     it('refreshUserToken persists in-memory refresh token to .env even when eBay omits refresh_token (issue #114)', async () => {
-      oauthClient = new EbayOAuthClient({ ...config, refreshToken: 'stale_env_refresh' });
+      oauthClient = new EbayOAuthClient(
+        { ...config, refreshToken: 'stale_env_refresh' },
+        new DotEnvCredentialStore(() => path.join(tempDir, '.env')),
+      );
       await setUserTokens(oauthClient, 'old_access_token', 'in_memory_refresh');
       writeFileSyncMock.mockClear();
 
@@ -463,7 +541,10 @@ describe('EbayOAuthClient', () => {
     });
 
     it('refreshUserToken persists same refresh token when in-memory differs from env (issue #114, no rotation case)', async () => {
-      oauthClient = new EbayOAuthClient({ ...config, refreshToken: 'old_env_refresh' });
+      oauthClient = new EbayOAuthClient(
+        { ...config, refreshToken: 'old_env_refresh' },
+        new DotEnvCredentialStore(() => path.join(tempDir, '.env')),
+      );
       await setUserTokens(oauthClient, 'old_access_token', 'fresh_oauth_refresh');
       writeFileSyncMock.mockClear();
 
@@ -481,7 +562,10 @@ describe('EbayOAuthClient', () => {
     });
 
     it('refreshUserToken does NOT rewrite refresh token when in-memory matches env', async () => {
-      oauthClient = new EbayOAuthClient({ ...config, refreshToken: 'same_refresh' });
+      oauthClient = new EbayOAuthClient(
+        { ...config, refreshToken: 'same_refresh' },
+        new DotEnvCredentialStore(() => path.join(tempDir, '.env')),
+      );
       await fsPromises.writeFile(
         path.join(tempDir, '.env'),
         'EBAY_USER_REFRESH_TOKEN=same_refresh\nEBAY_USER_ACCESS_TOKEN=old_access\n',

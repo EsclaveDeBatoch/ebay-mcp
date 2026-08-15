@@ -71,14 +71,15 @@ export const taxonomyEntries: ToolEntry[] = [
   }),
   defineTool({
     name: 'ebay_get_item_aspects_for_category',
-    description: 'Get item aspects for a specific category',
+    description:
+      'Identify required and recommended item specifics for a category before creating an inventory item or checking listing fees',
     inputSchema: getItemAspectsForCategorySchema.shape,
     outputSchema: {
       type: 'object',
       properties: {
         aspects: { type: 'array' },
       },
-      description: 'Item aspects for category',
+      description: 'Required and recommended item specifics for the category',
     },
     handler: (api, args) => Effect.runPromise(api.taxonomy.getItemAspectsForCategory(args)),
   }),

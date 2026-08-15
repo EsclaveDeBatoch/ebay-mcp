@@ -30,8 +30,8 @@ export interface GetOffersInput {
   readonly marketplaceId?: string;
   /** Offer page offset. */
   readonly offset?: number;
-  /** Seller-defined SKU filter. */
-  readonly sku?: string;
+  /** Seller-defined SKU whose offers to return. */
+  readonly sku: string;
 }
 
 /** Maximum number of SKU entries accepted by one batch lookup. */
@@ -239,7 +239,7 @@ export type WithdrawOfferByInventoryItemGroupResponse = void;
 // Keep the shared request implementation private so the existing and batch methods cannot drift.
 const getOffersEffect = (
   client: EbayApiClient,
-  input: GetOffersInput = {},
+  input: GetOffersInput,
 ): Effect.Effect<GetOffersResponse, EbayApiError | EndpointInputError> => {
   const path = `${INVENTORY_BASE_PATH}/offer`;
 
@@ -252,7 +252,7 @@ const getOffersEffect = (
       'marketplaceId',
     );
     const offset = yield* optionalNonNegativeNumberEffect(validatedInput.offset, 'offset');
-    const sku = yield* optionalStringEffect(validatedInput.sku, 'sku');
+    const sku = yield* requireStringEffect(validatedInput.sku, 'sku');
     const params = buildEndpointParams({
       format: { wireName: 'format', value: format },
       limit: { wireName: 'limit', value: limit === undefined ? undefined : String(limit) },
@@ -320,9 +320,9 @@ export const createInventoryOffersMethods = (client: EbayApiClient) => ({
   },
 
   /**
-   * Retrieves offers with optional filters.
+   * Retrieves offers for one seller-defined SKU.
    *
-   * @param input - Optional offer filters and pagination controls.
+   * @param input - Required SKU plus optional offer filters and pagination controls.
    * @returns An Effect that succeeds with eBay's Offers response.
    *
    * @example
@@ -335,7 +335,7 @@ export const createInventoryOffersMethods = (client: EbayApiClient) => ({
    * @see https://developer.ebay.com/api-docs/sell/inventory/resources/offer/methods/getOffers
    */
   getOffers: (
-    input: GetOffersInput = {},
+    input: GetOffersInput,
   ): Effect.Effect<GetOffersResponse, EbayApiError | EndpointInputError> =>
     getOffersEffect(client, input),
 
@@ -376,7 +376,6 @@ export const createInventoryOffersMethods = (client: EbayApiClient) => ({
           );
         }
       }
-
       const format = yield* optionalStringEffect(validatedInput.format, 'format');
       const marketplaceId = yield* optionalStringEffect(
         validatedInput.marketplaceId,
@@ -406,7 +405,6 @@ export const createInventoryOffersMethods = (client: EbayApiClient) => ({
         { concurrency: BATCH_GET_OFFERS_CONCURRENCY },
       );
       const successCount = results.filter((result) => result.status === 'success').length;
-
       return {
         requestedSkuCount: validatedInput.skus.length,
         uniqueSkuCount: uniqueSkus.length,

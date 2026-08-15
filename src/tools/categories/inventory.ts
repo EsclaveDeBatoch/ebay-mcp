@@ -42,9 +42,11 @@ import {
   getInventoryItemOutputSchema,
   getInventoryItemsOutputSchema,
   getInventoryLocationsOutputSchema,
+  getOffersInputSchema,
   getOffersOutputSchema,
   getOffersBySkusOutputSchema,
   getProductCompatibilityOutputSchema,
+  inventoryItemSchema,
   offerResponseSchema,
   publishOfferOutputSchema,
 } from '@/schemas/inventory-management/inventory.js';
@@ -72,7 +74,7 @@ const inventoryPaginationInputSchema = z.object({
 });
 
 const createOrReplaceInventoryItemInputSchema = skuInputSchema.extend({
-  body: generatedBodySchema<InventoryItem>('Generated InventoryItem request body'),
+  body: inventoryItemSchema,
 });
 
 const bulkCreateOrReplaceInventoryItemInputSchema = z.object({
@@ -121,14 +123,6 @@ const updateInventoryLocationInputSchema = merchantLocationKeyInputSchema.extend
   ),
 });
 
-const getOffersInputSchema = z.object({
-  format: z.string().optional().describe('Filter by listing format'),
-  limit: z.number().optional().describe('Number of offers to return'),
-  marketplaceId: z.nativeEnum(MarketplaceId).optional().describe('Filter by marketplace ID'),
-  offset: z.number().optional().describe('Number of offers to skip'),
-  sku: z.string().optional().describe('Filter by SKU'),
-});
-
 const getOffersBySkusInputSchema = z.object({
   skus: z
     .array(z.string().min(1).max(50))
@@ -138,7 +132,6 @@ const getOffersBySkusInputSchema = z.object({
   format: z.string().optional().describe('Filter by listing format'),
   marketplaceId: z.nativeEnum(MarketplaceId).optional().describe('Filter by marketplace ID'),
 });
-
 const offerIdInputSchema = z.object({
   offerId: z.string().describe('The offer ID'),
 });
@@ -250,7 +243,15 @@ export const inventoryEntries: ToolEntry[] = [
       name: 'CreateOrReplaceInventoryItemResponse',
       $refStrategy: 'none',
     }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.createOrReplaceInventoryItem(args)),
+    handler: (api, args) =>
+      Effect.runPromise(
+        api.inventory.createOrReplaceInventoryItem({
+          ...args,
+          // The generated OpenAPI type incorrectly models `product.aspects` as a
+          // string; the endpoint wire contract and validation schema use a map.
+          body: args.body as InventoryItem,
+        }),
+      ),
   }),
   defineTool({
     name: 'ebay_delete_inventory_item',
@@ -410,7 +411,8 @@ export const inventoryEntries: ToolEntry[] = [
   }),
   defineTool({
     name: 'ebay_get_offers',
-    description: 'Get all offers for the seller',
+    description:
+      'Get offers for one seller-defined SKU. To enumerate offers across SKUs, call ebay_get_inventory_items first, then call this tool once per SKU.',
     inputSchema: getOffersInputSchema.shape,
     outputSchema: zodToJsonSchema(getOffersOutputSchema, {
       name: 'GetOffersResponse',

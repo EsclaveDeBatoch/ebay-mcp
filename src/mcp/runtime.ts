@@ -12,7 +12,7 @@ import {
 } from '@/mcp/toolGating.js';
 import { buildUiToolResult, createUiBridge, type UiBridge } from '@/mcp/uiBridge.js';
 import { getToolEntries, type ToolEntry } from '@/tools/registry.js';
-import { getErrorMessage } from '@/utils/errors.js';
+import { getEbayErrorDetails } from '@/utils/errors.js';
 import { serverLogger, toolLogger } from '@/utils/logger.js';
 import { Effect } from 'effect';
 
@@ -58,13 +58,20 @@ function formatToolSuccess(result: unknown) {
 }
 
 function formatToolFailure(error: unknown) {
-  const errorMessage = getErrorMessage(error);
+  const { message, status, errors } = getEbayErrorDetails(error);
+  const payload: Record<string, unknown> = { error: message };
+  if (status !== undefined) {
+    payload.status = status;
+  }
+  if (errors !== undefined) {
+    payload.details = errors;
+  }
 
   return {
     content: [
       {
         type: 'text' as const,
-        text: JSON.stringify({ error: errorMessage }, null, 2),
+        text: JSON.stringify(payload, null, 2),
       },
     ],
     isError: true,
@@ -108,10 +115,10 @@ function registerTool(
               : formatToolSuccess(result);
           }),
           Effect.catchAll((error) => {
-            const errorMessage = getErrorMessage(error);
-
             if (logToolExecution) {
-              toolLogger.error(`Tool ${definition.name} failed`, { error: errorMessage });
+              toolLogger.error(`Tool ${definition.name} failed`, {
+                error: getEbayErrorDetails(error).message,
+              });
             }
 
             return Effect.succeed(formatToolFailure(error));

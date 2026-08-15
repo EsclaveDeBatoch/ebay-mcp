@@ -77,7 +77,7 @@ const productIdentifierSchema = z.object({
 });
 
 const productSchema = z.object({
-  title: z.string().optional(),
+  title: z.string().max(80).optional(),
   aspects: z.record(z.array(z.string())).optional(),
   brand: z.string().optional(),
   description: z.string().optional(),
@@ -287,7 +287,7 @@ export const offerResponseSchema = offerSchema.extend({
  */
 export const getOffersInputSchema = z.object({
   format: z.string().optional().describe('Filter offers by listing format'),
-  sku: z.string().optional().describe('Filter offers by SKU'),
+  sku: z.string().min(1).describe('Seller-defined SKU whose offers to return'),
   marketplaceId: z.nativeEnum(MarketplaceId).optional().describe('Filter offers by marketplace'),
   limit: z.number().optional().describe('Number of offers to return'),
   offset: z.number().optional().describe('Number of offers to skip'),
