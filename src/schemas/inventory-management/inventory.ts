@@ -308,6 +308,28 @@ export const getOffersOutputSchema = z.object({
   warnings: z.array(errorSchema).optional(),
 });
 
+/** Validates the aggregate response from the bounded multi-SKU offer lookup. */
+export const getOffersBySkusOutputSchema = z.object({
+  requestedSkuCount: z.number(),
+  uniqueSkuCount: z.number(),
+  successCount: z.number(),
+  failureCount: z.number(),
+  results: z.array(
+    z.union([
+      z.object({
+        sku: z.string(),
+        status: z.enum(['success']),
+        response: getOffersOutputSchema,
+      }),
+      z.object({
+        sku: z.string(),
+        status: z.enum(['failure']),
+        error: z.object({ type: z.string(), message: z.string() }),
+      }),
+    ]),
+  ),
+});
+
 /**
  * Validates the Inventory Management API create offer request payload.
  */

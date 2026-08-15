@@ -1,7 +1,7 @@
 import type { EbayApiClient } from '@/api/client.js';
 import {
   type EbayApiError,
-  type EndpointInputError,
+  EndpointInputError,
   buildEndpointParams,
   optionalNonNegativeNumberEffect,
   optionalPositiveNumberEffect,
@@ -17,7 +17,7 @@ import type {
   components,
   operations,
 } from '@/types/sell-apps/listing-management/sellInventoryV1Oas3.js';
-import { Effect } from 'effect';
+import { Effect, Either } from 'effect';
 import { INVENTORY_BASE_PATH } from './shared.js';
 
 /** Input accepted by getOffers. */
@@ -32,6 +32,36 @@ export interface GetOffersInput {
   readonly offset?: number;
   /** Seller-defined SKU filter. */
   readonly sku?: string;
+}
+
+/** Maximum number of SKU entries accepted by one batch lookup. */
+export const MAX_BATCH_GET_OFFERS_SKUS = 25;
+
+/** Maximum number of simultaneous eBay requests made by a batch lookup. */
+export const BATCH_GET_OFFERS_CONCURRENCY = 3;
+
+/** Input accepted by getOffersBySkus. Exact duplicate SKUs are queried once. */
+export interface GetOffersBySkusInput {
+  readonly skus: readonly string[];
+  readonly format?: string;
+  readonly marketplaceId?: string;
+}
+
+export type GetOffersBySkuResult =
+  | { readonly sku: string; readonly status: 'success'; readonly response: GetOffersResponse }
+  | {
+      readonly sku: string;
+      readonly status: 'failure';
+      readonly error: { readonly type: string; readonly message: string };
+    };
+
+/** Aggregate response for a batch offer lookup. */
+export interface GetOffersBySkusResponse {
+  readonly requestedSkuCount: number;
+  readonly uniqueSkuCount: number;
+  readonly successCount: number;
+  readonly failureCount: number;
+  readonly results: readonly GetOffersBySkuResult[];
 }
 
 /** Input accepted by offer ID endpoints. */
@@ -203,7 +233,37 @@ export type WithdrawOfferByInventoryItemGroupRequest =
  *
  * @see https://developer.ebay.com/api-docs/sell/inventory/resources/offer/methods/withdrawOfferByInventoryItemGroup
  */
+// biome-ignore lint/style/useExportsLast: public endpoint types intentionally precede private implementation helpers
 export type WithdrawOfferByInventoryItemGroupResponse = void;
+
+// Keep the shared request implementation private so the existing and batch methods cannot drift.
+const getOffersEffect = (
+  client: EbayApiClient,
+  input: GetOffersInput = {},
+): Effect.Effect<GetOffersResponse, EbayApiError | EndpointInputError> => {
+  const path = `${INVENTORY_BASE_PATH}/offer`;
+
+  return Effect.gen(function* () {
+    const validatedInput = yield* requireObjectEffect<GetOffersInput>(input, 'input');
+    const format = yield* optionalStringEffect(validatedInput.format, 'format');
+    const limit = yield* optionalPositiveNumberEffect(validatedInput.limit, 'limit');
+    const marketplaceId = yield* optionalStringEffect(
+      validatedInput.marketplaceId,
+      'marketplaceId',
+    );
+    const offset = yield* optionalNonNegativeNumberEffect(validatedInput.offset, 'offset');
+    const sku = yield* optionalStringEffect(validatedInput.sku, 'sku');
+    const params = buildEndpointParams({
+      format: { wireName: 'format', value: format },
+      limit: { wireName: 'limit', value: limit === undefined ? undefined : String(limit) },
+      marketplaceId: { wireName: 'marketplace_id', value: marketplaceId },
+      offset: { wireName: 'offset', value: offset === undefined ? undefined : String(offset) },
+      sku: { wireName: 'sku', value: sku },
+    });
+
+    return yield* requestGetEffect<GetOffersResponse>(client, path, params);
+  });
+};
 
 /** Inventory API — offers methods closed over a shared client. */
 export const createInventoryOffersMethods = (client: EbayApiClient) => ({
@@ -276,30 +336,85 @@ export const createInventoryOffersMethods = (client: EbayApiClient) => ({
    */
   getOffers: (
     input: GetOffersInput = {},
-  ): Effect.Effect<GetOffersResponse, EbayApiError | EndpointInputError> => {
-    const path = `${INVENTORY_BASE_PATH}/offer`;
+  ): Effect.Effect<GetOffersResponse, EbayApiError | EndpointInputError> =>
+    getOffersEffect(client, input),
 
-    return Effect.gen(function* () {
-      const validatedInput = yield* requireObjectEffect<GetOffersInput>(input, 'input');
+  /**
+   * Retrieves offers for up to 25 SKUs, preserving first-occurrence order.
+   *
+   * Exact duplicates are requested once. At most three requests run concurrently, and request
+   * failures are returned beside their SKU instead of failing the whole batch.
+   */
+  getOffersBySkus: (
+    input: GetOffersBySkusInput,
+  ): Effect.Effect<GetOffersBySkusResponse, EndpointInputError> =>
+    Effect.gen(function* () {
+      const validatedInput = yield* requireObjectEffect<GetOffersBySkusInput>(input, 'input');
+      if (!Array.isArray(validatedInput.skus)) {
+        return yield* Effect.fail(
+          new EndpointInputError({ parameter: 'skus', message: 'skus must be an array' }),
+        );
+      }
+      if (
+        validatedInput.skus.length === 0 ||
+        validatedInput.skus.length > MAX_BATCH_GET_OFFERS_SKUS
+      ) {
+        return yield* Effect.fail(
+          new EndpointInputError({
+            parameter: 'skus',
+            message: `skus must contain between 1 and ${MAX_BATCH_GET_OFFERS_SKUS} entries`,
+          }),
+        );
+      }
+      for (const sku of validatedInput.skus) {
+        if (typeof sku !== 'string' || sku.trim().length === 0 || sku.length > 50) {
+          return yield* Effect.fail(
+            new EndpointInputError({
+              parameter: 'skus',
+              message: 'each SKU must be a non-empty string of at most 50 characters',
+            }),
+          );
+        }
+      }
+
       const format = yield* optionalStringEffect(validatedInput.format, 'format');
-      const limit = yield* optionalPositiveNumberEffect(validatedInput.limit, 'limit');
       const marketplaceId = yield* optionalStringEffect(
         validatedInput.marketplaceId,
         'marketplaceId',
       );
-      const offset = yield* optionalNonNegativeNumberEffect(validatedInput.offset, 'offset');
-      const sku = yield* optionalStringEffect(validatedInput.sku, 'sku');
-      const params = buildEndpointParams({
-        format: { wireName: 'format', value: format },
-        limit: { wireName: 'limit', value: limit === undefined ? undefined : String(limit) },
-        marketplaceId: { wireName: 'marketplace_id', value: marketplaceId },
-        offset: { wireName: 'offset', value: offset === undefined ? undefined : String(offset) },
-        sku: { wireName: 'sku', value: sku },
-      });
+      const uniqueSkus = [...new Set(validatedInput.skus)];
+      const results = yield* Effect.forEach(
+        uniqueSkus,
+        (sku) =>
+          Effect.map(
+            Effect.either(
+              getOffersEffect(client, {
+                sku,
+                format,
+                marketplaceId,
+              }),
+            ),
+            (outcome): GetOffersBySkuResult =>
+              Either.isRight(outcome)
+                ? { sku, status: 'success', response: outcome.right }
+                : {
+                    sku,
+                    status: 'failure',
+                    error: { type: outcome.left._tag, message: outcome.left.message },
+                  },
+          ),
+        { concurrency: BATCH_GET_OFFERS_CONCURRENCY },
+      );
+      const successCount = results.filter((result) => result.status === 'success').length;
 
-      return yield* requestGetEffect<GetOffersResponse>(client, path, params);
-    });
-  },
+      return {
+        requestedSkuCount: validatedInput.skus.length,
+        uniqueSkuCount: uniqueSkus.length,
+        successCount,
+        failureCount: results.length - successCount,
+        results,
+      };
+    }),
 
   /**
    * Creates one offer.

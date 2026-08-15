@@ -43,6 +43,7 @@ import {
   getInventoryItemsOutputSchema,
   getInventoryLocationsOutputSchema,
   getOffersOutputSchema,
+  getOffersBySkusOutputSchema,
   getProductCompatibilityOutputSchema,
   offerResponseSchema,
   publishOfferOutputSchema,
@@ -126,6 +127,16 @@ const getOffersInputSchema = z.object({
   marketplaceId: z.nativeEnum(MarketplaceId).optional().describe('Filter by marketplace ID'),
   offset: z.number().optional().describe('Number of offers to skip'),
   sku: z.string().optional().describe('Filter by SKU'),
+});
+
+const getOffersBySkusInputSchema = z.object({
+  skus: z
+    .array(z.string().min(1).max(50))
+    .min(1)
+    .max(25)
+    .describe('1-25 seller SKUs; exact duplicates are queried once in first-occurrence order'),
+  format: z.string().optional().describe('Filter by listing format'),
+  marketplaceId: z.nativeEnum(MarketplaceId).optional().describe('Filter by marketplace ID'),
 });
 
 const offerIdInputSchema = z.object({
@@ -407,6 +418,17 @@ export const inventoryEntries: ToolEntry[] = [
     }) as OutputArgs,
     handler: (api, args) => Effect.runPromise(api.inventory.getOffers(args)),
     ui: { archetype: 'table', map: mapOffersToTable },
+  }),
+  defineTool({
+    name: 'ebay_get_offers_by_skus',
+    description:
+      'Get offers for 1-25 SKUs. Exact duplicates are queried once, at most 3 eBay requests run concurrently, and every SKU has its own success or failure result.',
+    inputSchema: getOffersBySkusInputSchema.shape,
+    outputSchema: zodToJsonSchema(getOffersBySkusOutputSchema, {
+      name: 'GetOffersBySkusResponse',
+      $refStrategy: 'none',
+    }) as OutputArgs,
+    handler: (api, args) => Effect.runPromise(api.inventory.getOffersBySkus(args)),
   }),
   defineTool({
     name: 'ebay_get_offer',
