@@ -77,7 +77,7 @@ const productIdentifierSchema = z.object({
 });
 
 const productSchema = z.object({
-  title: z.string().optional(),
+  title: z.string().max(80).optional(),
   aspects: z.record(z.array(z.string())).optional(),
   brand: z.string().optional(),
   description: z.string().optional(),

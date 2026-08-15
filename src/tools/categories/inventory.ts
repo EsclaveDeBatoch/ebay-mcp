@@ -44,6 +44,7 @@ import {
   getOffersInputSchema,
   getOffersOutputSchema,
   getProductCompatibilityOutputSchema,
+  inventoryItemSchema,
   offerResponseSchema,
   publishOfferOutputSchema,
 } from '@/schemas/inventory-management/inventory.js';
@@ -71,7 +72,7 @@ const inventoryPaginationInputSchema = z.object({
 });
 
 const createOrReplaceInventoryItemInputSchema = skuInputSchema.extend({
-  body: generatedBodySchema<InventoryItem>('Generated InventoryItem request body'),
+  body: inventoryItemSchema,
 });
 
 const bulkCreateOrReplaceInventoryItemInputSchema = z.object({
@@ -231,7 +232,15 @@ export const inventoryEntries: ToolEntry[] = [
       name: 'CreateOrReplaceInventoryItemResponse',
       $refStrategy: 'none',
     }) as OutputArgs,
-    handler: (api, args) => Effect.runPromise(api.inventory.createOrReplaceInventoryItem(args)),
+    handler: (api, args) =>
+      Effect.runPromise(
+        api.inventory.createOrReplaceInventoryItem({
+          ...args,
+          // The generated OpenAPI type incorrectly models `product.aspects` as a
+          // string; the endpoint wire contract and validation schema use a map.
+          body: args.body as InventoryItem,
+        }),
+      ),
   }),
   defineTool({
     name: 'ebay_delete_inventory_item',
