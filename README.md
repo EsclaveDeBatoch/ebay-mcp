@@ -100,6 +100,19 @@ Use this map when deciding which tool family to expose, or when asking an assist
 | `trading` | Legacy XML fixed-price listing create, revise, relist, and end operations | "Create a fixed-price listing draft from this SKU." |
 | `connector` | ChatGPT connector search/fetch tools over the eBay MCP catalogue | "Search the eBay tool catalogue for order tools." |
 
+### Listing preflight: required item specifics
+
+Before calling `ebay_create_or_replace_inventory_item`, `ebay_create_offer`, or
+`ebay_get_listing_fees`, fetch the live requirements for the selected category:
+
+`ebay_get_default_category_tree_id` → `ebay_get_category_suggestions` →
+`ebay_get_item_aspects_for_category`
+
+The aspects response identifies required and recommended item specifics. Put every
+required aspect on the inventory item before creating its offer. Requirements vary by
+category and marketplace, so re-run the lookup when either changes; do not rely on
+examples or a fixed global fallback value.
+
 ## eBay MCP vs. the raw eBay API
 
 Both talk to the same eBay endpoints — the difference is everything you'd otherwise build yourself.
@@ -348,6 +361,7 @@ Common tasks, phrased as you'd ask your AI assistant:
 - **Set up OAuth** — *"Help me set up OAuth for my eBay account."* → generates an authorization URL via `ebay_get_oauth_url`, then configures the refresh token. Unlocks 10k–50k req/day.
 - **Manage inventory** — *"Show me all my active listings."* → `ebay_get_inventory_items` returns SKUs, quantities, and status.
 - **Look up offers** — `ebay_get_offers` returns offers for one required SKU. To enumerate offers across the inventory, call `ebay_get_inventory_items` first, then call `ebay_get_offers` once per SKU.
+- **Manage fulfillment policies** — *"Create a shipping policy, then update its handling time."* → `ebay_create_fulfillment_policy` creates the reusable policy ID and `ebay_update_fulfillment_policy` replaces its settings.
 - **Process orders** — *"Get all unfulfilled orders from the last 7 days."* → `ebay_get_orders` with date and fulfillment-status filters.
 - **Create campaigns** — *"Create a promoted-listing campaign for electronics."* → `ebay_create_campaign` and related marketing tools.
 - **Bulk operations** — *"Apply a 10% discount to all 'Vintage Watches' items."* → `ebay_get_inventory_items` + `ebay_update_offer` across matches.

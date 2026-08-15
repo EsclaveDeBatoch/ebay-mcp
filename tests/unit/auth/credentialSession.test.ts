@@ -3,6 +3,7 @@ import { tmpdir } from 'os';
 import path from 'path';
 import dotenv from 'dotenv';
 import { Effect } from 'effect';
+import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   buildCredentialDisplay,
@@ -15,6 +16,7 @@ import {
   isTokenExpired,
   maskToken,
 } from '@/auth/credentialSession.js';
+import { CREDENTIAL_ENV_PATH, resolveCredentialEnvPath } from '@/config/credentialFile.js';
 
 describe('credential session', () => {
   let tempDir: string | undefined;
@@ -47,6 +49,15 @@ describe('credential session', () => {
       EBAY_USER_ACCESS_TOKEN: 'access',
       EBAY_USER_REFRESH_TOKEN: 'refresh',
     });
+  });
+
+  it('resolves the credential file from the installed package root (issue #157)', () => {
+    const installedModuleUrl = new URL('../../../build/config/credentialFile.js', import.meta.url);
+
+    expect(CREDENTIAL_ENV_PATH).toBe(fileURLToPath(new URL('../../../.env', import.meta.url)));
+    expect(resolveCredentialEnvPath(installedModuleUrl)).toBe(
+      fileURLToPath(new URL('../../.env', installedModuleUrl)),
+    );
   });
 
   it('preserves both keys under concurrent dual writes (issue #154)', async () => {
