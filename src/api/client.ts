@@ -7,7 +7,7 @@ import { getErrorMessage } from '@/utils/errors.js';
 import { httpRequestEffect, isHttpError, type ResponseType } from '@/utils/http.js';
 import { isRecord } from '@/utils/typeGuards.js';
 import { apiLogger, logRequest, logResponse, logErrorResponse } from '@/utils/logger.js';
-import { Effect } from 'effect';
+import { Cause, Effect, Exit } from 'effect';
 
 /**
  * Per-request overrides accepted by the verb helpers ({@link EbayApiClient.get}
@@ -167,7 +167,13 @@ export class EbayApiClient {
     endpoint: string,
     options: EbayRequestOptions,
   ): Promise<T> {
-    return await Effect.runPromise(this.requestEffect<T>(method, endpoint, options));
+    // Preserve the typed request error for endpoint adapters. Plain runPromise
+    // rejects with a FiberFailure whose generic message hides eBay response data.
+    const exit = await Effect.runPromiseExit(this.requestEffect<T>(method, endpoint, options));
+    if (Exit.isSuccess(exit)) {
+      return exit.value;
+    }
+    throw Cause.squash(exit.cause);
   }
 
   /**

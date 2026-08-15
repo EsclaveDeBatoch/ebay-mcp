@@ -11,7 +11,6 @@ import {
   mapOffersToTable,
   mapOfferToCard,
 } from '@/tools/ui/maps.js';
-import { MarketplaceId } from '@/types/ebayEnums.js';
 import type {
   BulkCreateOfferRequest,
   BulkCreateOrReplaceInventoryItemRequest,
@@ -42,6 +41,7 @@ import {
   getInventoryItemOutputSchema,
   getInventoryItemsOutputSchema,
   getInventoryLocationsOutputSchema,
+  getOffersInputSchema,
   getOffersOutputSchema,
   getProductCompatibilityOutputSchema,
   inventoryItemSchema,
@@ -119,14 +119,6 @@ const updateInventoryLocationInputSchema = merchantLocationKeyInputSchema.extend
   body: generatedBodySchema<UpdateInventoryLocationRequest>(
     'Generated InventoryLocation request body',
   ),
-});
-
-const getOffersInputSchema = z.object({
-  format: z.string().optional().describe('Filter by listing format'),
-  limit: z.number().optional().describe('Number of offers to return'),
-  marketplaceId: z.nativeEnum(MarketplaceId).optional().describe('Filter by marketplace ID'),
-  offset: z.number().optional().describe('Number of offers to skip'),
-  sku: z.string().optional().describe('Filter by SKU'),
 });
 
 const offerIdInputSchema = z.object({
@@ -408,7 +400,8 @@ export const inventoryEntries: ToolEntry[] = [
   }),
   defineTool({
     name: 'ebay_get_offers',
-    description: 'Get all offers for the seller',
+    description:
+      'Get offers for one seller-defined SKU. To enumerate offers across SKUs, call ebay_get_inventory_items first, then call this tool once per SKU.',
     inputSchema: getOffersInputSchema.shape,
     outputSchema: zodToJsonSchema(getOffersOutputSchema, {
       name: 'GetOffersResponse',
