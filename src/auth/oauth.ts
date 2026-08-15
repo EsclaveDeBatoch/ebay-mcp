@@ -2,10 +2,10 @@ import {
   createAppAccessTokenExpiry,
   createStoredUserTokens,
   createStoredUserTokensFromResponse,
+  CredentialStoreError,
   DotEnvCredentialStore,
   isTokenExpired,
   type CredentialStore,
-  type CredentialStoreError,
   type EbayUserTokenResponse,
 } from '@/auth/credentialSession.js';
 import { getBaseUrl, getDefaultScopes } from '@/config/environment.js';
@@ -70,6 +70,9 @@ const mapCredentialStoreError = (
     message: `${message}: ${cause.message}`,
     cause,
   });
+
+const isCredentialPersistenceError = (error: EbayOAuthError): boolean =>
+  error.cause instanceof CredentialStoreError;
 
 /**
  * Manages eBay OAuth 2.0 authentication
@@ -147,12 +150,19 @@ export class EbayOAuthClient {
 
         if (Either.isLeft(refreshed)) {
           const error = refreshed.left;
-          authLogger.error('Failed to refresh access token', {
-            error: getErrorMessage(error, String(error)),
-            hint: 'The configured EBAY_USER_REFRESH_TOKEN may be invalid or expired',
-          });
-          // Clear invalid tokens
-          this.userTokens = null;
+          if (isCredentialPersistenceError(error)) {
+            authLogger.error('Access token refreshed but could not be persisted', {
+              error: getErrorMessage(error, String(error)),
+              hint: 'The refreshed token remains available for this process, but the credential file must be writable to survive a restart',
+            });
+          } else {
+            authLogger.error('Failed to refresh access token', {
+              error: getErrorMessage(error, String(error)),
+              hint: 'The configured EBAY_USER_REFRESH_TOKEN may be invalid or expired',
+            });
+            // Clear tokens only when the refresh itself failed.
+            this.userTokens = null;
+          }
         }
       }
     });
@@ -222,10 +232,22 @@ export class EbayOAuthClient {
         const refreshed = yield* Effect.either(this.refreshUserToken());
 
         if (Either.isLeft(refreshed)) {
+          if (
+            isCredentialPersistenceError(refreshed.left) &&
+            this.userTokens &&
+            !this.isUserAccessTokenExpired(this.userTokens)
+          ) {
+            authLogger.error('User token refreshed but could not be persisted', {
+              error: getErrorMessage(refreshed.left, String(refreshed.left)),
+              hint: 'Using the valid refreshed token for this process only',
+            });
+            return this.userTokens.userAccessToken;
+          }
+
           authLogger.error('Failed to refresh user token, falling back to app access token', {
             error: getErrorMessage(refreshed.left, String(refreshed.left)),
           });
-          // Clear invalid tokens
+          // Clear tokens only when no valid refreshed access token remains.
           this.userTokens = null;
         } else if (this.userTokens) {
           return this.userTokens.userAccessToken;
