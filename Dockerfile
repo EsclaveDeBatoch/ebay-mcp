@@ -3,14 +3,15 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm
+# Install pnpm (use corepack to get a version compatible with the lockfile)
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Copy package manifests first for better layer caching
 COPY package.json pnpm-lock.yaml* ./
 
 # Install all dependencies (ignore lifecycle scripts — no prepare/husky needed in the image)
-RUN pnpm install --frozen-lockfile --ignore-scripts
+# Use --strict-peer-dependencies=false to avoid strict peer dependency checks
+RUN pnpm install --frozen-lockfile --ignore-scripts --strict-peer-dependencies=false
 
 # Copy source and build
 COPY . .
@@ -22,13 +23,13 @@ FROM node:22-alpine
 WORKDIR /app
 
 # Install pnpm
-RUN npm install -g pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Copy package manifests
 COPY package.json pnpm-lock.yaml* ./
 
 # Install only production dependencies (ignore lifecycle scripts)
-RUN pnpm install --prod --frozen-lockfile --ignore-scripts
+RUN pnpm install --prod --frozen-lockfile --ignore-scripts --strict-peer-dependencies=false
 
 # Copy built application and runtime assets from builder
 COPY --from=builder /app/build ./build
