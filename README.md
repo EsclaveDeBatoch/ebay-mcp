@@ -11,9 +11,21 @@
 <p align="center"><sub>Unofficial, open-source project — not affiliated with, authorized, or endorsed by eBay Inc.</sub></p>
 
 <p align="center">
+  <a href="https://github.com/EsclaveDeBatoch/ebay-mcp"><img src="https://img.shields.io/badge/fork-EsclaveDeBatoch%2Febay--mcp-blue?logo=github" alt="Fork: EsclaveDeBatoch/ebay-mcp" /></a>
+  <a href="https://github.com/EsclaveDeBatoch/ebay-mcp/actions/workflows/docker.yml"><img src="https://img.shields.io/github/actions/workflow/status/EsclaveDeBatoch/ebay-mcp/docker.yml?branch=main&logo=github&label=Docker%20Build" alt="Docker Build status" /></a>
+  <a href="https://ghcr.io/EsclaveDeBatoch/ebay-mcp"><img src="https://img.shields.io/badge/ghcr.io-esclavedebatoch/ebay--mcp-24292e?logo=github&logoColor=white" alt="GHCR image" /></a>
+</p>
+
+<p align="center">
+  <strong>This fork adds:</strong> Pre-built Docker images on GHCR · Auto-sync from upstream (daily) · Multi-arch container support
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/ebay-mcp"><img src="https://img.shields.io/npm/v/ebay-mcp?logo=npm&color=cb3837" alt="npm version" /></a>
   <a href="https://www.npmjs.com/package/ebay-mcp"><img src="https://img.shields.io/npm/dm/ebay-mcp?logo=npm&color=cb3837" alt="npm downloads per month" /></a>
   <a href="https://github.com/YosefHayim/ebay-mcp/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/YosefHayim/ebay-mcp/ci.yml?branch=main&logo=github&label=CI" alt="CI status" /></a>
+  <a href="https://github.com/EsclaveDeBatoch/ebay-mcp/actions/workflows/docker.yml"><img src="https://img.shields.io/github/actions/workflow/status/EsclaveDeBatoch/ebay-mcp/docker.yml?branch=main&logo=github&label=Docker%20Build" alt="Docker Build status" /></a>
+  <a href="https://ghcr.io/EsclaveDeBatoch/ebay-mcp"><img src="https://img.shields.io/badge/ghcr.io-esclavedebatoch/ebay--mcp-24292e?logo=github&logoColor=white" alt="GHCR image" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/npm/l/ebay-mcp?color=blue" alt="MIT license" /></a>
   <img src="https://img.shields.io/node/v/ebay-mcp?logo=node.js&color=339933" alt="Required Node.js version" />
   <img src="https://img.shields.io/badge/types-included-3178c6?logo=typescript&logoColor=white" alt="TypeScript types included" />
@@ -174,7 +186,14 @@ If I don't have eBay credentials yet, guide me through creating a developer acco
 npm install -g ebay-mcp            # from npm (recommended)
 ```
 
-Or from source:
+Or from source (this fork):
+
+```bash
+git clone https://github.com/EsclaveDeBatoch/ebay-mcp.git
+cd ebay-mcp && npm install && npm run build
+```
+
+Or from upstream:
 
 ```bash
 git clone https://github.com/YosefHayim/ebay-mcp.git
@@ -200,6 +219,113 @@ That should call `ebay_get_rate_limits` or `ebay_get_user_rate_limits` and confi
 ### 5. Use
 
 Start managing eBay through your AI assistant. Begin with read-only questions, then move to mutating inventory, order, or campaign tools after you have confirmed the target environment is sandbox or production.
+
+---
+
+## Docker Deployment (This Fork)
+
+This fork provides pre-built Docker images on GitHub Container Registry (GHCR) for easy deployment without building from source.
+
+### Pull the image
+
+```bash
+# Latest stable (main branch)
+docker pull ghcr.io/esclavedebatoch/ebay-mcp:latest
+
+# Specific version (e.g., v1.15.0)
+docker pull ghcr.io/esclavedebatoch/ebay-mcp:v1.15.0
+
+# Main branch (rolling)
+docker pull ghcr.io/esclavedebatoch/ebay-mcp:main
+```
+
+### Run with Docker
+
+```bash
+# Create an .env file with your credentials
+cat > .env << 'EOF'
+EBAY_CLIENT_ID=your_client_id
+EBAY_CLIENT_SECRET=your_client_secret
+EBAY_REDIRECT_URI=your_runame
+EBAY_ENVIRONMENT=sandbox        # or "production"
+EBAY_MARKETPLACE_ID=EBAY_US
+EOF
+
+# Run the container
+docker run -d \
+  --name ebay-mcp \
+  -p 3000:3000 \
+  --env-file .env \
+  --restart unless-stopped \
+  ghcr.io/esclavedebatoch/ebay-mcp:latest
+```
+
+### Run with Docker Compose
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+
+services:
+  ebay-mcp:
+    image: ghcr.io/esclavedebatoch/ebay-mcp:latest
+    container_name: ebay-mcp-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - ./logs:/app/logs
+
+networks:
+  default:
+    driver: bridge
+```
+
+```bash
+docker compose up -d
+```
+
+### Environment Variables for Docker
+
+All [standard configuration variables](#configuration) work in Docker. Additionally:
+
+| Variable | Description |
+|---|---|
+| `MCP_HOST` | Bind address (default: `0.0.0.0` when `PORT` is set) |
+| `MCP_PORT` | HTTP port (default: `3000`; Railway/Render inject `PORT`) |
+| `MCP_AUTH_TOKEN` | Optional static Bearer token for HTTP MCP transport |
+
+### Auto-Sync from Upstream
+
+This fork is automatically kept in sync with the upstream repository (`YosefHayim/ebay-mcp`) via GitHub Actions:
+
+- **Daily check** at 2 AM UTC for upstream changes
+- **Automated PR** created when upstream has new commits
+- **Manual trigger** available in Actions tab
+
+The Docker image is rebuilt automatically on every merge to `main` and on version tags.
+
+### Image Details
+
+| Tag | Description |
+|---|---|
+| `latest` | Latest stable release (follows main branch) |
+| `main` | Latest main branch build |
+| `vX.Y.Z` | Semantic version tags (e.g., `v1.15.0`) |
+
+Built with:
+- Node.js 22 Alpine (minimal attack surface)
+- Multi-stage build for smaller production image
+- pnpm via corepack (lockfile integrity)
+- Non-root user inside container
 
 <details>
 <summary><strong>📸 Visual setup walkthrough (eBay Developer Portal)</strong></summary>
@@ -524,7 +650,7 @@ Project docs:
 - [OAuth Quick Reference](docs/auth/OAUTH_QUICK_REFERENCE.md) — scopes, troubleshooting, and examples.
 - [Logging Guide](docs/logging.md) and [Troubleshooting Guide](docs/troubleshooting.md) — operational help after setup.
 - [Architecture](ARCHITECTURE.md), [CODE-STYLE.md](CODE-STYLE.md), [AGENTS.md](AGENTS.md), and [llms.txt](llms.txt) — contributor and agent entry points.
-- [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and the [Issue Tracker](https://github.com/YosefHayim/ebay-mcp/issues).
+- [CHANGELOG.md](CHANGELOG.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and the [Issue Tracker](https://github.com/EsclaveDeBatoch/ebay-mcp/issues).
 
 Official specs and tooling:
 
@@ -532,6 +658,8 @@ Official specs and tooling:
 - [Model Context Protocol](https://modelcontextprotocol.io/) and the [MCP Apps SDK](https://github.com/modelcontextprotocol/ext-apps).
 - [Node.js](https://nodejs.org/en), [npm package](https://www.npmjs.com/package/ebay-mcp), [TypeScript](https://www.typescriptlang.org/), [Effect](https://effect.website/docs), [Biome](https://biomejs.dev/), [Vitest](https://vitest.dev/), and [GitHub Actions](https://docs.github.com/en/actions).
 - [AGENTS.md convention](https://agents.md/), [Claude Code](https://code.claude.com/docs/en/overview), [GitHub Copilot repository instructions](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions), and [llms.txt](https://llmstxt.org/).
+
+**Upstream repository:** [YosefHayim/ebay-mcp](https://github.com/YosefHayim/ebay-mcp) — the original project this fork tracks.
 
 ## License
 
