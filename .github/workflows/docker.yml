@@ -97,6 +97,11 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Merge upstream changes
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git merge upstream/main --no-edit --allow-unrelated-histories
+
       - name: Create pull request for upstream updates
         if: steps.check.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
