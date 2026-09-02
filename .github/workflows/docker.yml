@@ -91,6 +91,7 @@ jobs:
           if [ "$LOCAL" != "$UPSTREAM" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "UPSTREAM_SHA=$UPSTREAM" >> $GITHUB_OUTPUT
+            echo "UPSTREAM_SHA_SHORT=$(echo $UPSTREAM | cut -c1-7)" >> $GITHUB_OUTPUT
             echo "LOCAL_SHA=$LOCAL" >> $GITHUB_OUTPUT
           else
             echo "changed=false" >> $GITHUB_OUTPUT
@@ -101,9 +102,9 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: sync/upstream-${{ steps.check.outputs.UPSTREAM_SHA }}
+          branch: sync/upstream-${{ steps.check.outputs.UPSTREAM_SHA_SHORT }}
           base: main
-          title: "Sync upstream changes (${{ steps.check.outputs.UPSTREAM_SHA::7 }})"
+          title: "Sync upstream changes (${{ steps.check.outputs.UPSTREAM_SHA_SHORT }})"
           body: |
             Automated sync from upstream repository: https://github.com/YosefHayim/ebay-mcp
             
