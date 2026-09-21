@@ -9,7 +9,7 @@ on:
   schedule:
     # Daily at 2 AM UTC to check for upstream updates
     - cron: '0 2 * * *'
-  workflow_dispatch:  # Updated for workflow_dispatch refresh
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
