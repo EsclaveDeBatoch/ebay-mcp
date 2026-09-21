@@ -110,36 +110,19 @@ jobs:
           BRANCH_NAME="sync/upstream-${{ steps.check.outputs.UPSTREAM_SHA_SHORT }}"
           git push origin HEAD:refs/heads/$BRANCH_NAME
 
-          # Create PR using GitHub API
-          python3 << 'PYEOF_INNER'
-import json, os, urllib.request
-pr_title = 'Sync upstream changes (${{ steps.check.outputs.UPSTREAM_SHA_SHORT }})'
-pr_body = 'Automated sync from upstream repository: https://github.com/YosefHayim/ebay-mcp\n\n**Upstream commit:** ${{ steps.check.outputs.UPSTREAM_SHA }}\n**Local commit:** ${{ steps.check.outputs.LOCAL_SHA }}\n\nThis PR updates the fork to match the upstream main branch.\nReview the changes and merge when ready.'
-branch = '${{ steps.check.outputs.UPSTREAM_SHA_SHORT }}'
-repo = '${{ github.repository }}'
-token = os.environ.get('GITHUB_TOKEN', '')
+          # Create PR using GitHub API with curl
+          PR_TITLE="Sync upstream changes (${{ steps.check.outputs.UPSTREAM_SHA_SHORT }})"
+          PR_BODY="Automated sync from upstream repository: https://github.com/YosefHayim/ebay-mcp
 
-data = {
-    'title': pr_title,
-    'head': 'sync/upstream-' + branch,
-    'base': 'main',
-    'body': pr_body,
-    'labels': ['upstream-sync', 'automated']
-}
+**Upstream commit:** ${{ steps.check.outputs.UPSTREAM_SHA }}
+**Local commit:** ${{ steps.check.outputs.LOCAL_SHA }}
 
-req = urllib.request.Request(
-    f'https://api.github.com/repos/{repo}/pulls',
-    data=json.dumps(data).encode('utf-8'),
-    headers={
-        'Authorization': f'token {token}',
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-    },
-    method='POST'
-)
-try:
-    response = urllib.request.urlopen(req)
-    print('PR created successfully:', response.read().decode())
-except Exception as e:
-    print('Error:', e)
-PYEOF_INNER
+This PR updates the fork to match the upstream main branch.
+Review the changes and merge when ready."
+
+          curl -X POST \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Content-Type: application/json" \
+            https://api.github.com/repos/${{ github.repository }}/pulls \
+            -d "$(printf '{"title":"%s","head":"sync/upstream-%s","base":"main","body":%s,"labels":["upstream-sync","automated"]}' "$PR_TITLE" "${{ steps.check.outputs.UPSTREAM_SHA_SHORT }}" "$(echo -n "$PR_BODY" | jq -Rs .)")"
